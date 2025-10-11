@@ -47,7 +47,7 @@ app.use('/api/v1', routes);
 app.get('/', (_req, res) => {
   res.json({
     success: true,
-    message: '🚀 Welcome to E-Summit 2025 API',
+    message: '🚀 Welcome to E-Summit 2026 API',
     version: '1.0.0',
     documentation: '/api/v1/health',
   });

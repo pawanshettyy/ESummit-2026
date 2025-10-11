@@ -16,7 +16,7 @@ export function CookiePolicy() {
             <Badge className="mb-4 bg-primary/10 text-primary">Legal Document</Badge>
             <h1 className="mb-4">Cookie Policy</h1>
             <p className="text-muted-foreground">
-              Last Updated: January 2025
+              Last Updated: January 2026
             </p>
           </div>
 
@@ -27,7 +27,7 @@ export function CookiePolicy() {
                 <div>
                   <h3 className="mb-2">About Cookies</h3>
                   <p className="text-sm text-muted-foreground">
-                    This Cookie Policy explains how Thakur College of Engineering and Technology ("TCET", "we", "us", or "our") uses cookies and similar technologies on the E-Summit 2025 website. This policy should be read together with our Privacy Policy.
+                    This Cookie Policy explains how Thakur College of Engineering and Technology ("TCET", "we", "us", or "our") uses cookies and similar technologies on the E-Summit 2026 website. This policy should be read together with our Privacy Policy.
                   </p>
                 </div>
               </div>
@@ -346,7 +346,7 @@ export function CookiePolicy() {
                     </p>
                     <div className="text-sm space-y-2">
                       <p><strong>Thakur College of Engineering and Technology</strong></p>
-                      <p>E-Summit 2025 - Data Protection Officer</p>
+                      <p>E-Summit 2026 - Data Protection Officer</p>
                       <p>Kandivali East, Mumbai - 400101</p>
                       <p>Email: <a href="mailto:tcetedic@tcetmumbai.in" className="text-primary hover:underline">tcetedic@tcetmumbai.in</a></p>
                       <p>Phone: <a href="tel:+912228471000" className="text-primary hover:underline">+91 22 2847 1000</a></p>

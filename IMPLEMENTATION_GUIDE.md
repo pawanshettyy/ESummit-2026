@@ -1,4 +1,4 @@
-# 🎯 E-Summit 2025 - Quick Implementation Guide
+# 🎯 E-Summit 2026 - Quick Implementation Guide
 
 ## 📋 Complete System Overview
 
@@ -114,7 +114,7 @@ npm install html5-qrcode
 ## 📂 Required File Structure
 
 ```
-ESummit-2025/
+ESummit-2026/
 ├── frontend/ (current /src folder - already done ✓)
 │
 ├── backend/ (to be created)
@@ -167,7 +167,7 @@ PORT=3000
 API_URL=http://localhost:3000
 
 # Database
-DATABASE_URL=postgresql://user:password@localhost:5432/esummit2025
+DATABASE_URL=postgresql://user:password@localhost:5432/esummit2026
 REDIS_URL=redis://localhost:6379
 
 # JWT
@@ -188,12 +188,12 @@ QR_SECRET_KEY=generate_using_node_crypto_64_chars_hex
 # AWS S3 (for QR storage)
 AWS_ACCESS_KEY_ID=your_aws_key
 AWS_SECRET_ACCESS_KEY=your_aws_secret
-AWS_BUCKET_NAME=esummit-2025-qr-codes
+AWS_BUCKET_NAME=esummit-2026-qr-codes
 AWS_REGION=ap-south-1
 
 # Email (SendGrid or AWS SES)
 SENDGRID_API_KEY=SG.xxxxxxxxxxxxxxx
-FROM_EMAIL=noreply@esummit2025.com
+FROM_EMAIL=noreply@esummit2026.com
 
 # Frontend URL (for CORS)
 FRONTEND_URL=http://localhost:5173
@@ -482,4 +482,4 @@ Start with:
 - `BACKEND_ARCHITECTURE.md` - Full backend plan
 - `QR_CODE_SYSTEM.md` - QR implementation guide
 
-**Good luck with E-Summit 2025!** 🎊
+**Good luck with E-Summit 2026!** 🎊

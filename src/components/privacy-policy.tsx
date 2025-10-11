@@ -16,7 +16,7 @@ export function PrivacyPolicy() {
             <Badge className="mb-4 bg-primary/10 text-primary">Legal Document</Badge>
             <h1 className="mb-4">Privacy Policy</h1>
             <p className="text-muted-foreground">
-              Last Updated: January 2025
+              Last Updated: January 2026
             </p>
           </div>
 
@@ -27,7 +27,7 @@ export function PrivacyPolicy() {
                 <div>
                   <h3 className="mb-2">Our Commitment to Privacy</h3>
                   <p className="text-sm text-muted-foreground">
-                    Thakur College of Engineering and Technology ("TCET", "we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you participate in E-Summit 2025.
+                    Thakur College of Engineering and Technology ("TCET", "we", "us", or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you participate in E-Summit 2026.
                   </p>
                 </div>
               </div>
@@ -45,7 +45,7 @@ export function PrivacyPolicy() {
                     
                     <h4 className="mb-2 text-sm">1.1 Personal Information</h4>
                     <p className="text-sm text-muted-foreground mb-3">
-                      We collect the following personal information when you register for E-Summit 2025:
+                      We collect the following personal information when you register for E-Summit 2026:
                     </p>
                     <ul className="text-sm text-muted-foreground space-y-1 mb-4 list-disc list-inside">
                       <li>Full Name</li>
@@ -197,7 +197,7 @@ export function PrivacyPolicy() {
               <CardContent className="p-6">
                 <h3 className="mb-3">8. Children's Privacy</h3>
                 <p className="text-sm text-muted-foreground">
-                  E-Summit 2025 is intended for individuals aged 16 and above. We do not knowingly collect information from children under 16. If you are under 16, please obtain parental consent before registering.
+                  E-Summit 2026 is intended for individuals aged 16 and above. We do not knowingly collect information from children under 16. If you are under 16, please obtain parental consent before registering.
                 </p>
               </CardContent>
             </Card>
@@ -242,7 +242,7 @@ export function PrivacyPolicy() {
                     </p>
                     <div className="text-sm space-y-2">
                       <p><strong>Thakur College of Engineering and Technology</strong></p>
-                      <p>E-Summit 2025 - Privacy Officer</p>
+                      <p>E-Summit 2026 - Privacy Officer</p>
                       <p>Kandivali East, Mumbai - 400101</p>
                       <p>Email: <a href="mailto:tcetedic@tcetmumbai.in" className="text-primary hover:underline">tcetedic@tcetmumbai.in</a></p>
                       <p>Phone: <a href="tel:+912228471000" className="text-primary hover:underline">+91 22 2847 1000</a></p>

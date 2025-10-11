@@ -13,7 +13,7 @@ export function AuthModal({ onNavigate }: AuthModalProps) {
       <Card className="w-full max-w-md">
         <CardHeader>
           <div className="text-center">
-            <h2 className="mb-2 text-2xl font-bold">Welcome to E-Summit 2025</h2>
+            <h2 className="mb-2 text-2xl font-bold">Welcome to E-Summit 2026</h2>
             <p className="text-sm text-muted-foreground">
               Sign in to access your dashboard and bookings
             </p>

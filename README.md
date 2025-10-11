@@ -1,10 +1,10 @@
-# E-Summit 2025 - Event Management Platform
+# E-Summit 2026 - Event Management Platform
 
-A complete event management platform for E-Summit 2025 at Thakur College of Engineering and Technology, featuring pass booking, QR-based check-in system, event management, and admin dashboard.
+A complete event management platform for E-Summit 2026 at Thakur College of Engineering and Technology, featuring pass booking, QR-based check-in system, event management, and admin dashboard.
 
 ## 🎯 Project Overview
 
-This platform handles the complete lifecycle of E-Summit 2025:
+This platform handles the complete lifecycle of E-Summit 2026:
 
 - **Pass Booking**: Multiple pass types (Gold, Silver, Platinum, Group) with Razorpay payment integration
 - **QR Code System**: Unique, encrypted QR codes for each booking with secure check-in
@@ -15,7 +15,7 @@ This platform handles the complete lifecycle of E-Summit 2025:
 ## 📁 Project Structure
 
 ```
-ESummit-2025/
+ESummit-2026/
 ├── src/                          # Frontend (React + Vite + TypeScript)
 │   ├── components/               # UI components
 │   │   ├── homepage.tsx
@@ -104,24 +104,40 @@ The backend API will be available at `http://localhost:5000`
 
 ### How It Works
 
-1. **After Booking**: User completes payment → Backend generates unique encrypted QR code → Sent via email
-2. **At Event**: User shows QR code → Admin scans with mobile app → System validates → Entry granted
+1. **After Booking**: User completes booking → Backend generates unique encrypted QR code → Stored in database
+2. **At Event**: User shows QR code from dashboard → Admin scans with QR Scanner → System validates → Entry logged
 
 ### Key Features
 
 - ✅ **AES-256-GCM encryption** - Military-grade security
 - ✅ **SHA-256 checksum** - Tamper detection
-- ✅ **Time-bound validity** - Only valid during event dates
-- ✅ **One-time event entry** - Prevents ticket sharing
-- ✅ **Complete audit trail** - All scans logged
+- ✅ **Pass validation** - Checks pass status (Active/Cancelled/Refunded)
+- ✅ **Multi-event scanning** - One pass can check into 30 different events
+- ✅ **Cooldown system** - 30-minute cooldown for same event (prevents duplicates)
+- ✅ **General entry mode** - Leave event ID empty for unlimited venue scans
+- ✅ **Complete audit trail** - All scans logged with timestamps
+- ✅ **Camera & Manual entry** - Flexible scanning options
+- ✅ **Real-time updates** - Admin panel refreshes automatically
+
+### Current Implementation
+
+- ✅ QR code generation on pass creation
+- ✅ QR scanner with camera support
+- ✅ Manual entry with pass ID validation
+- ✅ Event-specific check-ins
+- ✅ Check-in history tracking
+- ✅ **PDF pass with embedded QR code**
+- ✅ **Dynamic PDF invoice generation**
+- ⏳ Email delivery (planned)
 
 **Visual Guide**: See [QR_FLOW_DIAGRAM.md](./QR_FLOW_DIAGRAM.md)
 
 ## 💳 Payment Integration
 
-- **Gateway**: Razorpay
-- **Supported Methods**: UPI, Cards, Net Banking, Wallets
-- **Security**: Payment signature verification, webhook handling
+- **Gateway**: Razorpay (bypassed for testing)
+- **Current Status**: Direct pass creation without payment (for development)
+- **Supported Methods**: UPI, Cards, Net Banking, Wallets (when enabled)
+- **Security**: Payment signature verification, webhook handling (ready for production)
 
 ## 🗄️ Database Schema
 
@@ -152,22 +168,32 @@ Core tables:
 
 ### For Attendees
 
-- Browse events and speakers
-- Book passes (multiple types)
-- Register for events
-- Receive QR code via email
-- View personal dashboard
-- Download event schedule
+- ✅ Browse events and speakers
+- ✅ Book passes (multiple types)
+- ✅ View personal dashboard
+- ✅ Access QR code for entry
+- ✅ **Download pass as PDF** (with logo & QR code)
+- ✅ **Download payment invoice as PDF**
+- ⏳ Register for specific events
+- ⏳ Receive QR code via email
+- ⏳ Download event schedule PDF
 
 ### For Admins
 
-- Real-time dashboard
-- Participant management
-- QR code scanner (PWA)
-- Event management
-- Analytics & reporting
-- Export participant data
-- Audit logs
+- ✅ Real-time dashboard (auto-refresh every 3 seconds)
+- ✅ Participant management
+- ✅ QR code scanner (Camera + Manual Entry)
+- ✅ Multi-event check-in system
+- ✅ Event ID Generator
+- ✅ Analytics & reporting
+- ✅ Export participant data (CSV)
+- ✅ Role-based access control (4 roles)
+- ✅ Pass type distribution charts
+- ✅ College-wise statistics
+- ✅ **PDF Pass Generation** (Dynamic, with QR code & logo)
+- ✅ **PDF Invoice Generation** (Dynamic, with GST breakdown)
+- ⏳ Audit logs viewer
+- ⏳ Event management UI
 
 ## 🛠️ Tech Stack
 
@@ -181,15 +207,18 @@ Core tables:
 - Framer Motion
 - Razorpay SDK
 
-### Backend (Planned)
+### Backend (Implemented ✅)
 
 - Node.js + Express
 - TypeScript
 - PostgreSQL + Prisma
-- Redis (caching)
-- AWS S3 (QR storage)
-- SendGrid (emails)
-- JWT authentication
+- Clerk Authentication
+- QR Code Generation (qrcode library)
+- AES-256-GCM Encryption
+- **PDFKit** (PDF generation)
+- JWT tokens
+- Zod validation
+- Winston logging
 
 ## 📦 Dependencies
 
@@ -215,9 +244,9 @@ Core tables:
 
 ## 🎓 Event Details
 
-- **Name**: E-Summit 2025
+- **Name**: E-Summit 2026
 - **Venue**: Thakur College of Engineering and Technology, Kandivali East, Mumbai - 400101
-- **Dates**: March 15-16, 2025 (2 Days)
+- **Dates**: March 15-16, 2026 (2 Days)
 - **Expected Attendance**: 5,000+ participants
 
 ## 📖 Documentation
@@ -246,30 +275,50 @@ Core tables:
 
 - [X] Database setup (PostgreSQL + Prisma)
 - [X] 10-table schema with relationships
-- [X] Authentication system (JWT access & refresh tokens)
+- [X] Authentication system (Clerk integration)
 - [X] User registration & login
-- [X] Password hashing (bcrypt)
+- [X] Profile completion system
 - [X] Request validation (Zod)
 - [X] Error handling & logging
 - [X] Security middleware (helmet, CORS, rate limiting)
 
-### 🔄 Phase 3: Payment & QR System (Next)
+### ✅ Phase 3: Core Features (Completed)
 
-- [ ] Razorpay payment integration
-- [ ] Pass booking APIs
-- [ ] QR code generation system
-- [ ] Email notifications
-- [ ] Event management APIs
-- [ ] Admin panel APIs
-- [ ] Check-in system
+- [X] Pass booking system (bypass Razorpay for testing)
+- [X] QR code generation (AES-256-GCM encryption)
+- [X] User dashboard with pass display
+- [X] Admin panel with role-based access
+- [X] Multi-event check-in system (up to 30 events per pass)
+- [X] QR Scanner (Camera + Manual Entry)
+- [X] Event ID Generator (kebab-case identifiers)
+- [X] Real-time admin dashboard (auto-refresh every 3 seconds)
+- [X] Check-in status tracking
+- [X] Pass distribution analytics
+- [X] College-wise registration stats
+- [X] CSV export functionality
+- [X] One pass per user validation
 
-### 📅 Phase 4: Integration (Planned)
+### 🔄 Phase 4: Advanced Features (In Progress)
 
-- [ ] Connect frontend to backend
-- [ ] Build QR scanner PWA
+- [X] Event management APIs (CRUD)
+- [X] Check-in APIs with cooldown system
+- [X] Admin statistics endpoints
+- [X] Silent background data refresh
+- [X] Instant check-in status updates
+- [ ] Razorpay payment integration (production)
+- [ ] Email notifications with QR codes
+- [ ] PDF pass generation
+- [ ] Seed 30 events to database
+- [ ] WebSocket for true real-time updates
+
+### 📅 Phase 5: Polish & Testing (Planned)
+
 - [ ] End-to-end testing
 - [ ] Performance optimization
 - [ ] Security audit
+- [ ] Mobile responsiveness testing
+- [ ] Admin role management UI
+- [ ] Audit log viewer
 
 ### 🚀 Phase 5: Deployment (Planned)
 
@@ -285,7 +334,7 @@ Create `.env` file in backend:
 
 ```env
 # Database
-DATABASE_URL=postgresql://user:pass@localhost:5432/esummit2025
+DATABASE_URL=postgresql://user:pass@localhost:5432/esummit2026
 
 # JWT
 JWT_SECRET=your_secret_key_here
@@ -305,7 +354,7 @@ AWS_BUCKET_NAME=esummit-qr-codes
 
 # Email
 SENDGRID_API_KEY=SG.xxxxx
-FROM_EMAIL=noreply@esummit2025.com
+FROM_EMAIL=noreply@esummit2026.com
 ```
 
 ## 🧪 Testing
@@ -321,6 +370,6 @@ npm run test        # Run all tests
 npm run test:watch  # Watch mode
 ```
 
-**Built with ❤️ for E-Summit 2025**
+**Built with ❤️ for E-Summit 2026**
 
-*Last Updated: January 2025*
+*Last Updated: January 2026*

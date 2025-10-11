@@ -1,7 +1,7 @@
 {
-  "name": "esummit-2025-backend",
+  "name": "esummit-2026-backend",
   "version": "1.0.0",
-  "description": "Backend API for E-Summit 2025 Event Management Platform",
+  "description": "Backend API for E-Summit 2026 Event Management Platform",
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
@@ -23,7 +23,7 @@
     "typescript",
     "prisma"
   ],
-  "author": "E-Summit 2025 Team",
+  "author": "E-Summit 2026 Team",
   "license": "MIT",
   "dependencies": {
     "@clerk/clerk-react": "^5.51.0",
@@ -38,6 +38,7 @@
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "pdfkit": "^0.17.2",
     "qrcode": "^1.5.4",
     "svix": "^1.77.0",
     "winston": "^3.11.0",
@@ -50,6 +51,7 @@
     "@types/jsonwebtoken": "^9.0.5",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.10.0",
+    "@types/pdfkit": "^0.17.3",
     "@typescript-eslint/eslint-plugin": "^6.15.0",
     "@typescript-eslint/parser": "^6.15.0",
     "eslint": "^8.56.0",

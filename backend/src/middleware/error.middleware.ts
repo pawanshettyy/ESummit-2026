@@ -21,7 +21,7 @@ export const errorHandler = (
   if (err.code === 'P2002') {
     statusCode = 400;
     message = 'A record with this value already exists';
-  } else if (err.code === 'P2025') {
+  } else if (err.code === 'P2026') {
     statusCode = 404;
     message = 'Record not found';
   }

@@ -1,6 +1,6 @@
 # Supabase Database Setup Guide
 
-Your E-Summit 2025 backend is now configured to use Supabase PostgreSQL database! 🎉
+Your E-Summit 2026 backend is now configured to use Supabase PostgreSQL database! 🎉
 
 ## ⚙️ Configuration Complete
 

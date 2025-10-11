@@ -1,4 +1,4 @@
-# E-Summit 2025 - Complete System Architecture Diagram
+# E-Summit 2026 - Complete System Architecture Diagram
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────┐
@@ -279,7 +279,7 @@ ATTENDEE ARRIVES AT VENUE:
        │
        │ 1. POST /admin/check-in
        │    Authorization: Bearer <admin_token>
-       │    { passId: "ESUMMIT-2025-ABC123" }
+       │    { passId: "ESUMMIT-2026-ABC123" }
        ▼
 ┌────────────────┐
 │  API Server    │
@@ -575,6 +575,6 @@ ATTENDEE ARRIVES AT VENUE:
 
 ---
 
-**This diagram provides a complete visual overview of the E-Summit 2025 backend architecture!**
+**This diagram provides a complete visual overview of the E-Summit 2026 backend architecture!**
 
 For implementation details, refer to `BACKEND_ARCHITECTURE.md`

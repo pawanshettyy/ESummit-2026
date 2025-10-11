@@ -1,4 +1,4 @@
-# 🎯 E-Summit 2025 Backend - Quick Reference
+# 🎯 E-Summit 2026 Backend - Quick Reference
 
 ## 📚 Documentation Files
 

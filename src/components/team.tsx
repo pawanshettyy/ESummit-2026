@@ -153,7 +153,7 @@ export function Team() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto max-w-2xl text-muted-foreground"
         >
-          Meet the dedicated team behind E-Summit 2025 who are working tirelessly to make this event a success
+          Meet the dedicated team behind E-Summit 2026 who are working tirelessly to make this event a success
         </motion.p>
       </div>
 
@@ -216,7 +216,7 @@ export function Team() {
           <div className="mb-6">
             <h2 className="mb-2">Core Team Members</h2>
             <p className="text-muted-foreground">
-              The leadership team driving E-Summit 2025
+              The leadership team driving E-Summit 2026
             </p>
           </div>
           
@@ -305,21 +305,21 @@ export function Team() {
         <Card>
           <CardContent className="p-6 text-center">
             <h4 className="mb-2">General Queries</h4>
-            <p className="mb-2 text-sm text-muted-foreground">info@esummit2025.com</p>
+            <p className="mb-2 text-sm text-muted-foreground">info@esummit2026.com</p>
             <p className="text-sm text-muted-foreground">+91 98765 43210</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6 text-center">
             <h4 className="mb-2">Sponsorship</h4>
-            <p className="mb-2 text-sm text-muted-foreground">sponsors@esummit2025.com</p>
+            <p className="mb-2 text-sm text-muted-foreground">sponsors@esummit2026.com</p>
             <p className="text-sm text-muted-foreground">+91 98765 43220</p>
           </CardContent>
         </Card>
         <Card>
           <CardContent className="p-6 text-center">
             <h4 className="mb-2">Speaker Relations</h4>
-            <p className="mb-2 text-sm text-muted-foreground">speakers@esummit2025.com</p>
+            <p className="mb-2 text-sm text-muted-foreground">speakers@esummit2026.com</p>
             <p className="text-sm text-muted-foreground">+91 98765 43230</p>
           </CardContent>
         </Card>

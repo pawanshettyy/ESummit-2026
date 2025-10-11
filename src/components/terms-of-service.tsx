@@ -16,7 +16,7 @@ export function TermsOfService() {
             <Badge className="mb-4 bg-primary/10 text-primary">Legal Document</Badge>
             <h1 className="mb-4">Terms of Service</h1>
             <p className="text-muted-foreground">
-              Last Updated: January 2025
+              Last Updated: January 2026
             </p>
           </div>
 
@@ -27,7 +27,7 @@ export function TermsOfService() {
                 <div>
                   <h3 className="mb-2">Agreement to Terms</h3>
                   <p className="text-sm text-muted-foreground">
-                    These Terms of Service ("Terms") constitute a legally binding agreement between you and Thakur College of Engineering and Technology ("TCET", "we", "us", or "our") regarding your participation in E-Summit 2025. By registering for or attending the event, you agree to be bound by these Terms.
+                    These Terms of Service ("Terms") constitute a legally binding agreement between you and Thakur College of Engineering and Technology ("TCET", "we", "us", or "our") regarding your participation in E-Summit 2026. By registering for or attending the event, you agree to be bound by these Terms.
                   </p>
                 </div>
               </div>
@@ -40,10 +40,10 @@ export function TermsOfService() {
               <CardContent className="p-6">
                 <h3 className="mb-3">1. Acceptance of Terms</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  By accessing our website, registering for E-Summit 2025, or attending the event, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy.
+                  By accessing our website, registering for E-Summit 2026, or attending the event, you acknowledge that you have read, understood, and agree to be bound by these Terms and our Privacy Policy.
                 </p>
                 <p className="text-sm text-muted-foreground">
-                  If you do not agree to these Terms, you must not register for or attend E-Summit 2025.
+                  If you do not agree to these Terms, you must not register for or attend E-Summit 2026.
                 </p>
               </CardContent>
             </Card>
@@ -53,7 +53,7 @@ export function TermsOfService() {
               <CardContent className="p-6">
                 <h3 className="mb-3">2. Eligibility</h3>
                 <p className="text-sm text-muted-foreground mb-3">
-                  To participate in E-Summit 2025, you must:
+                  To participate in E-Summit 2026, you must:
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
                   <li>Be at least 16 years of age (or have parental consent if under 18)</li>
@@ -114,7 +114,7 @@ export function TermsOfService() {
 
                 <h4 className="mb-2 text-sm">4.2 Event Cancellation by TCET</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  In the unlikely event that we cancel or significantly modify E-Summit 2025:
+                  In the unlikely event that we cancel or significantly modify E-Summit 2026:
                 </p>
                 <ul className="text-sm text-muted-foreground space-y-2 list-disc list-inside">
                   <li>Full refunds will be provided to all registered participants</li>
@@ -157,7 +157,7 @@ export function TermsOfService() {
                 
                 <h4 className="mb-2 text-sm">6.1 TCET's Intellectual Property</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  All content, materials, and resources provided during E-Summit 2025, including but not limited to presentations, worksheets, and recordings, are the property of TCET or the respective speakers and are protected by Indian copyright laws.
+                  All content, materials, and resources provided during E-Summit 2026, including but not limited to presentations, worksheets, and recordings, are the property of TCET or the respective speakers and are protected by Indian copyright laws.
                 </p>
 
                 <h4 className="mb-2 text-sm">6.2 Photography and Recording</h4>
@@ -281,7 +281,7 @@ export function TermsOfService() {
 
                 <h4 className="mb-2 text-sm">14.2 Jurisdiction</h4>
                 <p className="text-sm text-muted-foreground mb-3">
-                  Any disputes arising from these Terms or your participation in E-Summit 2025 shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.
+                  Any disputes arising from these Terms or your participation in E-Summit 2026 shall be subject to the exclusive jurisdiction of the courts in Mumbai, Maharashtra.
                 </p>
 
                 <h4 className="mb-2 text-sm">14.3 Dispute Resolution</h4>
@@ -296,7 +296,7 @@ export function TermsOfService() {
               <CardContent className="p-6">
                 <h3 className="mb-3">15. Entire Agreement</h3>
                 <p className="text-sm text-muted-foreground">
-                  These Terms, together with our Privacy Policy and Cookie Policy, constitute the entire agreement between you and TCET regarding E-Summit 2025 and supersede all prior agreements and understandings.
+                  These Terms, together with our Privacy Policy and Cookie Policy, constitute the entire agreement between you and TCET regarding E-Summit 2026 and supersede all prior agreements and understandings.
                 </p>
               </CardContent>
             </Card>
@@ -313,7 +313,7 @@ export function TermsOfService() {
                     </p>
                     <div className="text-sm space-y-2">
                       <p><strong>Thakur College of Engineering and Technology</strong></p>
-                      <p>E-Summit 2025 - Legal Department</p>
+                      <p>E-Summit 2026 - Legal Department</p>
                       <p>Kandivali East, Mumbai - 400101</p>
                       <p>Email: <a href="mailto:tcetedic@tcetmumbai.in" className="text-primary hover:underline">tcetedic@tcetmumbai.in</a></p>
                       <p>Phone: <a href="tel:+912228471000" className="text-primary hover:underline">+91 22 2847 1000</a></p>
@@ -327,7 +327,7 @@ export function TermsOfService() {
             <Card className="bg-primary/5 border-primary/20">
               <CardContent className="p-6">
                 <p className="text-sm text-center text-muted-foreground">
-                  By registering for E-Summit 2025, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
+                  By registering for E-Summit 2026, you acknowledge that you have read, understood, and agree to be bound by these Terms of Service.
                 </p>
               </CardContent>
             </Card>

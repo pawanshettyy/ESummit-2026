@@ -141,6 +141,58 @@ export function UserDashboard({
     });
   };
 
+  // Download pass PDF
+  const downloadPassPDF = async (passId: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/pdf/pass/${passId}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to download pass PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ESUMMIT-2026-${passId}-Pass.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading pass PDF:', error);
+      alert('Failed to download pass PDF. Please try again.');
+    }
+  };
+
+  // Download invoice PDF
+  const downloadInvoicePDF = async (transactionId: string) => {
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/pdf/invoice/${transactionId}`
+      );
+      
+      if (!response.ok) {
+        throw new Error('Failed to download invoice PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ESUMMIT-2026-Invoice.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading invoice PDF:', error);
+      alert('Failed to download invoice PDF. Please try again.');
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -247,13 +299,18 @@ export function UserDashboard({
                       </div>
 
                       <div className="flex gap-2">
-                        <Button className="flex-1">
+                        <Button 
+                          className="flex-1"
+                          onClick={() => downloadPassPDF(pass.passId)}
+                        >
                           <Download className="mr-2 h-4 w-4" />
                           Download Pass
                         </Button>
                         <Button
                           variant="outline"
                           className="flex-1"
+                          onClick={() => pass.transaction && downloadInvoicePDF(pass.transaction.id.toString())}
+                          disabled={!pass.transaction}
                         >
                           <FileText className="mr-2 h-4 w-4" />
                           Invoice

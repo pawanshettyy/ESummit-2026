@@ -1,4 +1,4 @@
-# E-Summit 2025 - Backend Architecture Plan
+# E-Summit 2026 - Backend Architecture Plan
 
 ## 📋 Table of Contents
 
@@ -17,7 +17,7 @@
 
 ## 🎯 Overview
 
-The E-Summit 2025 backend system will handle:
+The E-Summit 2026 backend system will handle:
 
 - User authentication and authorization (attendees, admins, speakers)
 - Event pass booking and payment processing (Razorpay integration)
@@ -151,7 +151,7 @@ CREATE TABLE passes (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   pass_type VARCHAR(100) NOT NULL, -- 'Gold', 'Silver', 'Platinum', 'Group'
-  pass_id VARCHAR(50) UNIQUE NOT NULL, -- 'ESUMMIT-2025-XXXXX'
+  pass_id VARCHAR(50) UNIQUE NOT NULL, -- 'ESUMMIT-2026-XXXXX'
   price DECIMAL(10,2) NOT NULL,
   purchase_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   status VARCHAR(50) DEFAULT 'Active', -- 'Active', 'Cancelled', 'Refunded'
@@ -391,7 +391,7 @@ CREATE INDEX idx_sponsors_display_order ON sponsors(display_order);
 
 ## 🔌 API Endpoints
 
-### Base URL: `https://api.esummit2025.com/v1`
+### Base URL: `https://api.esummit2026.com/v1`
 
 ### Authentication Endpoints
 
@@ -556,7 +556,7 @@ Get all events (with filters)
 ```
 Query params:
   ?category=competitions
-  &date=2025-03-15
+  &date=2026-03-15
   &status=upcoming
   &search=hackathon
 ```
@@ -590,7 +590,7 @@ Get complete event schedule
 
 ```json
 {
-  "2025-03-15": [
+  "2026-03-15": [
     {
       "id": "uuid",
       "title": "Opening Ceremony",
@@ -658,7 +658,7 @@ Check-in a participant via QR code
 
 ```json
 {
-  "passId": "ESUMMIT-2025-ABC123",
+  "passId": "ESUMMIT-2026-ABC123",
   "eventId": "uuid", // optional
   "location": "Main Entrance"
 }
@@ -885,7 +885,7 @@ Backend Verifies Payment
        ↓
 Create Pass Record in Database
        ↓
-Generate Unique Pass ID (e.g., ESUMMIT-2025-ABC123)
+Generate Unique Pass ID (e.g., ESUMMIT-2026-ABC123)
        ↓
 Create QR Code Data (Encrypted JSON)
        ↓
@@ -907,7 +907,7 @@ The QR code will contain **encrypted JSON** to prevent tampering:
 ```typescript
 // Original data (before encryption)
 interface QRCodeData {
-  passId: string;           // "ESUMMIT-2025-ABC123"
+  passId: string;           // "ESUMMIT-2026-ABC123"
   userId: string;           // UUID of the user
   passType: string;         // "Platinum", "Gold", etc.
   userName: string;         // "John Doe"
@@ -1010,7 +1010,7 @@ export class QRService {
   }): Promise<{ qrCodeUrl: string; qrCodeData: string }> {
     // Prepare QR data
     const validFrom = new Date();
-    const validUntil = new Date('2025-03-17'); // Event end date
+    const validUntil = new Date('2026-03-17'); // Event end date
 
     const qrData = {
       passId: pass.passId,
@@ -1476,7 +1476,7 @@ npm install html5-qrcode
 ```html
 <!-- Email sent after successful payment -->
 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-  <h2>🎉 E-Summit 2025 - Pass Confirmation</h2>
+  <h2>🎉 E-Summit 2026 - Pass Confirmation</h2>
   
   <p>Dear {{userName}},</p>
   
@@ -1493,7 +1493,7 @@ npm install html5-qrcode
       <li>Save this QR code on your phone</li>
       <li>Present it at the venue entrance</li>
       <li>Do not share with others</li>
-      <li>Valid from: March 15-17, 2025</li>
+      <li>Valid from: March 15-17, 2026</li>
     </ul>
   </div>
   
@@ -1508,7 +1508,7 @@ npm install html5-qrcode
 curl -X POST http://localhost:3000/api/v1/passes/generate-qr \
   -H "Authorization: Bearer YOUR_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"passId": "ESUMMIT-2025-TEST001"}'
+  -d '{"passId": "ESUMMIT-2026-TEST001"}'
 
 # Test QR validation
 curl -X POST http://localhost:3000/api/v1/admin/check-in \
@@ -1638,7 +1638,7 @@ jobs:
 # Server
 NODE_ENV=production
 PORT=3000
-API_URL=https://api.esummit2025.com
+API_URL=https://api.esummit2026.com
 
 # Database
 DATABASE_URL=postgresql://user:pass@host:5432/esummit
@@ -1657,12 +1657,12 @@ RAZORPAY_WEBHOOK_SECRET=xxxxx
 
 # Email
 SENDGRID_API_KEY=SG.xxxxx
-FROM_EMAIL=noreply@esummit2025.com
+FROM_EMAIL=noreply@esummit2026.com
 
 # AWS S3
 AWS_ACCESS_KEY_ID=xxxxx
 AWS_SECRET_ACCESS_KEY=xxxxx
-AWS_BUCKET_NAME=esummit-2025
+AWS_BUCKET_NAME=esummit-2026
 
 # SMS (Optional)
 TWILIO_ACCOUNT_SID=xxxxx
@@ -1672,7 +1672,7 @@ TWILIO_AUTH_TOKEN=xxxxx
 SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
 
 # Frontend URL
-FRONTEND_URL=https://esummit2025.com
+FRONTEND_URL=https://esummit2026.com
 ```
 
 ---
@@ -1855,6 +1855,6 @@ describe('POST /passes/verify-payment', () => {
 
 ---
 
-**Last Updated**: January 2025
+**Last Updated**: January 2026
 **Version**: 1.0.0
-**Author**: E-Summit 2025 Development Team
+**Author**: E-Summit 2026 Development Team

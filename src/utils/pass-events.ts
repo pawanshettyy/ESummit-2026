@@ -45,7 +45,7 @@ export const eventSchedule = {
       category: "keynote",
       venue: "Main Auditorium",
       speaker: "Chief Guest",
-      description: "Official opening of E-Summit 2025",
+      description: "Official opening of E-Summit 2026",
       duration: "1 hour",
     },
     {
@@ -298,8 +298,8 @@ export function formatEventWithDate(event: Event, day: number): {
   speaker: string | null;
   description: string;
 } {
-  // E-Summit dates: March 15-16, 2025
-  const eventDate = day === 1 ? "March 15, 2025" : "March 16, 2025";
+  // E-Summit dates: March 15-16, 2026
+  const eventDate = day === 1 ? "March 15, 2026" : "March 16, 2026";
   const dayLabel = day === 1 ? "Day 1" : "Day 2";
   
   return {

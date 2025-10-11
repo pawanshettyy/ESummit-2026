@@ -310,7 +310,7 @@ export function PassBooking({
       await initiateRazorpayPayment({
         amount: convertToPaise(totalPrice),
         currency: "INR",
-        name: "E-Summit 2025",
+        name: "E-Summit 2026",
         description: selectedPassData?.name || "Event Pass",
         order_id: order.id,
         prefill: {
@@ -1178,7 +1178,7 @@ export function PassBooking({
                 )}
                 
                 <div className="mt-4 font-mono text-sm text-muted-foreground">
-                  {createdPass?.passId || `ESUMMIT-2025-${Math.random().toString(36).substr(2, 9).toUpperCase()}`}
+                  {createdPass?.passId || `ESUMMIT-2026-${Math.random().toString(36).substr(2, 9).toUpperCase()}`}
                 </div>
               </div>
 
@@ -1242,7 +1242,7 @@ export function PassBooking({
               <AlertCircle className="h-4 w-4" />
               <AlertDescription>
                 You need to be logged in to proceed with the booking. This helps us
-                manage your passes and send you important updates about E-Summit 2025.
+                manage your passes and send you important updates about E-Summit 2026.
               </AlertDescription>
             </Alert>
           </div>

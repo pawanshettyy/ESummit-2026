@@ -147,11 +147,11 @@ export function QRScanner() {
       // Parse the QR data - it could be JSON or just a pass ID
       let qrDataToSend = data.trim();
       
-      // If it looks like a pass ID (starts with ESUMMIT-2025-), wrap it in JSON
-      if (data.trim().startsWith('ESUMMIT-2025-')) {
+      // If it looks like a pass ID (starts with ESUMMIT-2026-), wrap it in JSON
+      if (data.trim().startsWith('ESUMMIT-2026-')) {
         qrDataToSend = JSON.stringify({
           passId: data.trim(),
-          type: 'ESUMMIT_2025_PASS',
+          type: 'ESUMMIT_2026_PASS',
           timestamp: new Date().toISOString(),
           version: '1.0',
         });
@@ -223,11 +223,11 @@ export function QRScanner() {
       // Parse the QR data - same logic as scan
       let qrDataToSend = qrData.trim();
       
-      // If it looks like a pass ID (starts with ESUMMIT-2025-), wrap it in JSON
-      if (qrData.trim().startsWith('ESUMMIT-2025-')) {
+      // If it looks like a pass ID (starts with ESUMMIT-2026-), wrap it in JSON
+      if (qrData.trim().startsWith('ESUMMIT-2026-')) {
         qrDataToSend = JSON.stringify({
           passId: qrData.trim(),
-          type: 'ESUMMIT_2025_PASS',
+          type: 'ESUMMIT_2026_PASS',
           timestamp: new Date().toISOString(),
           version: '1.0',
         });
@@ -346,7 +346,7 @@ export function QRScanner() {
                 <Label htmlFor="qrData">Pass ID or QR Data</Label>
                 <Input
                   id="qrData"
-                  placeholder='ESUMMIT-2025-XXXXX'
+                  placeholder='ESUMMIT-2026-XXXXX'
                   value={qrData}
                   onChange={(e) => setQrData(e.target.value)}
                   onKeyDown={(e) => {
@@ -363,10 +363,10 @@ export function QRScanner() {
                   </p>
                   <div className="space-y-1">
                     <p className="text-xs text-amber-800 dark:text-amber-200 font-mono">
-                      1. Pass ID: <span className="font-bold">ESUMMIT-2025-VUSS3CY</span>
+                      1. Pass ID: <span className="font-bold">ESUMMIT-2026-VUSS3CY</span>
                     </p>
                     <p className="text-xs text-amber-800 dark:text-amber-200 font-mono">
-                      2. Full JSON: {'{'}&#34;passId&#34;:&#34;ESUMMIT-2025-XXXXX&#34;,...{'}'}
+                      2. Full JSON: {'{'}&#34;passId&#34;:&#34;ESUMMIT-2026-XXXXX&#34;,...{'}'}
                     </p>
                   </div>
                 </div>

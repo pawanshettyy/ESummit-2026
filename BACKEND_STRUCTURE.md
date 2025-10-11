@@ -1,7 +1,7 @@
 # Backend Folder Structure - Quick Reference
 
 ```
-ESummit-2025/
+ESummit-2026/
 ├── frontend/                          # ← Your existing React frontend
 │   ├── src/
 │   ├── package.json
@@ -99,7 +99,7 @@ ESummit-2025/
     ├── prisma/                        # Prisma ORM
     │   ├── schema.prisma             # Database schema
     │   ├── migrations/               # DB migration files
-    │   │   └── 20250101000000_init/
+    │   │   └── 20260101000000_init/
     │   └── seed.ts                   # Seed data script
     │
     ├── scripts/                       # Utility scripts

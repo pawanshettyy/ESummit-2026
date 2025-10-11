@@ -21,7 +21,7 @@ export function Speakers() {
       ],
       session: {
         title: "Building Scalable Startups in Emerging Markets",
-        date: "March 15, 2025",
+        date: "March 15, 2026",
         time: "10:45 AM",
         venue: "Main Auditorium",
       },
@@ -45,7 +45,7 @@ export function Speakers() {
       ],
       session: {
         title: "From Idea to IPO: The Startup Journey",
-        date: "March 16, 2025",
+        date: "March 16, 2026",
         time: "09:00 AM",
         venue: "Main Auditorium",
       },
@@ -69,7 +69,7 @@ export function Speakers() {
       ],
       session: {
         title: "AI & the Future of Entrepreneurship",
-        date: "March 15, 2025",
+        date: "March 15, 2026",
         time: "03:30 PM",
         venue: "Main Auditorium",
       },
@@ -93,7 +93,7 @@ export function Speakers() {
       ],
       session: {
         title: "Fundraising Strategies Panel",
-        date: "March 16, 2025",
+        date: "March 16, 2026",
         time: "01:30 PM",
         venue: "Main Auditorium",
       },
@@ -116,7 +116,7 @@ export function Speakers() {
       ],
       session: {
         title: "Pitch Competition Judge",
-        date: "March 16, 2025",
+        date: "March 16, 2026",
         time: "11:00 AM",
         venue: "Main Auditorium",
       },
@@ -140,7 +140,7 @@ export function Speakers() {
       ],
       session: {
         title: "Growth Hacking Workshop",
-        date: "March 16, 2025",
+        date: "March 16, 2026",
         time: "01:30 PM",
         venue: "Workshop Hall B",
       },

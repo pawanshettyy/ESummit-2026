@@ -114,7 +114,7 @@ export function Navigation({
                 <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-white/20 to-transparent" />
               </motion.div>
               <div className="hidden sm:block">
-                <GradientText className="whitespace-nowrap">E-Summit 2025</GradientText>
+                <GradientText className="whitespace-nowrap">E-Summit 2026</GradientText>
               </div>
             </motion.button>
 
@@ -282,13 +282,13 @@ export function Navigation({
                 <SheetContent side="right" className="w-[300px] p-0">
                   <SheetTitle className="sr-only">Navigation Menu</SheetTitle>
                   <SheetDescription className="sr-only">
-                    Navigate to different sections of E-Summit 2025
+                    Navigate to different sections of E-Summit 2026
                   </SheetDescription>
                   <div className="flex flex-col h-full">
                     {/* Header - with extra padding-right to avoid close button overlap */}
                     <div className="flex items-center gap-2 border-b px-6 py-4 pr-14">
                       <div className="flex-1 min-w-0">
-                        <GradientText>E-Summit 2025</GradientText>
+                        <GradientText>E-Summit 2026</GradientText>
                       </div>
                       <Button 
                         variant="ghost" 

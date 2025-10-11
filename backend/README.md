@@ -1,6 +1,6 @@
-# E-Summit 2025 Backend API
+# E-Summit 2026 Backend API
 
-Backend server for E-Summit 2025 event management platform built with Node.js, Express, TypeScript, and Prisma.
+Backend server for E-Summit 2026 event management platform built with Node.js, Express, TypeScript, and Prisma.
 
 ## 🚀 Features
 
@@ -47,7 +47,7 @@ NODE_ENV=development
 PORT=5000
 
 # Database - Update with your PostgreSQL credentials
-DATABASE_URL="postgresql://username:password@localhost:5432/esummit2025"
+DATABASE_URL="postgresql://username:password@localhost:5432/esummit2026"
 
 # JWT Secrets - Generate strong secrets in production
 JWT_SECRET=your-super-secret-jwt-key-change-in-production
@@ -65,11 +65,11 @@ FRONTEND_URL=http://localhost:5173
 
 ```bash
 # Create database
-createdb esummit2025
+createdb esummit2026
 
 # Or using psql
 psql -U postgres
-CREATE DATABASE esummit2025;
+CREATE DATABASE esummit2026;
 \q
 ```
 
@@ -77,7 +77,7 @@ CREATE DATABASE esummit2025;
 
 ```bash
 docker run --name esummit-postgres \
-  -e POSTGRES_DB=esummit2025 \
+  -e POSTGRES_DB=esummit2026 \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -p 5432:5432 \
@@ -166,7 +166,7 @@ Content-Type: application/json
       "college": "Thakur College of Engineering",
       "yearOfStudy": "3rd Year",
       "rollNumber": "CS123",
-      "createdAt": "2025-01-15T10:00:00.000Z"
+      "createdAt": "2026-01-15T10:00:00.000Z"
     },
     "accessToken": "eyJhbGc...",
     "refreshToken": "eyJhbGc...",
@@ -364,7 +364,7 @@ npm run format           # Format code with Prettier
 
 ## 📄 License
 
-MIT License - E-Summit 2025
+MIT License - E-Summit 2026
 
 ## 🆘 Troubleshooting
 
@@ -397,4 +397,4 @@ PORT=5001
 
 ---
 
-**Built with ❤️ for E-Summit 2025**
+**Built with ❤️ for E-Summit 2026**

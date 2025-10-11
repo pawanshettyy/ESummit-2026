@@ -331,7 +331,7 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
             </Badge>
           </div>
           <p className="text-sm text-muted-foreground">
-            E-Summit 2025 Management Panel • {adminEmail}
+            E-Summit 2026 Management Panel • {adminEmail}
           </p>
         </div>
         <div className="flex gap-2">

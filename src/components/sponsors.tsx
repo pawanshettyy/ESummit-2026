@@ -177,7 +177,7 @@ export function Sponsors() {
           transition={{ duration: 0.6, delay: 0.2 }}
           className="mx-auto max-w-2xl text-muted-foreground"
         >
-          E-Summit 2025 is made possible by the generous support of our sponsors and partners who believe in fostering entrepreneurship
+          E-Summit 2026 is made possible by the generous support of our sponsors and partners who believe in fostering entrepreneurship
         </motion.p>
       </div>
       
@@ -298,7 +298,7 @@ export function Sponsors() {
             <CardContent className="p-12 text-center">
               <h2 className="mb-4">Become a Sponsor</h2>
               <p className="mb-8 text-muted-foreground">
-                Partner with E-Summit 2025 and showcase your brand to 5000+ students, entrepreneurs, and investors
+                Partner with E-Summit 2026 and showcase your brand to 5000+ students, entrepreneurs, and investors
               </p>
               <div className="flex flex-wrap justify-center gap-4">
                 <Button size="lg">Download Sponsorship Brochure</Button>
@@ -307,7 +307,7 @@ export function Sponsors() {
                 </Button>
               </div>
               <p className="mt-6 text-sm text-muted-foreground">
-                Email: sponsors@esummit2025.com | Phone: +91 98765 43210
+                Email: sponsors@esummit2026.com | Phone: +91 98765 43210
               </p>
             </CardContent>
           </Card>

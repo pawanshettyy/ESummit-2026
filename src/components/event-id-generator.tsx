@@ -201,7 +201,7 @@ export function EventIDGenerator() {
       const url = URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = 'esummit-2025-event-ids.txt';
+      a.download = 'esummit-2026-event-ids.txt';
       a.click();
       URL.revokeObjectURL(url);
       toast.success("Event list exported!");
@@ -221,7 +221,7 @@ export function EventIDGenerator() {
             Event ID Generator
           </CardTitle>
           <CardDescription>
-            Generate unique event IDs for E-Summit 2025 check-in system
+            Generate unique event IDs for E-Summit 2026 check-in system
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

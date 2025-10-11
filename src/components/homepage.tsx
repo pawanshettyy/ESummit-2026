@@ -33,8 +33,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   });
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
-  // Event date: March 15-16, 2025
-  const eventDate = new Date("2025-03-15T00:00:00");
+  // Event date: March 15-16, 2026
+  const eventDate = new Date("2026-03-15T00:00:00");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -134,7 +134,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <TextReveal>
               <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20">
-                March 15-16, 2025
+                March 15-16, 2026
               </Badge>
             </TextReveal>
 
@@ -145,7 +145,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="mb-6 text-4xl md:text-6xl"
             >
               <GradientText from="from-red-600" to="to-red-400">
-                E-Summit 2025
+                E-Summit 2026
               </GradientText>
             </motion.h1>
 
@@ -476,19 +476,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
             {[
               {
                 title: "Registration Open",
-                date: "Jan 15, 2025",
+                date: "Jan 15, 2026",
                 content:
                   "Early bird passes now available at special rates. Register before Feb 1st!",
               },
               {
                 title: "New Speaker Announced",
-                date: "Jan 20, 2025",
+                date: "Jan 20, 2026",
                 content:
                   "Excited to announce keynote speaker from Fortune 500 company.",
               },
               {
                 title: "Prize Pool Increased",
-                date: "Jan 25, 2025",
+                date: "Jan 25, 2026",
                 content:
                   "Total prize money now exceeds ₹15 Lakhs across all competitions!",
               },
@@ -515,7 +515,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* CTA Section */}
       <section className="border-t bg-gradient-to-br from-primary/5 via-background to-background py-16">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-4">Ready to Join E-Summit 2025?</h2>
+          <h2 className="mb-4">Ready to Join E-Summit 2026?</h2>
           <p className="mb-8 text-muted-foreground">
             Secure your spot at India's premier entrepreneurship
             event

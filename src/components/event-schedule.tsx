@@ -45,7 +45,7 @@ export function EventSchedule() {
         category: "keynote",
         venue: "Main Auditorium",
         speaker: "Chief Guest",
-        description: "Official opening of E-Summit 2025",
+        description: "Official opening of E-Summit 2026",
         duration: "1 hour",
       },
       {
@@ -273,7 +273,7 @@ export function EventSchedule() {
     const myEvents = [...events.day1, ...events.day2].filter((e) => mySchedule.includes(e.id));
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//E-Summit 2025//EN
+PRODID:-//E-Summit 2026//EN
 ${myEvents.map((event) => `BEGIN:VEVENT
 SUMMARY:${event.title}
 LOCATION:${event.venue}

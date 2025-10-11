@@ -11,7 +11,7 @@ export const generateQRCode = async (passId: string): Promise<string> => {
     // Create QR code data object with pass information
     const qrData = {
       passId,
-      type: 'ESUMMIT_2025_PASS',
+      type: 'ESUMMIT_2026_PASS',
       timestamp: new Date().toISOString(),
       version: '1.0',
     };
@@ -54,7 +54,7 @@ export const verifyQRCode = (qrData: string): {
     const parsed = JSON.parse(qrData);
 
     // Validate required fields
-    if (!parsed.passId || !parsed.type || parsed.type !== 'ESUMMIT_2025_PASS') {
+    if (!parsed.passId || !parsed.type || parsed.type !== 'ESUMMIT_2026_PASS') {
       throw new Error('Invalid QR code format');
     }
 
@@ -79,7 +79,7 @@ export const generateQRCodeBuffer = async (passId: string): Promise<Buffer> => {
   try {
     const qrData = {
       passId,
-      type: 'ESUMMIT_2025_PASS',
+      type: 'ESUMMIT_2026_PASS',
       timestamp: new Date().toISOString(),
       version: '1.0',
     };

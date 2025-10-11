@@ -38,7 +38,7 @@ export function UIShowcase() {
           <GradientText>UI Components Showcase</GradientText>
         </h1>
         <p className="text-muted-foreground">
-          Explore all Magic UI and Accentricity UI components used in E-Summit 2025
+          Explore all Magic UI and Accentricity UI components used in E-Summit 2026
         </p>
       </div>
 

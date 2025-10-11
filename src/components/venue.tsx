@@ -147,7 +147,7 @@ export function Venue() {
         >
           <h1 className="mb-4">Venue Information</h1>
           <p className="text-muted-foreground">
-            Thakur College of Engineering and Technology Campus - Hosting E-Summit 2025
+            Thakur College of Engineering and Technology Campus - Hosting E-Summit 2026
           </p>
         </motion.div>
       </div>

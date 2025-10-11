@@ -19,7 +19,7 @@ export function Footer({ onNavigate }: FooterProps) {
               <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
                 <span className="text-primary-foreground">E</span>
               </div>
-              <span>E-Summit 2025</span>
+              <span>E-Summit 2026</span>
             </div>
             <p className="mb-4 text-sm text-muted-foreground">
               India's premier entrepreneurship summit bringing together students, entrepreneurs, and investors.
@@ -167,7 +167,7 @@ export function Footer({ onNavigate }: FooterProps) {
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-center gap-4">
-            <p>© 2025 E-Summit TCET. All rights reserved.</p>
+            <p>© 2026 E-Summit TCET. All rights reserved.</p>
             <button 
               onClick={() => onNavigate("admin")}
               className="text-xs opacity-30 hover:opacity-100 transition-opacity"

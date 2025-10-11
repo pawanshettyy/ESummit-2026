@@ -12,14 +12,14 @@ cp .env.example .env
 Edit `.env` and update the `DATABASE_URL`:
 
 ```env
-DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/esummit2025"
+DATABASE_URL="postgresql://postgres:yourpassword@localhost:5432/esummit2026"
 ```
 
 Replace:
 - `postgres` - your PostgreSQL username
 - `yourpassword` - your PostgreSQL password
 - `localhost:5432` - your PostgreSQL host and port
-- `esummit2025` - database name
+- `esummit2026` - database name
 
 ## Step 2: Create PostgreSQL Database
 
@@ -31,21 +31,21 @@ psql -U postgres
 
 Then in psql:
 ```sql
-CREATE DATABASE esummit2025;
+CREATE DATABASE esummit2026;
 \q
 ```
 
 ### Option B: Using createdb command
 
 ```bash
-createdb -U postgres esummit2025
+createdb -U postgres esummit2026
 ```
 
 ### Option C: Using Docker
 
 ```bash
 docker run --name esummit-postgres \
-  -e POSTGRES_DB=esummit2025 \
+  -e POSTGRES_DB=esummit2026 \
   -e POSTGRES_USER=postgres \
   -e POSTGRES_PASSWORD=postgres \
   -p 5432:5432 \
@@ -54,7 +54,7 @@ docker run --name esummit-postgres \
 
 Then update your DATABASE_URL:
 ```env
-DATABASE_URL="postgresql://postgres:postgres@localhost:5432/esummit2025"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/esummit2026"
 ```
 
 ## Step 3: Generate Prisma Client & Run Migrations
@@ -98,8 +98,8 @@ Expected response:
 ```json
 {
   "success": true,
-  "message": "E-Summit 2025 API is running",
-  "timestamp": "2025-01-15T10:00:00.000Z"
+  "message": "E-Summit 2026 API is running",
+  "timestamp": "2026-01-15T10:00:00.000Z"
 }
 ```
 
@@ -165,7 +165,7 @@ If all tests pass, your backend is ready! Phase 1 is complete.
 
 3. Test connection manually:
    ```bash
-   psql "postgresql://postgres:postgres@localhost:5432/esummit2025"
+   psql "postgresql://postgres:postgres@localhost:5432/esummit2026"
    ```
 
 ### Prisma errors

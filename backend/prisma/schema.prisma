@@ -57,7 +57,7 @@ model Pass {
   id            String   @id @default(uuid())
   userId        String   @map("user_id")
   passType      String   @map("pass_type") // 'Gold', 'Silver', 'Platinum', 'Group'
-  passId        String   @unique @map("pass_id") // 'ESUMMIT-2025-XXXXX'
+  passId        String   @unique @map("pass_id") // 'ESUMMIT-2026-XXXXX'
   price         Decimal  @db.Decimal(10, 2)
   purchaseDate  DateTime @default(now()) @map("purchase_date")
   status        String   @default("Active") // 'Active', 'Cancelled', 'Refunded'

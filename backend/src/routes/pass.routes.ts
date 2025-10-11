@@ -139,7 +139,7 @@ router.post('/create', async (req: Request, res: Response) => {
     }
 
     // Generate unique pass ID
-    const passId = `ESUMMIT-2025-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    const passId = `ESUMMIT-2026-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
 
     // Generate QR code for the pass
     const qrCodeUrl = await generateQRCode(passId);
