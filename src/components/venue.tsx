@@ -109,25 +109,28 @@ export function Venue() {
       icon: Train,
       title: "By Metro/Train",
       routes: [
-        "Campus Metro Station - 500m walk",
-        "Central Railway Station - 5km (15 min taxi)",
+        "Poisar Metro Station (Line 7 – Dahisar East to Gundavali) – approx. 800m walk",
+        "Magathane Metro Station (Line 7 – Dahisar East to Gundavali) – approx. 1.5 km walk",
+        "Borivali Railway Station (Western Line) – approx. 3.5 km (15 min drive)",
+        "Kandivali Railway Station (Western Line) – approx. 2.5 km (10 min drive)",
       ],
     },
     {
       icon: Plane,
       title: "By Air",
       routes: [
-        "International Airport - 25km (45 min drive)",
-        "Airport shuttle service available",
+        "Chhatrapati Shivaji Maharaj International Airport – approx. 14 km (30–40 min drive)",
+        "Airport Metro Connection available via Line 7 (Gundavali – Andheri East)",
       ],
     },
     {
       icon: Navigation,
       title: "By Road",
       routes: [
-        "Well-connected by major highways",
-        "City bus services available",
-        "Ride-sharing services recommended",
+        "Well-connected via Western Express Highway – just 1 km away",
+        "Nearest BEST Bus Stops: Thakur College Bus Stop (right outside campus); Samata Nagar Police Station Bus Stop – 650m away; Mahindra & Mahindra Bus Stop – 1 km away",
+        "Frequent BEST city bus services from Borivali, Kandivali, Malad, and Andheri",
+        "Ride-sharing services (Ola, Uber) and auto-rickshaws easily available",
       ],
     },
   ];
@@ -144,7 +147,7 @@ export function Venue() {
         >
           <h1 className="mb-4">Venue Information</h1>
           <p className="text-muted-foreground">
-            Premier Institute of Technology Campus - Hosting E-Summit 2025
+            Thakur College of Engineering and Technology Campus - Hosting E-Summit 2025
           </p>
         </motion.div>
       </div>
@@ -165,10 +168,10 @@ export function Venue() {
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-8 left-8 text-white">
-            <h2 className="mb-2 text-white">Premier Institute of Technology</h2>
+            <h2 className="mb-2 text-white">Thakur College of Engineering and Technology</h2>
             <div className="flex items-center gap-2">
               <MapPin className="h-5 w-5" />
-              <span>Tech Campus, Innovation District, City</span>
+              <span>Thakur Village, Kandivali East</span>
             </div>
           </div>
         </div>
@@ -177,8 +180,8 @@ export function Venue() {
             <div>
               <h4 className="mb-1">Address</h4>
               <p className="text-sm text-muted-foreground">
-                123 Innovation Boulevard<br />
-                Tech District, City - 110001
+                Thakur College of Engineering and Technology, Kandivali East,<br />
+                Mumbai - 400101
               </p>
             </div>
             <div>
@@ -263,7 +266,8 @@ export function Venue() {
         </div>
       </div>
 
-      {/* Interactive Campus Map */}
+      {/*
+      Interactive Campus Map
       <Card className="mb-12">
         <CardHeader>
           <h2>Campus Map</h2>
@@ -282,6 +286,7 @@ export function Venue() {
           </div>
         </CardContent>
       </Card>
+      */}
 
       {/* Amenities */}
       <div className="mb-12">
