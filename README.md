@@ -217,7 +217,7 @@ Core tables:
 
 - **Name**: E-Summit 2025
 - **Venue**: Thakur College of Engineering and Technology, Kandivali East, Mumbai - 400101
-- **Dates**: March 15-17, 2025
+- **Dates**: March 15-16, 2025 (2 Days)
 - **Expected Attendance**: 5,000+ participants
 
 ## 📖 Documentation

@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useUser } from "@clerk/clerk-react";
 import {
   Check,
   Info,
@@ -67,10 +68,16 @@ export function PassBooking({
   onNavigate,
   onRequestAuth,
 }: PassBookingProps) {
+  const { user } = useUser();
   const [step, setStep] = useState(1);
   const [selectedPass, setSelectedPass] = useState<string | null>(null);
   const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
+  const [createdPass, setCreatedPass] = useState<{
+    passId: string;
+    qrCodeUrl: string;
+  } | null>(null);
+  const [hasExistingPass, setHasExistingPass] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -83,16 +90,69 @@ export function PassBooking({
     workshop: false,
   });
 
-  // Pre-fill form with user data if authenticated
+  // Fetch and pre-fill form with user data from database
   useEffect(() => {
-    if (isAuthenticated && userData) {
-      setFormData((prev) => ({
-        ...prev,
-        name: userData.name || "",
-        email: userData.email || "",
-      }));
+    const fetchUserProfile = async () => {
+      if (!user?.id) return;
+
+      try {
+        // Check if user already has a pass
+        const passResponse = await fetch(
+          `http://localhost:5000/api/v1/passes/user/${user.id}`
+        );
+        const passData = await passResponse.json();
+
+        if (passData.success && passData.data.passes && passData.data.passes.length > 0) {
+          setHasExistingPass(true);
+          toast.info("You already have a pass", {
+            description: "Check your dashboard to view your pass.",
+          });
+          return; // Don't fetch profile if user already has a pass
+        }
+
+        // Fetch user profile for form pre-fill
+        const response = await fetch(
+          `http://localhost:5000/api/v1/users/profile/${user.id}`
+        );
+        const data = await response.json();
+
+        if (data.success && data.data.user) {
+          const userProfile = data.data.user;
+          
+          setFormData((prev) => ({
+            ...prev,
+            name: userProfile.fullName || user.fullName || "",
+            email: userProfile.email || user.primaryEmailAddress?.emailAddress || "",
+            phone: userProfile.phone || "",
+            college: userProfile.college || "",
+            year: userProfile.yearOfStudy || "",
+            rollNumber: userProfile.rollNumber || "",
+          }));
+
+          console.log("✅ User profile loaded:", userProfile.email);
+        } else {
+          // Fallback to Clerk data if profile not found
+          setFormData((prev) => ({
+            ...prev,
+            name: user.fullName || "",
+            email: user.primaryEmailAddress?.emailAddress || "",
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching user profile:", error);
+        // Fallback to Clerk data on error
+        setFormData((prev) => ({
+          ...prev,
+          name: user.fullName || "",
+          email: user.primaryEmailAddress?.emailAddress || "",
+        }));
+      }
+    };
+
+    if (user?.id) {
+      fetchUserProfile();
     }
-  }, [isAuthenticated, userData]);
+  }, [user]);
 
   // Auto-redirect to dashboard after booking completion
   useEffect(() => {
@@ -215,13 +275,38 @@ export function PassBooking({
   const handlePayment = async () => {
     if (isProcessingPayment) return;
 
+    // Check if user already has a pass
+    try {
+      const response = await fetch(
+        `http://localhost:5000/api/v1/passes/user/${user?.id}`
+      );
+      const data = await response.json();
+
+      if (data.success && data.data.passes && data.data.passes.length > 0) {
+        toast.error("You already have a pass", {
+          description: "Only one pass per user is allowed. Check your dashboard.",
+        });
+        return;
+      }
+    } catch (error) {
+      console.error("Error checking existing passes:", error);
+      // Continue with payment if check fails (don't block user)
+    }
+
     setIsProcessingPayment(true);
 
     try {
-      // Create order on backend (mock for now)
+      // TODO: Razorpay Integration (Bypassed for testing QR codes)
+      // ============================================
+      // When ready to implement Razorpay:
+      // 1. Uncomment the Razorpay code below
+      // 2. Comment out the direct pass creation
+      // 3. Set up Razorpay keys in environment variables
+      // ============================================
+
+      /* RAZORPAY IMPLEMENTATION (COMMENTED OUT FOR TESTING)
       const order = await createRazorpayOrder(convertToPaise(totalPrice), "INR");
 
-      // Prepare Razorpay options
       await initiateRazorpayPayment({
         amount: convertToPaise(totalPrice),
         currency: "INR",
@@ -243,43 +328,16 @@ export function PassBooking({
           }),
         },
         handler: async (response) => {
-          // Payment successful
-          try {
-            // Verify payment on backend (mock for now)
-            const verified = await verifyRazorpayPayment(
-              response.razorpay_payment_id,
-              response.razorpay_order_id || "",
-              response.razorpay_signature || ""
-            );
+          // Payment successful - verify and create pass
+          const verified = await verifyRazorpayPayment(
+            response.razorpay_payment_id,
+            response.razorpay_order_id || "",
+            response.razorpay_signature || ""
+          );
 
-            if (verified) {
-              // Save purchased pass to localStorage
-              const passData = {
-                id: selectedPassData?.id || "",
-                type: selectedPassData?.name || "",
-                passId: `ESUMMIT-2025-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
-                price: totalPrice,
-                purchaseDate: new Date().toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                }),
-                status: "Active",
-              };
-              savePurchasedPass(passData);
-
-              toast.success("Payment successful! Check your email for confirmation.");
-              setIsProcessingPayment(false);
-              setTimeout(() => {
-                setStep(4);
-              }, 1000);
-            } else {
-              toast.error("Payment verification failed. Please contact support.");
-              setIsProcessingPayment(false);
-            }
-          } catch (error) {
-            toast.error("Error verifying payment. Please contact support.");
-            setIsProcessingPayment(false);
+          if (verified) {
+            // Create pass in database via API
+            await createPassInDatabase();
           }
         },
         modal: {
@@ -289,12 +347,87 @@ export function PassBooking({
           },
         },
       });
+      */
+
+      // ============================================
+      // TEMPORARY: Direct Pass Creation (For Testing QR Codes)
+      // ============================================
+      // This bypasses Razorpay and directly creates a pass
+      // Remove this when implementing actual payment gateway
+      
+      console.log("🔄 Creating pass without payment (testing mode)...");
+      
+      // Get Clerk user ID
+      const clerkUserId = user?.id;
+      
+      if (!clerkUserId) {
+        toast.error("Please login to purchase a pass");
+        setIsProcessingPayment(false);
+        return;
+      }
+      
+      // Create pass via API
+      const response = await fetch("http://localhost:5000/api/v1/passes/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          clerkUserId: clerkUserId,
+          passType: selectedPassData?.name || "Standard Pass",
+          price: totalPrice,
+          hasMeals: formData.meals,
+          hasMerchandise: formData.merchandise,
+          hasWorkshopAccess: formData.workshop,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.success && data.data.pass) {
+        const createdPass = data.data.pass;
+        
+        console.log("✅ Pass created:", createdPass.passId);
+        console.log("🎫 QR Code generated:", createdPass.qrCodeUrl ? "Yes" : "No");
+
+        // Store the created pass data including QR code
+        setCreatedPass({
+          passId: createdPass.passId,
+          qrCodeUrl: createdPass.qrCodeUrl,
+        });
+
+        // Save to localStorage for backward compatibility
+        const passData = {
+          id: selectedPassData?.id || "",
+          type: selectedPassData?.name || "",
+          passId: createdPass.passId,
+          price: totalPrice,
+          purchaseDate: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          status: "Active",
+        };
+        savePurchasedPass(passData);
+
+        toast.success("Pass created successfully! Check your dashboard for QR code.");
+        setIsProcessingPayment(false);
+        
+        setTimeout(() => {
+          setStep(4);
+        }, 1000);
+      } else {
+        toast.error(data.message || "Failed to create pass. Please try again.");
+        setIsProcessingPayment(false);
+      }
+
     } catch (error) {
-      console.error("Payment error:", error);
+      console.error("Pass creation error:", error);
       toast.error(
         error instanceof Error
           ? error.message
-          : "Payment failed. Please try again."
+          : "Failed to create pass. Please try again."
       );
       setIsProcessingPayment(false);
     }
@@ -312,6 +445,32 @@ export function PassBooking({
 
   return (
     <div className="container mx-auto px-4 py-8">
+      {/* Show message if user already has a pass */}
+      {hasExistingPass && (
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mb-8"
+        >
+          <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
+            <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
+            <AlertDescription className="text-amber-900 dark:text-amber-100">
+              <strong>You already have a pass!</strong>
+              <p className="mt-1 text-sm">
+                Only one pass per user is allowed. Visit your{" "}
+                <button
+                  onClick={() => onNavigate("dashboard")}
+                  className="font-semibold underline underline-offset-2 hover:text-amber-700"
+                >
+                  dashboard
+                </button>{" "}
+                to view your existing pass and QR code.
+              </p>
+            </AlertDescription>
+          </Alert>
+        </motion.div>
+      )}
+
       {/* Progress Steps */}
       <div className="mb-8 flex items-center justify-center gap-4">
         {[
@@ -353,13 +512,15 @@ export function PassBooking({
               Select the perfect pass for your E-Summit
               experience
             </p>
-            <Alert className="mx-auto mt-4 max-w-2xl">
-              <Info className="h-4 w-4" />
-              <AlertDescription>
-                Early bird offer ends Feb 1st! Save up to 40% on
-                pass prices.
-              </AlertDescription>
-            </Alert>
+            {!hasExistingPass && (
+              <Alert className="mx-auto mt-4 max-w-2xl">
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  Early bird offer ends Feb 1st! Save up to 40% on
+                  pass prices.
+                </AlertDescription>
+              </Alert>
+            )}
           </div>
 
           <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -427,14 +588,23 @@ export function PassBooking({
                             </motion.li>
                           ))}
                         </ul>
-                        <ShimmerButton
-                          className="w-full"
-                          onClick={() =>
-                            handlePassSelect(pass.id)
-                          }
-                        >
-                          Select Pass
-                        </ShimmerButton>
+                        {hasExistingPass ? (
+                          <Button
+                            className="w-full"
+                            disabled
+                          >
+                            Pass Already Purchased
+                          </Button>
+                        ) : (
+                          <ShimmerButton
+                            className="w-full"
+                            onClick={() =>
+                              handlePassSelect(pass.id)
+                            }
+                          >
+                            Select Pass
+                          </ShimmerButton>
+                        )}
                       </CardContent>
                     </Card>
                   </GlowCard>
@@ -480,8 +650,9 @@ export function PassBooking({
                           onClick={() =>
                             handlePassSelect(pass.id)
                           }
+                          disabled={hasExistingPass}
                         >
-                          Select Pass
+                          {hasExistingPass ? "Pass Already Purchased" : "Select Pass"}
                         </Button>
                       </CardContent>
                     </Card>
@@ -985,17 +1156,29 @@ export function PassBooking({
                 <div className="mb-4 text-2xl text-primary">
                   ₹{totalPrice}
                 </div>
-                <div className="mx-auto h-24 w-24 rounded-lg bg-muted">
-                  <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
-                    QR Code
+                
+                {/* Display actual QR code */}
+                {createdPass?.qrCodeUrl ? (
+                  <div className="mx-auto mb-4">
+                    <img 
+                      src={createdPass.qrCodeUrl} 
+                      alt="Pass QR Code" 
+                      className="mx-auto h-48 w-48 rounded-lg border bg-white p-2"
+                    />
+                    <p className="mt-2 text-xs text-muted-foreground">
+                      Scan this QR code at the venue
+                    </p>
                   </div>
-                </div>
+                ) : (
+                  <div className="mx-auto h-24 w-24 rounded-lg bg-muted">
+                    <div className="flex h-full items-center justify-center text-xs text-muted-foreground">
+                      QR Code
+                    </div>
+                  </div>
+                )}
+                
                 <div className="mt-4 font-mono text-sm text-muted-foreground">
-                  ESUMMIT-2025-
-                  {Math.random()
-                    .toString(36)
-                    .substr(2, 9)
-                    .toUpperCase()}
+                  {createdPass?.passId || `ESUMMIT-2025-${Math.random().toString(36).substr(2, 9).toUpperCase()}`}
                 </div>
               </div>
 

@@ -1,6 +1,10 @@
 import { Router } from 'express';
 import authRoutes from './auth.routes';
 import userRoutes from './user.routes';
+import passRoutes from './pass.routes';
+import checkinRoutes from './checkin.routes';
+import adminRoutes from './admin.routes';
+import eventRoutes from './event.routes';
 
 const router = Router();
 
@@ -16,10 +20,9 @@ router.get('/health', (_req, res) => {
 // Mount routes
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
-
-// TODO: Add more routes
-// router.use('/passes', passRoutes);
-// router.use('/events', eventRoutes);
-// router.use('/admin', adminRoutes);
+router.use('/passes', passRoutes);
+router.use('/checkin', checkinRoutes);
+router.use('/admin', adminRoutes);
+router.use('/events', eventRoutes);
 
 export default router;

@@ -5,6 +5,7 @@ import {
   Calendar,
   Ticket,
   FileText,
+  Loader2,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -16,11 +17,27 @@ import {
   TabsTrigger,
 } from "./ui/tabs";
 import { Avatar, AvatarFallback } from "./ui/avatar";
-import {
-  getPurchasedPasses,
-  getFormattedEventsForPass,
-} from "../utils/pass-events";
+import { getFormattedEventsForPass } from "../utils/pass-events";
 import { ProfileCompletionModal } from "./profile-completion-modal";
+
+interface Pass {
+  id: number;
+  passId: string;
+  passType: string;
+  price: number;
+  purchaseDate: string;
+  status: string;
+  hasMeals: boolean;
+  hasMerchandise: boolean;
+  hasWorkshopAccess: boolean;
+  qrCodeUrl?: string;
+  transaction?: {
+    id: number;
+    amount: number;
+    status: string;
+    razorpayPaymentId?: string;
+  };
+}
 
 interface UserDashboardProps {
   onNavigate: (page: string) => void;
@@ -37,11 +54,40 @@ export function UserDashboard({
   const [activeTab, setActiveTab] = useState("passes");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isCheckingProfile, setIsCheckingProfile] = useState(true);
+  const [myPasses, setMyPasses] = useState<Pass[]>([]);
+  const [isLoadingPasses, setIsLoadingPasses] = useState(true);
 
   const mockUser = {
     name: user?.fullName || userData?.name || "User",
     email: user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com",
   };
+
+  // Fetch user passes from database
+  useEffect(() => {
+    const fetchPasses = async () => {
+      if (!user?.id) {
+        setIsLoadingPasses(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `http://localhost:5000/api/v1/passes/user/${user.id}`
+        );
+        const data = await response.json();
+
+        if (data.success && data.data.passes) {
+          setMyPasses(data.data.passes);
+        }
+      } catch (error) {
+        console.error("Error fetching passes:", error);
+      } finally {
+        setIsLoadingPasses(false);
+      }
+    };
+
+    fetchPasses();
+  }, [user?.id]);
 
   // Check if user profile is complete
   useEffect(() => {
@@ -74,12 +120,9 @@ export function UserDashboard({
     setShowProfileModal(false);
   };
 
-  // Get purchased passes from localStorage
-  const myPasses = getPurchasedPasses();
-
   // Get all eligible events from all purchased passes
   const mySchedule = myPasses.length > 0
-    ? myPasses.flatMap((pass) => getFormattedEventsForPass(pass.id))
+    ? myPasses.flatMap((pass) => getFormattedEventsForPass(pass.passId))
     : [];
 
   // Remove duplicate events (in case user has multiple passes)
@@ -87,6 +130,16 @@ export function UserDashboard({
     (event, index, self) => 
       index === self.findIndex((e) => e.id === event.id)
   );
+
+  // Format date for display
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -124,73 +177,113 @@ export function UserDashboard({
         </TabsList>
 
         <TabsContent value="passes">
-          <div className="grid gap-6 md:grid-cols-2">
-            {myPasses.length > 0 ? (
-              myPasses.map((pass) => (
-                <Card key={pass.passId}>
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <h3>{pass.type}</h3>
-                        <p className="text-sm text-muted-foreground">
-                          Purchased on {pass.purchaseDate}
-                        </p>
+          {isLoadingPasses ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading your passes...</span>
+            </div>
+          ) : (
+            <div className="grid gap-6 md:grid-cols-2">
+              {myPasses.length > 0 ? (
+                myPasses.map((pass) => (
+                  <Card key={pass.passId}>
+                    <CardHeader>
+                      <div className="flex items-start justify-between">
+                        <div>
+                          <h3>{pass.passType}</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Purchased on {formatDate(pass.purchaseDate)}
+                          </p>
+                        </div>
+                        <Badge variant={pass.status === 'Active' ? 'default' : 'secondary'}>
+                          {pass.status}
+                        </Badge>
                       </div>
-                      <Badge variant="default">
-                        {pass.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="rounded-lg border-2 border-dashed p-6 text-center">
-                      <div className="mb-4 text-4xl">🎟️</div>
-                      <div className="mx-auto mb-4 h-24 w-24 rounded-lg bg-muted flex items-center justify-center">
-                        <div className="text-xs text-muted-foreground">
-                          QR Code
+                    </CardHeader>
+                    <CardContent className="space-y-4">
+                      <div className="rounded-lg border-2 border-dashed p-6 text-center">
+                        <div className="mb-4 text-4xl">🎟️</div>
+                        {pass.qrCodeUrl ? (
+                          <div className="mx-auto mb-4">
+                            <img 
+                              src={pass.qrCodeUrl} 
+                              alt={`QR Code for ${pass.passId}`}
+                              className="mx-auto h-48 w-48 rounded-lg"
+                            />
+                          </div>
+                        ) : (
+                          <div className="mx-auto mb-4 h-24 w-24 rounded-lg bg-muted flex items-center justify-center">
+                            <div className="text-xs text-muted-foreground">
+                              QR Code
+                            </div>
+                          </div>
+                        )}
+                        <div className="font-mono text-sm text-muted-foreground">
+                          {pass.passId}
                         </div>
                       </div>
-                      <div className="font-mono text-sm text-muted-foreground">
-                        {pass.passId}
+                      
+                      {/* Pass Features */}
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center justify-between">
+                          <span className="text-muted-foreground">Price</span>
+                          <span className="font-semibold">₹{pass.price}</span>
+                        </div>
+                        {pass.hasMeals && (
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">Meals Included</Badge>
+                          </div>
+                        )}
+                        {pass.hasMerchandise && (
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">Merchandise</Badge>
+                          </div>
+                        )}
+                        {pass.hasWorkshopAccess && (
+                          <div className="flex items-center gap-2">
+                            <Badge variant="outline" className="text-xs">Workshop Access</Badge>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                    <div className="flex gap-2">
-                      <Button className="flex-1">
-                        <Download className="mr-2 h-4 w-4" />
-                        Download Pass
-                      </Button>
-                      <Button
-                        variant="outline"
-                        className="flex-1"
-                      >
-                        <FileText className="mr-2 h-4 w-4" />
-                        Invoice
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))
-            ) : null}
 
-            <Card className="flex items-center justify-center border-dashed">
-              <CardContent className="p-6 text-center">
-                <Ticket className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                <h3 className="mb-2">
-                  {myPasses.length > 0 ? "Need another pass?" : "No passes yet"}
-                </h3>
-                <p className="mb-4 text-sm text-muted-foreground">
-                  {myPasses.length > 0
-                    ? "Book additional passes for workshops"
-                    : "Book your first pass to access E-Summit events"}
-                </p>
-                <Button onClick={() => onNavigate("booking")}>
-                  Book Pass
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
+                      <div className="flex gap-2">
+                        <Button className="flex-1">
+                          <Download className="mr-2 h-4 w-4" />
+                          Download Pass
+                        </Button>
+                        <Button
+                          variant="outline"
+                          className="flex-1"
+                        >
+                          <FileText className="mr-2 h-4 w-4" />
+                          Invoice
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="col-span-2 text-center py-12">
+                  <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+                  <h3 className="text-lg font-semibold mb-2">No passes yet</h3>
+                  <p className="text-muted-foreground mb-4">
+                    You haven't purchased any passes yet. Get your pass now!
+                  </p>
+                  <Button onClick={() => onNavigate("passes")}>
+                    Browse Passes
+                  </Button>
+                </div>
+              )}
+            </div>
+          )}
         </TabsContent>
 
-        <TabsContent value="schedule">
+        <TabsContent value="schedule">{isLoadingPasses ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading your schedule...</span>
+            </div>
+          ) : (
           <div className="space-y-4">
             {myPasses.length > 0 && (
               <Card className="bg-primary/5 border-primary/20">
@@ -205,7 +298,7 @@ export function UserDashboard({
                       <div className="flex flex-wrap gap-2">
                         {myPasses.map((pass) => (
                           <Badge key={pass.passId} variant="default">
-                            {pass.type}
+                            {pass.passType}
                           </Badge>
                         ))}
                       </div>
@@ -290,6 +383,7 @@ export function UserDashboard({
               </Card>
             )}
           </div>
+          )}
         </TabsContent>
       </Tabs>
 

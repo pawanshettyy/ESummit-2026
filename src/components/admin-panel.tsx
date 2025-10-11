@@ -1,10 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { 
   Users, 
   Ticket, 
   Calendar, 
-  TrendingUp, 
   Search, 
   Download, 
   Filter,
@@ -19,7 +18,10 @@ import {
   Settings,
   LogOut,
   Shield,
-  Lock
+  Lock,
+  Scan,
+  Loader2,
+  RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "./ui/button";
@@ -34,6 +36,8 @@ import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, Di
 import { Label } from "./ui/label";
 import { Alert, AlertDescription } from "./ui/alert";
 import { motion } from "motion/react";
+import { QRScanner } from "./qr-scanner";
+import { EventIDGenerator } from "./event-id-generator";
 
 interface AdminPanelProps {
   onNavigate: (page: string) => void;
@@ -109,110 +113,177 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
   const [filterPassType, setFilterPassType] = useState("all");
   const [scannerActive, setScannerActive] = useState(false);
   const [scannedCode, setScannedCode] = useState("");
+  
+  // State for real data from database
+  const [passes, setPasses] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [statsData, setStatsData] = useState({
+    totalRegistrations: 0,
+    activePasses: 0,
+    checkInsToday: 0,
+  });
 
-  // Mock data for participants
-  const participants = [
-    {
-      id: "ESUMMIT-2025-ABC123",
-      name: "Rahul Sharma",
-      email: "rahul.sharma@example.com",
-      phone: "+91 98765 43210",
-      college: "IIT Mumbai",
-      passType: "Full Summit Pass",
-      price: 799,
-      purchaseDate: "Jan 20, 2025",
-      status: "Active",
-      checkInStatus: "Not Checked In",
-    },
-    {
-      id: "ESUMMIT-2025-DEF456",
-      name: "Priya Patel",
-      email: "priya.patel@example.com",
-      phone: "+91 98765 43211",
-      college: "TCET Mumbai",
-      passType: "Day 1 Pass",
-      price: 299,
-      purchaseDate: "Jan 21, 2025",
-      status: "Active",
-      checkInStatus: "Checked In",
-    },
-    {
-      id: "ESUMMIT-2025-GHI789",
-      name: "Amit Kumar",
-      email: "amit.kumar@example.com",
-      phone: "+91 98765 43212",
-      college: "VJTI Mumbai",
-      passType: "VIP Pass",
-      price: 1499,
-      purchaseDate: "Jan 18, 2025",
-      status: "Active",
-      checkInStatus: "Not Checked In",
-    },
-    {
-      id: "ESUMMIT-2025-JKL012",
-      name: "Sneha Desai",
-      email: "sneha.desai@example.com",
-      phone: "+91 98765 43213",
-      college: "DJ Sanghvi",
-      passType: "Full Summit Pass",
-      price: 799,
-      purchaseDate: "Jan 22, 2025",
-      status: "Active",
-      checkInStatus: "Checked In",
-    },
-    {
-      id: "ESUMMIT-2025-MNO345",
-      name: "Rohan Mehta",
-      email: "rohan.mehta@example.com",
-      phone: "+91 98765 43214",
-      college: "SPIT Mumbai",
-      passType: "Day 2 Pass",
-      price: 399,
-      purchaseDate: "Jan 19, 2025",
-      status: "Active",
-      checkInStatus: "Not Checked In",
-    },
-  ];
+  // Fetch all passes from database (with optional silent mode)
+  const fetchPasses = async (silent = false) => {
+    try {
+      if (!silent) {
+        setIsLoading(true);
+      }
+      const response = await fetch("http://localhost:5000/api/v1/admin/stats");
+      const data = await response.json();
+      
+      if (data.success) {
+        const allPasses = data.data.passes || [];
+        setPasses(allPasses);
+        
+        // Use statistics from backend
+        setStatsData({
+          totalRegistrations: data.data.stats.totalRegistrations || 0,
+          activePasses: data.data.stats.activePasses || 0,
+          checkInsToday: data.data.stats.checkInsToday || 0,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching passes:", error);
+      if (!silent) {
+        toast.error("Failed to load pass data");
+      }
+    } finally {
+      if (!silent) {
+        setIsLoading(false);
+      }
+    }
+  };
 
-  // Statistics
+  // Initial fetch and auto-refresh setup
+  useEffect(() => {
+    if (isAdmin) {
+      fetchPasses(false); // Initial load with loading state
+      
+      // Auto-refresh every 3 seconds silently
+      const interval = setInterval(() => fetchPasses(true), 3000);
+      return () => clearInterval(interval);
+    }
+  }, [isAdmin]);
+
+  // Listen for check-in events to trigger immediate refresh
+  useEffect(() => {
+    const handleCheckInEvent = () => {
+      fetchPasses(true); // Silent refresh
+    };
+
+    window.addEventListener('checkin-success', handleCheckInEvent);
+    return () => window.removeEventListener('checkin-success', handleCheckInEvent);
+  }, []);
+
+  // Export participants to CSV
+  const exportToCSV = () => {
+    try {
+      // Create CSV headers
+      const headers = ["Pass ID", "Name", "Email", "Phone", "College", "Pass Type", "Price", "Purchase Date", "Status", "Check-in Status", "Last Check-in"];
+      
+      // Create CSV rows
+      const rows = filteredParticipants.map(p => [
+        p.id,
+        p.name,
+        p.email,
+        p.phone,
+        p.college,
+        p.passType,
+        p.price,
+        p.purchaseDate,
+        p.status,
+        p.checkInStatus,
+        p.lastCheckInTime ? new Date(p.lastCheckInTime).toLocaleString() : "N/A"
+      ]);
+      
+      // Combine headers and rows
+      const csvContent = [
+        headers.join(","),
+        ...rows.map(row => row.map(cell => `"${cell}"`).join(","))
+      ].join("\n");
+      
+      // Create blob and download
+      const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+      const link = document.createElement("a");
+      const url = URL.createObjectURL(blob);
+      
+      link.setAttribute("href", url);
+      link.setAttribute("download", `esummit-participants-${new Date().toISOString().split('T')[0]}.csv`);
+      link.style.visibility = "hidden";
+      
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      toast.success("CSV exported successfully!", {
+        description: `${filteredParticipants.length} participants exported`,
+      });
+    } catch (error) {
+      console.error("Export error:", error);
+      toast.error("Failed to export CSV");
+    }
+  };
+
+  // Transform passes data for participants table
+  const participants = passes.map((pass) => {
+    const hasCheckIn = pass.checkIns && pass.checkIns.length > 0;
+    const lastCheckIn = hasCheckIn ? pass.checkIns[0] : null;
+    
+    return {
+      id: pass.passId,
+      name: pass.user?.fullName || "Unknown",
+      email: pass.user?.email || "No email",
+      phone: pass.user?.phone || "No phone",
+      college: pass.user?.college || "Not provided",
+      passType: pass.passType,
+      price: pass.price,
+      purchaseDate: new Date(pass.purchaseDate).toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      }),
+      status: pass.status,
+      checkInStatus: hasCheckIn ? "Checked In" : "Not Checked In",
+      lastCheckInTime: lastCheckIn?.checkInTime,
+      lastCheckInEvent: lastCheckIn?.event?.title,
+      qrCodeUrl: pass.qrCodeUrl,
+      yearOfStudy: pass.user?.yearOfStudy,
+      totalCheckIns: pass.checkIns?.length || 0,
+    };
+  });
+
+  // Statistics for display
   const stats = [
     {
       label: "Total Registrations",
-      value: "2,547",
+      value: statsData.totalRegistrations.toLocaleString(),
       icon: Users,
-      change: "+12%",
-      changeType: "positive",
-    },
-    {
-      label: "Revenue Generated",
-      value: "₹18.5L",
-      icon: TrendingUp,
-      change: "+8%",
-      changeType: "positive",
     },
     {
       label: "Active Passes",
-      value: "2,401",
+      value: statsData.activePasses.toLocaleString(),
       icon: Ticket,
-      change: "+15%",
-      changeType: "positive",
     },
     {
       label: "Check-ins Today",
-      value: "1,234",
+      value: statsData.checkInsToday.toLocaleString(),
       icon: CheckCircle,
-      change: "Real-time",
-      changeType: "neutral",
     },
   ];
 
   // Pass type distribution
-  const passDistribution = [
-    { type: "Full Summit Pass", count: 1205, percentage: 47 },
-    { type: "Day 1 Pass", count: 658, percentage: 26 },
-    { type: "Day 2 Pass", count: 438, percentage: 17 },
-    { type: "VIP Pass", count: 246, percentage: 10 },
-  ];
+  const passTypeCount = passes.reduce((acc: any, pass) => {
+    acc[pass.passType] = (acc[pass.passType] || 0) + 1;
+    return acc;
+  }, {});
+
+  const passDistribution = Object.entries(passTypeCount).map(([type, count]: [string, any]) => ({
+    type,
+    count,
+    percentage: Math.round((count / passes.length) * 100) || 0,
+  }));
 
   // Filter participants
   const filteredParticipants = participants.filter(p => {
@@ -264,6 +335,19 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
           </p>
         </div>
         <div className="flex gap-2">
+          <Button 
+            variant="outline" 
+            onClick={async () => {
+              setIsRefreshing(true);
+              await fetchPasses(false);
+              setIsRefreshing(false);
+              toast.success("Data refreshed successfully");
+            }}
+            disabled={isRefreshing}
+          >
+            <RefreshCw className={`mr-2 h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
+            Refresh
+          </Button>
           <Button variant="outline" onClick={handleLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Logout
@@ -290,31 +374,31 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
       )}
 
       {/* Statistics Cards */}
-      <div className="mb-8 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat, index) => (
-          <motion.div
-            key={stat.label}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: index * 0.1 }}
-          >
-            <Card>
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-2">
-                  <stat.icon className="h-5 w-5 text-muted-foreground" />
-                  <Badge 
-                    variant={stat.changeType === "positive" ? "default" : "secondary"}
-                    className="text-xs"
-                  >
-                    {stat.change}
-                  </Badge>
-                </div>
-                <div className="text-2xl mb-1">{stat.value}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        ))}
+      <div className="mb-8 grid gap-4 md:grid-cols-3">
+        {isLoading ? (
+          <div className="col-span-full flex items-center justify-center py-8">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        ) : (
+          stats.map((stat, index) => (
+            <motion.div
+              key={stat.label}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4, delay: index * 0.1 }}
+            >
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-3">
+                    <stat.icon className="h-5 w-5 text-muted-foreground" />
+                  </div>
+                  <div className="text-2xl mb-1">{stat.value}</div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          ))
+        )}
       </div>
 
       {/* Main Content Tabs */}
@@ -323,6 +407,9 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
           {permissions.participants && <TabsTrigger value="participants">Participants</TabsTrigger>}
           {permissions.scanner && <TabsTrigger value="scanner">QR Scanner</TabsTrigger>}
           {permissions.analytics && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
+          {(adminRole === "Super Admin" || adminRole === "Event Manager") && (
+            <TabsTrigger value="event-ids">Event IDs</TabsTrigger>
+          )}
         </TabsList>
 
         {/* Participants Tab */}
@@ -334,15 +421,11 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
                   <h3>All Participants</h3>
                   <div className="flex gap-2">
                     {permissions.export && (
-                      <Button variant="outline" size="sm">
+                      <Button variant="outline" size="sm" onClick={exportToCSV}>
                         <Download className="mr-2 h-4 w-4" />
                         Export CSV
                       </Button>
                     )}
-                    <Button variant="outline" size="sm">
-                      <Filter className="mr-2 h-4 w-4" />
-                      Filters
-                    </Button>
                   </div>
                 </div>
               </CardHeader>
@@ -393,7 +476,7 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
                           <div className="flex items-center gap-3">
                             <Avatar className="h-8 w-8">
                               <AvatarFallback className="bg-primary/10 text-primary text-xs">
-                                {participant.name.split(" ").map(n => n[0]).join("")}
+                                {participant.name.split(" ").map((n: string) => n[0]).join("")}
                               </AvatarFallback>
                             </Avatar>
                             <div>
@@ -493,12 +576,59 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
                                     <Label>Pass ID</Label>
                                     <p className="text-sm text-muted-foreground font-mono">{participant.id}</p>
                                   </div>
+                                  <div>
+                                    <Label>Check-in Status</Label>
+                                    <div className="flex items-center gap-2">
+                                      {participant.checkInStatus === "Checked In" ? (
+                                        <>
+                                          <CheckCircle className="h-4 w-4 text-green-500" />
+                                          <span className="text-sm text-green-600 dark:text-green-400">
+                                            Checked In
+                                          </span>
+                                        </>
+                                      ) : (
+                                        <>
+                                          <XCircle className="h-4 w-4 text-muted-foreground" />
+                                          <span className="text-sm text-muted-foreground">
+                                            Not Checked In
+                                          </span>
+                                        </>
+                                      )}
+                                    </div>
+                                  </div>
+                                  {participant.lastCheckInTime && (
+                                    <div>
+                                      <Label>Last Check-in</Label>
+                                      <p className="text-sm text-muted-foreground">
+                                        {new Date(participant.lastCheckInTime).toLocaleString("en-US", {
+                                          month: "short",
+                                          day: "numeric",
+                                          year: "numeric",
+                                          hour: "2-digit",
+                                          minute: "2-digit",
+                                        })}
+                                      </p>
+                                      {participant.lastCheckInEvent && (
+                                        <p className="text-xs text-muted-foreground mt-1">
+                                          Event: {participant.lastCheckInEvent}
+                                        </p>
+                                      )}
+                                    </div>
+                                  )}
                                 </div>
                                 <div className="rounded-lg border p-4 text-center">
                                   <div className="mb-2 text-sm text-muted-foreground">QR Code</div>
-                                  <div className="mx-auto h-32 w-32 rounded-lg bg-muted flex items-center justify-center">
-                                    <QrCode className="h-16 w-16 text-muted-foreground" />
-                                  </div>
+                                  {participant.qrCodeUrl ? (
+                                    <img 
+                                      src={participant.qrCodeUrl} 
+                                      alt={`QR Code for ${participant.id}`}
+                                      className="mx-auto h-32 w-32 rounded-lg bg-white p-2 border"
+                                    />
+                                  ) : (
+                                    <div className="mx-auto h-32 w-32 rounded-lg bg-muted flex items-center justify-center">
+                                      <QrCode className="h-16 w-16 text-muted-foreground" />
+                                    </div>
+                                  )}
                                 </div>
                               </div>
                             </DialogContent>
@@ -521,90 +651,8 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
         {/* QR Scanner Tab */}
         {permissions.scanner ? (
           <TabsContent value="scanner">
-          <div className="grid gap-6 md:grid-cols-2">
-            <Card>
-              <CardHeader>
-                <div className="flex items-center gap-2">
-                  <QrCode className="h-5 w-5 text-primary" />
-                  <h3>QR Code Scanner</h3>
-                </div>
-                <p className="text-sm text-muted-foreground">Scan participant passes at venue entrance</p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {!scannerActive ? (
-                    <div className="rounded-lg border-2 border-dashed p-12 text-center">
-                      <QrCode className="mx-auto mb-4 h-16 w-16 text-muted-foreground" />
-                      <h4 className="mb-2">Scanner Ready</h4>
-                      <p className="mb-4 text-sm text-muted-foreground">
-                        Click below to activate camera and start scanning passes
-                      </p>
-                      <Button onClick={() => setScannerActive(true)}>
-                        Activate Scanner
-                      </Button>
-                    </div>
-                  ) : (
-                    <div className="space-y-4">
-                      <div className="aspect-square rounded-lg bg-muted flex items-center justify-center">
-                        <div className="text-center">
-                          <QrCode className="mx-auto mb-2 h-12 w-12 animate-pulse text-primary" />
-                          <p className="text-sm text-muted-foreground">Camera Active - Position QR Code</p>
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                        <Label>Or Enter Pass ID Manually</Label>
-                        <div className="flex gap-2">
-                          <Input
-                            placeholder="ESUMMIT-2025-XXXXX"
-                            value={scannedCode}
-                            onChange={(e) => setScannedCode(e.target.value)}
-                          />
-                          <Button onClick={() => handleScan(scannedCode)}>
-                            Verify
-                          </Button>
-                        </div>
-                      </div>
-                      <Button 
-                        variant="outline" 
-                        className="w-full"
-                        onClick={() => setScannerActive(false)}
-                      >
-                        Stop Scanner
-                      </Button>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-
-            <Card>
-              <CardHeader>
-                <h3>Recent Check-ins</h3>
-                <p className="text-sm text-muted-foreground">Last 5 scanned passes</p>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  {participants.filter(p => p.checkInStatus === "Checked In").slice(0, 5).map((participant) => (
-                    <div key={participant.id} className="flex items-center justify-between rounded-lg border p-3">
-                      <div className="flex items-center gap-3">
-                        <Avatar className="h-8 w-8">
-                          <AvatarFallback className="bg-green-500/10 text-green-600 text-xs">
-                            {participant.name.split(" ").map(n => n[0]).join("")}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div>
-                          <div className="text-sm">{participant.name}</div>
-                          <div className="text-xs text-muted-foreground">{participant.passType}</div>
-                        </div>
-                      </div>
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-        </TabsContent>
+            <QRScanner />
+          </TabsContent>
         ) : null}
 
         {/* Analytics Tab */}
@@ -638,31 +686,29 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
               </CardContent>
             </Card>
 
-            <Card>
+            <Card className="md:col-span-2">
               <CardHeader>
-                <h3>Revenue Breakdown</h3>
+                <h3>Pass Statistics</h3>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {passDistribution.map((pass) => (
-                    <div key={pass.type} className="flex items-center justify-between rounded-lg border p-3">
-                      <div>
-                        <div className="text-sm">{pass.type}</div>
-                        <div className="text-xs text-muted-foreground">{pass.count} passes</div>
+                  {passDistribution.map((pass) => {
+                    return (
+                      <div key={pass.type} className="flex items-center justify-between rounded-lg border p-3">
+                        <div>
+                          <div className="text-sm">{pass.type}</div>
+                          <div className="text-xs text-muted-foreground">{pass.count} passes</div>
+                        </div>
+                        <div className="text-right">
+                          <div className="text-sm">{pass.percentage}%</div>
+                        </div>
                       </div>
-                      <div className="text-right">
-                        <div className="text-sm">₹{(pass.count * (
-                          pass.type === "Full Summit Pass" ? 799 :
-                          pass.type === "Day 1 Pass" ? 299 :
-                          pass.type === "Day 2 Pass" ? 399 : 1499
-                        )).toLocaleString()}</div>
-                      </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <div className="border-t pt-3">
                     <div className="flex items-center justify-between">
-                      <div className="text-sm">Total Revenue</div>
-                      <div className="text-lg text-primary">₹18,45,690</div>
+                      <div className="text-sm">Total Passes</div>
+                      <div className="text-lg text-primary">{statsData.totalRegistrations.toLocaleString()}</div>
                     </div>
                   </div>
                 </div>
@@ -675,19 +721,42 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
               </CardHeader>
               <CardContent>
                 <div className="grid gap-4 md:grid-cols-3">
-                  {["TCET Mumbai", "IIT Mumbai", "VJTI Mumbai", "DJ Sanghvi", "SPIT Mumbai", "Others"].map((college, index) => (
-                    <div key={college} className="rounded-lg border p-4 text-center">
-                      <Building className="mx-auto mb-2 h-8 w-8 text-primary" />
-                      <div className="text-2xl mb-1">{Math.floor(Math.random() * 500) + 100}</div>
-                      <div className="text-sm text-muted-foreground">{college}</div>
-                    </div>
-                  ))}
+                  {(() => {
+                    // Group passes by college
+                    const collegeCount = passes.reduce((acc: any, pass) => {
+                      const college = pass.user?.college || "Others";
+                      acc[college] = (acc[college] || 0) + 1;
+                      return acc;
+                    }, {});
+                    
+                    // Sort by count and take top 6
+                    const topColleges = Object.entries(collegeCount)
+                      .sort(([, a]: [string, any], [, b]: [string, any]) => b - a)
+                      .slice(0, 6);
+                    
+                    return topColleges.map(([college, count]: [string, any]) => (
+                      <div key={college} className="rounded-lg border p-4 text-center">
+                        <Building className="mx-auto mb-2 h-8 w-8 text-primary" />
+                        <div className="text-2xl mb-1">{count as number}</div>
+                        <div className="text-sm text-muted-foreground">{college}</div>
+                      </div>
+                    ));
+                  })()}
                 </div>
               </CardContent>
             </Card>
           </div>
         </TabsContent>
         ) : null}
+
+        {/* Event ID Generator Tab */}
+        {(adminRole === "Super Admin" || adminRole === "Event Manager") && (
+          <TabsContent value="event-ids">
+            <div className="p-4">
+              <EventIDGenerator />
+            </div>
+          </TabsContent>
+        )}
 
         {/* Access Restricted Message */}
         {!permissions.participants && !permissions.scanner && !permissions.analytics && (

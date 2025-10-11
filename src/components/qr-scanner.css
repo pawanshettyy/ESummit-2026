@@ -1,0 +1,114 @@
+/* Mobile and Tablet Friendly QR Scanner Styles */
+
+#qr-reader {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+#qr-reader video {
+  width: 100% !important;
+  height: auto !important;
+  max-width: 100% !important;
+  border-radius: 0.5rem;
+}
+
+#qr-reader__dashboard {
+  padding: 1rem 0.5rem !important;
+}
+
+#qr-reader__dashboard_section {
+  padding: 0.5rem !important;
+}
+
+/* Make buttons mobile-friendly */
+#qr-reader button {
+  padding: 0.75rem 1rem !important;
+  font-size: 0.875rem !important;
+  min-height: 44px !important; /* iOS recommended touch target */
+  border-radius: 0.5rem !important;
+  font-weight: 500 !important;
+}
+
+/* Camera selection dropdown */
+#qr-reader select {
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+  min-height: 44px !important;
+  border-radius: 0.5rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* File input for mobile */
+#qr-reader input[type="file"] {
+  padding: 0.75rem !important;
+  font-size: 0.875rem !important;
+  min-height: 44px !important;
+}
+
+/* Scan region */
+#qr-reader__scan_region {
+  max-width: 100% !important;
+  margin: 0 auto !important;
+}
+
+/* Camera permissions message */
+#qr-reader__status_span {
+  font-size: 0.875rem !important;
+  padding: 0.75rem !important;
+  border-radius: 0.5rem !important;
+}
+
+/* Flashlight and zoom controls on mobile */
+#qr-reader__torch_button,
+#qr-reader__zoom_slider_container {
+  margin-top: 0.5rem !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  #qr-reader {
+    font-size: 0.875rem !important;
+  }
+  
+  #qr-reader button {
+    width: 100% !important;
+    margin-bottom: 0.5rem !important;
+  }
+  
+  #qr-reader__dashboard {
+    padding: 0.5rem !important;
+  }
+  
+  #qr-reader__header_message {
+    font-size: 0.875rem !important;
+    padding: 0.5rem !important;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  /* Tablet styles */
+  #qr-reader {
+    max-width: 600px !important;
+    margin: 0 auto !important;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  #qr-reader {
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+  }
+  
+  #qr-reader button {
+    background-color: hsl(var(--primary)) !important;
+    color: hsl(var(--primary-foreground)) !important;
+  }
+  
+  #qr-reader select {
+    background-color: hsl(var(--background)) !important;
+    color: hsl(var(--foreground)) !important;
+    border-color: hsl(var(--border)) !important;
+  }
+}

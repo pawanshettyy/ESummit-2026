@@ -127,6 +127,7 @@ model Transaction {
 
 model Event {
   id                String    @id @default(uuid())
+  eventId           String?   @unique @map("event_id") // Unique kebab-case identifier (e.g., "workshop-ai-ml-day1-morning")
   title             String
   description       String?   @db.Text
   category          String    // 'competitions', 'workshops', 'speakers', 'hackathon', 'networking'
