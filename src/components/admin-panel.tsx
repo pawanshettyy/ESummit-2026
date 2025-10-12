@@ -38,6 +38,7 @@ import { Alert, AlertDescription } from "./ui/alert";
 import { motion } from "motion/react";
 import { QRScanner } from "./qr-scanner";
 import { EventIDGenerator } from "./event-id-generator";
+import { API_BASE_URL } from "../lib/api";
 
 interface AdminPanelProps {
   onNavigate: (page: string) => void;
@@ -129,7 +130,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       if (!silent) {
         setIsLoading(true);
       }
-      const response = await fetch("http://localhost:5000/api/v1/admin/stats");
+      const response = await fetch(`${API_BASE_URL}/admin/stats`);
       const data = await response.json();
       
       if (data.success) {

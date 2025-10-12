@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { API_BASE_URL } from "../lib/api";
 
 export function EventIDGenerator() {
   const [eventName, setEventName] = useState("");
@@ -41,7 +42,7 @@ export function EventIDGenerator() {
   const fetchSavedEvents = async () => {
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:5000/api/v1/events");
+      const response = await fetch(`${API_BASE_URL}/events`);
       const data = await response.json();
 
       if (data.success && data.data.events) {
@@ -130,7 +131,7 @@ export function EventIDGenerator() {
       setIsSaving(true);
 
       // Save to database
-      const response = await fetch("http://localhost:5000/api/v1/events", {
+      const response = await fetch(`${API_BASE_URL}/events`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -175,7 +176,7 @@ export function EventIDGenerator() {
 
   const deleteEvent = async (id: string) => {
     try {
-      const response = await fetch(`http://localhost:5000/api/v1/events/${id}`, {
+      const response = await fetch(`${API_BASE_URL}/events/${id}`, {
         method: "DELETE",
       });
 

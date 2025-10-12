@@ -27,6 +27,7 @@ import {
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { API_BASE_URL } from "../lib/api";
 import "./qr-scanner.css";
 
 interface PassData {
@@ -160,7 +161,7 @@ export function QRScanner() {
         });
       }
       
-      const response = await fetch("http://localhost:5000/api/v1/checkin/scan", {
+      const response = await fetch(`${API_BASE_URL}/checkin/scan`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -236,7 +237,7 @@ export function QRScanner() {
         });
       }
 
-      const response = await fetch("http://localhost:5000/api/v1/checkin/verify", {
+      const response = await fetch(`${API_BASE_URL}/checkin/verify`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

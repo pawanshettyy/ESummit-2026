@@ -25,14 +25,10 @@ export async function requireAdmin(
       return;
     }
 
-    // In production, you would get user from Clerk here
-    // For now, we'll use a simplified approach
-    // const { clerkClient } = await import('@clerk/clerk-sdk-node');
-    // const user = await clerkClient.users.getUser(userId);
-    // const role = user.publicMetadata?.role as string;
-
-    // Temporary: Get role from request header or body for testing
-    const role = req.headers['x-admin-role'] as string || req.body?.adminRole;
+    // Get user from Clerk to check role
+    const { clerkClient } = await import('@clerk/clerk-sdk-node');
+    const user = await clerkClient.users.getUser(userId);
+    const role = user.publicMetadata?.role as string;
 
     if (!role || !VALID_ADMIN_ROLES.includes(role)) {
       logger.warn(`Unauthorized admin access attempt by user ${userId}`);
@@ -80,8 +76,10 @@ export function requireRole(allowedRoles: string[]) {
         return;
       }
 
-      // Get role from header or body for now
-      const role = req.headers['x-admin-role'] as string || req.body?.adminRole;
+      // Get user from Clerk to check role
+      const { clerkClient } = await import('@clerk/clerk-sdk-node');
+      const user = await clerkClient.users.getUser(userId);
+      const role = user.publicMetadata?.role as string;
 
       if (!role || !allowedRoles.includes(role)) {
         logger.warn(
@@ -131,8 +129,10 @@ export function requirePermission(permission: string) {
         return;
       }
 
-      // Get role and check permissions
-      const role = req.headers['x-admin-role'] as string || req.body?.adminRole;
+      // Get user from Clerk to check role and permissions
+      const { clerkClient } = await import('@clerk/clerk-sdk-node');
+      const user = await clerkClient.users.getUser(userId);
+      const role = user.publicMetadata?.role as string;
       
       if (!role || !hasFeatureAccess(role, permission)) {
         res.status(403).json({

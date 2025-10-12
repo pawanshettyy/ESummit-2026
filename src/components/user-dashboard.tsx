@@ -19,6 +19,7 @@ import {
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { getFormattedEventsForPass } from "../utils/pass-events";
 import { ProfileCompletionModal } from "./profile-completion-modal";
+import { API_BASE_URL } from "../lib/api";
 
 interface Pass {
   id: number;
@@ -75,7 +76,7 @@ export function UserDashboard({
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/passes/user/${user.id}`
+          `${API_BASE_URL}/passes/user/${user.id}`
         );
         const data = await response.json();
 
@@ -102,7 +103,7 @@ export function UserDashboard({
 
       try {
         const response = await fetch(
-          `http://localhost:5000/api/v1/users/check-profile/${user.id}`
+          `${API_BASE_URL}/users/check-profile/${user.id}`
         );
         const data = await response.json();
 
@@ -161,7 +162,7 @@ export function UserDashboard({
     try {
       setDownloadingPassId(passId);
       const response = await fetch(
-        `http://localhost:5000/api/v1/pdf/pass/${passId}`
+        `${API_BASE_URL}/pdf/pass/${passId}`
       );
       
       if (!response.ok) {
@@ -191,7 +192,7 @@ export function UserDashboard({
     try {
       setDownloadingInvoiceId(transactionId);
       const response = await fetch(
-        `http://localhost:5000/api/v1/pdf/invoice/${transactionId}`
+        `${API_BASE_URL}/pdf/invoice/${transactionId}`
       );
       
       if (!response.ok) {
@@ -227,7 +228,7 @@ export function UserDashboard({
       }
 
       const response = await fetch(
-        `http://localhost:5000/api/v1/pdf/schedule/${user.id}`
+        `${API_BASE_URL}/pdf/schedule/${user.id}`
       );
       
       if (!response.ok) {

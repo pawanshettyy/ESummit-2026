@@ -2,10 +2,10 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
-import rateLimit from 'express-rate-limit';
 import config from './config';
 import routes from './routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
+import { generalLimiter } from './middleware/rateLimit.middleware';
 
 const app: Application = express();
 
@@ -31,14 +31,8 @@ if (config.env === 'development') {
   app.use(morgan('combined'));
 }
 
-// Rate limiting
-const limiter = rateLimit({
-  windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later',
-});
-
-app.use('/api/', limiter);
+// Global rate limiting - applies to all API routes
+app.use('/api/', generalLimiter);
 
 // API routes
 app.use('/api/v1', routes);
