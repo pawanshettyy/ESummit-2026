@@ -110,16 +110,15 @@ export function Navigation({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <motion.div
-                className="relative flex h-9 w-9 items-center justify-center rounded-lg bg-gradient-to-br from-primary to-primary/80 shadow-lg shadow-primary/20"
-                whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-                transition={{ duration: 0.5 }}
-              >
-                <span className="text-primary-foreground">E</span>
-                <div className="absolute inset-0 rounded-lg bg-gradient-to-br from-white/20 to-transparent" />
-              </motion.div>
+
               <div className="hidden sm:block">
-                <GradientText className="whitespace-nowrap">E-Summit 2026</GradientText>
+                <div className="logo-wrapper">
+                  <img 
+                    src="/assets/esummit-logo.png"
+                    alt="E-Summit 2026 Logo" 
+                    className="h-10 md:h-12 lg:h-14 w-auto object-contain"
+                  />
+                </div>
               </div>
             </motion.button>
 
@@ -292,9 +291,11 @@ export function Navigation({
                   <div className="flex flex-col h-full">
                     {/* Header - with extra padding-right to avoid close button overlap */}
                     <div className="flex items-center gap-2 border-b px-6 py-4 pr-14">
-                      <div className="flex-1 min-w-0">
-                        <GradientText>E-Summit 2026</GradientText>
-                      </div>
+                      <img 
+                        src="/assets/esummit-logo.png"
+                        alt="E-Summit 2026 Logo" 
+                        className="h-8 md:h-10 lg:h-12 w-auto object-contain -my-1 md:-my-1.5"
+                      />
                       <Button 
                         variant="ghost" 
                         size="icon" 
@@ -384,16 +385,6 @@ export function Navigation({
                             }}
                           >
                             <span>Book Pass</span>
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            className="w-full rounded-full h-11 text-destructive hover:text-destructive hover:bg-destructive/10"
-                            onClick={() => {
-                              onLogout();
-                              setIsOpen(false);
-                            }}
-                          >
-                            <span>Logout</span>
                           </Button>
                         </>
                       ) : (

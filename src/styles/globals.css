@@ -268,3 +268,113 @@ body {
     line-height: 1.6;
   }
 }
+
+/* Logo dark mode visibility fix */
+@layer components {
+  .logo-wrapper {
+    background-color: transparent;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+
+  .dark .logo-wrapper {
+    background-color: #ffffff;
+    border-radius: 0.5rem;
+    padding: 0.5rem;
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.15);
+  }
+
+  .dark .logo-wrapper-hero {
+    background-color: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1rem;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+  }
+}
+
+/* Clerk component mobile optimizations */
+@layer components {
+  /* Ensure Clerk components don't overflow on mobile */
+  .cl-rootBox,
+  .cl-card,
+  .cl-main,
+  .cl-footer {
+    @apply max-w-full overflow-x-hidden;
+  }
+
+  /* Make Clerk form inputs mobile-friendly */
+  .cl-formFieldInput {
+    @apply text-base;
+    font-size: 16px !important; /* Prevent zoom on iOS */
+  }
+
+  /* Optimize Clerk buttons for mobile */
+  .cl-formButtonPrimary,
+  .cl-socialButtonsBlockButton {
+    @apply w-full;
+    min-height: 44px; /* iOS recommended tap target size */
+  }
+
+  /* Adjust Clerk spacing on mobile */
+  @media (max-width: 640px) {
+    .cl-internal-b3fm6y {
+      @apply px-2;
+    }
+
+    .cl-headerTitle {
+      @apply text-lg;
+    }
+
+    .cl-headerSubtitle {
+      @apply text-xs;
+    }
+
+    .cl-socialButtonsBlockButton {
+      @apply text-sm py-2;
+    }
+
+    .cl-footerAction,
+    .cl-footerActionLink {
+      @apply text-xs;
+    }
+  }
+
+  /* Prevent horizontal overflow in Clerk forms */
+  .cl-formFieldRow,
+  .cl-formFieldInputGroup {
+    @apply w-full max-w-full;
+  }
+
+  /* Make Clerk modals/cards responsive */
+  .cl-card {
+    @apply w-full;
+    max-width: 100% !important;
+  }
+
+  /* Ensure proper spacing in Clerk components */
+  .cl-internal-1ta0xdx {
+    @apply w-full;
+  }
+}
+
+/* Additional mobile viewport fixes */
+@layer base {
+  /* Fix viewport height on mobile browsers */
+  @supports (height: 100dvh) {
+    .min-h-screen {
+      min-height: 100dvh;
+    }
+  }
+
+  /* Prevent layout shift on mobile */
+  @media (max-width: 640px) {
+    * {
+      @apply max-w-full;
+    }
+
+    img {
+      @apply max-w-full h-auto;
+    }
+  }
+}

@@ -108,13 +108,24 @@ export class PDFService {
         // === HEADER SECTION ===
         this.drawHeader(doc, pageWidth);
 
-        // Logo and Title (perfectly aligned)
+        // Logo and Title (with white background for visibility)
         const headerY = 45;
         if (this.hasLogo) {
-          doc.image(this.logoPath, 50, headerY, { width: 70, height: 70 });
+          // Add white rounded background behind logo for visibility
+          doc.save();
+          doc.roundedRect(42, headerY - 8, 86, 86, 8)
+             .fill(this.colors.white);
+          doc.restore();
+          
+          // Logo with better sizing
+          doc.image(this.logoPath, 50, headerY, { 
+            fit: [70, 70],
+            align: 'center',
+            valign: 'center'
+          });
         }
 
-        const titleX = this.hasLogo ? 135 : 50;
+        const titleX = this.hasLogo ? 145 : 50;
         doc.fontSize(36)
            .fillColor(this.colors.white)
            .font('Helvetica-Bold')
@@ -474,9 +485,21 @@ export class PDFService {
         doc.on('end', () => resolve(Buffer.concat(chunks)));
         doc.on('error', reject);
 
-        // Header with logo (aligned)
+        // Header with logo (with white background for visibility)
         if (this.hasLogo) {
-          doc.image(this.logoPath, 50, 45, { width: 80, height: 80 });
+          // White rounded background for logo visibility
+          doc.save();
+          doc.roundedRect(42, 37, 96, 96, 8)
+             .fill(this.colors.white);
+          doc.stroke(this.colors.borderGray);
+          doc.restore();
+          
+          // Logo with proper sizing and padding
+          doc.image(this.logoPath, 50, 45, { 
+            fit: [80, 80],
+            align: 'center',
+            valign: 'center'
+          });
         }
 
         // Invoice title (right aligned)
@@ -750,18 +773,29 @@ export class PDFService {
         doc.rect(0, 0, doc.page.width, 120).fill(this.colors.primaryRed);
         
         if (this.hasLogo) {
-          doc.image(this.logoPath, 50, 25, { width: 60, height: 60 });
+          // White circular background for logo
+          doc.save();
+          doc.circle(80, 55, 40)
+             .fill(this.colors.white);
+          doc.restore();
+          
+          // Logo with proper sizing
+          doc.image(this.logoPath, 50, 25, { 
+            fit: [60, 60],
+            align: 'center',
+            valign: 'center'
+          });
         }
 
         doc.fontSize(28)
            .fillColor(this.colors.white)
            .font('Helvetica-Bold')
-           .text('MY SCHEDULE', this.hasLogo ? 125 : 50, 40);
+           .text('MY SCHEDULE', this.hasLogo ? 135 : 50, 40);
 
         doc.fontSize(14)
            .fillColor(this.colors.lightRed)
            .font('Helvetica')
-           .text('E-Summit 2026 | January 23-24, 2026', this.hasLogo ? 125 : 50, 75);
+           .text('E-Summit 2026 | January 23-24, 2026', this.hasLogo ? 135 : 50, 75);
 
         // User Info
         let currentY = 150;

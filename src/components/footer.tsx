@@ -16,10 +16,13 @@ export function Footer({ onNavigate }: FooterProps) {
           {/* About */}
           <div>
             <div className="mb-4 flex items-center gap-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary">
-                <span className="text-primary-foreground">E</span>
+              <div className="logo-wrapper">
+                <img 
+                  src="/assets/esummit-logo.png"
+                  alt="E-Summit 2026 Logo" 
+                  className="h-10 md:h-12 lg:h-14 w-auto object-contain"
+                />
               </div>
-              <span>E-Summit 2026</span>
             </div>
             <p className="mb-4 text-sm text-muted-foreground">
               India's premier entrepreneurship summit bringing together students, entrepreneurs, and investors.

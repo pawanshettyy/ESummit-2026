@@ -132,21 +132,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
               </Badge>
             </motion.div>
 
-            <TextReveal>
-              <Badge className="mb-4 bg-primary/10 text-primary hover:bg-primary/20">
-                January 23-24, 2026
-              </Badge>
-            </TextReveal>
-
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="mb-6 text-4xl md:text-6xl"
+              className="mb-6 flex justify-center items-center"
             >
-              <GradientText from="from-red-600" to="to-red-400">
-                E-Summit 2026
-              </GradientText>
+              <div className="logo-wrapper logo-wrapper-hero">
+                <img 
+                  src="/assets/esummit-logo.png"
+                  alt="E-Summit 2026 Logo" 
+                  className="h-40 md:h-48 lg:h-56 w-auto object-contain"
+                />
+              </div>
             </motion.h1>
 
             <WordReveal
