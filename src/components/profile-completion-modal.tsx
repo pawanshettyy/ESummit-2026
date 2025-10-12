@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "./ui/select";
 import { toast } from "sonner";
+import { API_BASE_URL } from "../lib/api";
 
 interface ProfileCompletionModalProps {
   isOpen: boolean;
@@ -49,8 +50,7 @@ export function ProfileCompletionModal({
 
     try {
       // Call your backend API to update user profile
-      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-      const response = await fetch(`${apiUrl}/api/v1/users/complete-profile`, {
+      const response = await fetch(`${API_BASE_URL}/users/complete-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

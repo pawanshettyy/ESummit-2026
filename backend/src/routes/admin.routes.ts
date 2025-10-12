@@ -2,8 +2,16 @@ import { Router, Request, Response } from 'express';
 import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
+import { adminLimiter } from '../middleware/rateLimit.middleware';
+import { requireAdmin } from '../middleware/adminRole.middleware';
 
 const router = Router();
+
+// Apply admin rate limiter to all admin routes
+router.use(adminLimiter);
+
+// Apply admin authentication to all routes
+router.use(requireAdmin);
 
 /**
  * Get all passes with user details (Admin only)
@@ -11,8 +19,6 @@ const router = Router();
  */
 router.get('/passes', async (_req: Request, res: Response) => {
   try {
-    // TODO: Add admin authentication middleware
-
     // Get all passes with user details
     const passes = await prisma.pass.findMany({
       include: {
@@ -78,8 +84,6 @@ router.get('/passes', async (_req: Request, res: Response) => {
  */
 router.get('/stats', async (_req: Request, res: Response) => {
   try {
-    // TODO: Add admin authentication middleware
-
     // Get comprehensive statistics
     const [totalPasses, activePasses, passes] = await Promise.all([
       prisma.pass.count(),
@@ -158,8 +162,6 @@ router.get('/stats', async (_req: Request, res: Response) => {
  */
 router.get('/pass-distribution', async (_req: Request, res: Response) => {
   try {
-    // TODO: Add admin authentication middleware
-
     const passes = await prisma.pass.groupBy({
       by: ['passType'],
       _count: {
@@ -185,8 +187,6 @@ router.get('/pass-distribution', async (_req: Request, res: Response) => {
  */
 router.get('/college-stats', async (_req: Request, res: Response) => {
   try {
-    // TODO: Add admin authentication middleware
-
     const users = await prisma.user.groupBy({
       by: ['college'],
       _count: {

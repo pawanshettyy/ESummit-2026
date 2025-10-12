@@ -4,10 +4,14 @@ import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { generateQRCode } from '../services/qrcode.service';
 import { generateUniqueIdentifiers } from '../utils/identifier.util';
+import { paymentLimiter } from '../middleware/rateLimit.middleware';
 import Razorpay from 'razorpay';
 import crypto from 'crypto';
 
 const router = Router();
+
+// Apply payment rate limiter to all payment routes
+router.use(paymentLimiter);
 
 // Initialize Razorpay (ensure env variables are set)
 const razorpay = new Razorpay({

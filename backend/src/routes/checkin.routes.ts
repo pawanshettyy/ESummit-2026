@@ -3,8 +3,12 @@ import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { verifyQRCode } from '../services/qrcode.service';
+import { scannerLimiter } from '../middleware/rateLimit.middleware';
 
 const router = Router();
+
+// Apply scanner rate limiter to all check-in routes
+router.use(scannerLimiter);
 
 /**
  * Scan QR code and verify pass
@@ -171,13 +175,6 @@ router.get('/pass/:passId', async (req: Request, res: Response) => {
             endTime: true,
           },
         },
-        admin: {
-          select: {
-            id: true,
-            email: true,
-            fullName: true,
-          },
-        },
       },
       orderBy: {
         checkInTime: 'desc',
@@ -274,12 +271,6 @@ router.get('/event/:eventId', async (req: Request, res: Response) => {
                 college: true,
               },
             },
-          },
-        },
-        admin: {
-          select: {
-            email: true,
-            fullName: true,
           },
         },
       },

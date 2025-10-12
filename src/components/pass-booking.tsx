@@ -40,6 +40,7 @@ import { motion } from "motion/react";
 import { GlowCard } from "./accentricity/glow-card";
 import { ShimmerButton } from "./accentricity/shimmer-button";
 import { GlassCard } from "./accentricity/glass-card";
+import { API_BASE_URL } from "../lib/api";
 import { PulseDot } from "./accentricity/pulse-dot";
 import {
   initiateRazorpayPayment,
@@ -92,7 +93,7 @@ export function PassBooking({
       try {
         // Check if user already has a pass
         const passResponse = await fetch(
-          `http://localhost:5000/api/v1/passes/user/${user.id}`
+          `${API_BASE_URL}/passes/user/${user.id}`
         );
         const passData = await passResponse.json();
 
@@ -106,7 +107,7 @@ export function PassBooking({
 
         // Fetch user profile for form pre-fill
         const response = await fetch(
-          `http://localhost:5000/api/v1/users/profile/${user.id}`
+          `${API_BASE_URL}/users/profile/${user.id}`
         );
         const data = await response.json();
 
@@ -272,7 +273,7 @@ export function PassBooking({
     // Check if user already has a pass
     try {
       const response = await fetch(
-        `http://localhost:5000/api/v1/passes/user/${user?.id}`
+        `${API_BASE_URL}/passes/user/${user?.id}`
       );
       const data = await response.json();
 
@@ -361,7 +362,7 @@ export function PassBooking({
       }
       
       // Create pass via API
-      const response = await fetch("http://localhost:5000/api/v1/passes/create", {
+      const response = await fetch(`${API_BASE_URL}/passes/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
