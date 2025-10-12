@@ -26,12 +26,6 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Checkbox } from "./ui/checkbox";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "./ui/tabs";
 import { Alert, AlertDescription } from "./ui/alert";
 import {
   Dialog,
@@ -1006,108 +1000,30 @@ export function PassBooking({
 
           <Card>
             <CardHeader>
-              <h3>Payment Details</h3>
+              <h3>Payment Summary</h3>
             </CardHeader>
             <CardContent className="space-y-6">
-              <div className="rounded-lg bg-muted p-4">
-                <div className="mb-2 flex items-center justify-between">
-                  <span className="text-sm">Order Total</span>
-                  <span className="text-2xl text-primary">
-                    ₹{totalPrice}
-                  </span>
+              <div className="rounded-lg bg-muted p-6 text-center">
+                <div className="mb-2 flex items-center justify-center gap-2">
+                  <CreditCard className="h-5 w-5 text-primary" />
+                  <span className="text-sm font-medium">Order Total</span>
                 </div>
-                <div className="text-xs text-muted-foreground">
-                  {selectedPassData.name} + Add-ons
+                <div className="text-3xl font-bold text-primary">
+                  ₹{totalPrice}
+                </div>
+                <div className="mt-2 text-sm text-muted-foreground">
+                  {selectedPassData.name}
+                  {totalAddons > 0 && ` + Add-ons (₹${totalAddons})`}
                 </div>
               </div>
 
-              <Tabs defaultValue="upi" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                  <TabsTrigger value="upi">UPI</TabsTrigger>
-                  <TabsTrigger value="card">Card</TabsTrigger>
-                  <TabsTrigger value="netbanking">
-                    Net Banking
-                  </TabsTrigger>
-                </TabsList>
-
-                <TabsContent value="upi" className="space-y-4">
-                  <div>
-                    <Label htmlFor="upi">UPI ID</Label>
-                    <Input
-                      id="upi"
-                      placeholder="yourname@upi"
-                      className="font-mono"
-                    />
-                  </div>
-                  <p className="text-xs text-muted-foreground">
-                    Enter your UPI ID to receive payment request
-                  </p>
-                </TabsContent>
-
-                <TabsContent value="card" className="space-y-4">
-                  <div>
-                    <Label htmlFor="cardNumber">
-                      Card Number
-                    </Label>
-                    <Input
-                      id="cardNumber"
-                      placeholder="1234 5678 9012 3456"
-                      className="font-mono"
-                    />
-                  </div>
-                  <div className="grid gap-4 md:grid-cols-2">
-                    <div>
-                      <Label htmlFor="expiry">
-                        Expiry Date
-                      </Label>
-                      <Input id="expiry" placeholder="MM/YY" />
-                    </div>
-                    <div>
-                      <Label htmlFor="cvv">CVV</Label>
-                      <Input
-                        id="cvv"
-                        placeholder="123"
-                        type="password"
-                        maxLength={3}
-                      />
-                    </div>
-                  </div>
-                </TabsContent>
-
-                <TabsContent
-                  value="netbanking"
-                  className="space-y-4"
-                >
-                  <div>
-                    <Label htmlFor="bank">Select Bank</Label>
-                    <Select>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Choose your bank" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="sbi">
-                          State Bank of India
-                        </SelectItem>
-                        <SelectItem value="hdfc">
-                          HDFC Bank
-                        </SelectItem>
-                        <SelectItem value="icici">
-                          ICICI Bank
-                        </SelectItem>
-                        <SelectItem value="axis">
-                          Axis Bank
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </TabsContent>
-              </Tabs>
-
               <Alert>
                 <Info className="h-4 w-4" />
-                <AlertDescription className="text-xs">
-                  Secure payment powered by Razorpay. Click "Pay" to proceed to the payment gateway.
-                  (Demo mode - Replace RAZORPAY_KEY_ID in /utils/razorpay.ts with your actual key)
+                <AlertDescription>
+                  <strong className="block mb-2">Testing Mode</strong>
+                  Payment gateway integration is currently disabled for testing. 
+                  Click "Proceed to Payment" to create your pass directly. 
+                  In production, you will be redirected to Razorpay's secure payment gateway.
                 </AlertDescription>
               </Alert>
 
@@ -1125,7 +1041,7 @@ export function PassBooking({
                   disabled={isProcessingPayment}
                 >
                   <CreditCard className="mr-2 h-4 w-4" />
-                  {isProcessingPayment ? "Processing..." : `Pay ₹${totalPrice}`}
+                  {isProcessingPayment ? "Processing..." : "Proceed to Payment"}
                 </Button>
               </div>
             </CardContent>

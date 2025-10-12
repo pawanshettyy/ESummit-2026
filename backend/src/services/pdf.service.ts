@@ -43,6 +43,20 @@ export class PDFService {
   private logoPath: string;
   private hasLogo: boolean;
 
+  // Red & White Theme Colors
+  private readonly colors = {
+    primaryRed: '#DC2626',      // Bright red
+    darkRed: '#991B1B',          // Dark red
+    lightRed: '#FEE2E2',         // Very light red
+    accentRed: '#EF4444',        // Medium red
+    white: '#FFFFFF',
+    lightGray: '#F9FAFB',
+    textDark: '#1F2937',
+    textGray: '#6B7280',
+    borderGray: '#E5E7EB',
+    successGreen: '#059669'
+  };
+
   constructor() {
     this.logoPath = path.join(__dirname, '../assets/logo.png');
     this.hasLogo = fs.existsSync(this.logoPath);
@@ -53,7 +67,7 @@ export class PDFService {
   }
 
   /**
-   * Generate Enhanced Pass PDF with Beautiful Design
+   * Generate Enhanced Pass PDF with Red & White Design
    */
   async generatePassPDF(data: PassPDFData): Promise<Buffer> {
     return new Promise(async (resolve, reject) => {
@@ -76,14 +90,14 @@ export class PDFService {
         doc.on('end', () => resolve(Buffer.concat(chunks)));
         doc.on('error', reject);
 
-        // Generate QR Code with higher quality
+        // Generate QR Code with black color
         const qrBuffer = await QRCode.toBuffer(data.qrData, {
           errorCorrectionLevel: 'H',
           type: 'png',
           width: 500,
           margin: 1,
           color: {
-            dark: '#1e1b4b',
+            dark: '#000000',
             light: '#FFFFFF'
           }
         });
@@ -91,27 +105,28 @@ export class PDFService {
         const pageWidth = doc.page.width;
         const pageHeight = doc.page.height;
 
-        // === HEADER SECTION WITH GRADIENT ===
-        this.drawGradientHeader(doc, pageWidth);
+        // === HEADER SECTION ===
+        this.drawHeader(doc, pageWidth);
 
-        // Logo and Title
-        const headerY = 40;
+        // Logo and Title (perfectly aligned)
+        const headerY = 45;
         if (this.hasLogo) {
           doc.image(this.logoPath, 50, headerY, { width: 70, height: 70 });
         }
 
+        const titleX = this.hasLogo ? 135 : 50;
         doc.fontSize(36)
-           .fillColor('#ffffff')
+           .fillColor(this.colors.white)
            .font('Helvetica-Bold')
-           .text('E-SUMMIT', this.hasLogo ? 140 : 50, headerY + 10);
+           .text('E-SUMMIT', titleX, headerY + 8);
         
         doc.fontSize(20)
-           .fillColor('#e0e7ff')
+           .fillColor(this.colors.lightRed)
            .font('Helvetica')
-           .text('2026', this.hasLogo ? 140 : 50, headerY + 50);
+           .text('2026', titleX, headerY + 52);
 
-        // Status Badge
-        this.drawStatusBadge(doc, data.status, pageWidth - 150, headerY + 20);
+        // Status Badge (aligned to right with margin)
+        this.drawStatusBadge(doc, data.status, pageWidth - 160, headerY + 25);
 
         // === PASS TYPE BANNER ===
         const bannerY = 150;
@@ -122,11 +137,11 @@ export class PDFService {
         this.drawAttendeeCard(doc, data, cardY);
 
         // === QR CODE SECTION ===
-        const qrY = 440;
+        const qrY = 450;
         this.drawQRSection(doc, qrBuffer, qrY, pageWidth);
 
         // === INCLUSIONS SECTION ===
-        const inclusionsY = 620;
+        const inclusionsY = 630;
         this.drawInclusions(doc, data, inclusionsY);
 
         // === FOOTER ===
@@ -141,318 +156,302 @@ export class PDFService {
   }
 
   /**
-   * Draw gradient header background
+   * Draw red gradient header background
    */
-  private drawGradientHeader(doc: PDFKit.PDFDocument, width: number): void {
-    // Main header rectangle
+  private drawHeader(doc: PDFKit.PDFDocument, width: number): void {
+    // Main header rectangle - solid red
     doc.rect(0, 0, width, 140)
-       .fill('#4f46e5');
+       .fill(this.colors.primaryRed);
     
     // Accent shapes for visual interest
     doc.save();
-    doc.opacity(0.3);
+    doc.opacity(0.15);
     
-    // Circle accent
+    // Circle accent 1
     doc.circle(width - 60, 30, 80)
-       .fill('#818cf8');
+       .fill(this.colors.white);
     
     // Circle accent 2
-    doc.circle(50, 100, 40)
-       .fill('#312e81');
+    doc.circle(50, 110, 50)
+       .fill(this.colors.darkRed);
     
     doc.restore();
   }
 
   /**
-   * Draw status badge
+   * Draw status badge (perfectly aligned)
    */
   private drawStatusBadge(doc: PDFKit.PDFDocument, status: string, x: number, y: number): void {
     const isActive = status === 'Active';
-    const bgColor = isActive ? '#10b981' : '#6b7280';
+    const bgColor = isActive ? this.colors.successGreen : this.colors.textGray;
     const width = 100;
-    const height = 30;
+    const height = 32;
 
     // Badge background with rounded corners
-    doc.roundedRect(x, y, width, height, 15)
+    doc.roundedRect(x, y, width, height, 16)
        .fill(bgColor);
 
-    // Badge text
-    doc.fontSize(12)
-       .fillColor('#ffffff')
+    // Badge text (centered perfectly)
+    doc.fontSize(11)
+       .fillColor(this.colors.white)
        .font('Helvetica-Bold')
-       .text(status.toUpperCase(), x, y + 9, {
+       .text(status.toUpperCase(), x, y + 10, {
          width: width,
          align: 'center'
        });
   }
 
   /**
-   * Draw pass type banner
+   * Draw pass type banner (perfectly aligned)
    */
   private drawPassTypeBanner(doc: PDFKit.PDFDocument, passType: string, y: number, width: number): void {
     // Banner background
     doc.rect(0, y, width, 60)
-       .fill('#f8fafc');
+       .fill(this.colors.lightGray);
 
-    // Accent line
-    doc.rect(0, y, 8, 60)
-       .fill('#6366f1');
+    // Red accent line on left
+    doc.rect(0, y, 6, 60)
+       .fill(this.colors.primaryRed);
 
-    // Pass type text
-    doc.fontSize(28)
-       .fillColor('#1e293b')
+    // Pass type text (perfectly aligned)
+    doc.fontSize(26)
+       .fillColor(this.colors.textDark)
        .font('Helvetica-Bold')
-       .text(passType.toUpperCase(), 40, y + 15, {
-         width: width - 80,
+       .text(passType.toUpperCase(), 35, y + 17, {
+         width: width - 70,
          align: 'left'
        });
   }
 
   /**
-   * Draw attendee information card
+   * Draw attendee information card (perfectly aligned)
    */
   private drawAttendeeCard(doc: PDFKit.PDFDocument, data: PassPDFData, y: number): void {
     const cardX = 40;
     const cardWidth = 515;
-    const cardHeight = 170;
+    const cardHeight = 180;
 
     // Card shadow effect
     doc.save();
-    doc.opacity(0.1);
-    doc.roundedRect(cardX + 3, y + 3, cardWidth, cardHeight, 12)
+    doc.opacity(0.08);
+    doc.roundedRect(cardX + 4, y + 4, cardWidth, cardHeight, 8)
        .fill('#000000');
     doc.restore();
 
-    // Card background
-    doc.roundedRect(cardX, y, cardWidth, cardHeight, 12)
-       .fill('#ffffff')
-       .stroke('#e2e8f0')
-       .lineWidth(1);
+    // Card background with red border
+    doc.roundedRect(cardX, y, cardWidth, cardHeight, 8)
+       .fillAndStroke(this.colors.white, this.colors.primaryRed)
+       .lineWidth(2);
 
-    // Section title
-    doc.fontSize(11)
-       .fillColor('#64748b')
+    // Section title (perfectly aligned)
+    doc.fontSize(10)
+       .fillColor(this.colors.textGray)
        .font('Helvetica-Bold')
-       .text('ATTENDEE INFORMATION', cardX + 20, y + 20);
+       .text('ATTENDEE INFORMATION', cardX + 25, y + 22);
 
-    let detailY = y + 50;
-    const lineHeight = 22;
+    // Red underline for title
+    doc.rect(cardX + 25, y + 36, 140, 2)
+       .fill(this.colors.primaryRed);
+
+    let detailY = y + 55;
+    const lineHeight = 24;
 
     // Name
-    this.drawDetailRow(doc, '👤', 'Name', data.userName, cardX + 20, detailY);
+    this.drawDetailRow(doc, 'NAME', data.userName, cardX + 25, detailY);
     detailY += lineHeight;
 
     // Email
-    this.drawDetailRow(doc, '✉', 'Email', data.userEmail, cardX + 20, detailY);
+    this.drawDetailRow(doc, 'EMAIL', data.userEmail, cardX + 25, detailY);
     detailY += lineHeight;
 
     // College (if available)
     if (data.userCollege) {
-      this.drawDetailRow(doc, '🎓', 'College', data.userCollege, cardX + 20, detailY);
+      this.drawDetailRow(doc, 'COLLEGE', data.userCollege, cardX + 25, detailY);
       detailY += lineHeight;
     }
 
     // Phone (if available)
     if (data.userPhone) {
-      this.drawDetailRow(doc, '📱', 'Phone', data.userPhone, cardX + 20, detailY);
+      this.drawDetailRow(doc, 'PHONE', data.userPhone, cardX + 25, detailY);
       detailY += lineHeight;
     }
 
     // Pass ID
-    this.drawDetailRow(doc, '🎫', 'Pass ID', data.passId, cardX + 20, detailY);
+    this.drawDetailRow(doc, 'PASS ID', data.passId, cardX + 25, detailY);
   }
 
   /**
-   * Draw a detail row with icon, label, and value
+   * Draw a detail row with label and value (perfectly aligned)
    */
-  private drawDetailRow(doc: PDFKit.PDFDocument, icon: string, label: string, value: string, x: number, y: number): void {
-    // Draw colored icon circle
-    const iconColors: { [key: string]: string } = {
-      '👤': '#3b82f6',
-      '✉': '#8b5cf6',
-      '🎓': '#ec4899',
-      '📱': '#10b981',
-      '🎫': '#f59e0b'
-    };
-    
-    const iconLabels: { [key: string]: string } = {
-      '👤': 'U',
-      '✉': '@',
-      '🎓': 'C',
-      '📱': 'P',
-      '🎫': 'T'
-    };
+  private drawDetailRow(doc: PDFKit.PDFDocument, label: string, value: string, x: number, y: number): void {
+    // Red bullet point
+    doc.circle(x + 4, y + 6, 3)
+       .fill(this.colors.primaryRed);
 
-    const color = iconColors[icon] || '#6366f1';
-    const iconText = iconLabels[icon] || icon;
-
-    doc.circle(x + 6, y + 5, 8)
-       .fill(color);
-    
+    // Label (fixed width for alignment)
     doc.fontSize(9)
-       .fillColor('#ffffff')
+       .fillColor(this.colors.textGray)
        .font('Helvetica-Bold')
-       .text(iconText, x + 2, y + 1, { width: 8, align: 'center' });
+       .text(label + ':', x + 15, y, { width: 80, align: 'left' });
 
-    doc.fontSize(10)
-       .fillColor('#64748b')
+    // Value (aligned after label)
+    doc.fontSize(9)
+       .fillColor(this.colors.textDark)
        .font('Helvetica')
-       .text(`${label}: `, x + 20, y, { continued: true })
-       .fillColor('#1e293b')
-       .font('Helvetica-Bold')
-       .text(value);
+       .text(value, x + 100, y);
   }
 
   /**
-   * Draw QR code section with enhanced styling
+   * Draw QR code section (perfectly centered)
    */
   private drawQRSection(doc: PDFKit.PDFDocument, qrBuffer: Buffer, y: number, pageWidth: number): void {
     const qrSize = 140;
-    const qrX = (pageWidth - qrSize) / 2;
+    const containerPadding = 12;
+    const containerSize = qrSize + (containerPadding * 2);
+    const containerX = (pageWidth - containerSize) / 2;
 
-    // QR Container with gradient border
-    const containerSize = qrSize + 20;
-    const containerX = qrX - 10;
-    
     // Outer glow effect
     doc.save();
-    doc.opacity(0.2);
-    doc.roundedRect(containerX - 5, y - 5, containerSize + 10, containerSize + 10, 15)
-       .fill('#6366f1');
+    doc.opacity(0.15);
+    doc.roundedRect(containerX - 6, y - 6, containerSize + 12, containerSize + 12, 12)
+       .fill(this.colors.primaryRed);
     doc.restore();
 
-    // QR background
-    doc.roundedRect(containerX, y, containerSize, containerSize, 12)
-       .fill('#ffffff')
-       .stroke('#6366f1')
+    // QR background with red border
+    doc.roundedRect(containerX, y, containerSize, containerSize, 8)
+       .fillAndStroke(this.colors.white, this.colors.primaryRed)
        .lineWidth(3);
 
-    // QR Code
-    doc.image(qrBuffer, qrX, y + 10, { width: qrSize, height: qrSize });
+    // QR Code (perfectly centered)
+    const qrX = containerX + containerPadding;
+    const qrY = y + containerPadding;
+    doc.image(qrBuffer, qrX, qrY, { width: qrSize, height: qrSize });
 
-    // Scan instruction
+    // Scan instruction (centered)
     doc.fontSize(10)
-       .fillColor('#64748b')
+       .fillColor(this.colors.textGray)
        .font('Helvetica')
-       .text('Scan this code at the venue', 0, y + containerSize + 15, {
+       .text('Scan this code at the venue', 0, y + containerSize + 18, {
          width: pageWidth,
          align: 'center'
        });
   }
 
   /**
-   * Draw inclusions section with modern icons
+   * Draw inclusions section (perfectly aligned)
    */
   private drawInclusions(doc: PDFKit.PDFDocument, data: PassPDFData, y: number): void {
     // Section header
-    doc.fontSize(16)
-       .fillColor('#1e293b')
+    doc.fontSize(15)
+       .fillColor(this.colors.textDark)
        .font('Helvetica-Bold')
-       .text('What\'s Included', 40, y);
+       .text('WHAT\'S INCLUDED', 40, y);
 
-    // Decorative underline
-    doc.moveTo(40, y + 25)
-       .lineTo(120, y + 25)
-       .strokeColor('#6366f1')
-       .lineWidth(2)
-       .stroke();
+    // Red decorative underline
+    doc.rect(40, y + 22, 100, 3)
+       .fill(this.colors.primaryRed);
 
-    const inclusionsY = y + 40;
+    const inclusionsY = y + 42;
     const leftCol = 50;
     const rightCol = 310;
-    let currentY = inclusionsY;
+    let leftY = inclusionsY;
+    let rightY = inclusionsY;
+    const itemHeight = 24;
 
-    // Always included items
-    this.drawInclusionItem(doc, '🎤', 'All keynote sessions', leftCol, currentY);
-    currentY += 25;
-    this.drawInclusionItem(doc, '🤝', 'Networking events', leftCol, currentY);
-    
-    currentY = inclusionsY;
-    this.drawInclusionItem(doc, '💬', 'Panel discussions', rightCol, currentY);
-    currentY += 25;
-    
+    // Left column - always included items
+    this.drawInclusionItem(doc, 'All keynote sessions', leftCol, leftY);
+    leftY += itemHeight;
+    this.drawInclusionItem(doc, 'Networking events', leftCol, leftY);
+    leftY += itemHeight;
+    this.drawInclusionItem(doc, 'Panel discussions', leftCol, leftY);
+
+    // Right column - conditional items
     if (data.hasWorkshopAccess) {
-      this.drawInclusionItem(doc, '🛠', 'Workshop access', rightCol, currentY);
-      currentY += 25;
+      this.drawInclusionItem(doc, 'Workshop access', rightCol, rightY);
+      rightY += itemHeight;
     }
     
     if (data.hasMeals) {
-      this.drawInclusionItem(doc, '🍽', 'Meals and refreshments', rightCol, currentY);
-      currentY += 25;
+      this.drawInclusionItem(doc, 'Meals and refreshments', rightCol, rightY);
+      rightY += itemHeight;
     }
     
     if (data.hasMerchandise) {
-      this.drawInclusionItem(doc, '🎁', 'Merchandise kit', rightCol, currentY);
+      this.drawInclusionItem(doc, 'Merchandise kit', rightCol, rightY);
     }
   }
 
   /**
-   * Draw individual inclusion item
+   * Draw individual inclusion item (perfectly aligned)
    */
-  private drawInclusionItem(doc: PDFKit.PDFDocument, icon: string, text: string, x: number, y: number): void {
-    // Checkmark circle
-    doc.circle(x, y + 5, 8)
-       .fill('#10b981');
+  private drawInclusionItem(doc: PDFKit.PDFDocument, text: string, x: number, y: number): void {
+    // Red checkmark circle
+    doc.circle(x + 6, y + 6, 7)
+       .fill(this.colors.primaryRed);
     
-    doc.fontSize(11)
-       .fillColor('#ffffff')
+    // White checkmark
+    doc.fontSize(10)
+       .fillColor(this.colors.white)
        .font('Helvetica-Bold')
-       .text('✓', x - 3.5, y + 1, {
-         width: 16,
+       .text('✓', x + 2.5, y + 2, {
+         width: 8,
          align: 'center'
        });
 
-    // Item text (without emoji)
-    const textMap: { [key: string]: string } = {
-      '🎤': 'Keynote',
-      '🤝': 'Network',
-      '💬': 'Panels',
-      '🛠': 'Workshop',
-      '🍽': 'Meals',
-      '🎁': 'Merch'
-    };
-    
-    const prefix = textMap[icon] || '';
-    
-    doc.fontSize(11)
-       .fillColor('#1e293b')
+    // Item text (aligned)
+    doc.fontSize(10)
+       .fillColor(this.colors.textDark)
        .font('Helvetica')
-       .text(`${prefix}: ${text.replace(/[^\x00-\x7F]/g, '')}`, x + 20, y + 1);
+       .text(text, x + 22, y + 2);
   }
 
   /**
-   * Draw footer with event details
+   * Draw footer with event details (perfectly aligned)
    */
   private drawFooter(doc: PDFKit.PDFDocument, pageHeight: number): void {
     const footerY = pageHeight - 100;
 
     // Footer background
     doc.rect(0, footerY, doc.page.width, 100)
-       .fill('#f8fafc');
+       .fill(this.colors.lightGray);
 
-    // Event details
+    // Red accent line at top
+    doc.rect(0, footerY, doc.page.width, 3)
+       .fill(this.colors.primaryRed);
+
+    // Event details (aligned)
     doc.fontSize(10)
-       .fillColor('#1e293b')
+       .fillColor(this.colors.textDark)
        .font('Helvetica-Bold')
-       .text('Dates: January 23-24, 2026', 50, footerY + 20);
+       .text('EVENT DATES', 50, footerY + 20);
     
     doc.fontSize(9)
-       .fillColor('#64748b')
+       .fillColor(this.colors.textGray)
        .font('Helvetica')
-       .text('Venue: Thakur College of Engineering, Kandivali (E), Mumbai', 50, footerY + 40)
-       .text('Time: 9:00 AM - 6:00 PM (Both Days)', 50, footerY + 55);
+       .text('January 23-24, 2026', 50, footerY + 38);
 
-    // Support info
+    doc.fontSize(10)
+       .fillColor(this.colors.textDark)
+       .font('Helvetica-Bold')
+       .text('VENUE', 50, footerY + 58);
+    
+    doc.fontSize(9)
+       .fillColor(this.colors.textGray)
+       .font('Helvetica')
+       .text('Thakur College of Engineering, Kandivali (E), Mumbai', 50, footerY + 76);
+
+    // Support info (centered)
     doc.fontSize(8)
-       .fillColor('#94a3b8')
-       .text('Support: support@esummit2026.com | +91 98765 43210', 0, footerY + 78, {
+       .fillColor(this.colors.textGray)
+       .font('Helvetica')
+       .text('SUPPORT: support@esummit2026.com | +91 98765 43210', 0, footerY + 88, {
          width: doc.page.width,
          align: 'center'
        });
   }
 
   /**
-   * Generate Invoice PDF (kept original with minor improvements)
+   * Generate Invoice PDF with Red & White Theme
    */
   async generateInvoicePDF(data: InvoicePDFData): Promise<Buffer> {
     return new Promise((resolve, reject) => {
@@ -475,122 +474,424 @@ export class PDFService {
         doc.on('end', () => resolve(Buffer.concat(chunks)));
         doc.on('error', reject);
 
-        // Header with logo
+        // Header with logo (aligned)
         if (this.hasLogo) {
           doc.image(this.logoPath, 50, 45, { width: 80, height: 80 });
         }
 
-        doc.fontSize(28).fillColor('#6366f1').font('Helvetica-Bold').text('INVOICE', 400, 60);
-        doc.fontSize(12).fillColor('#6b7280').font('Helvetica').text(`#${data.invoiceNumber}`, 400, 95);
-        doc.text(`Date: ${new Date(data.invoiceDate).toLocaleDateString('en-IN')}`, 400, 115);
-
-        // Company Details
-        doc.fontSize(14).fillColor('#1f2937').font('Helvetica-Bold').text('E-Summit 2026', 50, 150);
-        doc.fontSize(10).fillColor('#6b7280').font('Helvetica');
-        doc.text('Thakur College of Engineering', 50, 170);
-        doc.text('Kandivali (E), Mumbai - 400101', 50, 185);
-        doc.text('Maharashtra, India', 50, 200);
-        doc.text('Email: billing@esummit2026.com', 50, 215);
-
-        // Bill To Section
-        doc.fontSize(12).fillColor('#1f2937').font('Helvetica-Bold').text('BILL TO:', 50, 260);
-        doc.fontSize(10).fillColor('#6b7280').font('Helvetica');
-        doc.text(data.userName, 50, 280);
-        doc.text(data.userEmail, 50, 295);
+        // Invoice title (right aligned)
+        doc.fontSize(32)
+           .fillColor(this.colors.primaryRed)
+           .font('Helvetica-Bold')
+           .text('INVOICE', 400, 55);
         
+        doc.fontSize(11)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text(`#${data.invoiceNumber}`, 400, 95, { align: 'left' });
+        
+        doc.text(`Date: ${new Date(data.invoiceDate).toLocaleDateString('en-IN')}`, 400, 112, { align: 'left' });
+
+        // Red separator line
+        doc.rect(400, 130, 145, 2).fill(this.colors.primaryRed);
+
+        // Company Details (aligned)
+        doc.fontSize(13)
+           .fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text('E-Summit 2026', 50, 150);
+        
+        doc.fontSize(9)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('Thakur College of Engineering', 50, 170)
+           .text('Kandivali (E), Mumbai - 400101', 50, 184)
+           .text('Maharashtra, India', 50, 198)
+           .text('Email: billing@esummit2026.com', 50, 212);
+
+        // Bill To Section (aligned)
+        doc.fontSize(11)
+           .fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text('BILL TO:', 50, 260);
+        
+        // Red underline
+        doc.rect(50, 275, 50, 2).fill(this.colors.primaryRed);
+        
+        doc.fontSize(9)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text(data.userName, 50, 285)
+           .text(data.userEmail, 50, 299);
+        
+        let billToY = 313;
         if (data.userPhone) {
-          doc.text(data.userPhone, 50, 310);
+          doc.text(data.userPhone, 50, billToY);
+          billToY += 14;
         }
         
         if (data.userCollege) {
-          doc.text(data.userCollege, 50, data.userPhone ? 325 : 310);
+          doc.text(data.userCollege, 50, billToY);
         }
 
-        // Table Header
+        // Table Header (red background, perfectly aligned)
         const tableTop = 370;
-        doc.fontSize(10).fillColor('#ffffff').font('Helvetica-Bold');
+        doc.rect(50, tableTop, 495, 28).fill(this.colors.primaryRed);
         
-        doc.rect(50, tableTop, 495, 25).fill('#6366f1');
+        doc.fontSize(10)
+           .fillColor(this.colors.white)
+           .font('Helvetica-Bold')
+           .text('DESCRIPTION', 60, tableTop + 10)
+           .text('QTY', 380, tableTop + 10)
+           .text('AMOUNT', 470, tableTop + 10);
+
+        // Table Content (aligned)
+        let currentY = tableTop + 38;
+        const rowHeight = 26;
         
-        doc.text('Description', 60, tableTop + 8);
-        doc.text('Qty', 350, tableTop + 8);
-        doc.text('Amount', 450, tableTop + 8);
+        doc.fontSize(9)
+           .fillColor(this.colors.textDark)
+           .font('Helvetica');
 
-        // Table Content
-        let currentY = tableTop + 35;
-        doc.fillColor('#1f2937').font('Helvetica');
-
+        // Pass row
         doc.text(data.passType, 60, currentY);
-        doc.text('1', 350, currentY);
-        doc.text(`₹${data.passPrice.toLocaleString('en-IN')}`, 450, currentY);
-        currentY += 25;
+        doc.text('1', 380, currentY);
+        doc.text(`INR ${data.passPrice.toLocaleString('en-IN')}`, 470, currentY);
+        currentY += rowHeight;
 
+        // Meals row
         if (data.hasMeals) {
           doc.text('Meals & Refreshments', 60, currentY);
-          doc.text('1', 350, currentY);
-          doc.text(`₹${data.mealsPrice.toLocaleString('en-IN')}`, 450, currentY);
-          currentY += 25;
+          doc.text('1', 380, currentY);
+          doc.text(`INR ${data.mealsPrice.toLocaleString('en-IN')}`, 470, currentY);
+          currentY += rowHeight;
         }
 
+        // Merchandise row
         if (data.hasMerchandise) {
           doc.text('Merchandise Kit', 60, currentY);
-          doc.text('1', 350, currentY);
-          doc.text(`₹${data.merchandisePrice.toLocaleString('en-IN')}`, 450, currentY);
-          currentY += 25;
+          doc.text('1', 380, currentY);
+          doc.text(`INR ${data.merchandisePrice.toLocaleString('en-IN')}`, 470, currentY);
+          currentY += rowHeight;
         }
 
+        // Separator line
         currentY += 10;
-        doc.moveTo(50, currentY).lineTo(545, currentY).strokeColor('#e5e7eb').lineWidth(1).stroke();
+        doc.rect(50, currentY, 495, 1).fill(this.colors.borderGray);
         currentY += 20;
 
-        doc.fillColor('#6b7280').font('Helvetica');
-        doc.text('Subtotal:', 350, currentY);
-        doc.fillColor('#1f2937').text(`₹${data.subtotal.toLocaleString('en-IN')}`, 450, currentY);
+        // Subtotal (aligned)
+        doc.fontSize(9)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('Subtotal:', 380, currentY);
+        
+        doc.fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text(`INR ${data.subtotal.toLocaleString('en-IN')}`, 470, currentY);
         currentY += 20;
 
-        doc.fillColor('#6b7280').text('GST (18%):', 350, currentY);
-        doc.fillColor('#1f2937').text(`₹${data.gstAmount.toLocaleString('en-IN')}`, 450, currentY);
+        // GST (aligned)
+        doc.fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('GST (18%):', 380, currentY);
+        
+        doc.fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text(`INR ${data.gstAmount.toLocaleString('en-IN')}`, 470, currentY);
         currentY += 20;
 
+        // Total section (red background, aligned)
         currentY += 10;
-        doc.rect(50, currentY, 495, 30).fill('#f3f4f6');
-        doc.fontSize(12).fillColor('#1f2937').font('Helvetica-Bold');
-        doc.text('TOTAL:', 350, currentY + 8);
-        doc.text(`₹${data.total.toLocaleString('en-IN')}`, 450, currentY + 8);
+        doc.rect(50, currentY, 495, 32).fill(this.colors.lightRed);
+        
+        doc.fontSize(11)
+           .fillColor(this.colors.primaryRed)
+           .font('Helvetica-Bold')
+           .text('TOTAL:', 380, currentY + 10);
+        
+        doc.fontSize(12)
+           .text(`INR ${data.total.toLocaleString('en-IN')}`, 470, currentY + 10);
 
-        // Payment Details
+        // Payment Details (aligned)
         currentY += 60;
-        doc.fontSize(12).fillColor('#6b7280').font('Helvetica-Bold').text('PAYMENT DETAILS', 50, currentY);
-        currentY += 25;
+        doc.fontSize(11)
+           .fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text('PAYMENT DETAILS', 50, currentY);
+        
+        // Red underline
+        doc.rect(50, currentY + 16, 110, 2).fill(this.colors.primaryRed);
+        currentY += 28;
 
-        doc.fontSize(10).fillColor('#1f2937').font('Helvetica');
-        doc.text(`Payment Method: `, 50, currentY, { continued: true }).font('Helvetica-Bold').text(data.paymentMethod);
-        currentY += 20;
+        doc.fontSize(9)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('Payment Method: ', 50, currentY, { continued: true })
+           .fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text(data.paymentMethod);
+        currentY += 18;
 
         if (data.transactionId) {
-          doc.font('Helvetica').text(`Transaction ID: `, 50, currentY, { continued: true }).font('Helvetica-Bold').text(data.transactionId);
-          currentY += 20;
+          doc.fillColor(this.colors.textGray)
+             .font('Helvetica')
+             .text('Transaction ID: ', 50, currentY, { continued: true })
+             .fillColor(this.colors.textDark)
+             .font('Helvetica-Bold')
+             .text(data.transactionId);
+          currentY += 18;
         }
 
-        const statusColor = data.paymentStatus === 'PAID' ? '#10b981' : '#ef4444';
-        doc.font('Helvetica').text(`Status: `, 50, currentY, { continued: true })
+        const statusColor = data.paymentStatus === 'PAID' ? this.colors.successGreen : this.colors.primaryRed;
+        doc.fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('Status: ', 50, currentY, { continued: true })
            .fillColor(statusColor)
            .font('Helvetica-Bold')
            .text(`✓ ${data.paymentStatus}`);
 
-        // Footer
-        doc.fontSize(9).fillColor('#6b7280').font('Helvetica');
-        doc.text('Thank you for your purchase! We look forward to seeing you at E-Summit 2026.', 50, 720, {
-          align: 'center',
-          width: 495
-        });
-        doc.text('For queries, contact: support@esummit2026.com', {
-          align: 'center'
-        });
+        // Footer (centered, aligned)
+        doc.fontSize(8)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('Thank you for your purchase! We look forward to seeing you at E-Summit 2026.', 50, 715, {
+             align: 'center',
+             width: 495
+           })
+           .text('For queries, contact: support@esummit2026.com', 50, 730, {
+             align: 'center',
+             width: 495
+           });
 
         doc.end();
       } catch (error) {
         console.error('Error generating invoice PDF:', error);
+        reject(error);
+      }
+    });
+  }
+
+  /**
+   * Generate Personalized Schedule PDF based on user's passes
+   */
+  async generateSchedulePDF(data: {
+    userName: string;
+    userEmail: string;
+    passes: Array<{
+      passType: string;
+      passId: string;
+      hasMeals: boolean;
+      hasMerchandise: boolean;
+      hasWorkshopAccess: boolean;
+    }>;
+  }): Promise<Buffer> {
+    return new Promise((resolve, reject) => {
+      try {
+        const doc = new PDFDocument({
+          size: 'A4',
+          margins: { top: 50, bottom: 50, left: 50, right: 50 },
+          info: {
+            Title: `E-Summit 2026 - My Schedule`,
+            Author: 'E-Summit 2026',
+            Subject: 'Event Schedule',
+            Keywords: 'schedule, event, esummit',
+            Creator: 'E-Summit Platform',
+            Producer: 'E-Summit 2026'
+          }
+        });
+
+        const chunks: Buffer[] = [];
+        doc.on('data', (chunk) => chunks.push(chunk));
+        doc.on('end', () => resolve(Buffer.concat(chunks)));
+        doc.on('error', reject);
+
+        // Event schedule data (matching pass-events.ts structure)
+        const eventSchedule = {
+          day1: [
+            { time: "09:00 - 09:30", title: "Registration & Welcome", category: "Networking", venue: "Main Entrance" },
+            { time: "09:30 - 10:30", title: "Inaugural Ceremony", category: "Keynote", venue: "Main Auditorium" },
+            { time: "10:45 - 12:00", title: "Keynote: Building Scalable Startups", category: "Keynote", venue: "Main Auditorium" },
+            { time: "12:00 - 13:00", title: "Networking Lunch", category: "Networking", venue: "Food Court" },
+            { time: "13:00 - 15:00", title: "B-Plan Competition - Round 1", category: "Competition", venue: "Conference Hall B" },
+            { time: "15:30 - 17:00", title: "Panel: Future of AI in Business", category: "Panel", venue: "Main Auditorium" },
+            { time: "17:30 - 19:00", title: "Startup Showcase & Networking", category: "Networking", venue: "Exhibition Area" },
+          ],
+          day2: [
+            { time: "09:00 - 10:30", title: "Keynote: From Idea to IPO", category: "Keynote", venue: "Main Auditorium" },
+            { time: "11:00 - 12:30", title: "Workshop: Financial Planning for Startups", category: "Workshop", venue: "Workshop Hall A" },
+            { time: "12:30 - 13:30", title: "Lunch & Networking", category: "Networking", venue: "Food Court" },
+            { time: "13:30 - 15:00", title: "Panel: Fundraising Strategies", category: "Panel", venue: "Main Auditorium" },
+            { time: "15:30 - 17:00", title: "Closing Ceremony & Prize Distribution", category: "Keynote", venue: "Main Auditorium" },
+            { time: "17:30 - 19:30", title: "Networking Dinner with Speakers", category: "Networking", venue: "Banquet Hall" },
+          ]
+        };
+
+        // Determine which events user has access to based on pass types
+        let eligibleEvents: any[] = [];
+        const passTypes = data.passes.map(p => p.passType);
+        
+        if (passTypes.some(pt => pt.includes('Gold'))) {
+          eligibleEvents = [...eligibleEvents, ...eventSchedule.day1];
+        }
+        if (passTypes.some(pt => pt.includes('Silver'))) {
+          eligibleEvents = [...eligibleEvents, ...eventSchedule.day2];
+        }
+        if (passTypes.some(pt => pt.includes('Platinum') || pt.includes('Group'))) {
+          eligibleEvents = [...eventSchedule.day1, ...eventSchedule.day2];
+        }
+
+        // Remove duplicates
+        eligibleEvents = eligibleEvents.filter((event, index, self) =>
+          index === self.findIndex((e) => e.title === event.title)
+        );
+
+        // Header
+        doc.rect(0, 0, doc.page.width, 120).fill(this.colors.primaryRed);
+        
+        if (this.hasLogo) {
+          doc.image(this.logoPath, 50, 25, { width: 60, height: 60 });
+        }
+
+        doc.fontSize(28)
+           .fillColor(this.colors.white)
+           .font('Helvetica-Bold')
+           .text('MY SCHEDULE', this.hasLogo ? 125 : 50, 40);
+
+        doc.fontSize(14)
+           .fillColor(this.colors.lightRed)
+           .font('Helvetica')
+           .text('E-Summit 2026 | January 23-24, 2026', this.hasLogo ? 125 : 50, 75);
+
+        // User Info
+        let currentY = 150;
+        doc.fontSize(16)
+           .fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text(data.userName, 50, currentY);
+        
+        currentY += 25;
+        doc.fontSize(10)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text(data.userEmail, 50, currentY);
+
+        // Pass Info
+        currentY += 30;
+        doc.fontSize(12)
+           .fillColor(this.colors.textDark)
+           .font('Helvetica-Bold')
+           .text('Your Passes:', 50, currentY);
+        
+        currentY += 20;
+        data.passes.forEach(pass => {
+          doc.fontSize(10)
+             .fillColor(this.colors.textGray)
+             .font('Helvetica')
+             .text(`• ${pass.passType} (${pass.passId})`, 50, currentY);
+          currentY += 18;
+        });
+
+        // Event Schedule
+        currentY += 20;
+        doc.fontSize(14)
+           .fillColor(this.colors.primaryRed)
+           .font('Helvetica-Bold')
+           .text('YOUR EVENT SCHEDULE', 50, currentY);
+        
+        doc.rect(50, currentY + 18, 100, 2).fill(this.colors.primaryRed);
+        currentY += 35;
+
+        // Day 1 Events
+        const day1Events = eligibleEvents.filter(e => eventSchedule.day1.some(d1 => d1.title === e.title));
+        if (day1Events.length > 0) {
+          doc.fontSize(12)
+             .fillColor(this.colors.textDark)
+             .font('Helvetica-Bold')
+             .text('DAY 1 - January 23, 2026', 50, currentY);
+          currentY += 25;
+
+          day1Events.forEach(event => {
+            if (currentY > 700) {
+              doc.addPage();
+              currentY = 50;
+            }
+
+            doc.rect(50, currentY, 495, 60).fillAndStroke(this.colors.lightGray, this.colors.borderGray);
+            
+            doc.fontSize(10)
+               .fillColor(this.colors.primaryRed)
+               .font('Helvetica-Bold')
+               .text(event.time, 60, currentY + 10);
+            
+            doc.fontSize(11)
+               .fillColor(this.colors.textDark)
+               .font('Helvetica-Bold')
+               .text(event.title, 60, currentY + 25, { width: 350 });
+            
+            doc.fontSize(9)
+               .fillColor(this.colors.textGray)
+               .font('Helvetica')
+               .text(`${event.venue}  •  ${event.category}`, 60, currentY + 43);
+            
+            currentY += 70;
+          });
+          currentY += 10;
+        }
+
+        // Day 2 Events
+        const day2Events = eligibleEvents.filter(e => eventSchedule.day2.some(d2 => d2.title === e.title));
+        if (day2Events.length > 0) {
+          if (currentY > 650) {
+            doc.addPage();
+            currentY = 50;
+          }
+
+          doc.fontSize(12)
+             .fillColor(this.colors.textDark)
+             .font('Helvetica-Bold')
+             .text('DAY 2 - January 24, 2026', 50, currentY);
+          currentY += 25;
+
+          day2Events.forEach(event => {
+            if (currentY > 700) {
+              doc.addPage();
+              currentY = 50;
+            }
+
+            doc.rect(50, currentY, 495, 60).fillAndStroke(this.colors.lightGray, this.colors.borderGray);
+            
+            doc.fontSize(10)
+               .fillColor(this.colors.primaryRed)
+               .font('Helvetica-Bold')
+               .text(event.time, 60, currentY + 10);
+            
+            doc.fontSize(11)
+               .fillColor(this.colors.textDark)
+               .font('Helvetica-Bold')
+               .text(event.title, 60, currentY + 25, { width: 350 });
+            
+            doc.fontSize(9)
+               .fillColor(this.colors.textGray)
+               .font('Helvetica')
+               .text(`${event.venue}  •  ${event.category}`, 60, currentY + 43);
+            
+            currentY += 70;
+          });
+        }
+
+        // Footer
+        doc.fontSize(8)
+           .fillColor(this.colors.textGray)
+           .font('Helvetica')
+           .text('Generated on ' + new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }), 
+                 50, doc.page.height - 80, { align: 'center', width: 495 })
+           .text('For updates and more information, visit www.esummit2026.com', 
+                 50, doc.page.height - 65, { align: 'center', width: 495 });
+
+        doc.end();
+      } catch (error) {
+        console.error('Error generating schedule PDF:', error);
         reject(error);
       }
     });

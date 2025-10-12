@@ -6,7 +6,7 @@ import { Badge } from "./ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Alert, AlertDescription } from "./ui/alert";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { motion } from "motion/react";
 import { BentoGrid, BentoCard } from "./magicui/bento-grid";
 import { PulseDot } from "./accentricity/pulse-dot";
@@ -17,6 +17,21 @@ export function EventSchedule() {
   const [selectedVenue, setSelectedVenue] = useState("all");
   const [mySchedule, setMySchedule] = useState<string[]>([]);
 
+  // Define event type for consistency
+  type Event = {
+    id: string;
+    time: string;
+    title: string;
+    category: string;
+    venue: string;
+    speaker: string | null;
+    description: string;
+    duration: string;
+    eligibility?: string;
+    prerequisite?: string;
+    prize?: string;
+  };
+
   const categories = [
     { id: "all", label: "All Events", color: "default" },
     { id: "competition", label: "Competitions", color: "primary" },
@@ -26,7 +41,7 @@ export function EventSchedule() {
     { id: "networking", label: "Networking", color: "outline" },
   ];
 
-  const events = {
+  const events: { day1: Event[]; day2: Event[] } = {
     day1: [
       {
         id: "d1-1",
@@ -256,7 +271,7 @@ export function EventSchedule() {
     }
   };
 
-  const filterEvents = (eventsList: typeof events.day1) => {
+  const filterEvents = (eventsList: Event[]) => {
     return eventsList.filter((event) => {
       const categoryMatch = selectedCategory === "all" || event.category === selectedCategory;
       const venueMatch = selectedVenue === "all" || event.venue === selectedVenue;
@@ -346,8 +361,8 @@ END:VCALENDAR`;
 
       <Tabs defaultValue="day1" className="w-full">
         <TabsList className="grid w-full max-w-md grid-cols-2">
-          <TabsTrigger value="day1">Day 1 - January 15</TabsTrigger>
-          <TabsTrigger value="day2">Day 2 - January 16</TabsTrigger>
+          <TabsTrigger value="day1">Day 1 - January 23</TabsTrigger>
+          <TabsTrigger value="day2">Day 2 - January 24</TabsTrigger>
         </TabsList>
 
         <TabsContent value="day1" className="mt-6">

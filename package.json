@@ -4,6 +4,7 @@
       "private": true,
       "dependencies": {
             "@clerk/clerk-react": "^5.51.0",
+            "@clerk/clerk-sdk-node": "^4.13.23",
             "@radix-ui/react-accordion": "^1.2.3",
             "@radix-ui/react-alert-dialog": "^1.1.6",
             "@radix-ui/react-aspect-ratio": "^1.1.2",
@@ -39,6 +40,7 @@
             "lucide-react": "^0.487.0",
             "motion": "*",
             "next-themes": "^0.4.6",
+            "razorpay": "^2.9.6",
             "react": "^18.3.1",
             "react-day-picker": "^8.10.1",
             "react-dom": "^18.3.1",

@@ -260,13 +260,13 @@ export function Sponsors() {
                         {sponsor.description}
                       </p>
 
-                      {sponsor.contribution && (
+                      {'contribution' in sponsor && sponsor.contribution && (
                         <p className="mb-4 text-sm text-primary">
                           {sponsor.contribution}
                         </p>
                       )}
 
-                      {sponsor.event && (
+                      {'event' in sponsor && sponsor.event && (
                         <Badge variant="secondary" className="mb-4">
                           {sponsor.event}
                         </Badge>
@@ -285,34 +285,6 @@ export function Sponsors() {
           );
         })}
       </div>
-
-      {/* Become a Sponsor */}
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-      >
-        <AnimatedBorder className="mt-16">
-          <Card className="border-primary/20 bg-gradient-to-br from-primary/5 to-background">
-            <CardContent className="p-12 text-center">
-              <h2 className="mb-4">Become a Sponsor</h2>
-              <p className="mb-8 text-muted-foreground">
-                Partner with E-Summit 2026 and showcase your brand to 5000+ students, entrepreneurs, and investors
-              </p>
-              <div className="flex flex-wrap justify-center gap-4">
-                <Button size="lg">Download Sponsorship Brochure</Button>
-                <Button size="lg" variant="outline">
-                  Contact Sponsorship Team
-                </Button>
-              </div>
-              <p className="mt-6 text-sm text-muted-foreground">
-                Email: sponsors@esummit2026.com | Phone: +91 98765 43210
-              </p>
-            </CardContent>
-          </Card>
-        </AnimatedBorder>
-      </motion.div>
     </div>
   );
 }

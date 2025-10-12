@@ -58,6 +58,7 @@ export function UserDashboard({
   const [isLoadingPasses, setIsLoadingPasses] = useState(true);
   const [downloadingPassId, setDownloadingPassId] = useState<string | null>(null);
   const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
+  const [downloadingSchedule, setDownloadingSchedule] = useState(false);
 
   const mockUser = {
     name: user?.fullName || userData?.name || "User",
@@ -122,9 +123,21 @@ export function UserDashboard({
     setShowProfileModal(false);
   };
 
+  // Map pass type names to pass identifiers for event eligibility
+  const getPassTypeId = (passTypeName: string): string => {
+    const passTypeMap: Record<string, string> = {
+      "Gold Pass": "day1",
+      "Silver Pass": "day2",
+      "Platinum Pass": "full",
+      "Group Pass (5+)": "group",
+      "Group Pass": "group",
+    };
+    return passTypeMap[passTypeName] || "day1"; // Default to day1 if unknown
+  };
+
   // Get all eligible events from all purchased passes
   const mySchedule = myPasses.length > 0
-    ? myPasses.flatMap((pass) => getFormattedEventsForPass(pass.passId))
+    ? myPasses.flatMap((pass) => getFormattedEventsForPass(getPassTypeId(pass.passType)))
     : [];
 
   // Remove duplicate events (in case user has multiple passes)
@@ -200,6 +213,42 @@ export function UserDashboard({
       alert(error instanceof Error ? error.message : 'Failed to download invoice PDF. Please try again.');
     } finally {
       setDownloadingInvoiceId(null);
+    }
+  };
+
+  // Download personalized schedule PDF
+  const downloadSchedulePDF = async () => {
+    try {
+      setDownloadingSchedule(true);
+      
+      if (!user?.id) {
+        alert('Please login to download your schedule');
+        return;
+      }
+
+      const response = await fetch(
+        `http://localhost:5000/api/v1/pdf/schedule/${user.id}`
+      );
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to download schedule PDF');
+      }
+
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ESUMMIT-2026-My-Schedule.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading schedule PDF:', error);
+      alert(error instanceof Error ? error.message : 'Failed to download schedule PDF. Please try again.');
+    } finally {
+      setDownloadingSchedule(false);
     }
   };
 
@@ -371,6 +420,28 @@ export function UserDashboard({
             </div>
           ) : (
           <div className="space-y-4">
+            {myPasses.length > 0 && uniqueSchedule.length > 0 && (
+              <div className="flex justify-end mb-4">
+                <Button
+                  onClick={downloadSchedulePDF}
+                  disabled={downloadingSchedule}
+                  variant="outline"
+                >
+                  {downloadingSchedule ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Downloading...
+                    </>
+                  ) : (
+                    <>
+                      <Download className="mr-2 h-4 w-4" />
+                      Download My Schedule (PDF)
+                    </>
+                  )}
+                </Button>
+              </div>
+            )}
+
             {myPasses.length > 0 && (
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-4">

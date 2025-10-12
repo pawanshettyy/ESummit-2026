@@ -1,16 +1,15 @@
 import { Router, Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/database';
 import pdfService from '../services/pdf.service';
 
 const router = Router();
-const prisma = new PrismaClient();
 
 /**
  * @route   GET /api/v1/pdf/pass/:passId
  * @desc    Generate and download pass PDF
  * @access  Public (with pass validation)
  */
-router.get('/pass/:passId', async (req: Request, res: Response) => {
+router.get('/pass/:passId', async (req: Request, res: Response): Promise<void> => {
   try {
     const { passId } = req.params;
 
@@ -24,10 +23,11 @@ router.get('/pass/:passId', async (req: Request, res: Response) => {
     });
 
     if (!pass) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Pass not found'
       });
+      return;
     }
 
     // Prepare PDF data
@@ -73,7 +73,7 @@ router.get('/pass/:passId', async (req: Request, res: Response) => {
  * @desc    Generate and download invoice PDF
  * @access  Public (with transaction validation)
  */
-router.get('/invoice/:transactionId', async (req: Request, res: Response) => {
+router.get('/invoice/:transactionId', async (req: Request, res: Response): Promise<void> => {
   try {
     const { transactionId } = req.params;
 
@@ -91,10 +91,20 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response) => {
     });
 
     if (!transaction) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Transaction not found'
       });
+      return;
+    }
+
+    // Check if transaction has an associated pass
+    if (!transaction.passId) {
+      res.status(400).json({
+        success: false,
+        error: 'Transaction does not have an associated pass yet. Payment may still be pending.'
+      });
+      return;
     }
 
     // Fetch pass data using the pass UUID (not passId field)
@@ -103,10 +113,11 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response) => {
     });
 
     if (!pass) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Pass not found'
       });
+      return;
     }
 
     const user = transaction.user;
@@ -119,8 +130,9 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response) => {
     const gstAmount = Math.round(subtotal * 0.18);
     const total = subtotal + gstAmount;
 
-    // Generate invoice number
-    const invoiceNumber = `INV-2026-${String(transaction.id).substring(0, 8).toUpperCase()}`;
+    // Use the stored invoice number from the database (with fallback for pre-migration data)
+    const invoiceNumber = transaction.invoiceNumber || `INV-2026-${transaction.id.substring(0, 8).toUpperCase()}`;
+    const transactionNumber = transaction.transactionNumber || `TXN-2026-${transaction.id.substring(0, 8).toUpperCase()}`;
 
     // Prepare PDF data
     const pdfData = {
@@ -140,7 +152,7 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response) => {
       gstAmount,
       total,
       paymentMethod: transaction.razorpayPaymentId ? 'Online Payment (Razorpay)' : 'Bypassed (Test Mode)',
-      transactionId: transaction.razorpayPaymentId || `TXN-${transaction.id.substring(0, 8).toUpperCase()}`,
+      transactionId: transaction.razorpayPaymentId || transactionNumber,
       paymentStatus: transaction.status.toUpperCase()
     };
 
@@ -162,6 +174,78 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response) => {
     res.status(500).json({
       success: false,
       error: 'Failed to generate invoice PDF'
+    });
+  }
+});
+
+/**
+ * @route   GET /api/v1/pdf/schedule/:clerkUserId
+ * @desc    Generate and download personalized schedule PDF based on user's passes
+ * @access  Public (with user validation)
+ */
+router.get('/schedule/:clerkUserId', async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { clerkUserId } = req.params;
+
+    // Fetch user and their passes
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      include: {
+        passes: {
+          where: {
+            status: 'Active'
+          }
+        }
+      }
+    });
+
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        error: 'User not found'
+      });
+      return;
+    }
+
+    if (!user.passes || user.passes.length === 0) {
+      res.status(404).json({
+        success: false,
+        error: 'No active passes found for this user'
+      });
+      return;
+    }
+
+    // Prepare schedule data
+    const scheduleData = {
+      userName: user.fullName || user.firstName || 'Guest',
+      userEmail: user.email,
+      passes: user.passes.map(pass => ({
+        passType: pass.passType,
+        passId: pass.passId,
+        hasMeals: pass.hasMeals,
+        hasMerchandise: pass.hasMerchandise,
+        hasWorkshopAccess: pass.hasWorkshopAccess
+      }))
+    };
+
+    // Generate PDF
+    const pdfBuffer = await pdfService.generateSchedulePDF(scheduleData);
+
+    // Set response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `attachment; filename="ESUMMIT-2026-My-Schedule.pdf"`
+    );
+    res.setHeader('Content-Length', pdfBuffer.length);
+
+    // Send PDF
+    res.send(pdfBuffer);
+  } catch (error) {
+    console.error('Error generating schedule PDF:', error);
+    res.status(500).json({
+      success: false,
+      error: 'Failed to generate schedule PDF'
     });
   }
 });

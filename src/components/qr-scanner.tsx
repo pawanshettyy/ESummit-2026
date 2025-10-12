@@ -69,58 +69,61 @@ export function QRScanner() {
 
   // Initialize camera scanner
   useEffect(() => {
-    // Prevent double initialization (React Strict Mode)
-    if (isInitializingRef.current) {
+    // Only initialize when in camera mode and scanner doesn't exist
+    if (scanMode !== "camera" || !qrReaderRef.current || scannerRef.current || isInitializingRef.current) {
       return;
     }
 
-    if (scanMode === "camera" && qrReaderRef.current && !scannerRef.current) {
-      isInitializingRef.current = true;
+    isInitializingRef.current = true;
 
-      const scanner = new Html5QrcodeScanner(
-        "qr-reader",
-        {
-          fps: 10,
-          qrbox: function(viewfinderWidth, viewfinderHeight) {
-            // Make QR box responsive based on screen size
-            const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
-            const qrboxSize = Math.floor(minEdge * 0.7); // 70% of the smaller dimension
-            return {
-              width: qrboxSize,
-              height: qrboxSize,
-            };
-          },
-          aspectRatio: 1.0,
-          supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
-          // Mobile-friendly settings
-          rememberLastUsedCamera: true,
-          showTorchButtonIfSupported: true, // Flashlight for mobile
-          showZoomSliderIfSupported: true,  // Zoom controls
-          defaultZoomValueIfSupported: 2,   // Default zoom level
+    const scanner = new Html5QrcodeScanner(
+      "qr-reader",
+      {
+        fps: 10,
+        qrbox: function(viewfinderWidth, viewfinderHeight) {
+          // Make QR box responsive based on screen size
+          const minEdge = Math.min(viewfinderWidth, viewfinderHeight);
+          const qrboxSize = Math.floor(minEdge * 0.7); // 70% of the smaller dimension
+          return {
+            width: qrboxSize,
+            height: qrboxSize,
+          };
         },
-        false
-      );
-
-      scanner.render(
-        (decodedText) => {
-          // Successfully scanned QR code
-          setQrData(decodedText);
-          setIsCameraActive(false);
-          scanner.clear().catch(console.error);
-          scannerRef.current = null;
-          isInitializingRef.current = false;
-          // Auto-trigger scan
-          handleScanWithData(decodedText);
+        aspectRatio: 1.0,
+        supportedScanTypes: [Html5QrcodeScanType.SCAN_TYPE_CAMERA],
+        // Mobile-friendly settings
+        rememberLastUsedCamera: true,
+        showTorchButtonIfSupported: true, // Flashlight for mobile
+        showZoomSliderIfSupported: true,  // Zoom controls
+        defaultZoomValueIfSupported: 2,   // Default zoom level
+        // Force rear camera on mobile devices (environment-facing camera)
+        videoConstraints: {
+          facingMode: { ideal: "environment" } // Use rear camera, not front/selfie camera
         },
-        (error) => {
-          // Scan error (ignore - happens continuously when no QR detected)
-        }
-      );
+      },
+      false
+    );
 
-      scannerRef.current = scanner;
-      setIsCameraActive(true);
-    }
+    scanner.render(
+      (decodedText) => {
+        // Successfully scanned QR code
+        setQrData(decodedText);
+        setIsCameraActive(false);
+        scanner.clear().catch(console.error);
+        scannerRef.current = null;
+        isInitializingRef.current = false;
+        // Auto-trigger scan
+        handleScanWithData(decodedText);
+      },
+      (error) => {
+        // Scan error (ignore - happens continuously when no QR detected)
+      }
+    );
 
+    scannerRef.current = scanner;
+    setIsCameraActive(true);
+
+    // Cleanup function - CRITICAL to prevent double scanner
     return () => {
       if (scannerRef.current) {
         scannerRef.current.clear().catch(console.error);

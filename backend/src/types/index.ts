@@ -26,15 +26,16 @@ export type EventRegistrationStatus = 'registered' | 'attended' | 'cancelled';
 // Check-in types
 export type CheckInType = 'venue_entry' | 'event_entry';
 
-// Admin types
-export type AdminRole = 'Super Admin' | 'Event Manager' | 'Scanner Operator' | 'Analytics Viewer';
+// Admin types (Updated for E-Summit 2025)
+export type AdminRole = 'Core' | 'JC' | 'OC';
 
 export interface AdminPermissions {
   participants?: boolean;
   scanner?: boolean;
-  events?: boolean;
   analytics?: boolean;
-  settings?: boolean;
+  eventIds?: boolean;
+  export?: boolean;
+  edit?: boolean;
 }
 
 // Audit log types

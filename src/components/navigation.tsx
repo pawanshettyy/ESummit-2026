@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Calendar, Users, MapPin, Trophy, Ticket, LogIn, Moon, Sun, User, LogOut } from "lucide-react";
+import { Menu, Calendar, Users, MapPin, Trophy, Ticket, LogIn, Moon, Sun, User, LogOut, Shield } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "./ui/sheet";
 import { UserButton, useUser } from "@clerk/clerk-react";
@@ -36,7 +36,12 @@ export function Navigation({
 }: NavigationProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
+
+  // Check if user has any valid admin role (Core, JC, or OC)
+  const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
+  const userRole = user?.publicMetadata?.role as string;
+  const isAdmin = userRole && VALID_ADMIN_ROLES.includes(userRole);
 
   const getUserInitials = (name: string) => {
     return name

@@ -93,7 +93,11 @@ model Pass {
 model Transaction {
   id                String   @id @default(uuid())
   userId            String   @map("user_id")
-  passId            String   @unique @map("pass_id")
+  passId            String?  @unique @map("pass_id") // Made optional - will be set after pass creation
+  
+  // Unique identifiers for invoicing
+  invoiceNumber     String   @unique @map("invoice_number") // 'INV-2026-XXXXXXXX'
+  transactionNumber String   @unique @map("transaction_number") // 'TXN-2026-XXXXXXXX'
   
   // Razorpay data
   razorpayOrderId   String?  @unique @map("razorpay_order_id")
@@ -113,11 +117,13 @@ model Transaction {
   
   // Relations
   user              User     @relation(fields: [userId], references: [id])
-  pass              Pass     @relation(fields: [passId], references: [id])
+  pass              Pass?    @relation(fields: [passId], references: [id])
   
   @@index([userId])
   @@index([status])
   @@index([razorpayOrderId])
+  @@index([invoiceNumber])
+  @@index([transactionNumber])
   @@map("transactions")
 }
 
@@ -208,7 +214,7 @@ model CheckIn {
   
   checkInTime  DateTime @default(now()) @map("check_in_time")
   checkInType  String   @map("check_in_type") // 'venue_entry', 'event_entry'
-  scannedBy    String?  @map("scanned_by") // Admin user ID
+  scannedBy    String?  @map("scanned_by") // Clerk user ID of admin who scanned
   location     String?
   
   // Timestamp
@@ -218,55 +224,22 @@ model CheckIn {
   pass         Pass     @relation(fields: [passId], references: [id])
   user         User     @relation(fields: [userId], references: [id])
   event        Event?   @relation(fields: [eventId], references: [id])
-  admin        AdminUser? @relation(fields: [scannedBy], references: [id])
   
   @@index([passId])
   @@index([userId])
   @@index([eventId])
   @@index([checkInTime])
+  @@index([scannedBy])
   @@map("check_ins")
 }
 
 // ============================================
-// ADMIN MANAGEMENT (Using Clerk publicMetadata.role)
-// ============================================
-
-model AdminUser {
-  id           String    @id @default(uuid())
-  clerkUserId  String?   @unique @map("clerk_user_id") // Admin users managed by Clerk too
-  email        String    @unique
-  fullName     String    @map("full_name")
-  role         String    // 'Super Admin', 'Event Manager', 'Scanner Operator', 'Analytics Viewer'
-  
-  permissions  Json?     // {"participants": true, "scanner": true, ...}
-  
-  isActive     Boolean   @default(true) @map("is_active")
-  lastLogin    DateTime? @map("last_login")
-  
-  // Timestamps
-  createdAt    DateTime  @default(now()) @map("created_at")
-  updatedAt    DateTime  @updatedAt @map("updated_at")
-  createdBy    String?   @map("created_by")
-  
-  // Relations
-  checkIns     CheckIn[]
-  auditLogs    AuditLog[]
-  creator      AdminUser?  @relation("AdminHierarchy", fields: [createdBy], references: [id])
-  createdAdmins AdminUser[] @relation("AdminHierarchy")
-  
-  @@index([email])
-  @@index([role])
-  @@index([clerkUserId])
-  @@map("admin_users")
-}
-
-// ============================================
-// AUDIT LOGS
+// AUDIT LOGS (Admin actions tracked via Clerk user IDs)
 // ============================================
 
 model AuditLog {
   id           String   @id @default(uuid())
-  adminUserId  String?  @map("admin_user_id")
+  clerkUserId  String?  @map("clerk_user_id") // Clerk user ID of admin who performed action
   action       String   // 'check_in', 'refund', 'edit_pass', etc.
   entityType   String   @map("entity_type") // 'pass', 'user', 'event', etc.
   entityId     String   @map("entity_id")
@@ -278,10 +251,7 @@ model AuditLog {
   // Timestamp
   createdAt    DateTime @default(now()) @map("created_at")
   
-  // Relations
-  admin        AdminUser? @relation(fields: [adminUserId], references: [id])
-  
-  @@index([adminUserId])
+  @@index([clerkUserId])
   @@index([entityType, entityId])
   @@index([createdAt])
   @@map("audit_logs")
