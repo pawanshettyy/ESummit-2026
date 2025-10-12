@@ -3,6 +3,7 @@ import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { generateQRCode } from '../services/qrcode.service';
+import { generateUniqueIdentifiers } from '../utils/identifier.util';
 
 const router = Router();
 
@@ -99,6 +100,9 @@ router.get('/:passId', async (req: Request, res: Response) => {
 /**
  * Create a new pass (without payment - for testing/manual creation)
  * POST /api/v1/passes/create
+ * 
+ * WARNING: This endpoint bypasses payment verification.
+ * For production, use /api/v1/payment/create-order and /api/v1/payment/verify-and-create-pass
  */
 router.post('/create', async (req: Request, res: Response) => {
   try {
@@ -120,7 +124,7 @@ router.post('/create', async (req: Request, res: Response) => {
     // Find user by Clerk ID
     const user = await prisma.user.findUnique({
       where: { clerkUserId },
-      select: { id: true },
+      select: { id: true, email: true },
     });
 
     if (!user) {
@@ -138,8 +142,33 @@ router.post('/create', async (req: Request, res: Response) => {
       return;
     }
 
+    // Check if there's a pending/completed transaction for this user
+    const existingTransaction = await prisma.transaction.findFirst({
+      where: {
+        userId: user.id,
+        status: {
+          in: ['pending', 'completed'],
+        },
+      },
+    });
+
+    if (existingTransaction) {
+      if (existingTransaction.status === 'pending') {
+        sendError(
+          res,
+          'You have a pending payment. Please complete or cancel it first.',
+          400
+        );
+        return;
+      }
+      if (existingTransaction.status === 'completed') {
+        sendError(res, 'You already have a completed purchase.', 400);
+        return;
+      }
+    }
+
     // Generate unique pass ID
-    const passId = `ESUMMIT-2026-${Math.random().toString(36).substring(2, 9).toUpperCase()}`;
+    const { passId, invoiceNumber, transactionNumber } = generateUniqueIdentifiers();
 
     // Generate QR code for the pass
     const qrCodeUrl = await generateQRCode(passId);
@@ -164,17 +193,23 @@ router.post('/create', async (req: Request, res: Response) => {
       data: {
         userId: user.id,
         passId: pass.id,
+        // @ts-ignore - These fields will exist after migration
+        invoiceNumber,
+        // @ts-ignore - These fields will exist after migration
+        transactionNumber,
         amount: price,
         currency: 'INR',
         status: 'completed',
         paymentMethod: 'manual',
         metadata: {
           note: 'Manually created pass (test/demo)',
+          createdVia: 'direct_api_call',
         },
       },
     });
 
-    logger.info(`Manual pass created: ${passId} for user: ${clerkUserId}`);
+    logger.info(`⚠️  Manual pass created: ${passId} for user: ${user.email} (TESTING MODE)`);
+    logger.info(`Invoice: ${invoiceNumber}, Transaction: ${transactionNumber}`);
 
     sendSuccess(
       res,

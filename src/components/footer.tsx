@@ -169,7 +169,7 @@ export function Footer({ onNavigate }: FooterProps) {
           <div className="flex items-center gap-4">
             <p>© 2026 E-Summit TCET. All rights reserved.</p>
             <button 
-              onClick={() => onNavigate("admin")}
+              onClick={() => onNavigate("admin-dashboard")}
               className="text-xs opacity-30 hover:opacity-100 transition-opacity"
               title="Admin Access"
             >

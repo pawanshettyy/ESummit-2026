@@ -1493,7 +1493,7 @@ npm install html5-qrcode
       <li>Save this QR code on your phone</li>
       <li>Present it at the venue entrance</li>
       <li>Do not share with others</li>
-      <li>Valid from: January 15-17, 2026</li>
+      <li>Valid from: January 23-17, 2026</li>
     </ul>
   </div>
   

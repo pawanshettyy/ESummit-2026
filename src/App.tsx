@@ -11,7 +11,6 @@ import { Sponsors } from "./components/sponsors";
 import { Team } from "./components/team";
 import { UserDashboard } from "./components/user-dashboard";
 import { AdminPanel } from "./components/admin-panel";
-import { AdminLogin } from "./components/admin-login";
 import { AuthModal } from "./components/auth-modal";
 import { PrivacyPolicy } from "./components/privacy-policy";
 import { TermsOfService } from "./components/terms-of-service";
@@ -23,12 +22,11 @@ export default function App() {
   const { user, isSignedIn } = useUser();
   const [currentPage, setCurrentPage] = useState("home");
   const [isDark, setIsDark] = useState(false);
-  const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
-  const [adminRole, setAdminRole] = useState("");
-  const [adminEmail, setAdminEmail] = useState("");
 
-  // Check if user is admin from Clerk metadata
-  const isAdmin = user?.publicMetadata?.role === "admin";
+  // Check if user has any valid admin role (Core, JC, or OC)
+  const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
+  const userRole = user?.publicMetadata?.role as string;
+  const isAdmin = userRole && VALID_ADMIN_ROLES.includes(userRole);
 
   useEffect(() => {
     // Check for saved theme preference or use system preference
@@ -55,24 +53,6 @@ export default function App() {
   const handleNavigate = (page: string) => {
     setCurrentPage(page);
     window.scrollTo({ top: 0, behavior: "smooth" });
-  };
-
-  const handleAdminLogin = (role: string, email: string) => {
-    setIsAdminAuthenticated(true);
-    setAdminRole(role);
-    setAdminEmail(email);
-    setCurrentPage("admin-dashboard");
-  };
-
-  const handleAdminLogout = () => {
-    setIsAdminAuthenticated(false);
-    setAdminRole("");
-    setAdminEmail("");
-    setCurrentPage("home");
-  };
-
-  const handleAdminCancel = () => {
-    setCurrentPage("home");
   };
 
   const handleUserLogout = () => {
@@ -123,18 +103,24 @@ export default function App() {
         ) : (
           <AuthModal onNavigate={handleNavigate} />
         );
-      case "admin":
-        return <AdminLogin onLogin={handleAdminLogin} onCancel={handleAdminCancel} />;
       case "admin-dashboard":
-        return isAdminAuthenticated ? (
+        return isAdmin ? (
           <AdminPanel 
-            onNavigate={handleNavigate} 
-            adminRole={adminRole}
-            adminEmail={adminEmail}
-            onLogout={handleAdminLogout}
+            onNavigate={handleNavigate}
           />
         ) : (
-          <AdminLogin onLogin={handleAdminLogin} onCancel={handleAdminCancel} />
+          <div className="min-h-screen flex items-center justify-center">
+            <div className="text-center">
+              <h1 className="text-2xl font-bold mb-4">Access Denied</h1>
+              <p className="text-muted-foreground mb-4">You don't have permission to access this page.</p>
+              <button 
+                onClick={() => handleNavigate("home")}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-md"
+              >
+                Go Home
+              </button>
+            </div>
+          </div>
         );
       case "auth":
         return <AuthModal onNavigate={handleNavigate} />;
@@ -150,7 +136,7 @@ export default function App() {
   };
 
   // Don't show navigation and footer for admin pages
-  const showNavAndFooter = currentPage !== "admin" && currentPage !== "admin-dashboard";
+  const showNavAndFooter = currentPage !== "admin-dashboard";
 
   return (
     <div className="min-h-screen bg-background">

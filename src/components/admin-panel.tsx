@@ -41,48 +41,43 @@ import { EventIDGenerator } from "./event-id-generator";
 
 interface AdminPanelProps {
   onNavigate: (page: string) => void;
-  adminRole: string;
-  adminEmail: string;
-  onLogout: () => void;
 }
 
 // Role permissions
 const ROLE_PERMISSIONS = {
-  "Super Admin": {
+  "Core": {
     participants: true,
     scanner: true,
     analytics: true,
+    eventIds: true,
     export: true,
     edit: true,
   },
-  "Event Manager": {
+  "JC": {
     participants: true,
     scanner: true,
     analytics: true,
+    eventIds: false,
     export: true,
     edit: false,
   },
-  "Scanner Operator": {
-    participants: false,
+  "OC": {
+    participants: true,
     scanner: true,
     analytics: false,
+    eventIds: false,
     export: false,
-    edit: false,
-  },
-  "Analytics Viewer": {
-    participants: true,
-    scanner: false,
-    analytics: true,
-    export: true,
     edit: false,
   },
 };
 
-export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: AdminPanelProps) {
+export function AdminPanel({ onNavigate }: AdminPanelProps) {
   const { user } = useUser();
   
-  // Check if user is admin
-  const isAdmin = user?.publicMetadata?.role === "admin";
+  // Check if user has any valid admin role (Core, JC, or OC)
+  const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
+  const userRole = user?.publicMetadata?.role as string;
+  const isAdmin = userRole && VALID_ADMIN_ROLES.includes(userRole);
   
   // If not admin, redirect to home
   if (!isAdmin) {
@@ -108,7 +103,11 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
     );
   }
 
-  const permissions = ROLE_PERMISSIONS[adminRole as keyof typeof ROLE_PERMISSIONS] || ROLE_PERMISSIONS["Scanner Operator"];
+  // Get user's role and permissions from Clerk
+  const adminRole = userRole as keyof typeof ROLE_PERMISSIONS;
+  const adminEmail = user?.primaryEmailAddress?.emailAddress || "admin@esummit.com";
+  const permissions = ROLE_PERMISSIONS[adminRole] || ROLE_PERMISSIONS["OC"];
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [filterPassType, setFilterPassType] = useState("all");
   const [scannerActive, setScannerActive] = useState(false);
@@ -315,7 +314,7 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
     toast.info("Logged out successfully", {
       description: "Admin session ended",
     });
-    onLogout();
+    onNavigate("home");
   };
 
   return (
@@ -356,7 +355,7 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
       </div>
 
       {/* Role Permissions Info */}
-      {(adminRole === "Scanner Operator" || adminRole === "Analytics Viewer") && (
+      {(adminRole === "OC" || adminRole === "JC") && (
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
@@ -365,9 +364,9 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
           <Alert>
             <Shield className="h-4 w-4" />
             <AlertDescription>
-              <strong>Your Access Level:</strong> {adminRole === "Scanner Operator" 
-                ? "You have access to the QR Scanner for venue check-ins only."
-                : "You can view all data and analytics but cannot perform check-ins."}
+              <strong>Your Access Level:</strong> {adminRole === "OC" 
+                ? "You have access to Participants and QR Scanner only."
+                : "You have access to Participants, QR Scanner, and Analytics."}
             </AlertDescription>
           </Alert>
         </motion.div>
@@ -407,9 +406,7 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
           {permissions.participants && <TabsTrigger value="participants">Participants</TabsTrigger>}
           {permissions.scanner && <TabsTrigger value="scanner">QR Scanner</TabsTrigger>}
           {permissions.analytics && <TabsTrigger value="analytics">Analytics</TabsTrigger>}
-          {(adminRole === "Super Admin" || adminRole === "Event Manager") && (
-            <TabsTrigger value="event-ids">Event IDs</TabsTrigger>
-          )}
+          {permissions.eventIds && <TabsTrigger value="event-ids">Event IDs</TabsTrigger>}
         </TabsList>
 
         {/* Participants Tab */}
@@ -750,7 +747,7 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
         ) : null}
 
         {/* Event ID Generator Tab */}
-        {(adminRole === "Super Admin" || adminRole === "Event Manager") && (
+        {permissions.eventIds && (
           <TabsContent value="event-ids">
             <div className="p-4">
               <EventIDGenerator />
@@ -768,8 +765,8 @@ export function AdminPanel({ onNavigate, adminRole, adminEmail, onLogout }: Admi
                 <p className="text-sm text-muted-foreground mb-4">
                   Your role ({adminRole}) does not have permission to access any admin panels.
                 </p>
-                <Button variant="outline" onClick={onLogout}>
-                  Logout
+                <Button variant="outline" onClick={() => onNavigate("home")}>
+                  Return Home
                 </Button>
               </CardContent>
             </Card>

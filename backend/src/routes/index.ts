@@ -6,6 +6,8 @@ import checkinRoutes from './checkin.routes';
 import adminRoutes from './admin.routes';
 import eventRoutes from './event.routes';
 import pdfRoutes from './pdf.routes';
+import paymentRoutes from './payment.routes';
+import webhookRoutes from './webhook.routes';
 
 const router = Router();
 
@@ -22,6 +24,8 @@ router.get('/health', (_req, res) => {
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
 router.use('/passes', passRoutes);
+router.use('/payment', paymentRoutes);
+router.use('/webhooks', webhookRoutes);
 router.use('/checkin', checkinRoutes);
 router.use('/admin', adminRoutes);
 router.use('/events', eventRoutes);

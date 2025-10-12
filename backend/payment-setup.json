@@ -1,0 +1,12 @@
+{
+  "name": "E-Summit 2026 Payment Setup",
+  "description": "Install Razorpay and configure payment system",
+  "version": "1.0.0",
+  "scripts": {
+    "setup-payment": "npm install razorpay && echo '\n✅ Razorpay installed! Next steps:\n1. Add RAZORPAY_KEY_ID to .env\n2. Add RAZORPAY_KEY_SECRET to .env\n3. Add RAZORPAY_WEBHOOK_SECRET to .env\n4. See docs/QUICK_START_PAYMENT.md for details'"
+  },
+  "devDependencies": {},
+  "dependencies": {
+    "razorpay": "^2.9.2"
+  }
+}

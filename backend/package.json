@@ -27,6 +27,7 @@
   "license": "MIT",
   "dependencies": {
     "@clerk/clerk-react": "^5.51.0",
+    "@clerk/clerk-sdk-node": "^4.13.23",
     "@clerk/express": "^1.7.37",
     "@prisma/client": "^5.8.0",
     "@types/qrcode": "^1.5.5",

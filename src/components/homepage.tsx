@@ -34,7 +34,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
   // Event date: January 23-24, 2026
-  const eventDate = new Date("2026-03-15T00:00:00");
+  const eventDate = new Date("2026-01-23T00:00:00");
 
   useEffect(() => {
     const timer = setInterval(() => {
