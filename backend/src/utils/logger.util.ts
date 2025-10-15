@@ -29,19 +29,25 @@ const format = winston.format.combine(
   )
 );
 
-// Transports
-const transports = [
+// Transports - use only console in production (serverless environments)
+const transports: winston.transport[] = [
   new winston.transports.Console(),
-  new winston.transports.File({
-    filename: 'logs/error.log',
-    level: 'error',
-  }),
-  new winston.transports.File({ filename: 'logs/all.log' }),
 ];
+
+// Add file transports only in development (not serverless)
+if (process.env.NODE_ENV === 'development') {
+  transports.push(
+    new winston.transports.File({
+      filename: 'logs/error.log',
+      level: 'error',
+    }),
+    new winston.transports.File({ filename: 'logs/all.log' })
+  );
+}
 
 // Create the logger
 const logger = winston.createLogger({
-  level: process.env.NODE_ENV === 'development' ? 'debug' : 'warn',
+  level: process.env.NODE_ENV === 'development' ? 'debug' : 'info',
   levels,
   format,
   transports,

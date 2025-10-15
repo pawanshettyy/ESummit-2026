@@ -19,6 +19,7 @@ import { Spotlight } from "./magicui/spotlight";
 import { Meteors } from "./magicui/meteors";
 import { AnimatedBorder } from "./magicui/animated-border";
 import { motion } from "motion/react";
+import { Logo } from "./ui/logo";
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
@@ -139,10 +140,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="mb-6 flex justify-center items-center"
             >
               <div className="logo-wrapper logo-wrapper-hero">
-                <img 
-                  src="/assets/esummit-logo.png"
-                  alt="E-Summit 2026 Logo" 
+                <Logo 
                   className="h-40 md:h-48 lg:h-56 w-auto object-contain"
+                  alt="E-Summit 2026 Logo"
                 />
               </div>
             </motion.h1>

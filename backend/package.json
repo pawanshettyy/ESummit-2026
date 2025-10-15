@@ -5,8 +5,9 @@
   "main": "dist/server.js",
   "scripts": {
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
-    "build": "tsc",
+    "build": "prisma generate && tsc",
     "start": "node dist/server.js",
+    "vercel-build": "prisma generate && prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
@@ -41,6 +42,7 @@
     "morgan": "^1.10.0",
     "pdfkit": "^0.17.2",
     "qrcode": "^1.5.4",
+    "razorpay": "^2.9.6",
     "svix": "^1.77.0",
     "winston": "^3.11.0",
     "zod": "^3.22.4"

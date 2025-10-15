@@ -1,6 +1,7 @@
 import { Facebook, Twitter, Instagram, Linkedin, Youtube, Mail, Phone, MapPin } from "lucide-react";
 import { Button } from "./ui/button";
 import { useUser } from "@clerk/clerk-react";
+import { Logo } from "./ui/logo";
 
 interface FooterProps {
   onNavigate: (page: string) => void;
@@ -17,10 +18,9 @@ export function Footer({ onNavigate }: FooterProps) {
           <div>
             <div className="mb-4 flex items-center gap-2">
               <div className="logo-wrapper">
-                <img 
-                  src="/assets/esummit-logo.png"
-                  alt="E-Summit 2026 Logo" 
+                <Logo 
                   className="h-10 md:h-12 lg:h-14 w-auto object-contain"
+                  alt="E-Summit 2026 Logo"
                 />
               </div>
             </div>

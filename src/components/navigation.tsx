@@ -14,6 +14,7 @@ import {
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import { motion, AnimatePresence } from "motion/react";
 import { GradientText } from "./magicui/gradient-text";
+import { Logo } from "./ui/logo";
 
 interface NavigationProps {
   currentPage: string;
@@ -113,10 +114,9 @@ export function Navigation({
 
               <div className="hidden sm:block">
                 <div className="logo-wrapper">
-                  <img 
-                    src="/assets/esummit-logo.png"
-                    alt="E-Summit 2026 Logo" 
+                  <Logo 
                     className="h-10 md:h-12 lg:h-14 w-auto object-contain"
+                    alt="E-Summit 2026 Logo"
                   />
                 </div>
               </div>
@@ -291,10 +291,9 @@ export function Navigation({
                   <div className="flex flex-col h-full">
                     {/* Header - with extra padding-right to avoid close button overlap */}
                     <div className="flex items-center gap-2 border-b px-6 py-4 pr-14">
-                      <img 
-                        src="/assets/esummit-logo.png"
-                        alt="E-Summit 2026 Logo" 
+                      <Logo 
                         className="h-8 md:h-10 lg:h-12 w-auto object-contain -my-1 md:-my-1.5"
+                        alt="E-Summit 2026 Logo"
                       />
                       <Button 
                         variant="ghost" 
