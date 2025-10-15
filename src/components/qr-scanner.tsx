@@ -64,6 +64,13 @@ export function QRScanner() {
   const [showResult, setShowResult] = useState(false);
   const [scanMode, setScanMode] = useState<"camera" | "manual">("camera");
   const [isCameraActive, setIsCameraActive] = useState(false);
+  const [continuousMode, setContinuousMode] = useState(true); // NEW: Enable continuous scanning by default
+  const [lastScanTime, setLastScanTime] = useState(0); // NEW: Prevent duplicate rapid scans
+  const [quickFeedback, setQuickFeedback] = useState<{ show: boolean; type: 'success' | 'warning' | 'error'; message: string }>({
+    show: false,
+    type: 'success',
+    message: '',
+  }); // NEW: Quick visual feedback without dialog (success=green, warning=yellow, error=red)
   const scannerRef = useRef<Html5QrcodeScanner | null>(null);
   const qrReaderRef = useRef<HTMLDivElement>(null);
   const isInitializingRef = useRef(false);
@@ -108,13 +115,29 @@ export function QRScanner() {
     scanner.render(
       (decodedText) => {
         // Successfully scanned QR code
+        const now = Date.now();
+        
+        // Prevent duplicate scans within 2 seconds
+        if (now - lastScanTime < 2000) {
+          console.log('⏭️ Ignoring duplicate scan (too fast)');
+          return;
+        }
+        
+        setLastScanTime(now);
         setQrData(decodedText);
-        setIsCameraActive(false);
-        scanner.clear().catch(console.error);
-        scannerRef.current = null;
-        isInitializingRef.current = false;
-        // Auto-trigger scan
-        handleScanWithData(decodedText);
+        
+        // In continuous mode, don't stop the scanner
+        if (continuousMode) {
+          console.log('📸 Continuous mode: Processing scan while keeping camera active');
+          handleScanWithData(decodedText, true); // true = keep scanner running
+        } else {
+          // Stop scanner in single-scan mode
+          setIsCameraActive(false);
+          scanner.clear().catch(console.error);
+          scannerRef.current = null;
+          isInitializingRef.current = false;
+          handleScanWithData(decodedText, false);
+        }
       },
       (error) => {
         // Scan error (ignore - happens continuously when no QR detected)
@@ -135,7 +158,7 @@ export function QRScanner() {
     };
   }, [scanMode]);
 
-  const handleScanWithData = async (data: string) => {
+  const handleScanWithData = async (data: string, keepScanning = false) => {
     if (!data.trim()) {
       setScanResult({
         success: false,
@@ -175,33 +198,113 @@ export function QRScanner() {
       const responseData = await response.json();
 
       if (responseData.success) {
-        setScanResult({
+        const result = {
           success: true,
           message: responseData.message,
           pass: responseData.data.pass,
           alreadyCheckedIn: responseData.data.alreadyCheckedIn,
           checkIn: responseData.data.checkIn,
           cooldownRemaining: responseData.data.cooldownRemaining,
-        });
+        };
         
-        // Dispatch custom event to notify admin panel of successful check-in
-        window.dispatchEvent(new CustomEvent('checkin-success'));
+        setScanResult(result);
+        
+        // Check if this is a duplicate scan (already checked in)
+        const isDuplicate = responseData.data.alreadyCheckedIn === true;
+        
+        // In continuous mode, show quick feedback instead of dialog
+        if (keepScanning && continuousMode) {
+          if (isDuplicate) {
+            // Show YELLOW warning for duplicate scans
+            setQuickFeedback({
+              show: true,
+              type: 'warning',
+              message: `⚠️ ${responseData.data.pass?.user?.fullName || 'Attendee'} - Already checked in! (${responseData.data.cooldownRemaining || 0} min cooldown)`,
+            });
+          } else {
+            // Show GREEN success for new check-ins
+            setQuickFeedback({
+              show: true,
+              type: 'success',
+              message: `✅ ${responseData.data.pass?.user?.fullName || 'Attendee'} checked in!`,
+            });
+            
+            // Play success sound only for NEW check-ins
+            try {
+              const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2i78OeeSwgOUaPm8LJoHgU6jtfywn0sBS15y/DdkT8KE3CX5+qnVhMMRp/g8r9sIQUugc7y2Yk3CBtou/DnnksIDlGj5vCzaBf///8AAAAAAAA=');
+              audio.volume = 0.3;
+              audio.play().catch(() => {});
+            } catch (e) {}
+          }
+          
+          // Auto-hide feedback after 3 seconds
+          setTimeout(() => {
+            setQuickFeedback({ show: false, type: 'success', message: '' });
+          }, 3000);
+        } else {
+          // Show full dialog in single-scan mode
+          setShowResult(true);
+        }
+        
+        // Dispatch custom event to notify admin panel ONLY for NEW check-ins (not duplicates)
+        if (!isDuplicate) {
+          console.log('✅ Dispatching checkin-success event to update admin panel');
+          const event = new CustomEvent('checkin-success', {
+            detail: {
+              passId: responseData.data.pass?.passId,
+              timestamp: new Date().toISOString(),
+            }
+          });
+          window.dispatchEvent(event);
+        } else {
+          console.log('⚠️ Duplicate scan detected - not updating admin panel');
+        }
       } else {
         setScanResult({
           success: false,
           message: responseData.message || "Failed to verify QR code",
         });
+        
+        if (keepScanning && continuousMode) {
+          setQuickFeedback({
+            show: true,
+            type: 'error',
+            message: `❌ ${responseData.message || 'Scan failed'}`,
+          });
+          
+          setTimeout(() => {
+            setQuickFeedback({ show: false, type: 'success', message: '' });
+          }, 3000);
+        } else {
+          setShowResult(true);
+        }
       }
 
-      setShowResult(true);
-      setQrData(""); // Clear input for next scan
+      if (!keepScanning) {
+        setQrData(""); // Clear input for next scan only in single-scan mode
+      }
     } catch (error) {
       console.error("Scan error:", error);
-      setScanResult({
+      const errorResult = {
         success: false,
         message: "Network error. Please check your connection.",
-      });
-      setShowResult(true);
+      };
+      
+      setScanResult(errorResult);
+      
+      if (keepScanning && continuousMode) {
+        setQuickFeedback({
+          show: true,
+          type: 'error',
+          message: '❌ Network error',
+        });
+        
+        setTimeout(() => {
+          setQuickFeedback({ show: false, type: 'success', message: '' });
+        }, 3000);
+      } else {
+        setShowResult(true);
+      }
     } finally {
       setIsScanning(false);
     }
@@ -322,6 +425,65 @@ export function QRScanner() {
 
             {/* Camera Scanner Tab */}
             <TabsContent value="camera" className="space-y-4 mt-4">
+              {/* Continuous Mode Toggle */}
+              <div className="flex items-center justify-between p-3 rounded-lg bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center gap-2">
+                  <Scan className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                  <div>
+                    <p className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                      Continuous Scanning Mode
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300">
+                      {continuousMode 
+                        ? '✅ Camera stays active for multiple people queue' 
+                        : '⏸️ Camera stops after each scan'}
+                    </p>
+                  </div>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={continuousMode}
+                    onChange={(e) => setContinuousMode(e.target.checked)}
+                    className="sr-only peer"
+                  />
+                  <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                </label>
+              </div>
+
+              {/* Quick Feedback Banner */}
+              {quickFeedback.show && (
+                <div 
+                  className={`p-4 rounded-lg border-2 animate-in slide-in-from-top-5 ${
+                    quickFeedback.type === 'success' 
+                      ? 'bg-green-50 dark:bg-green-950 border-green-500 dark:border-green-500' 
+                      : quickFeedback.type === 'warning'
+                      ? 'bg-yellow-50 dark:bg-yellow-950 border-yellow-500 dark:border-yellow-500'
+                      : 'bg-red-50 dark:bg-red-950 border-red-500 dark:border-red-500'
+                  }`}
+                >
+                  <p className={`text-center font-bold text-lg ${
+                    quickFeedback.type === 'success' 
+                      ? 'text-green-900 dark:text-green-100' 
+                      : quickFeedback.type === 'warning'
+                      ? 'text-yellow-900 dark:text-yellow-100'
+                      : 'text-red-900 dark:text-red-100'
+                  }`}>
+                    {quickFeedback.message}
+                  </p>
+                  {quickFeedback.type === 'success' && (
+                    <p className="text-center text-sm text-green-700 dark:text-green-300 mt-1">
+                      Ready for next scan...
+                    </p>
+                  )}
+                  {quickFeedback.type === 'warning' && (
+                    <p className="text-center text-sm text-yellow-700 dark:text-yellow-300 mt-1">
+                      ⏭️ This is a duplicate - Ready for next person...
+                    </p>
+                  )}
+                </div>
+              )}
+
               <div className="space-y-2">
                 <Label>Camera QR Scanner</Label>
                 <div 

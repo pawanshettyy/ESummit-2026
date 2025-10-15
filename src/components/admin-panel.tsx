@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { 
   Users, 
@@ -125,7 +125,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   });
 
   // Fetch all passes from database (with optional silent mode)
-  const fetchPasses = async (silent = false) => {
+  const fetchPasses = useCallback(async (silent = false) => {
     try {
       if (!silent) {
         setIsLoading(true);
@@ -143,6 +143,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
           activePasses: data.data.stats.activePasses || 0,
           checkInsToday: data.data.stats.checkInsToday || 0,
         });
+        
+        if (silent) {
+          console.log('🔄 Admin panel data refreshed silently');
+        }
       }
     } catch (error) {
       console.error("Error fetching passes:", error);
@@ -154,7 +158,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setIsLoading(false);
       }
     }
-  };
+  }, []); // Empty deps because we're not using any external values
 
   // Initial fetch and auto-refresh setup
   useEffect(() => {
@@ -170,12 +174,13 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   // Listen for check-in events to trigger immediate refresh
   useEffect(() => {
     const handleCheckInEvent = () => {
+      console.log('✅ Check-in event received! Refreshing admin panel...');
       fetchPasses(true); // Silent refresh
     };
 
     window.addEventListener('checkin-success', handleCheckInEvent);
     return () => window.removeEventListener('checkin-success', handleCheckInEvent);
-  }, []);
+  }, [fetchPasses]); // Add fetchPasses as dependency to avoid stale closure
 
   // Export participants to CSV
   const exportToCSV = () => {
