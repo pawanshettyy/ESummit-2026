@@ -9,6 +9,10 @@ import { generalLimiter } from './middleware/rateLimit.middleware';
 
 const app: Application = express();
 
+// Trust proxy - REQUIRED for Vercel/serverless environments
+// This allows express-rate-limit to correctly identify users via X-Forwarded-For header
+app.set('trust proxy', 1);
+
 // Security middleware
 app.use(helmet({
   contentSecurityPolicy: false, // Disable for API
@@ -48,6 +52,10 @@ app.get('/', (_req, res) => {
     documentation: '/api/v1/health',
   });
 });
+
+// Favicon route (prevent 404 errors from Vercel)
+app.get('/favicon.ico', (_req, res) => res.status(204).end());
+app.get('/favicon.png', (_req, res) => res.status(204).end());
 
 // 404 handler
 app.use(notFound);
