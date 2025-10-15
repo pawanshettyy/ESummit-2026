@@ -6,6 +6,7 @@ import config from './config';
 import routes from './routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 import { generalLimiter } from './middleware/rateLimit.middleware';
+import { clerkAuth } from './middleware/clerk.middleware';
 
 const app: Application = express();
 
@@ -29,6 +30,9 @@ app.use(
 // Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Clerk authentication middleware - MUST be before routes
+app.use(clerkAuth);
 
 // HTTP request logger
 if (config.env === 'development') {

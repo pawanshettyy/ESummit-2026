@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, useAuth } from "@clerk/clerk-react";
 import { 
   Users, 
   Ticket, 
@@ -74,6 +74,26 @@ const ROLE_PERMISSIONS = {
 
 export function AdminPanel({ onNavigate }: AdminPanelProps) {
   const { user } = useUser();
+  const { getToken } = useAuth(); // Use the useAuth hook to get getToken function
+  
+  // Get Clerk session token for API authentication
+  const [sessionToken, setSessionToken] = useState<string | null>(null);
+  
+  // Fetch session token when component mounts
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const token = await getToken();
+        setSessionToken(token);
+      } catch (error) {
+        console.error('Failed to get session token:', error);
+      }
+    };
+    
+    if (user) {
+      fetchToken();
+    }
+  }, [user, getToken]);
   
   // Check if user has any valid admin role (Core, JC, or OC)
   const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
@@ -130,7 +150,25 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       if (!silent) {
         setIsLoading(true);
       }
-      const response = await fetch(`${API_BASE_URL}/admin/stats`);
+      
+      // Get fresh token for each request
+      const token = await getToken();
+      
+      if (!token) {
+        console.error('No authentication token available');
+        if (!silent) {
+          toast.error("Authentication failed. Please refresh the page.");
+        }
+        return;
+      }
+      
+      const response = await fetch(`${API_BASE_URL}/admin/stats`, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
       const data = await response.json();
       
       if (data.success) {
@@ -147,6 +185,11 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         if (silent) {
           console.log('🔄 Admin panel data refreshed silently');
         }
+      } else {
+        console.error('API returned error:', data.error || data.message);
+        if (!silent) {
+          toast.error(data.error || "Failed to load pass data");
+        }
       }
     } catch (error) {
       console.error("Error fetching passes:", error);
@@ -158,7 +201,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setIsLoading(false);
       }
     }
-  }, []); // Empty deps because we're not using any external values
+  }, [getToken]); // Add getToken as dependency
 
   // Initial fetch and auto-refresh setup
   useEffect(() => {
@@ -169,7 +212,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const interval = setInterval(() => fetchPasses(true), 3000);
       return () => clearInterval(interval);
     }
-  }, [isAdmin]);
+  }, [isAdmin, fetchPasses]); // Add fetchPasses to dependencies
 
   // Listen for check-in events to trigger immediate refresh
   useEffect(() => {
