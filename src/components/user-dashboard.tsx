@@ -6,6 +6,8 @@ import {
   Ticket,
   FileText,
   Loader2,
+  UserPlus,
+  CheckCircle2,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -40,6 +42,24 @@ interface Pass {
   };
 }
 
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  time: string;
+  venue: string;
+  category: string;
+  speaker?: string;
+}
+
+interface EventRegistration {
+  eventId: string;
+  userId: string;
+  registeredAt: string;
+  status: string;
+}
+
 interface UserDashboardProps {
   onNavigate: (page: string) => void;
   userData?: { name: string; email: string } | null;
@@ -60,6 +80,8 @@ export function UserDashboard({
   const [downloadingPassId, setDownloadingPassId] = useState<string | null>(null);
   const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
   const [downloadingSchedule, setDownloadingSchedule] = useState(false);
+  const [registeredEvents, setRegisteredEvents] = useState<Set<string>>(new Set());
+  const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
 
   const mockUser = {
     name: user?.fullName || userData?.name || "User",
@@ -102,16 +124,46 @@ export function UserDashboard({
       }
 
       try {
+        console.log('[Profile Check] Checking profile for user:', user.id);
+        
         const response = await fetch(
           `${API_BASE_URL}/users/check-profile/${user.id}`
         );
         const data = await response.json();
+        
+        console.log('[Profile Check] Response:', data);
 
-        if (data.success && !data.data.isComplete) {
+        // If user doesn't exist in database, create them
+        if (data.success && !data.data.exists) {
+          console.log('[Profile Check] User does not exist, creating...');
+          
+          const syncResponse = await fetch(`${API_BASE_URL}/users/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              clerkUserId: user.id,
+              email: user.primaryEmailAddress?.emailAddress || '',
+              fullName: user.fullName || '',
+              firstName: user.firstName || '',
+              lastName: user.lastName || '',
+              imageUrl: user.imageUrl || '',
+            }),
+          });
+          
+          const syncData = await syncResponse.json();
+          console.log('[Profile Check] User sync result:', syncData);
+
+          // Show profile modal for new users
+          console.log('[Profile Check] Showing modal for new user');
           setShowProfileModal(true);
+        } else if (data.success && data.data.exists && !data.data.isComplete) {
+          console.log('[Profile Check] User exists but profile incomplete, showing modal');
+          setShowProfileModal(true);
+        } else {
+          console.log('[Profile Check] Profile is complete or error occurred');
         }
       } catch (error) {
-        console.error("Error checking profile:", error);
+        console.error("[Profile Check] Error:", error);
       } finally {
         setIsCheckingProfile(false);
       }
@@ -253,6 +305,36 @@ export function UserDashboard({
     }
   };
 
+  // Handle event registration
+  const handleEventRegistration = async (eventId: string) => {
+    if (!user?.id) {
+      alert('Please login to register for events');
+      return;
+    }
+
+    try {
+      setRegisteringEventId(eventId);
+      
+      // TODO: This will be replaced with actual API call
+      // const response = await fetch(`${API_BASE_URL}/events/register`, {
+      //   method: 'POST',
+      //   headers: { 'Content-Type': 'application/json' },
+      //   body: JSON.stringify({ userId: user.id, eventId })
+      // });
+      
+      // For now, just simulate registration
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      setRegisteredEvents(prev => new Set([...prev, eventId]));
+      alert(`Successfully registered for the event! You'll receive further details soon.`);
+    } catch (error) {
+      console.error('Error registering for event:', error);
+      alert('Failed to register for event. Please try again.');
+    } finally {
+      setRegisteringEventId(null);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
@@ -285,6 +367,9 @@ export function UserDashboard({
           <TabsTrigger value="passes">My Passes</TabsTrigger>
           <TabsTrigger value="schedule">
             My Schedule
+          </TabsTrigger>
+          <TabsTrigger value="register">
+            Register for Events
           </TabsTrigger>
         </TabsList>
 
@@ -541,6 +626,139 @@ export function UserDashboard({
               </Card>
             )}
           </div>
+          )}
+        </TabsContent>
+
+        <TabsContent value="register">
+          {isLoadingPasses ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading events...</span>
+            </div>
+          ) : myPasses.length === 0 ? (
+            <Card className="border-dashed">
+              <CardContent className="p-6 text-center">
+                <UserPlus className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                <h3 className="mb-2">No pass found</h3>
+                <p className="mb-4 text-sm text-muted-foreground">
+                  Purchase a pass to register for E-Summit events
+                </p>
+                <Button onClick={() => onNavigate("booking")}>
+                  Book Pass
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-4">
+              <Card className="bg-primary/5 border-primary/20">
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-3">
+                    <Ticket className="h-5 w-5 text-primary mt-0.5" />
+                    <div className="flex-1">
+                      <h4 className="mb-1">Event Registration</h4>
+                      <p className="text-sm text-muted-foreground mb-2">
+                        Register for individual events you want to attend. Based on your pass{myPasses.length > 1 ? 'es' : ''}, you're eligible for the following events:
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        {myPasses.map((pass) => (
+                          <Badge key={pass.passId} variant="default">
+                            {pass.passType}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="grid gap-4">
+                {uniqueSchedule.map((event) => {
+                  const isRegistered = registeredEvents.has(event.id);
+                  const isRegistering = registeringEventId === event.id;
+
+                  return (
+                    <Card key={event.id}>
+                      <CardContent className="p-6">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1">
+                            <div className="flex items-start gap-3 mb-3">
+                              <Badge variant="outline" className="mt-1">
+                                {event.category}
+                              </Badge>
+                              <div className="flex-1">
+                                <h3 className="mb-2">{event.title}</h3>
+                                {event.speaker && (
+                                  <p className="text-sm text-muted-foreground mb-2">
+                                    Speaker: {event.speaker}
+                                  </p>
+                                )}
+                                <p className="text-sm text-muted-foreground">
+                                  {event.description}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4" />
+                                {event.date}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Calendar className="h-4 w-4" />
+                                {event.time}
+                              </div>
+                              <div className="flex items-center gap-1">
+                                <Ticket className="h-4 w-4" />
+                                {event.venue}
+                              </div>
+                            </div>
+                            
+                            {isRegistered ? (
+                              <Button disabled className="w-full md:w-auto" variant="outline">
+                                <CheckCircle2 className="mr-2 h-4 w-4" />
+                                Registered
+                              </Button>
+                            ) : (
+                              <Button 
+                                onClick={() => handleEventRegistration(event.id)}
+                                disabled={isRegistering}
+                                className="w-full md:w-auto"
+                              >
+                                {isRegistering ? (
+                                  <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    Registering...
+                                  </>
+                                ) : (
+                                  <>
+                                    <UserPlus className="mr-2 h-4 w-4" />
+                                    Register for Event
+                                  </>
+                                )}
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  );
+                })}
+              </div>
+
+              {uniqueSchedule.length === 0 && (
+                <Card className="border-dashed">
+                  <CardContent className="p-6 text-center">
+                    <Calendar className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                    <h3 className="mb-2">No events available</h3>
+                    <p className="mb-4 text-sm text-muted-foreground">
+                      You'll see available events here based on your purchased pass
+                    </p>
+                    <Button onClick={() => onNavigate("schedule")}>
+                      View Full Schedule
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
           )}
         </TabsContent>
       </Tabs>
