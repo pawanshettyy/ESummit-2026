@@ -1,6 +1,3 @@
-// This is your Prisma schema file
-// Learn more: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,114 +8,76 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-// ============================================
-// USER MANAGEMENT
-// ============================================
-
 model User {
-  id                String    @id @default(uuid()) // Our internal ID
-  
-  // Clerk Integration
-  clerkUserId       String    @unique @map("clerk_user_id") // Clerk's user ID
-  email             String    @unique
-  fullName          String?   @map("full_name")
-  firstName         String?   @map("first_name")
-  lastName          String?   @map("last_name")
-  imageUrl          String?   @map("image_url") // Profile image from Clerk
-  
-  // Additional User Info
-  phone             String?
-  college           String?
-  yearOfStudy       String?   @map("year_of_study")
-  rollNumber        String?   @map("roll_number")
-  
-  // Timestamps
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
-  lastLogin         DateTime? @map("last_login")
-  
-  // Relations
-  passes            Pass[]
-  transactions      Transaction[]
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  fullName           String?             @map("full_name")
+  phone              String?
+  college            String?
+  yearOfStudy        String?             @map("year_of_study")
+  rollNumber         String?             @map("roll_number")
+  createdAt          DateTime            @default(now()) @map("created_at")
+  updatedAt          DateTime            @updatedAt @map("updated_at")
+  lastLogin          DateTime?           @map("last_login")
+  clerkUserId        String              @unique @map("clerk_user_id")
+  firstName          String?             @map("first_name")
+  imageUrl           String?             @map("image_url")
+  lastName           String?             @map("last_name")
+  checkIns           CheckIn[]
   eventRegistrations EventRegistration[]
-  checkIns          CheckIn[]
-  
+  passes             Pass[]
+  transactions       Transaction[]
+
   @@index([email])
   @@index([phone])
   @@index([clerkUserId])
   @@map("users")
 }
 
-// ============================================
-// PASS MANAGEMENT
-// ============================================
-
 model Pass {
-  id            String   @id @default(uuid())
-  userId        String   @map("user_id")
-  passType      String   @map("pass_type") // 'Gold', 'Silver', 'Platinum', 'Group'
-  passId        String   @unique @map("pass_id") // 'ESUMMIT-2026-XXXXX'
-  price         Decimal  @db.Decimal(10, 2)
-  purchaseDate  DateTime @default(now()) @map("purchase_date")
-  status        String   @default("Active") // 'Active', 'Cancelled', 'Refunded'
-  
-  // Add-ons
-  hasMeals      Boolean  @default(false) @map("has_meals")
-  hasMerchandise Boolean @default(false) @map("has_merchandise")
-  hasWorkshopAccess Boolean @default(false) @map("has_workshop_access")
-  
-  // QR Code (Phase 2)
-  qrCodeUrl     String?  @map("qr_code_url")
-  qrCodeData    String?  @map("qr_code_data") @db.Text
-  
-  // Timestamps
-  createdAt     DateTime @default(now()) @map("created_at")
-  updatedAt     DateTime @updatedAt @map("updated_at")
-  
-  // Relations
-  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  transaction   Transaction?
-  checkIns      CheckIn[]
-  
+  id                String       @id @default(uuid())
+  userId            String       @map("user_id")
+  passType          String       @map("pass_type")
+  passId            String       @unique @map("pass_id")
+  price             Decimal      @db.Decimal(10, 2)
+  purchaseDate      DateTime     @default(now()) @map("purchase_date")
+  status            String       @default("Active")
+  hasMeals          Boolean      @default(false) @map("has_meals")
+  hasMerchandise    Boolean      @default(false) @map("has_merchandise")
+  hasWorkshopAccess Boolean      @default(false) @map("has_workshop_access")
+  qrCodeUrl         String?      @map("qr_code_url")
+  qrCodeData        String?      @map("qr_code_data")
+  createdAt         DateTime     @default(now()) @map("created_at")
+  updatedAt         DateTime     @updatedAt @map("updated_at")
+  checkIns          CheckIn[]
+  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transaction       Transaction?
+
   @@index([userId])
   @@index([passId])
   @@index([status])
   @@map("passes")
 }
 
-// ============================================
-// PAYMENT MANAGEMENT
-// ============================================
-
 model Transaction {
   id                String   @id @default(uuid())
   userId            String   @map("user_id")
-  passId            String?  @unique @map("pass_id") // Made optional - will be set after pass creation
-  
-  // Unique identifiers for invoicing
-  invoiceNumber     String   @unique @map("invoice_number") // 'INV-2026-XXXXXXXX'
-  transactionNumber String   @unique @map("transaction_number") // 'TXN-2026-XXXXXXXX'
-  
-  // Razorpay data
+  passId            String?  @unique @map("pass_id")
   razorpayOrderId   String?  @unique @map("razorpay_order_id")
   razorpayPaymentId String?  @map("razorpay_payment_id")
   razorpaySignature String?  @map("razorpay_signature")
-  
   amount            Decimal  @db.Decimal(10, 2)
   currency          String   @default("INR")
-  status            String   // 'pending', 'completed', 'failed', 'refunded'
-  paymentMethod     String?  @map("payment_method") // 'upi', 'card', 'netbanking'
-  
-  metadata          Json?    // Additional payment details
-  
-  // Timestamps
+  status            String
+  paymentMethod     String?  @map("payment_method")
+  metadata          Json?
   createdAt         DateTime @default(now()) @map("created_at")
   updatedAt         DateTime @updatedAt @map("updated_at")
-  
-  // Relations
-  user              User     @relation(fields: [userId], references: [id])
+  invoiceNumber     String   @unique @map("invoice_number")
+  transactionNumber String   @unique @map("transaction_number")
   pass              Pass?    @relation(fields: [passId], references: [id])
-  
+  user              User     @relation(fields: [userId], references: [id])
+
   @@index([userId])
   @@index([status])
   @@index([razorpayOrderId])
@@ -127,50 +86,33 @@ model Transaction {
   @@map("transactions")
 }
 
-// ============================================
-// EVENT MANAGEMENT
-// ============================================
-
 model Event {
-  id                String    @id @default(uuid())
-  eventId           String?   @unique @map("event_id") // Unique kebab-case identifier (e.g., "workshop-ai-ml-day1-morning")
-  title             String
-  description       String?   @db.Text
-  category          String    // 'competitions', 'workshops', 'speakers', 'hackathon', 'networking'
-  
-  // Schedule
-  date              DateTime  @db.Date
-  startTime         DateTime  @db.Time
-  endTime           DateTime  @db.Time
-  venue             String
-  
-  // Competition specific
-  prizeAmount       Decimal?  @db.Decimal(10, 2) @map("prize_amount")
-  eligibility       String?   @db.Text
-  rules             Json?
-  judges            Json?
-  prerequisites     String?   @db.Text
-  registrationDeadline DateTime? @map("registration_deadline")
-  
-  // Speaker specific
-  speakerName       String?   @map("speaker_name")
-  speakerBio        String?   @db.Text @map("speaker_bio")
-  speakerImageUrl   String?   @map("speaker_image_url")
-  
-  // Capacity
-  maxParticipants   Int?      @map("max_participants")
-  currentParticipants Int     @default(0) @map("current_participants")
-  
-  status            String    @default("upcoming") // 'upcoming', 'ongoing', 'completed', 'cancelled'
-  
-  // Timestamps
-  createdAt         DateTime  @default(now()) @map("created_at")
-  updatedAt         DateTime  @updatedAt @map("updated_at")
-  
-  // Relations
-  registrations     EventRegistration[]
-  checkIns          CheckIn[]
-  
+  id                   String              @id @default(uuid())
+  title                String
+  description          String?
+  category             String
+  date                 DateTime            @db.Date
+  startTime            DateTime            @db.Time(6)
+  endTime              DateTime            @db.Time(6)
+  venue                String
+  prizeAmount          Decimal?            @map("prize_amount") @db.Decimal(10, 2)
+  eligibility          String?
+  rules                Json?
+  judges               Json?
+  prerequisites        String?
+  registrationDeadline DateTime?           @map("registration_deadline")
+  speakerName          String?             @map("speaker_name")
+  speakerBio           String?             @map("speaker_bio")
+  speakerImageUrl      String?             @map("speaker_image_url")
+  maxParticipants      Int?                @map("max_participants")
+  currentParticipants  Int                 @default(0) @map("current_participants")
+  status               String              @default("upcoming")
+  createdAt            DateTime            @default(now()) @map("created_at")
+  updatedAt            DateTime            @updatedAt @map("updated_at")
+  eventId              String?             @unique @map("event_id")
+  checkIns             CheckIn[]
+  registrations        EventRegistration[]
+
   @@index([category])
   @@index([date])
   @@index([status])
@@ -182,49 +124,54 @@ model EventRegistration {
   userId           String   @map("user_id")
   eventId          String   @map("event_id")
   passId           String?  @map("pass_id")
-  
   registrationDate DateTime @default(now()) @map("registration_date")
-  status           String   @default("registered") // 'registered', 'attended', 'cancelled'
+  status           String   @default("registered")
   
-  teamMembers      Json?    @map("team_members") // For team events
+  // Basic participant details
+  participantName  String?  @map("participant_name")
+  participantEmail String?  @map("participant_email")
+  participantPhone String?  @map("participant_phone")
   
-  // Timestamps
+  // Team/Group details (for team events)
+  teamName         String?  @map("team_name")
+  teamSize         Int?     @map("team_size")
+  teamMembers      Json?    @map("team_members")
+  isTeamLead       Boolean  @default(true) @map("is_team_lead")
+  
+  // Event-specific form data (stored as JSON for flexibility)
+  formData         Json?    @map("form_data")
+  
+  // Additional fields
+  specialRequirements String? @map("special_requirements")
+  dietaryPreferences  String? @map("dietary_preferences")
+  emergencyContact    String? @map("emergency_contact")
+  
   createdAt        DateTime @default(now()) @map("created_at")
   updatedAt        DateTime @updatedAt @map("updated_at")
-  
-  // Relations
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   event            Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   @@unique([userId, eventId])
   @@index([userId])
   @@index([eventId])
+  @@index([status])
   @@map("event_registrations")
 }
 
-// ============================================
-// CHECK-IN MANAGEMENT
-// ============================================
-
 model CheckIn {
-  id           String   @id @default(uuid())
-  passId       String   @map("pass_id")
-  userId       String   @map("user_id")
-  eventId      String?  @map("event_id")
-  
-  checkInTime  DateTime @default(now()) @map("check_in_time")
-  checkInType  String   @map("check_in_type") // 'venue_entry', 'event_entry'
-  scannedBy    String?  @map("scanned_by") // Clerk user ID of admin who scanned
-  location     String?
-  
-  // Timestamp
-  createdAt    DateTime @default(now()) @map("created_at")
-  
-  // Relations
-  pass         Pass     @relation(fields: [passId], references: [id])
-  user         User     @relation(fields: [userId], references: [id])
-  event        Event?   @relation(fields: [eventId], references: [id])
-  
+  id          String   @id @default(uuid())
+  passId      String   @map("pass_id")
+  userId      String   @map("user_id")
+  eventId     String?  @map("event_id")
+  checkInTime DateTime @default(now()) @map("check_in_time")
+  checkInType String   @map("check_in_type")
+  scannedBy   String?  @map("scanned_by")
+  location    String?
+  createdAt   DateTime @default(now()) @map("created_at")
+  event       Event?   @relation(fields: [eventId], references: [id])
+  pass        Pass     @relation(fields: [passId], references: [id])
+  user        User     @relation(fields: [userId], references: [id])
+
   @@index([passId])
   @@index([userId])
   @@index([eventId])
@@ -233,49 +180,35 @@ model CheckIn {
   @@map("check_ins")
 }
 
-// ============================================
-// AUDIT LOGS (Admin actions tracked via Clerk user IDs)
-// ============================================
-
 model AuditLog {
-  id           String   @id @default(uuid())
-  clerkUserId  String?  @map("clerk_user_id") // Clerk user ID of admin who performed action
-  action       String   // 'check_in', 'refund', 'edit_pass', etc.
-  entityType   String   @map("entity_type") // 'pass', 'user', 'event', etc.
-  entityId     String   @map("entity_id")
-  
-  changes      Json?    // Before/after data
-  ipAddress    String?  @map("ip_address")
-  userAgent    String?  @db.Text @map("user_agent")
-  
-  // Timestamp
-  createdAt    DateTime @default(now()) @map("created_at")
-  
+  id          String   @id @default(uuid())
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String   @map("entity_id")
+  changes     Json?
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  createdAt   DateTime @default(now()) @map("created_at")
+  clerkUserId String?  @map("clerk_user_id")
+
   @@index([clerkUserId])
   @@index([entityType, entityId])
   @@index([createdAt])
   @@map("audit_logs")
 }
 
-// ============================================
-// SPONSORS (Optional - for display)
-// ============================================
-
 model Sponsor {
   id           String   @id @default(uuid())
   name         String
   logoUrl      String?  @map("logo_url")
   websiteUrl   String?  @map("website_url")
-  tier         String   // 'title', 'platinum', 'gold', 'silver', 'bronze'
-  description  String?  @db.Text
-  
+  tier         String
+  description  String?
   displayOrder Int      @default(0) @map("display_order")
   isActive     Boolean  @default(true) @map("is_active")
-  
-  // Timestamps
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt @map("updated_at")
-  
+
   @@index([tier])
   @@index([displayOrder])
   @@map("sponsors")

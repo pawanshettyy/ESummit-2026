@@ -351,6 +351,7 @@ export function PassBooking({
       // Remove this when implementing actual payment gateway
       
       console.log("🔄 Creating pass without payment (testing mode)...");
+      console.log("API URL:", `${API_BASE_URL}/passes/create`);
       
       // Get Clerk user ID
       const clerkUserId = user?.id;
@@ -361,62 +362,87 @@ export function PassBooking({
         return;
       }
       
-      // Create pass via API
-      const response = await fetch(`${API_BASE_URL}/passes/create`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          clerkUserId: clerkUserId,
-          passType: selectedPassData?.name || "Standard Pass",
-          price: totalPrice,
-          hasMeals: formData.meals,
-          hasMerchandise: formData.merchandise,
-          hasWorkshopAccess: formData.workshop,
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success && data.data.pass) {
-        const createdPass = data.data.pass;
-        
-        console.log("✅ Pass created:", createdPass.passId);
-        console.log("🎫 QR Code generated:", createdPass.qrCodeUrl ? "Yes" : "No");
-
-        // Store the created pass data including QR code
-        setCreatedPass({
-          passId: createdPass.passId,
-          qrCodeUrl: createdPass.qrCodeUrl,
+      const requestBody = {
+        clerkUserId: clerkUserId,
+        passType: selectedPassData?.name || "Standard Pass",
+        price: totalPrice,
+        hasMeals: formData.meals,
+        hasMerchandise: formData.merchandise,
+        hasWorkshopAccess: formData.workshop,
+      };
+      
+      console.log("Request body:", requestBody);
+      
+      try {
+        // Create pass via API
+        const response = await fetch(`${API_BASE_URL}/passes/create`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestBody),
         });
 
-        // Save to localStorage for backward compatibility
-        const passData = {
-          id: selectedPassData?.id || "",
-          type: selectedPassData?.name || "",
-          passId: createdPass.passId,
-          price: totalPrice,
-          purchaseDate: new Date().toLocaleDateString("en-US", {
-            month: "short",
-            day: "numeric",
-            year: "numeric",
-          }),
-          status: "Active",
-        };
-        savePurchasedPass(passData);
+        console.log("Response status:", response.status);
+        console.log("Response ok:", response.ok);
 
-        toast.success("Pass created successfully! Check your dashboard for QR code.");
-        setIsProcessingPayment(false);
-        
-        setTimeout(() => {
-          setStep(4);
-        }, 1000);
-      } else {
-        toast.error(data.message || "Failed to create pass. Please try again.");
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Response error:", errorText);
+          toast.error(`Failed to create pass: ${errorText}`);
+          setIsProcessingPayment(false);
+          return;
+        }
+
+        const data = await response.json();
+        console.log("Response data:", data);
+
+        if (data.success && data.data.pass) {
+          const createdPass = data.data.pass;
+          
+          console.log("✅ Pass created:", createdPass.passId);
+          console.log("🎫 QR Code generated:", createdPass.qrCodeUrl ? "Yes" : "No");
+
+          // Store the created pass data including QR code
+          setCreatedPass({
+            passId: createdPass.passId,
+            qrCodeUrl: createdPass.qrCodeUrl,
+          });
+
+          // Save to localStorage for backward compatibility
+          const passData = {
+            id: selectedPassData?.id || "",
+            type: selectedPassData?.name || "",
+            passId: createdPass.passId,
+            price: totalPrice,
+            purchaseDate: new Date().toLocaleDateString("en-US", {
+              month: "short",
+              day: "numeric",
+              year: "numeric",
+            }),
+            status: "Active",
+          };
+          savePurchasedPass(passData);
+
+          toast.success("Pass created successfully! Check your dashboard for QR code.");
+          setIsProcessingPayment(false);
+          
+          setTimeout(() => {
+            setStep(4);
+          }, 1000);
+        } else {
+          toast.error(data.message || "Failed to create pass. Please try again.");
+          setIsProcessingPayment(false);
+        }
+      } catch (error) {
+        console.error("Pass creation error:", error);
+        toast.error(
+          error instanceof Error
+            ? error.message
+            : "Failed to create pass. Please try again."
+        );
         setIsProcessingPayment(false);
       }
-
     } catch (error) {
       console.error("Pass creation error:", error);
       toast.error(

@@ -7,6 +7,58 @@ import logger from '../utils/logger.util';
 const router = Router();
 
 /**
+ * Sync/create user from Clerk (fallback if webhook didn't fire)
+ * POST /api/v1/users/sync
+ */
+router.post('/sync', async (req: Request, res: Response) => {
+  try {
+    const {
+      clerkUserId,
+      email,
+      fullName,
+      firstName,
+      lastName,
+      imageUrl,
+    } = req.body;
+
+    // Validate required fields
+    if (!clerkUserId || !email) {
+      sendError(res, 'clerkUserId and email are required', 400);
+      return;
+    }
+
+    // Check if user already exists
+    let user = await prisma.user.findUnique({
+      where: { clerkUserId },
+    });
+
+    if (user) {
+      logger.info(`User already exists: ${email}`);
+      sendSuccess(res, 'User already exists', { user }, 200);
+      return;
+    }
+
+    // Create new user
+    user = await prisma.user.create({
+      data: {
+        clerkUserId,
+        email,
+        fullName: fullName || null,
+        firstName: firstName || null,
+        lastName: lastName || null,
+        imageUrl: imageUrl || null,
+      },
+    });
+
+    logger.info(`New user synced from Clerk: ${email}`);
+    sendSuccess(res, 'User created successfully', { user }, 201);
+  } catch (error: any) {
+    logger.error('User sync error:', error);
+    sendError(res, error.message || 'Failed to sync user', 500);
+  }
+});
+
+/**
  * Complete user profile after Clerk signup
  * POST /api/v1/users/complete-profile
  */
