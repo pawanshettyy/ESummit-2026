@@ -1,0 +1,22 @@
+{
+  "version": 2,
+  "name": "esummit-2025-backend",
+  "buildCommand": "npm run build",
+  "installCommand": "npm install && npx prisma generate",
+  "framework": null,
+  "builds": [
+    {
+      "src": "src/index.ts",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "src/index.ts"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  }
+}
