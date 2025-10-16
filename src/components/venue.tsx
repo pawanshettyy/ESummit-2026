@@ -162,8 +162,8 @@ export function Venue() {
           <Card className="mb-12 overflow-hidden">
             <div className="relative h-96">
           <ImageWithFallback
-            src="https://images.unsplash.com/photo-1600903308878-bf5e554ab841?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjYW1wdXMlMjBidWlsZGluZ3xlbnwxfHx8fDE3NTk0Mjg4OTR8MA&ixlib=rb-4.1.0&q=80&w=1080"
-            alt="Campus venue"
+            src="/assets/tcet.webp"
+            alt="Thakur College of Engineering and Technology Campus"
             className="h-full w-full object-cover"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
@@ -192,7 +192,10 @@ export function Venue() {
               </p>
             </div>
             <div>
-              <Button className="w-full">
+              <Button 
+                className="w-full"
+                onClick={() => window.open('https://maps.google.com/?q=Thakur+College+of+Engineering+and+Technology+Kandivali+East+Mumbai', '_blank')}
+              >
                 <Navigation className="mr-2 h-4 w-4" />
                 Get Directions
               </Button>
@@ -335,28 +338,28 @@ export function Venue() {
             <h4 className="mb-2">Event Helpdesk</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
-              +91 98765 43210
+              Ayush Pardeshi (CEO): +91 87665 36270
             </p>
           </div>
           <div>
-            <h4 className="mb-2">Medical Emergency</h4>
+            <h4 className="mb-2">Operations & Coordination</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
-              +91 98765 43211
+              Bhummi Girnara (COO): +91 98698 32960
             </p>
           </div>
           <div>
-            <h4 className="mb-2">Security</h4>
+            <h4 className="mb-2">Technical Support</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
-              +91 98765 43212
+              Ahana Kulkarni (CTO): +91 89283 52406
             </p>
           </div>
           <div>
-            <h4 className="mb-2">Lost & Found</h4>
+            <h4 className="mb-2">General Coordination</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
-              +91 98765 43213
+              Yash Khatri (Chairperson): +91 95185 09120
             </p>
           </div>
         </CardContent>

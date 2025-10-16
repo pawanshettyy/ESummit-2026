@@ -115,6 +115,8 @@
     --animate-spin: spin 1s linear infinite;
     --animate-ping: ping 1s cubic-bezier(0, 0, .2, 1) infinite;
     --animate-pulse: pulse 2s cubic-bezier(.4, 0, .6, 1) infinite;
+    --animate-aurora: aurora 8s ease-in-out infinite;
+    --animate-aurora-glow: aurora-glow 8s ease-in-out infinite;
     --blur-sm: 8px;
     --blur-md: 12px;
     --blur-lg: 16px;
@@ -1179,6 +1181,14 @@
 
   .animate-spin {
     animation: var(--animate-spin);
+  }
+
+  .animate-aurora {
+    animation: var(--animate-aurora);
+  }
+
+  .animate-aurora-glow {
+    animation: var(--animate-aurora-glow);
   }
 
   .cursor-default {
