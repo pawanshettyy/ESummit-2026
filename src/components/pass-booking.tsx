@@ -73,6 +73,7 @@ export function PassBooking({
     qrCodeUrl: string;
   } | null>(null);
   const [hasExistingPass, setHasExistingPass] = useState(false);
+  const [isCheckingPass, setIsCheckingPass] = useState(false); // Track loading state
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -85,27 +86,30 @@ export function PassBooking({
     workshop: false,
   });
 
-  // Fetch and pre-fill form with user data from database
+  // Fetch and pre-fill form with user data from database (optimized - single call)
   useEffect(() => {
     const fetchUserProfile = async () => {
       if (!user?.id) return;
 
+      setIsCheckingPass(true);
       try {
-        // Check if user already has a pass
+        // Single API call to check passes and get profile
         const passResponse = await fetch(
           `${API_BASE_URL}/passes/user/${user.id}`
         );
         const passData = await passResponse.json();
 
+        // Check if user already has a pass
         if (passData.success && passData.data.passes && passData.data.passes.length > 0) {
           setHasExistingPass(true);
+          setIsCheckingPass(false);
           toast.info("You already have a pass", {
             description: "Check your dashboard to view your pass.",
           });
           return; // Don't fetch profile if user already has a pass
         }
 
-        // Fetch user profile for form pre-fill
+        // Fetch user profile for form pre-fill (only if no pass)
         const response = await fetch(
           `${API_BASE_URL}/users/profile/${user.id}`
         );
@@ -141,6 +145,8 @@ export function PassBooking({
           name: user.fullName || "",
           email: user.primaryEmailAddress?.emailAddress || "",
         }));
+      } finally {
+        setIsCheckingPass(false);
       }
     };
 
@@ -270,22 +276,12 @@ export function PassBooking({
   const handlePayment = async () => {
     if (isProcessingPayment) return;
 
-    // Check if user already has a pass
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/passes/user/${user?.id}`
-      );
-      const data = await response.json();
-
-      if (data.success && data.data.passes && data.data.passes.length > 0) {
-        toast.error("You already have a pass", {
-          description: "Only one pass per user is allowed. Check your dashboard.",
-        });
-        return;
-      }
-    } catch (error) {
-      console.error("Error checking existing passes:", error);
-      // Continue with payment if check fails (don't block user)
+    // Use cached hasExistingPass state instead of making another API call
+    if (hasExistingPass) {
+      toast.error("You already have a pass", {
+        description: "Only one pass per user is allowed. Check your dashboard.",
+      });
+      return;
     }
 
     setIsProcessingPayment(true);
@@ -527,13 +523,21 @@ export function PassBooking({
       {/* Step 1: Pass Selection */}
       {step === 1 && (
         <div>
+          {/* Show loading state while checking for existing pass */}
+          {isCheckingPass && (
+            <div className="mb-8 text-center">
+              <div className="mx-auto mb-4 h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+              <p className="text-sm text-muted-foreground">Checking your account...</p>
+            </div>
+          )}
+          
           <div className="mb-8 text-center">
             <h1 className="mb-4">Choose Your Pass</h1>
             <p className="text-muted-foreground">
               Select the perfect pass for your E-Summit
               experience
             </p>
-            {!hasExistingPass && (
+            {!hasExistingPass && !isCheckingPass && (
               <Alert className="mx-auto mt-4 max-w-2xl">
                 <Info className="h-4 w-4" />
                 <AlertDescription>
@@ -617,14 +621,12 @@ export function PassBooking({
                             Pass Already Purchased
                           </Button>
                         ) : (
-                          <ShimmerButton
+                          <Button
                             className="w-full"
-                            onClick={() =>
-                              handlePassSelect(pass.id)
-                            }
+                            disabled
                           >
-                            Select Pass
-                          </ShimmerButton>
+                            Passes will open soon
+                          </Button>
                         )}
                       </CardContent>
                     </Card>
@@ -668,12 +670,9 @@ export function PassBooking({
                         <Button
                           className="w-full"
                           variant="outline"
-                          onClick={() =>
-                            handlePassSelect(pass.id)
-                          }
-                          disabled={hasExistingPass}
+                          disabled
                         >
-                          {hasExistingPass ? "Pass Already Purchased" : "Select Pass"}
+                          Passes will open soon
                         </Button>
                       </CardContent>
                     </Card>

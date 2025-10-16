@@ -1,290 +1,580 @@
-import { ExternalLink } from "lucide-react";
-import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
-import { Badge } from "./ui/badge";
-import { Marquee } from "./magicui/marquee";
 import { motion } from "motion/react";
-import { AnimatedBorder } from "./magicui/animated-border";
+import { AuroraText } from "./magicui/aurora-text";
+import { Particles } from "./magicui/particles";
+import { GlassCard } from "./accentricity/glass-card";
 
 export function Sponsors() {
-  const sponsorTiers = [
-    {
-      tier: "Title Sponsor",
-      sponsors: [
-        {
-          name: "TechCorp Global",
-          logo: "TC",
-          description: "Leading technology company powering innovation worldwide",
-          website: "techcorp.com",
-          contribution: "Main sponsor supporting all major events",
-        },
-      ],
-    },
-    {
-      tier: "Powered By Sponsor",
-      sponsors: [
-        {
-          name: "InnovateTech",
-          logo: "IT",
-          description: "Digital transformation and cloud solutions",
-          website: "innovatetech.com",
-          contribution: "Technology infrastructure partner",
-        },
-      ],
-    },
-    {
-      tier: "Associate Sponsors",
-      sponsors: [
-        {
-          name: "StartupHub",
-          logo: "SH",
-          description: "India's largest startup community platform",
-          website: "startuphub.com",
-          contribution: "Networking and community support",
-        },
-        {
-          name: "VentureCapital Partners",
-          logo: "VC",
-          description: "Leading VC firm investing in early-stage startups",
-          website: "vcpartners.com",
-          contribution: "Funding and mentorship opportunities",
-        },
-        {
-          name: "GlobalBank",
-          logo: "GB",
-          description: "Banking and financial services",
-          website: "globalbank.com",
-          contribution: "Financial services partner",
-        },
-      ],
-    },
-    {
-      tier: "Event Sponsors",
-      sponsors: [
-        {
-          name: "CodersHub",
-          logo: "CH",
-          description: "Developer community and learning platform",
-          website: "codershub.com",
-          event: "Hackathon Sponsor",
-        },
-        {
-          name: "MarketGrowth",
-          logo: "MG",
-          description: "Digital marketing and growth solutions",
-          website: "marketgrowth.com",
-          event: "Workshop Sponsor",
-        },
-        {
-          name: "DesignStudio",
-          logo: "DS",
-          description: "UI/UX and product design agency",
-          website: "designstudio.com",
-          event: "Design Workshop Sponsor",
-        },
-        {
-          name: "FinanceGuru",
-          logo: "FG",
-          description: "Financial planning and advisory services",
-          website: "financeguru.com",
-          event: "Finance Workshop Sponsor",
-        },
-      ],
-    },
-    {
-      tier: "Media Partners",
-      sponsors: [
-        {
-          name: "TechNews Daily",
-          logo: "TN",
-          description: "Leading tech news and media platform",
-          website: "technews.com",
-        },
-        {
-          name: "Startup Times",
-          logo: "ST",
-          description: "Startup ecosystem news and stories",
-          website: "startuptimes.com",
-        },
-        {
-          name: "Business Today",
-          logo: "BT",
-          description: "Business news and insights",
-          website: "businesstoday.com",
-        },
-        {
-          name: "Innovation Weekly",
-          logo: "IW",
-          description: "Weekly innovation and technology magazine",
-          website: "innovationweekly.com",
-        },
-      ],
-    },
-    {
-      tier: "Community Partners",
-      sponsors: [
-        {
-          name: "E-Cell Network",
-          logo: "EC",
-          description: "National network of entrepreneurship cells",
-          website: "ecell.network",
-        },
-        {
-          name: "Women in Tech",
-          logo: "WT",
-          description: "Supporting women entrepreneurs in technology",
-          website: "womenintech.org",
-        },
-        {
-          name: "Student Entrepreneurs Club",
-          logo: "SE",
-          description: "Fostering student entrepreneurship",
-          website: "studentent.org",
-        },
-      ],
-    },
-  ];
-
-  const getTierStyles = (tier: string) => {
-    switch (tier) {
-      case "Title Sponsor":
-        return { size: "lg", badge: "default" };
-      case "Powered By Sponsor":
-        return { size: "lg", badge: "default" };
-      case "Associate Sponsors":
-        return { size: "md", badge: "secondary" };
-      case "Event Sponsors":
-        return { size: "sm", badge: "secondary" };
-      default:
-        return { size: "sm", badge: "outline" };
-    }
-  };
-
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="mb-12 text-center">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-4"
-        >
-          Our Sponsors & Partners
-        </motion.h1>
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="mx-auto max-w-2xl text-muted-foreground"
-        >
-          E-Summit 2026 is made possible by the generous support of our sponsors and partners who believe in fostering entrepreneurship
-        </motion.p>
-      </div>
+    <div className="container relative mx-auto py-20 overflow-hidden">
+      <Particles className="absolute inset-0 opacity-30" quantity={50} ease={60} />
       
-      {/* Marquee Section for Media Partners */}
-      <div className="mb-16 overflow-hidden rounded-lg border bg-card p-8">
-        <h2 className="mb-6 text-center">Media Partners Showcase</h2>
-        <Marquee pauseOnHover speed="slow" className="py-4">
-          <div className="flex gap-8">
-            {sponsorTiers
-              .find((tier) => tier.tier === "Media Partners")
-              ?.sponsors.map((sponsor) => (
-                <div
-                  key={sponsor.name}
-                  className="flex h-20 w-40 flex-shrink-0 items-center justify-center rounded-lg border bg-background px-6"
-                >
-                  <div className="text-2xl text-primary">{sponsor.logo}</div>
-                </div>
-              ))}
-          </div>
-        </Marquee>
-        <Marquee reverse pauseOnHover speed="slow" className="py-4">
-          <div className="flex gap-8">
-            {sponsorTiers
-              .find((tier) => tier.tier === "Community Partners")
-              ?.sponsors.map((sponsor) => (
-                <div
-                  key={sponsor.name}
-                  className="flex h-20 w-40 flex-shrink-0 items-center justify-center rounded-lg border bg-background px-6"
-                >
-                  <div className="text-2xl text-primary">{sponsor.logo}</div>
-                </div>
-              ))}
-          </div>
-        </Marquee>
-      </div>
-
-      <div className="space-y-12">
-        {sponsorTiers.map((tierGroup) => {
-          const styles = getTierStyles(tierGroup.tier);
-          const isLargeTier = tierGroup.tier === "Title Sponsor" || tierGroup.tier === "Powered By Sponsor";
+      {/* Coming Soon Section */}
+      <div className="relative z-10 flex min-h-[75vh] flex-col items-center justify-center">
+        <div className="max-w-4xl w-full px-4">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-16"
+          >
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
+              Our Sponsors
+            </h1>
+            
+            <AuroraText
+              size="lg"
+              colors={["#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca"]}
+              className="mb-8"
+            >
+              Will be announced soon
+            </AuroraText>
+            
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              We're finalizing partnerships with industry-leading organizations
+            </p>
+          </motion.div>
           
-          return (
-            <div key={tierGroup.tier}>
-              <div className="mb-6 text-center">
-                <Badge variant={styles.badge as any} className="mb-2">
-                  {tierGroup.tier}
-                </Badge>
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <GlassCard className="p-8 md:p-12">              
+              <div className="text-center">
+                <p className="text-sm text-muted-foreground mb-3">
+                  Interested in partnering with E-Summit 2026?
+                </p>
+                <a 
+                  href="mailto:edictcet@gmail.com" 
+                  className="inline-flex items-center gap-2 text-primary font-medium hover:underline underline-offset-4 transition-all"
+                >
+                  edictcet@gmail.com
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                  </svg>
+                </a>
               </div>
-
-              <div className={`grid gap-6 ${
-                isLargeTier 
-                  ? "md:grid-cols-1" 
-                  : tierGroup.tier === "Associate Sponsors" 
-                  ? "md:grid-cols-2 lg:grid-cols-3" 
-                  : "md:grid-cols-2 lg:grid-cols-4"
-              }`}>
-                {tierGroup.sponsors.map((sponsor, index) => (
-                  <motion.div
-                    key={sponsor.name}
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    whileHover={{ y: -5 }}
-                  >
-                    <Card className="h-full transition-shadow hover:shadow-lg">
-                      <CardContent className={`p-6 text-center ${isLargeTier ? "p-8" : ""}`}>
-                      {/* Logo placeholder */}
-                      <div className={`mx-auto mb-4 flex items-center justify-center rounded-lg bg-primary text-primary-foreground ${
-                        isLargeTier ? "h-32 w-32 text-3xl" : "h-20 w-20 text-xl"
-                      }`}>
-                        {sponsor.logo}
-                      </div>
-                      
-                      <h3 className={isLargeTier ? "mb-3" : "mb-2"}>
-                        {sponsor.name}
-                      </h3>
-                      
-                      <p className="mb-4 text-sm text-muted-foreground">
-                        {sponsor.description}
-                      </p>
-
-                      {'contribution' in sponsor && sponsor.contribution && (
-                        <p className="mb-4 text-sm text-primary">
-                          {sponsor.contribution}
-                        </p>
-                      )}
-
-                      {'event' in sponsor && sponsor.event && (
-                        <Badge variant="secondary" className="mb-4">
-                          {sponsor.event}
-                        </Badge>
-                      )}
-
-                      <Button variant="outline" size="sm" className="w-full">
-                        <ExternalLink className="mr-2 h-4 w-4" />
-                        Visit Website
-                      </Button>
-                    </CardContent>
-                  </Card>
-                  </motion.div>
-                ))}
-              </div>
-            </div>
-          );
-        })}
+            </GlassCard>
+          </motion.div>
+        </div>
       </div>
     </div>
   );
 }
+
+/*
+========================================
+FULL SPONSORS COMPONENT - UNCOMMENT WHEN READY
+========================================
+
+To activate the full sponsors page:
+1. Uncomment the imports below
+2. Uncomment the sponsors data arrays
+3. Replace the entire "Coming Soon" return statement with the full UI at the bottom
+
+STEP 1: Uncomment these imports
+----------------------------------------
+import { ExternalLink } from "lucide-react";
+import { Card, CardContent } from "./ui/card";
+import { Badge } from "./ui/badge";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { BentoGrid, BentoCard } from "./magicui/bento-grid";
+import { GlassCard } from "./accentricity/glass-card";
+
+
+STEP 2: Sponsors Data - Add inside the Sponsors() function
+----------------------------------------
+const titleSponsors = [
+  {
+    name: "Company Name",
+    logo: "/sponsors/title-sponsor.png",
+    description: "Leading technology company",
+    website: "https://company.com",
+    tier: "Title Sponsor",
+  },
+];
+
+const platinumSponsors = [
+  {
+    name: "Platinum Company 1",
+    logo: "/sponsors/platinum1.png",
+    description: "Industry leader in innovation",
+    website: "https://platinum1.com",
+    tier: "Platinum",
+  },
+  {
+    name: "Platinum Company 2",
+    logo: "/sponsors/platinum2.png",
+    description: "Global tech solutions provider",
+    website: "https://platinum2.com",
+    tier: "Platinum",
+  },
+];
+
+const goldSponsors = [
+  {
+    name: "Gold Company 1",
+    logo: "/sponsors/gold1.png",
+    description: "Innovation partner",
+    website: "https://gold1.com",
+    tier: "Gold",
+  },
+  {
+    name: "Gold Company 2",
+    logo: "/sponsors/gold2.png",
+    description: "Technology partner",
+    website: "https://gold2.com",
+    tier: "Gold",
+  },
+  {
+    name: "Gold Company 3",
+    logo: "/sponsors/gold3.png",
+    description: "Strategic partner",
+    website: "https://gold3.com",
+    tier: "Gold",
+  },
+];
+
+const silverSponsors = [
+  {
+    name: "Silver Company 1",
+    logo: "/sponsors/silver1.png",
+    website: "https://silver1.com",
+    tier: "Silver",
+  },
+  {
+    name: "Silver Company 2",
+    logo: "/sponsors/silver2.png",
+    website: "https://silver2.com",
+    tier: "Silver",
+  },
+  {
+    name: "Silver Company 3",
+    logo: "/sponsors/silver3.png",
+    website: "https://silver3.com",
+    tier: "Silver",
+  },
+  {
+    name: "Silver Company 4",
+    logo: "/sponsors/silver4.png",
+    website: "https://silver4.com",
+    tier: "Silver",
+  },
+];
+
+const communityPartners = [
+  {
+    name: "Community Partner 1",
+    logo: "/sponsors/community1.png",
+    website: "https://community1.com",
+  },
+  {
+    name: "Community Partner 2",
+    logo: "/sponsors/community2.png",
+    website: "https://community2.com",
+  },
+  {
+    name: "Community Partner 3",
+    logo: "/sponsors/community3.png",
+    website: "https://community3.com",
+  },
+  {
+    name: "Community Partner 4",
+    logo: "/sponsors/community4.png",
+    website: "https://community4.com",
+  },
+  {
+    name: "Community Partner 5",
+    logo: "/sponsors/community5.png",
+    website: "https://community5.com",
+  },
+];
+
+
+STEP 3: Full Sponsors UI - Replace the return statement
+----------------------------------------
+return (
+  <div className="container mx-auto py-12">
+    <div className="mb-12 text-center">
+      <GradientText 
+        from="from-red-600"
+        to="to-red-400"
+        className="text-4xl font-bold mb-4"
+      >
+        Our Sponsors
+      </GradientText>
+      <p className="text-xl text-muted-foreground">
+        Partnering with industry leaders to make E-Summit 2026 possible
+      </p>
+    </div>
+
+    <Tabs defaultValue="all" className="w-full">
+      <TabsList className="mb-8 grid w-full max-w-3xl mx-auto grid-cols-6">
+        <TabsTrigger value="all">All</TabsTrigger>
+        <TabsTrigger value="title">Title</TabsTrigger>
+        <TabsTrigger value="platinum">Platinum</TabsTrigger>
+        <TabsTrigger value="gold">Gold</TabsTrigger>
+        <TabsTrigger value="silver">Silver</TabsTrigger>
+        <TabsTrigger value="community">Partners</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="all">
+        Title Sponsors Section
+        {titleSponsors.length > 0 && (
+          <div className="mb-16">
+            <h2 className="mb-6 text-center text-2xl font-bold">Title Sponsor</h2>
+            <div className="flex justify-center">
+              {titleSponsors.map((sponsor) => (
+                <motion.div
+                  key={sponsor.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  className="max-w-2xl"
+                >
+                  <GlassCard>
+                    <Card className="border-0 bg-transparent">
+                      <CardContent className="p-8 text-center">
+                        <img
+                          src={sponsor.logo}
+                          alt={sponsor.name}
+                          className="mx-auto mb-4 h-32 object-contain"
+                        />
+                        <h3 className="mb-2 text-2xl">{sponsor.name}</h3>
+                        <p className="mb-4 text-muted-foreground">{sponsor.description}</p>
+                        <Badge className="mb-4">{sponsor.tier}</Badge>
+                        <a
+                          href={sponsor.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-primary hover:underline"
+                        >
+                          Visit Website <ExternalLink className="h-4 w-4" />
+                        </a>
+                      </CardContent>
+                    </Card>
+                  </GlassCard>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        Platinum Sponsors Section
+        {platinumSponsors.length > 0 && (
+          <div className="mb-16">
+            <h2 className="mb-6 text-center text-2xl font-bold">Platinum Sponsors</h2>
+            <div className="grid gap-6 md:grid-cols-2">
+              {platinumSponsors.map((sponsor, index) => (
+                <motion.div
+                  key={sponsor.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <GlassCard>
+                    <Card className="border-0 bg-transparent">
+                      <CardContent className="p-6 text-center">
+                        <img
+                          src={sponsor.logo}
+                          alt={sponsor.name}
+                          className="mx-auto mb-4 h-24 object-contain"
+                        />
+                        <h3 className="mb-2">{sponsor.name}</h3>
+                        <p className="mb-3 text-sm text-muted-foreground">{sponsor.description}</p>
+                        <Badge variant="secondary" className="mb-3">{sponsor.tier}</Badge>
+                        <a
+                          href={sponsor.website}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                        >
+                          Visit Website <ExternalLink className="h-3 w-3" />
+                        </a>
+                      </CardContent>
+                    </Card>
+                  </GlassCard>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        Gold Sponsors Section
+        {goldSponsors.length > 0 && (
+          <div className="mb-16">
+            <h2 className="mb-6 text-center text-2xl font-bold">Gold Sponsors</h2>
+            <div className="grid gap-6 md:grid-cols-3">
+              {goldSponsors.map((sponsor, index) => (
+                <motion.div
+                  key={sponsor.name}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.1 }}
+                >
+                  <Card>
+                    <CardContent className="p-6 text-center">
+                      <img
+                        src={sponsor.logo}
+                        alt={sponsor.name}
+                        className="mx-auto mb-3 h-20 object-contain"
+                      />
+                      <h4 className="mb-2">{sponsor.name}</h4>
+                      <p className="mb-3 text-xs text-muted-foreground">{sponsor.description}</p>
+                      <Badge variant="outline" className="mb-3 text-xs">{sponsor.tier}</Badge>
+                      <a
+                        href={sponsor.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        Website <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        Silver Sponsors Section
+        {silverSponsors.length > 0 && (
+          <div className="mb-16">
+            <h2 className="mb-6 text-center text-2xl font-bold">Silver Sponsors</h2>
+            <div className="grid gap-4 md:grid-cols-4 lg:grid-cols-4">
+              {silverSponsors.map((sponsor, index) => (
+                <motion.div
+                  key={sponsor.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                >
+                  <Card>
+                    <CardContent className="p-4 text-center">
+                      <img
+                        src={sponsor.logo}
+                        alt={sponsor.name}
+                        className="mx-auto mb-2 h-16 object-contain"
+                      />
+                      <h4 className="mb-2 text-sm">{sponsor.name}</h4>
+                      <Badge variant="outline" className="mb-2 text-xs">{sponsor.tier}</Badge>
+                      <a
+                        href={sponsor.website}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                      >
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </CardContent>
+                  </Card>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        Community Partners Section
+        {communityPartners.length > 0 && (
+          <div className="mb-8">
+            <h2 className="mb-6 text-center text-2xl font-bold">Community Partners</h2>
+            <div className="grid gap-4 md:grid-cols-5 lg:grid-cols-5">
+              {communityPartners.map((partner, index) => (
+                <motion.div
+                  key={partner.name}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.03 }}
+                >
+                  <a
+                    href={partner.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    <Card className="transition-transform hover:scale-105">
+                      <CardContent className="p-4 text-center">
+                        <img
+                          src={partner.logo}
+                          alt={partner.name}
+                          className="mx-auto h-12 object-contain"
+                        />
+                      </CardContent>
+                    </Card>
+                  </a>
+                </motion.div>
+              ))}
+            </div>
+          </div>
+        )}
+      </TabsContent>
+
+      Individual Tabs for Each Sponsor Tier
+      <TabsContent value="title">
+        <div className="grid gap-6">
+          {titleSponsors.map((sponsor) => (
+            <GlassCard key={sponsor.name}>
+              <Card className="border-0 bg-transparent">
+                <CardContent className="p-8 text-center">
+                  <img
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="mx-auto mb-4 h-32 object-contain"
+                  />
+                  <h3 className="mb-2 text-2xl">{sponsor.name}</h3>
+                  <p className="mb-4 text-muted-foreground">{sponsor.description}</p>
+                  <Badge className="mb-4">{sponsor.tier}</Badge>
+                  <a
+                    href={sponsor.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-primary hover:underline"
+                  >
+                    Visit Website <ExternalLink className="h-4 w-4" />
+                  </a>
+                </CardContent>
+              </Card>
+            </GlassCard>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="platinum">
+        <div className="grid gap-6 md:grid-cols-2">
+          {platinumSponsors.map((sponsor) => (
+            <GlassCard key={sponsor.name}>
+              <Card className="border-0 bg-transparent">
+                <CardContent className="p-6 text-center">
+                  <img
+                    src={sponsor.logo}
+                    alt={sponsor.name}
+                    className="mx-auto mb-4 h-24 object-contain"
+                  />
+                  <h3 className="mb-2">{sponsor.name}</h3>
+                  <p className="mb-3 text-sm text-muted-foreground">{sponsor.description}</p>
+                  <Badge variant="secondary" className="mb-3">{sponsor.tier}</Badge>
+                  <a
+                    href={sponsor.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                  >
+                    Visit Website <ExternalLink className="h-3 w-3" />
+                  </a>
+                </CardContent>
+              </Card>
+            </GlassCard>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="gold">
+        <div className="grid gap-6 md:grid-cols-3">
+          {goldSponsors.map((sponsor) => (
+            <Card key={sponsor.name}>
+              <CardContent className="p-6 text-center">
+                <img
+                  src={sponsor.logo}
+                  alt={sponsor.name}
+                  className="mx-auto mb-3 h-20 object-contain"
+                />
+                <h4 className="mb-2">{sponsor.name}</h4>
+                <p className="mb-3 text-xs text-muted-foreground">{sponsor.description}</p>
+                <Badge variant="outline" className="mb-3 text-xs">{sponsor.tier}</Badge>
+                <a
+                  href={sponsor.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                >
+                  Website <ExternalLink className="h-3 w-3" />
+                </a>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="silver">
+        <div className="grid gap-4 md:grid-cols-4">
+          {silverSponsors.map((sponsor) => (
+            <Card key={sponsor.name}>
+              <CardContent className="p-4 text-center">
+                <img
+                  src={sponsor.logo}
+                  alt={sponsor.name}
+                  className="mx-auto mb-2 h-16 object-contain"
+                />
+                <h4 className="mb-2 text-sm">{sponsor.name}</h4>
+                <Badge variant="outline" className="mb-2 text-xs">{sponsor.tier}</Badge>
+                <a
+                  href={sponsor.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1 text-xs text-primary hover:underline"
+                >
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </TabsContent>
+
+      <TabsContent value="community">
+        <div className="grid gap-4 md:grid-cols-5">
+          {communityPartners.map((partner) => (
+            <a
+              key={partner.name}
+              href={partner.website}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <Card className="transition-transform hover:scale-105">
+                <CardContent className="p-4 text-center">
+                  <img
+                    src={partner.logo}
+                    alt={partner.name}
+                    className="mx-auto h-12 object-contain"
+                  />
+                </CardContent>
+              </Card>
+            </a>
+          ))}
+        </div>
+      </TabsContent>
+    </Tabs>
+
+    Sponsorship CTA Section
+    <div className="mt-16 text-center">
+      <Card className="mx-auto max-w-2xl">
+        <CardContent className="p-8">
+          <h3 className="mb-4 text-2xl font-bold">Become a Sponsor</h3>
+          <p className="mb-6 text-muted-foreground">
+            Partner with us to reach thousands of aspiring entrepreneurs, students, and industry professionals.
+          </p>
+          <div className="space-y-2">
+            <p className="text-sm">
+              <strong>Email:</strong>{" "}
+              <a href="mailto:sponsors@esummit2026.com" className="text-primary hover:underline">
+                sponsors@esummit2026.com
+              </a>
+            </p>
+            <p className="text-sm">
+              <strong>Phone:</strong> +91 98765 43220
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  </div>
+);
+
+========================================
+END OF COMMENTED SPONSORS COMPONENT
+========================================
+*/
