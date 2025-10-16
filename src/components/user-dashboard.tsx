@@ -18,7 +18,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "./ui/tabs";
-import { Avatar, AvatarFallback } from "./ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { getFormattedEventsForPass } from "../utils/pass-events";
 import { ProfileCompletionModal } from "./profile-completion-modal";
 import { API_BASE_URL } from "../lib/api";
@@ -340,6 +340,7 @@ export function UserDashboard({
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
+            <AvatarImage src={user?.imageUrl} alt={mockUser.name} />
             <AvatarFallback className="bg-primary text-primary-foreground text-xl">
               {mockUser.name
                 .split(" ")

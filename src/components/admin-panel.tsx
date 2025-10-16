@@ -208,8 +208,8 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     if (isAdmin) {
       fetchPasses(false); // Initial load with loading state
       
-      // Auto-refresh every 3 seconds silently
-      const interval = setInterval(() => fetchPasses(true), 3000);
+      // Auto-refresh every 10 seconds silently (reduced from 3s for better performance)
+      const interval = setInterval(() => fetchPasses(true), 10000);
       return () => clearInterval(interval);
     }
   }, [isAdmin, fetchPasses]); // Add fetchPasses to dependencies

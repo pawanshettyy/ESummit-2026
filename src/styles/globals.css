@@ -1,5 +1,33 @@
 @custom-variant dark (&:is(.dark *));
 
+/* View Transition API styles for animated theme toggler */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Aurora Text animations */
+@keyframes aurora {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+@keyframes aurora-glow {
+  0%, 100% {
+    opacity: 0.3;
+    background-position: 0% 50%;
+  }
+  50% {
+    opacity: 0.6;
+    background-position: 100% 50%;
+  }
+}
+
 :root {
   --font-size: 16px;
   --background: #ffffff;

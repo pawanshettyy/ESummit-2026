@@ -8,3 +8,5 @@ export { AnimatedBorder } from "./animated-border";
 export { BentoGrid, BentoCard } from "./bento-grid";
 export { AnimatedBeam } from "./animated-beam";
 export { ShineBorder } from "./shine-border";
+export { AnimatedThemeToggler } from "./animated-theme-toggler";
+export { AuroraText } from "./aurora-text";

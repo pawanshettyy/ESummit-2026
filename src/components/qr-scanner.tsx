@@ -191,28 +191,33 @@ export function QRScanner() {
           cooldownRemaining: responseData.data.cooldownRemaining,
         };
         
+        // Update result and show dialog immediately (React 18 batches these)
         setScanResult(result);
+        setIsScanning(false); // Set loading to false before opening dialog
         setShowResult(true);
         
-        // Dispatch custom event to notify admin panel ONLY for NEW check-ins (not duplicates)
-        const isDuplicate = responseData.data.alreadyCheckedIn === true;
-        if (!isDuplicate) {
-          console.log('✅ Dispatching checkin-success event to update admin panel');
-          const event = new CustomEvent('checkin-success', {
-            detail: {
-              passId: responseData.data.pass?.passId,
-              timestamp: new Date().toISOString(),
-            }
-          });
-          window.dispatchEvent(event);
-        } else {
-          console.log('⚠️ Duplicate scan detected - not updating admin panel');
-        }
+        // Dispatch event after dialog is shown (non-blocking)
+        setTimeout(() => {
+          const isDuplicate = responseData.data.alreadyCheckedIn === true;
+          if (!isDuplicate) {
+            console.log('✅ Dispatching checkin-success event to update admin panel');
+            const event = new CustomEvent('checkin-success', {
+              detail: {
+                passId: responseData.data.pass?.passId,
+                timestamp: new Date().toISOString(),
+              }
+            });
+            window.dispatchEvent(event);
+          } else {
+            console.log('⚠️ Duplicate scan detected - not updating admin panel');
+          }
+        }, 0);
       } else {
         setScanResult({
           success: false,
           message: responseData.message || "Failed to verify QR code",
         });
+        setIsScanning(false);
         setShowResult(true);
       }
 
@@ -223,9 +228,8 @@ export function QRScanner() {
         success: false,
         message: "Network error. Please check your connection.",
       });
-      setShowResult(true);
-    } finally {
       setIsScanning(false);
+      setShowResult(true);
     }
   };
 
@@ -313,17 +317,6 @@ export function QRScanner() {
             <Scan className="h-5 w-5" />
             QR Code Scanner
           </CardTitle>
-          <div className="mt-2 space-y-2">
-            <p className="text-sm text-muted-foreground">
-              🎫 <strong>Multi-Event Scanning:</strong> Each pass can be scanned at up to 30 different events
-            </p>
-            <p className="text-sm text-muted-foreground">
-              ⏱️ <strong>Duplicate Prevention:</strong> Same event = 30-minute cooldown • Different events = Unlimited scans
-            </p>
-            <p className="text-sm text-muted-foreground">
-              📍 <strong>General Entry:</strong> Leave Event ID empty for venue-wide check-in (allows multiple scans)
-            </p>
-          </div>
         </CardHeader>
         <CardContent className="space-y-4">
           {/* Scan Mode Tabs */}
@@ -456,15 +449,6 @@ export function QRScanner() {
               value={eventId}
               onChange={(e) => setEventId(e.target.value)}
             />
-            <div className="rounded-lg bg-blue-50 dark:bg-blue-950 border border-blue-200 dark:border-blue-800 p-3">
-              <p className="text-xs text-blue-900 dark:text-blue-100 mb-1">
-                <strong>Event ID Guide:</strong>
-              </p>
-              <ul className="text-xs text-blue-800 dark:text-blue-200 space-y-1 ml-4 list-disc">
-                <li><strong>With Event ID:</strong> Attendee can check in to 30 different events. Same event has 30-min cooldown.</li>
-                <li><strong>Without Event ID (General Entry):</strong> Multiple scans allowed - use this for venue entry gates.</li>
-              </ul>
-            </div>
           </div>
         </CardContent>
       </Card>

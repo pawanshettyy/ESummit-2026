@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, Calendar, Users, MapPin, Trophy, Ticket, LogIn, Moon, Sun, User, LogOut, Shield } from "lucide-react";
+import { Menu, Calendar, Users, MapPin, Trophy, Ticket, LogIn, User, LogOut, Shield } from "lucide-react";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetTitle, SheetDescription } from "./ui/sheet";
 import { UserButton, useUser } from "@clerk/clerk-react";
@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback } from "./ui/avatar";
 import { motion, AnimatePresence } from "motion/react";
 import { GradientText } from "./magicui/gradient-text";
 import { Logo } from "./ui/logo";
+import { AnimatedThemeToggler } from "./magicui/animated-theme-toggler";
 
 interface NavigationProps {
   currentPage: string;
@@ -155,38 +156,9 @@ export function Navigation({
 
             {/* Right side actions */}
             <div className="flex items-center gap-2">
-              <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleDark}
-                  className="hidden sm:inline-flex rounded-full hover:bg-primary/10"
-                >
-                  <AnimatePresence mode="wait">
-                    {isDark ? (
-                      <motion.div
-                        key="sun"
-                        initial={{ rotate: -90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: 90, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Sun className="h-5 w-5" />
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="moon"
-                        initial={{ rotate: 90, opacity: 0 }}
-                        animate={{ rotate: 0, opacity: 1 }}
-                        exit={{ rotate: -90, opacity: 0 }}
-                        transition={{ duration: 0.2 }}
-                      >
-                        <Moon className="h-5 w-5" />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </Button>
-              </motion.div>
+              <div className="hidden sm:block">
+                <AnimatedThemeToggler isDark={isDark} toggleTheme={toggleDark} />
+              </div>
 
               {/* Use Clerk UserButton if signed in with Clerk, otherwise use custom auth */}
               {isSignedIn ? (
@@ -295,14 +267,7 @@ export function Navigation({
                         className="h-8 md:h-10 lg:h-12 w-auto object-contain -my-1 md:-my-1.5"
                         alt="E-Summit 2026 Logo"
                       />
-                      <Button 
-                        variant="ghost" 
-                        size="icon" 
-                        onClick={toggleDark} 
-                        className="rounded-full h-9 w-9 flex-shrink-0"
-                      >
-                        {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
-                      </Button>
+                      <AnimatedThemeToggler isDark={isDark} toggleTheme={toggleDark} />
                     </div>
 
                     {/* User Profile Section - Show Clerk or custom auth */}
