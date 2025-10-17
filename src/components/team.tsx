@@ -1,7 +1,6 @@
 import { motion } from "motion/react";
-import { Mail, Linkedin } from "lucide-react";
+import { Mail } from "lucide-react";
 import { Card, CardContent } from "./ui/card";
-import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { GlassCard } from "./accentricity/glass-card";
@@ -15,647 +14,315 @@ export function Team() {
     department: string;
     email: string;
   }> = [
-    // {
-    //   name: "Prof. Dr. Name",
-    //   designation: "Faculty Coordinator",
-    //   department: "Department Name",
-    //   email: "faculty@example.com"
-    // }
     // Add faculty coordinators here when available
   ];
 
-  // Executive Team
-  const executiveTeam = {
-    leadership: [
-      {
-        name: "Ayush Pardeshi",
-        year: "TE",
-        branch: "E&CS",
-        position: "Chief Executive Officer (CEO)",
-        type: "Leadership"
-      },
+  // Senior Management Team (SMT) - CEO, CTO, COO, CMO
+  const seniorManagementTeam = [
+    {
+      name: "Ayush Pardeshi",
+      year: "TE",
+      branch: "E&CS",
+      position: "Chief Executive Officer",
+      shortPosition: "CEO",
+      type: "SMT"
+    },
+    {
+      name: "Ahana Kulkarni",
+      year: "TT",
+      branch: "AI&DS",
+      position: "Chief Technology Officer",
+      shortPosition: "CTO",
+      type: "SMT"
+    },
+    {
+      name: "Bhummi Girnara",
+      year: "TT",
+      branch: "AI&DS",
+      position: "Chief Operating Officer",
+      shortPosition: "COO",
+      type: "SMT"
+    },
+    {
+      name: "Hredey Chaand",
+      year: "SE",
+      branch: "COMP",
+      position: "Chief Marketing Officer",
+      shortPosition: "CMO",
+      type: "SMT"
+    }
+  ];
+
+  // CORE Team - organized by department
+  const coreTeam = {
+    executive: [
       {
         name: "Aman Pandey",
         year: "BE",
         branch: "MME",
-        position: "General Advisor (GA)",
-        type: "Leadership"
+        position: "General Advisor",
+        department: "Executive"
       },
       {
         name: "Yash Khatri",
         year: "SE",
         branch: "COMP",
         position: "Chairperson",
-        type: "Leadership"
+        department: "Executive"
       },
       {
         name: "Anushka Yadav",
         year: "TE",
         branch: "COMP",
         position: "Vice-Chairperson",
-        type: "Leadership"
-      },
+        department: "Executive"
+      }
+    ],
+    marketing: [
       {
         name: "Krish Jain",
         year: "SE",
         branch: "COMP",
         position: "Outreach Head",
-        type: "Leadership"
-      }
-    ],
-    jc: [
-      {
-        name: "Varun Maurya",
-        year: "SE",
-        branch: "AI&ML",
-        position: "JC - Executive",
-        type: "Junior Core"
-      },
-      {
-        name: "Shashank Mayur Barot",
-        year: "SE",
-        branch: "E&TC",
-        position: "JC - Executive",
-        type: "Junior Core"
-      },
-      {
-        name: "Mehwish Siddique",
-        year: "SE",
-        branch: "AI&DS",
-        position: "JC - Executive",
-        type: "Junior Core"
-      },
-      {
-        name: "Pawan Shetty",
-        year: "SE",
-        branch: "AI&ML",
-        position: "JC - Executive",
-        type: "Junior Core"
-      }
-    ],
-    oc: [
-      {
-        name: "Yash Mattha",
-        year: "SE",
-        branch: "IT",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Tushar Gaba",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Vedant Singh",
-        year: "FE",
-        branch: "IT",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Om Paranjape",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Akshay Upadhyay",
-        year: "SE",
-        branch: "COMP",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Sankarshan Dwivedi",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Nishil Dhanuka",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Kaushal Shetty",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Prachi Kumari",
-        year: "FE",
-        branch: "IT",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Mitesh Purohit",
-        year: "SE",
-        branch: "AI&ML",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Ayush Giri",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Avya Chaurasia",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Diya Kandari",
-        year: "FE",
-        branch: "AI&ML",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shreya Yadav",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Executive",
-        type: "Organizing Committee"
-      }
-    ]
-  };
-
-  // Marketing and PR Team
-  const marketingTeam = {
-    leadership: [
-      {
-        name: "Hredey Chaand",
-        year: "SE",
-        branch: "COMP",
-        position: "Chief Marketing Officer (CMO)",
-        type: "Leadership"
+        department: "Marketing"
       },
       {
         name: "Mishti Dhiman",
         year: "SE",
         branch: "COMP",
         position: "PR Head",
-        type: "Core"
+        department: "Marketing"
       },
       {
         name: "Yash Yadav",
         year: "SE",
         branch: "AI&ML",
         position: "Sponsorship Head",
-        type: "Core"
+        department: "Marketing"
       }
     ],
-    jc: [
-      {
-        name: "Ashita Sharma",
-        year: "SE",
-        branch: "CSE",
-        position: "JC - Marketing",
-        type: "Junior Core"
-      },
-      {
-        name: "Dia Tailor",
-        year: "SE",
-        branch: "AI&ML",
-        position: "JC - Marketing",
-        type: "Junior Core"
-      },
-      {
-        name: "Subrat Rout",
-        year: "SE",
-        branch: "MME",
-        position: "JC - Marketing",
-        type: "Junior Core"
-      }
-    ],
-    oc: [
-      {
-        name: "Niyatee Thakur",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Siddhesh Wagh",
-        year: "SE",
-        branch: "BCA",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shubham Mane",
-        year: "SE",
-        branch: "COMP",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Sitanshu Shetty",
-        year: "FE",
-        branch: "E&TC",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Kavya Jhaveri",
-        year: "FE",
-        branch: "BCA",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Arpit Gawande",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Sakshi Thakur",
-        year: "SE",
-        branch: "AI&DS",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shiva Saraswati",
-        year: "SE",
-        branch: "MME",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Arukesh Sahu",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Hitarth Bhatt",
-        year: "FE",
-        branch: "MME",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Khushi Tyagi",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Prashant Gupta",
-        year: "FE",
-        branch: "MME",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shivanshi Pandit",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Marketing",
-        type: "Organizing Committee"
-      }
-    ]
-  };
-
-  // Operations Team
-  const operationsTeam = {
-    leadership: [
-      {
-        name: "Bhummi Girnara",
-        year: "TT",
-        branch: "AI&DS",
-        position: "Chief Operating Officer (COO)",
-        type: "Leadership"
-      },
+    operations: [
       {
         name: "Sayyam Lohade",
         year: "TE",
         branch: "COMP",
         position: "Secretary",
-        type: "Core"
+        department: "Operations"
       },
       {
         name: "Nidhi Dilipkumar Shukla",
         year: "SE",
         branch: "AI&ML",
         position: "Event Manager",
-        type: "Core"
+        department: "Operations"
       },
       {
         name: "Tanvi Prakash Jabare",
         year: "SE",
         branch: "E&CS",
         position: "Publication Head",
-        type: "Core"
+        department: "Operations"
       }
     ],
-    jc: [
-      {
-        name: "Rudransh Atul Puthan",
-        year: "SE",
-        branch: "AI&ML",
-        position: "JC - Operating",
-        type: "Junior Core"
-      },
-      {
-        name: "Kanchan Tripathi",
-        year: "SE",
-        branch: "E&CS",
-        position: "JC - Operating",
-        type: "Junior Core"
-      },
-      {
-        name: "Shweta Shukla",
-        year: "SE",
-        branch: "AI&DS",
-        position: "JC - Operating",
-        type: "Junior Core"
-      },
-      {
-        name: "Pratiksha Upadhyay",
-        year: "SE",
-        branch: "E&CS",
-        position: "JC - Operating",
-        type: "Junior Core"
-      }
-    ],
-    oc: [
-      {
-        name: "Aayush Mishra",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Aditya Pandey",
-        year: "SE",
-        branch: "AI&ML",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Dhanush Shetty",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Roshni Joshi",
-        year: "FE",
-        branch: "E&TC",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Anugrah Yadav",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shivang Shukla",
-        year: "SE",
-        branch: "COMP",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shlok Yadav",
-        year: "FE",
-        branch: "CSE",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shruti Sanjay Jadhav",
-        year: "FE",
-        branch: "MCA",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Rutuja Anil Bunke",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shreeya Dewangan",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Namasavi Singh",
-        year: "FE",
-        branch: "CSE",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Prashant Yadav",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shravani Kiran Salunke",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Sachin Kumawat",
-        year: "FE",
-        branch: "CSE",
-        position: "OC - Operating",
-        type: "Organizing Committee"
-      }
-    ]
-  };
-
-  // Technical Team
-  const technicalTeam = {
-    leadership: [
-      {
-        name: "Ahana Kulkarni",
-        year: "TT",
-        branch: "AI&DS",
-        position: "Chief Technology Officer (CTO)",
-        type: "Leadership"
-      },
+    technical: [
       {
         name: "Raj Mane",
         year: "SE",
         branch: "COMP",
         position: "Technical Lead",
-        type: "Core"
+        department: "Technical"
       },
       {
         name: "Nikita Tiwari",
         year: "SE",
         branch: "COMP",
         position: "Creative Head",
-        type: "Core"
+        department: "Technical"
       },
       {
         name: "Shweta Varma",
         year: "TE",
         branch: "E&TC",
         position: "SMM Head",
-        type: "Core"
+        department: "Technical"
+      }
+    ]
+  };
+
+  // JC Team - organized by department
+  const jcTeam = {
+    executive: [
+      {
+        name: "Varun Maurya",
+        year: "SE",
+        branch: "AI&ML",
+        position: "JC - Executive",
+        department: "Executive"
+      },
+      {
+        name: "Shashank Mayur Barot",
+        year: "SE",
+        branch: "E&TC",
+        position: "JC - Executive",
+        department: "Executive"
+      },
+      {
+        name: "Mehwish Siddique",
+        year: "SE",
+        branch: "AI&DS",
+        position: "JC - Executive",
+        department: "Executive"
+      },
+      {
+        name: "Pawan Shetty",
+        year: "SE",
+        branch: "AI&ML",
+        position: "JC - Executive",
+        department: "Executive"
       }
     ],
-    jc: [
+    marketing: [
+      {
+        name: "Ashita Sharma",
+        year: "SE",
+        branch: "CSE",
+        position: "JC - Marketing",
+        department: "Marketing"
+      },
+      {
+        name: "Dia Tailor",
+        year: "SE",
+        branch: "AI&ML",
+        position: "JC - Marketing",
+        department: "Marketing"
+      },
+      {
+        name: "Subrat Rout",
+        year: "SE",
+        branch: "MME",
+        position: "JC - Marketing",
+        department: "Marketing"
+      }
+    ],
+    operations: [
+      {
+        name: "Rudransh Atul Puthan",
+        year: "SE",
+        branch: "AI&ML",
+        position: "JC - Operations",
+        department: "Operations"
+      },
+      {
+        name: "Kanchan Tripathi",
+        year: "SE",
+        branch: "E&CS",
+        position: "JC - Operations",
+        department: "Operations"
+      },
+      {
+        name: "Shweta Shukla",
+        year: "SE",
+        branch: "AI&DS",
+        position: "JC - Operations",
+        department: "Operations"
+      },
+      {
+        name: "Pratiksha Upadhyay",
+        year: "SE",
+        branch: "E&CS",
+        position: "JC - Operations",
+        department: "Operations"
+      }
+    ],
+    technical: [
       {
         name: "Krish Choudhary",
         year: "SE",
         branch: "COMP",
-        position: "JC - Technical - SMM",
-        type: "Junior Core"
+        position: "JC - Technical (SMM)",
+        department: "Technical"
       },
       {
         name: "Shaleen Singh",
         year: "SE",
         branch: "IT",
         position: "JC - Technical",
-        type: "Junior Core"
+        department: "Technical"
       },
       {
         name: "Priyanshi Negi",
         year: "SE",
         branch: "E&CS",
         position: "JC - Technical",
-        type: "Junior Core"
+        department: "Technical"
       }
+    ]
+  };
+
+  // OC Team - organized by department
+  const ocTeam = {
+    executive: [
+      { name: "Yash Mattha", year: "SE", branch: "IT", position: "OC - Executive", department: "Executive" },
+      { name: "Tushar Gaba", year: "FE", branch: "IoT", position: "OC - Executive", department: "Executive" },
+      { name: "Vedant Singh", year: "FE", branch: "IT", position: "OC - Executive", department: "Executive" },
+      { name: "Om Paranjape", year: "FE", branch: "AI&DS", position: "OC - Executive", department: "Executive" },
+      { name: "Akshay Upadhyay", year: "SE", branch: "COMP", position: "OC - Executive", department: "Executive" },
+      { name: "Sankarshan Dwivedi", year: "FE", branch: "COMP", position: "OC - Executive", department: "Executive" },
+      { name: "Nishil Dhanuka", year: "FE", branch: "COMP", position: "OC - Executive", department: "Executive" },
+      { name: "Kaushal Shetty", year: "FE", branch: "AI&DS", position: "OC - Executive", department: "Executive" },
+      { name: "Prachi Kumari", year: "FE", branch: "IT", position: "OC - Executive", department: "Executive" },
+      { name: "Mitesh Purohit", year: "SE", branch: "AI&ML", position: "OC - Executive", department: "Executive" },
+      { name: "Ayush Giri", year: "FE", branch: "COMP", position: "OC - Executive", department: "Executive" },
+      { name: "Avya Chaurasia", year: "FE", branch: "IoT", position: "OC - Executive", department: "Executive" },
+      { name: "Diya Kandari", year: "FE", branch: "AI&ML", position: "OC - Executive", department: "Executive" },
+      { name: "Shreya Yadav", year: "FE", branch: "COMP", position: "OC - Executive", department: "Executive" }
     ],
-    oc: [
-      {
-        name: "Himanshu Basant Naik",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Technical - SMM",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Arjun Parab",
-        year: "FE",
-        branch: "IoT",
-        position: "OC - Technical - SMM",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Sakshi Yadav",
-        year: "FE",
-        branch: "CSE",
-        position: "OC - Technical - SMM",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Aryan Anil Singh",
-        year: "FE",
-        branch: "COMP",
-        position: "OC - Technical - SMM",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Pratik Verma",
-        year: "SE",
-        branch: "COMP",
-        position: "OC - Technical - SMM",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Sneha Chauhan",
-        year: "FE",
-        branch: "E&TC",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Nikhil Shukla",
-        year: "SE",
-        branch: "IT",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Saloni Suthar",
-        year: "FE",
-        branch: "BCA",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Chinmay Rajesh Mhatre",
-        year: "FE",
-        branch: "AI&DS",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Prakash Mandal",
-        year: "SE",
-        branch: "AI&ML",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Ayush Singh Chandel",
-        year: "SE",
-        branch: "B.VOC",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Shubham Prajapati",
-        year: "SE",
-        branch: "AI&ML",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Ayush Tyagi",
-        year: "FE",
-        branch: "CSE",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      },
-      {
-        name: "Bhavika Vasule",
-        year: "SE",
-        branch: "COMP",
-        position: "OC - Technical",
-        type: "Organizing Committee"
-      }
+    marketing: [
+      { name: "Niyatee Thakur", year: "FE", branch: "AI&DS", position: "OC - Marketing", department: "Marketing" },
+      { name: "Siddhesh Wagh", year: "SE", branch: "BCA", position: "OC - Marketing", department: "Marketing" },
+      { name: "Shubham Mane", year: "SE", branch: "COMP", position: "OC - Marketing", department: "Marketing" },
+      { name: "Sitanshu Shetty", year: "FE", branch: "E&TC", position: "OC - Marketing", department: "Marketing" },
+      { name: "Kavya Jhaveri", year: "FE", branch: "BCA", position: "OC - Marketing", department: "Marketing" },
+      { name: "Arpit Gawande", year: "FE", branch: "IoT", position: "OC - Marketing", department: "Marketing" },
+      { name: "Sakshi Thakur", year: "SE", branch: "AI&DS", position: "OC - Marketing", department: "Marketing" },
+      { name: "Shiva Saraswati", year: "SE", branch: "MME", position: "OC - Marketing", department: "Marketing" },
+      { name: "Arukesh Sahu", year: "FE", branch: "IoT", position: "OC - Marketing", department: "Marketing" },
+      { name: "Hitarth Bhatt", year: "FE", branch: "MME", position: "OC - Marketing", department: "Marketing" },
+      { name: "Khushi Tyagi", year: "FE", branch: "COMP", position: "OC - Marketing", department: "Marketing" },
+      { name: "Prashant Gupta", year: "FE", branch: "MME", position: "OC - Marketing", department: "Marketing" },
+      { name: "Shivanshi Pandit", year: "FE", branch: "AI&DS", position: "OC - Marketing", department: "Marketing" }
+    ],
+    operations: [
+      { name: "Aayush Mishra", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
+      { name: "Aditya Pandey", year: "SE", branch: "AI&ML", position: "OC - Operations", department: "Operations" },
+      { name: "Dhanush Shetty", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
+      { name: "Roshni Joshi", year: "FE", branch: "E&TC", position: "OC - Operations", department: "Operations" },
+      { name: "Anugrah Yadav", year: "FE", branch: "COMP", position: "OC - Operations", department: "Operations" },
+      { name: "Shivang Shukla", year: "SE", branch: "COMP", position: "OC - Operations", department: "Operations" },
+      { name: "Shlok Yadav", year: "FE", branch: "CSE", position: "OC - Operations", department: "Operations" },
+      { name: "Shruti Sanjay Jadhav", year: "FE", branch: "MCA", position: "OC - Operations", department: "Operations" },
+      { name: "Rutuja Anil Bunke", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
+      { name: "Shreeya Dewangan", year: "FE", branch: "IoT", position: "OC - Operations", department: "Operations" },
+      { name: "Namasavi Singh", year: "FE", branch: "CSE", position: "OC - Operations", department: "Operations" },
+      { name: "Prashant Yadav", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
+      { name: "Shravani Kiran Salunke", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
+      { name: "Sachin Kumawat", year: "FE", branch: "CSE", position: "OC - Operations", department: "Operations" }
+    ],
+    technical: [
+      { name: "Himanshu Basant Naik", year: "FE", branch: "IoT", position: "OC - Technical (SMM)", department: "Technical" },
+      { name: "Arjun Parab", year: "FE", branch: "IoT", position: "OC - Technical (SMM)", department: "Technical" },
+      { name: "Sakshi Yadav", year: "FE", branch: "CSE", position: "OC - Technical (SMM)", department: "Technical" },
+      { name: "Aryan Anil Singh", year: "FE", branch: "COMP", position: "OC - Technical (SMM)", department: "Technical" },
+      { name: "Pratik Verma", year: "SE", branch: "COMP", position: "OC - Technical (SMM)", department: "Technical" },
+      { name: "Sneha Chauhan", year: "FE", branch: "E&TC", position: "OC - Technical", department: "Technical" },
+      { name: "Nikhil Shukla", year: "SE", branch: "IT", position: "OC - Technical", department: "Technical" },
+      { name: "Saloni Suthar", year: "FE", branch: "BCA", position: "OC - Technical", department: "Technical" },
+      { name: "Chinmay Rajesh Mhatre", year: "FE", branch: "AI&DS", position: "OC - Technical", department: "Technical" },
+      { name: "Prakash Mandal", year: "SE", branch: "AI&ML", position: "OC - Technical", department: "Technical" },
+      { name: "Ayush Singh Chandel", year: "SE", branch: "B.VOC", position: "OC - Technical", department: "Technical" },
+      { name: "Shubham Prajapati", year: "SE", branch: "AI&ML", position: "OC - Technical", department: "Technical" },
+      { name: "Ayush Tyagi", year: "FE", branch: "CSE", position: "OC - Technical", department: "Technical" },
+      { name: "Bhavika Vasule", year: "SE", branch: "COMP", position: "OC - Technical", department: "Technical" }
     ]
   };
 
@@ -682,7 +349,7 @@ export function Team() {
         </p>
       </div>
 
-      {/* Faculty Coordinators Section - Only show if there are coordinators */}
+      {/* Faculty Coordinators Section */}
       {facultyCoordinators.length > 0 && (
         <div className="mb-12 md:mb-16">
           <div className="mb-6 md:mb-8 text-center">
@@ -721,24 +388,23 @@ export function Team() {
         </div>
       )}
 
-      <Tabs defaultValue="executive" className="w-full">
+      <Tabs defaultValue="smt" className="w-full">
         <TabsList className="mb-6 md:mb-8 grid w-full max-w-3xl mx-auto grid-cols-2 md:grid-cols-4 gap-1 md:gap-2 h-auto p-1">
-          <TabsTrigger value="executive" className="text-xs md:text-sm py-2 md:py-2.5">Executive</TabsTrigger>
-          <TabsTrigger value="marketing" className="text-xs md:text-sm py-2 md:py-2.5">Marketing & PR</TabsTrigger>
-          <TabsTrigger value="operations" className="text-xs md:text-sm py-2 md:py-2.5">Operations</TabsTrigger>
-          <TabsTrigger value="technical" className="text-xs md:text-sm py-2 md:py-2.5">Technical</TabsTrigger>
+          <TabsTrigger value="smt" className="text-xs md:text-sm py-2 md:py-2.5">SMT</TabsTrigger>
+          <TabsTrigger value="core" className="text-xs md:text-sm py-2 md:py-2.5">CORE</TabsTrigger>
+          <TabsTrigger value="jc" className="text-xs md:text-sm py-2 md:py-2.5">JC</TabsTrigger>
+          <TabsTrigger value="oc" className="text-xs md:text-sm py-2 md:py-2.5">OC</TabsTrigger>
         </TabsList>
 
-        {/* Executive Team */}
-        <TabsContent value="executive">
-          {/* Leadership */}
+        {/* Senior Management Team (SMT) */}
+        <TabsContent value="smt">
           <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Leadership</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Executive leadership team</p>
+            <div className="mb-4 md:mb-6 text-center">
+              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Senior Management Team</h2>
+              <p className="text-sm md:text-base text-muted-foreground">C-Level executives leading E-Summit 2026</p>
             </div>
-            <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {executiveTeam.leadership.map((member, index) => (
+            <div className="grid gap-6 md:gap-8 sm:grid-cols-2 lg:grid-cols-4 max-w-6xl mx-auto">
+              {seniorManagementTeam.map((member, index) => (
                 <motion.div
                   key={member.name}
                   initial={{ opacity: 0, y: 20 }}
@@ -749,9 +415,12 @@ export function Team() {
                   <GlassCard>
                     <Card className="border-0 bg-transparent h-full">
                       <CardContent className="p-6">
-                        <h3 className="mb-2 text-lg font-semibold">{member.name}</h3>
-                        <p className="mb-3 text-primary font-medium">{member.position}</p>
-                        <div className="flex gap-2 flex-wrap">
+                        <div className="mb-3 text-center">
+                          <div className="text-4xl font-bold text-primary mb-2">{member.shortPosition}</div>
+                        </div>
+                        <h3 className="mb-2 text-lg font-semibold text-center">{member.name}</h3>
+                        <p className="mb-3 text-sm text-muted-foreground text-center">{member.position}</p>
+                        <div className="flex gap-2 flex-wrap justify-center">
                           <Badge variant="secondary">{member.branch}</Badge>
                           <Badge variant="outline">{member.year}</Badge>
                         </div>
@@ -762,349 +431,387 @@ export function Team() {
               ))}
             </div>
           </div>
+        </TabsContent>
 
-          {/* Junior Core */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Junior Core (JC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Rising executive leaders</p>
+        {/* CORE Team */}
+        <TabsContent value="core">
+          <div className="space-y-8 md:space-y-12">
+            {/* Executive Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Executive</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Core executive leadership</p>
+              </div>
+              <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {coreTeam.executive.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <GlassCard>
+                      <Card className="border-0 bg-transparent h-full">
+                        <CardContent className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">{member.name}</h3>
+                          <p className="mb-3 text-primary font-medium">{member.position}</p>
+                          <div className="flex gap-2 flex-wrap">
+                            <Badge variant="secondary">{member.branch}</Badge>
+                            <Badge variant="outline">{member.year}</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </GlassCard>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {executiveTeam.jc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
 
-          {/* Organizing Committee */}
-          <div>
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Organizing Committee (OC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Executive support team</p>
+            {/* Marketing Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Marketing</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Core marketing leadership</p>
+              </div>
+              <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {coreTeam.marketing.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <GlassCard>
+                      <Card className="border-0 bg-transparent h-full">
+                        <CardContent className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">{member.name}</h3>
+                          <p className="mb-3 text-primary font-medium">{member.position}</p>
+                          <div className="flex gap-2 flex-wrap">
+                            <Badge variant="secondary">{member.branch}</Badge>
+                            <Badge variant="outline">{member.year}</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </GlassCard>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {executiveTeam.oc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.03 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="outline" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+
+            {/* Operations Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Operations</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Core operations leadership</p>
+              </div>
+              <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {coreTeam.operations.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <GlassCard>
+                      <Card className="border-0 bg-transparent h-full">
+                        <CardContent className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">{member.name}</h3>
+                          <p className="mb-3 text-primary font-medium">{member.position}</p>
+                          <div className="flex gap-2 flex-wrap">
+                            <Badge variant="secondary">{member.branch}</Badge>
+                            <Badge variant="outline">{member.year}</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </GlassCard>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
+
+            {/* Technical Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Technical</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Core technical leadership</p>
+              </div>
+              <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {coreTeam.technical.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <GlassCard>
+                      <Card className="border-0 bg-transparent h-full">
+                        <CardContent className="p-6">
+                          <h3 className="mb-2 text-lg font-semibold">{member.name}</h3>
+                          <p className="mb-3 text-primary font-medium">{member.position}</p>
+                          <div className="flex gap-2 flex-wrap">
+                            <Badge variant="secondary">{member.branch}</Badge>
+                            <Badge variant="outline">{member.year}</Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </GlassCard>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </TabsContent>
 
-        {/* Marketing & PR Team */}
-        <TabsContent value="marketing">
-          {/* Leadership */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Leadership & Core</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Marketing and PR leadership</p>
-            </div>
-            <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {marketingTeam.leadership.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <GlassCard>
-                    <Card className="border-0 bg-transparent h-full">
-                      <CardContent className="p-4 md:p-6">
-                        <h3 className="mb-1 md:mb-2 text-base md:text-lg font-semibold">{member.name}</h3>
-                        <p className="mb-2 md:mb-3 text-sm md:text-base text-primary font-medium">{member.position}</p>
-                        <div className="flex gap-1.5 md:gap-2 flex-wrap">
-                          <Badge variant="secondary" className="text-xs md:text-sm">{member.branch}</Badge>
-                          <Badge variant="outline" className="text-xs md:text-sm">{member.year}</Badge>
+        {/* JC Team */}
+        <TabsContent value="jc">
+          <div className="space-y-8 md:space-y-12">
+            {/* Executive Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Executive</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Junior Core - Executive</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {jcTeam.executive.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
                         </div>
                       </CardContent>
                     </Card>
-                  </GlassCard>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Junior Core */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Junior Core (JC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Marketing junior core team</p>
+            {/* Marketing Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Marketing</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Junior Core - Marketing</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {jcTeam.marketing.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {marketingTeam.jc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
 
-          {/* Organizing Committee */}
-          <div>
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Organizing Committee (OC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Marketing support team</p>
+            {/* Operations Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Operations</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Junior Core - Operations</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {jcTeam.operations.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {marketingTeam.oc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.03 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="outline" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+
+            {/* Technical Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Technical</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Junior Core - Technical</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                {jcTeam.technical.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, y: 20 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </TabsContent>
 
-        {/* Operations Team */}
-        <TabsContent value="operations">
-          {/* Leadership */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Leadership & Core</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Operations leadership</p>
-            </div>
-            <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {operationsTeam.leadership.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <GlassCard>
-                    <Card className="border-0 bg-transparent h-full">
-                      <CardContent className="p-4 md:p-6">
-                        <h3 className="mb-1 md:mb-2 text-base md:text-lg font-semibold">{member.name}</h3>
-                        <p className="mb-2 md:mb-3 text-sm md:text-base text-primary font-medium">{member.position}</p>
-                        <div className="flex gap-1.5 md:gap-2 flex-wrap">
-                          <Badge variant="secondary" className="text-xs md:text-sm">{member.branch}</Badge>
-                          <Badge variant="outline" className="text-xs md:text-sm">{member.year}</Badge>
+        {/* OC Team */}
+        <TabsContent value="oc">
+          <div className="space-y-8 md:space-y-12">
+            {/* Executive Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Executive</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Organizing Committee - Executive</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {ocTeam.executive.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="outline" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
                         </div>
                       </CardContent>
                     </Card>
-                  </GlassCard>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Junior Core */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Junior Core (JC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Operations junior core team</p>
-            </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {operationsTeam.jc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-
-          {/* Organizing Committee */}
-          <div>
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Organizing Committee (OC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Operations support team</p>
-            </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {operationsTeam.oc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.03 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="outline" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </TabsContent>
-
-        {/* Technical Team */}
-        <TabsContent value="technical">
-          {/* Leadership */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Leadership & Core</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Technical, creative, and SMM leadership</p>
-            </div>
-            <div className="grid gap-4 md:gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {technicalTeam.leadership.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <GlassCard>
-                    <Card className="border-0 bg-transparent h-full">
-                      <CardContent className="p-4 md:p-6">
-                        <h3 className="mb-1 md:mb-2 text-base md:text-lg font-semibold">{member.name}</h3>
-                        <p className="mb-2 md:mb-3 text-sm md:text-base text-primary font-medium">{member.position}</p>
-                        <div className="flex gap-1.5 md:gap-2 flex-wrap">
-                          <Badge variant="secondary" className="text-xs md:text-sm">{member.branch}</Badge>
-                          <Badge variant="outline" className="text-xs md:text-sm">{member.year}</Badge>
+            {/* Marketing Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Marketing</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Organizing Committee - Marketing</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {ocTeam.marketing.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="outline" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
                         </div>
                       </CardContent>
                     </Card>
-                  </GlassCard>
-                </motion.div>
-              ))}
+                  </motion.div>
+                ))}
+              </div>
             </div>
-          </div>
 
-          {/* Junior Core */}
-          <div className="mb-6 md:mb-8">
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Junior Core (JC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Technical junior core team</p>
+            {/* Operations Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Operations</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Organizing Committee - Operations</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {ocTeam.operations.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="outline" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-              {technicalTeam.jc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.05 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
-            </div>
-          </div>
 
-          {/* Organizing Committee */}
-          <div>
-            <div className="mb-4 md:mb-6">
-              <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Organizing Committee (OC)</h2>
-              <p className="text-sm md:text-base text-muted-foreground">Technical support team</p>
-            </div>
-            <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
-              {technicalTeam.oc.map((member, index) => (
-                <motion.div
-                  key={member.name}
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.03 }}
-                >
-                  <Card className="h-full">
-                    <CardContent className="p-4">
-                      <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                      <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
-                      <div className="flex gap-1 flex-wrap">
-                        <Badge variant="outline" className="text-xs">{member.branch}</Badge>
-                        <Badge variant="outline" className="text-xs">{member.year}</Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-              ))}
+            {/* Technical Department */}
+            <div>
+              <div className="mb-4 md:mb-6 pt-4">
+                <h2 className="mb-1 md:mb-2 text-xl md:text-2xl font-bold">Technical</h2>
+                <p className="text-sm md:text-base text-muted-foreground">Organizing Committee - Technical</p>
+              </div>
+              <div className="grid gap-3 md:gap-4 grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {ocTeam.technical.map((member, index) => (
+                  <motion.div
+                    key={member.name}
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: index * 0.03 }}
+                  >
+                    <Card className="h-full">
+                      <CardContent className="p-4">
+                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
+                        <p className="mb-2 text-xs text-muted-foreground line-clamp-1">{member.position}</p>
+                        <div className="flex gap-1 flex-wrap">
+                          <Badge variant="outline" className="text-xs">{member.branch}</Badge>
+                          <Badge variant="outline" className="text-xs">{member.year}</Badge>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.div>
+                ))}
+              </div>
             </div>
           </div>
         </TabsContent>

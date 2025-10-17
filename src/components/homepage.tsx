@@ -91,19 +91,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const highlights = [
     {
       title: "Startup Competitions",
-      description: "Compete for prizes worth ₹10L+",
+      description: "Compete for prizes worth ₹15L+ across multiple categories including B-Plan, Pitch Deck, and Innovation Challenge with mentorship from industry experts.",
     },
     {
       title: "Expert Workshops",
-      description: "Learn from industry leaders",
+      description: "Participate in hands-on workshops led by successful entrepreneurs, venture capitalists, and industry leaders covering business strategy, funding, and growth.",
     },
     {
-      title: "Networking Sessions",
-      description: "Connect with investors & founders",
+      title: "Networking Opportunities",
+      description: "Connect with 5000+ students, 100+ startups, angel investors, and venture capitalists in curated networking sessions and interactive roundtables.",
     },
     {
       title: "Panel Discussions",
-      description: "Insights from successful entrepreneurs",
+      description: "Gain insights from panel discussions featuring founders of unicorn startups, corporate leaders, and innovation pioneers sharing real-world experiences.",
     },
   ];
 
@@ -264,89 +264,17 @@ export function HomePage({ onNavigate }: HomePageProps) {
         </div>
       </section>
 
-      {/* First Edition Special */}
-      <section className="border-b py-16 bg-gradient-to-br from-primary/5 via-background to-background">
+      {/* Key Highlights */}
+      <section className="border-b py-16 bg-gradient-to-br from-background via-background to-primary/5">
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center">
             <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
-              First Edition Highlights
+              Summit Benefits
             </Badge>
-            <h2 className="mb-4">
-              Why This Inaugural Edition is Special
-            </h2>
+            <h2 className="mb-4">Why Attend E-Summit 2026?</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Be a pioneer in TCET's entrepreneurial journey.
-              This first edition sets the foundation for years
-              to come.
-            </p>
-          </div>
-
-          <div className="grid gap-6 md:grid-cols-3 mb-12">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card className="h-full text-center border-primary/20 hover:border-primary/40 transition-all">
-                <CardContent className="p-6">
-                  <div className="text-4xl mb-4">🚀</div>
-                  <h3 className="mb-2">Make History</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Be among the first participants of TCET's
-                    landmark entrepreneurship initiative
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-            >
-              <Card className="h-full text-center border-primary/20 hover:border-primary/40 transition-all">
-                <CardContent className="p-6">
-                  <div className="text-4xl mb-4">🌟</div>
-                  <h3 className="mb-2">Fresh Perspectives</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Experience innovative formats and unique
-                    opportunities designed from ground up
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card className="h-full text-center border-primary/20 hover:border-primary/40 transition-all">
-                <CardContent className="p-6">
-                  <div className="text-4xl mb-4">💎</div>
-                  <h3 className="mb-2">Exclusive Access</h3>
-                  <p className="text-sm text-muted-foreground">
-                    Limited inaugural edition benefits and
-                    networking opportunities with industry
-                    pioneers
-                  </p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Key Highlights */}
-      <section className="border-b py-16">
-        <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4">Why Attend E-Summit?</h2>
-            <p className="text-muted-foreground">
-              Experience the best of entrepreneurship ecosystem
+              Unlock unprecedented opportunities for growth, learning, and collaboration 
+              at India's most comprehensive student entrepreneurship summit.
             </p>
           </div>
 
@@ -361,19 +289,107 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   duration: 0.5,
                   delay: index * 0.1,
                 }}
-                whileHover={{ y: -5 }}
+                whileHover={{ y: -8 }}
               >
-                <Card className="h-full transition-shadow hover:shadow-lg relative overflow-hidden group">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <CardContent className="p-6 relative z-10">
-                    <h3 className="mb-2">{highlight.title}</h3>
-                    <p className="text-sm text-muted-foreground">
+                <Card className="h-full transition-all duration-300 hover:shadow-xl hover:border-primary/30 relative overflow-hidden group border-border/50">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <CardContent className="p-8 relative z-10">
+                    <div className="inline-block mb-3">
+                      <h3 className="text-lg font-semibold bg-primary/10 text-primary px-3 py-1.5 rounded-lg group-hover:bg-primary/20 transition-colors">
+                        {highlight.title}
+                      </h3>
+                    </div>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
                       {highlight.description}
                     </p>
                   </CardContent>
                 </Card>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* First Edition Special */}
+      <section className="border-b py-16 bg-gradient-to-br from-primary/5 via-background to-background relative overflow-hidden">
+        <div className="container mx-auto px-4">
+          <div className="mb-12 text-center">
+            <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
+              Inaugural Edition 2026
+            </Badge>
+            <h2 className="mb-4">
+              Why This Inaugural Edition is Special
+            </h2>
+            <p className="text-muted-foreground max-w-2xl mx-auto">
+              Join us in establishing the cornerstone of TCET's entrepreneurial legacy. 
+              This pioneering edition marks the beginning of an enduring tradition of innovation, 
+              leadership, and transformative business excellence.
+            </p>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-3 mb-12">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
+              <Card className="h-full border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg group">
+                <CardContent className="p-8">
+                  <div className="mb-4 h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <Building2 className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-semibold">Foundational Legacy</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Become a pioneering participant in TCET's landmark entrepreneurship initiative. 
+                    Your presence helps establish a prestigious tradition that will inspire future 
+                    generations of innovators and business leaders.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <Card className="h-full border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg group">
+                <CardContent className="p-8">
+                  <div className="mb-4 h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <Trophy className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-semibold">Innovative Framework</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Experience cutting-edge formats, curated workshops, and bespoke networking 
+                    opportunities meticulously designed to foster entrepreneurial excellence and 
+                    strategic collaboration among industry stakeholders.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <Card className="h-full border-primary/20 hover:border-primary/40 transition-all hover:shadow-lg group">
+                <CardContent className="p-8">
+                  <div className="mb-4 h-12 w-12 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                    <Users className="h-6 w-6 text-primary" />
+                  </div>
+                  <h3 className="mb-3 text-xl font-semibold">Elite Networking</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    Gain privileged access to exclusive inaugural edition benefits, including 
+                    direct engagement with industry pioneers, venture capitalists, and thought 
+                    leaders shaping the future of entrepreneurship.
+                  </p>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
       </section>

@@ -139,26 +139,8 @@ export function Venue() {
   // Simple path - Vite serves public folder at root
   const tcetSrc = "/assets/tcet.webp";
 
-  // Debug state to track image loading
-  const [imageDebug, setImageDebug] = React.useState({
-    loaded: false,
-    error: false,
-    actualSrc: tcetSrc
-  });
-
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Debug Panel - Remove after fixing */}
-      <div className="fixed top-4 right-4 z-50 bg-yellow-100 border-2 border-yellow-500 p-4 rounded-lg shadow-xl max-w-md">
-        <div className="font-bold text-sm mb-2">🔍 Image Debug Info</div>
-        <div className="text-xs space-y-1">
-          <div><strong>Path:</strong> {tcetSrc}</div>
-          <div><strong>Resolved Path:</strong> {tcetSrc}</div>
-          <div><strong>Full URL:</strong> {window.location.origin}{tcetSrc}</div>
-          <div><strong>Image Loaded:</strong> {imageDebug.loaded ? '✅' : '❌'}</div>
-          <div><strong>Image Error:</strong> {imageDebug.error ? '❌ YES' : '✅ NO'}</div>
-        </div>
-      </div>
       <div className="relative mb-12">
         <RippleBackground />
         <motion.div
@@ -183,12 +165,12 @@ export function Venue() {
         <HoverGlow>
           <Card className="mb-12 overflow-hidden">
             <div className="relative h-96">
-          <ImageWithFallback
-            src={tcetSrc}
-            alt="Thakur College of Engineering and Technology Campus"
-            className="h-full w-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <img
+                src={tcetSrc}
+                alt="Thakur College of Engineering and Technology Campus"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute bottom-8 left-8 text-white">
             <h2 className="mb-2 text-white">Thakur College of Engineering and Technology</h2>
             <div className="flex items-center gap-2">
