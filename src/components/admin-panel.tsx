@@ -493,10 +493,14 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Pass Types</SelectItem>
-                    <SelectItem value="Full Summit Pass">Full Summit Pass</SelectItem>
-                    <SelectItem value="Day 1 Pass">Day 1 Pass</SelectItem>
-                    <SelectItem value="Day 2 Pass">Day 2 Pass</SelectItem>
-                    <SelectItem value="VIP Pass">VIP Pass</SelectItem>
+                    <SelectItem value="Pixel Pass">Pixel Pass (FREE)</SelectItem>
+                    <SelectItem value="Silicon Pass">Silicon Pass</SelectItem>
+                    <SelectItem value="Quantum Pass">Quantum Pass</SelectItem>
+                    {/* Legacy pass types */}
+                    <SelectItem value="Gold Pass">Gold Pass (Legacy)</SelectItem>
+                    <SelectItem value="Silver Pass">Silver Pass (Legacy)</SelectItem>
+                    <SelectItem value="Platinum Pass">Platinum Pass (Legacy)</SelectItem>
+                    <SelectItem value="Group Pass">Group Pass (Legacy)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

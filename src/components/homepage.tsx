@@ -82,7 +82,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   ];
 
   const stats = [
-    { label: "Events", value: "30+", icon: Trophy },
+    { label: "Events", value: "16+", icon: Trophy },
     { label: "Speakers", value: "50+", icon: Users },
     { label: "Attendees", value: "5000+", icon: Users },
     { label: "Colleges", value: "100+", icon: Building2 },
@@ -91,19 +91,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const highlights = [
     {
       title: "Startup Competitions",
-      description: "Compete for prizes worth ₹15L+ across multiple categories including B-Plan, Pitch Deck, and Innovation Challenge with mentorship from industry experts.",
+      description: "Compete in exciting events like IPL Auction, AI Build-A-Thon, and Startup League with total prizes worth ₹5L+ and opportunities for seed funding.",
     },
     {
       title: "Expert Workshops",
-      description: "Participate in hands-on workshops led by successful entrepreneurs, venture capitalists, and industry leaders covering business strategy, funding, and growth.",
+      description: "Participate in hands-on workshops covering Design Thinking, Finance & Marketing, Data Analytics & BDM, and AI for Early Stage Startups led by industry experts.",
     },
     {
-      title: "Networking Opportunities",
-      description: "Connect with 5000+ students, 100+ startups, angel investors, and venture capitalists in curated networking sessions and interactive roundtables.",
+      title: "Pitching Opportunities",
+      description: "Present your startup at The Ten Minute Million, Angel Investors Roundtable, Pitch Arena, and Incubator Summit to secure funding and incubation support.",
     },
     {
-      title: "Panel Discussions",
-      description: "Gain insights from panel discussions featuring founders of unicorn startups, corporate leaders, and innovation pioneers sharing real-world experiences.",
+      title: "Networking Events",
+      description: "Connect with investors, mentors, and fellow entrepreneurs at Startup Expo, Panel Discussions, Networking Arena, and the exclusive Startup Youth Conclave.",
     },
   ];
 
@@ -489,22 +489,22 @@ export function HomePage({ onNavigate }: HomePageProps) {
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
-                title: "Registration Open",
+                title: "FREE Pixel Pass Available",
                 date: "Jan 15, 2026",
                 content:
-                  "Early bird passes now available at special rates. Register before Feb 1st!",
+                  "Access 5 exciting events absolutely FREE! Limited seats available for the inaugural edition.",
               },
               {
-                title: "New Speaker Announced",
+                title: "New Pitching Events",
                 date: "Jan 20, 2026",
                 content:
-                  "Excited to announce keynote speaker from Fortune 500 company.",
+                  "Pitch to VCs and Angel Investors at exclusive events. Secure seed funding for your startup!",
               },
               {
-                title: "Prize Pool Increased",
+                title: "Prize Pool Updated",
                 date: "Jan 25, 2026",
                 content:
-                  "Total prize money now exceeds ₹15 Lakhs across all competitions!",
+                  "Total prize money exceeds ₹5 Lakhs with additional funding opportunities from investors!",
               },
             ].map((news) => (
               <Card

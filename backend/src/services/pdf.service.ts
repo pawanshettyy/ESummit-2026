@@ -757,6 +757,32 @@ export class PDFService {
         if (passTypes.some(pt => pt.includes('Gold'))) {
           eligibleEvents = [...eligibleEvents, ...eventSchedule.day1];
         }
+        // New pass types
+        if (passTypes.some(pt => pt.includes('Pixel'))) {
+          // Pixel Pass: Basic events (startup expo, panel, competitions, networking)
+          const pixelTitles = ['Startup Expo', 'Panel Discussion', 'IPL Auction', 
+                               'AI Build-A-Thon', 'Biz-Arena League', 'Networking Arena',
+                               'Registration & Welcome', 'Inaugural Ceremony', 'Closing Ceremony'];
+          eligibleEvents = [...eventSchedule.day1, ...eventSchedule.day2].filter(e => 
+            pixelTitles.some(title => e.title.includes(title))
+          );
+        }
+        if (passTypes.some(pt => pt.includes('Silicon'))) {
+          // Silicon Pass: Pixel + workshops + pitch arena + youth conclave
+          const excludeTitles = ['The Ten Minute Million', 'Angel Investors Roundtable', 
+                                 'Incubator Summit', 'Internship Fair'];
+          eligibleEvents = [...eventSchedule.day1, ...eventSchedule.day2].filter(e => 
+            !excludeTitles.some(title => e.title.includes(title))
+          );
+        }
+        if (passTypes.some(pt => pt.includes('Quantum'))) {
+          // Quantum Pass: All events
+          eligibleEvents = [...eventSchedule.day1, ...eventSchedule.day2];
+        }
+        // Legacy pass types
+        if (passTypes.some(pt => pt.includes('Gold'))) {
+          eligibleEvents = [...eligibleEvents, ...eventSchedule.day1];
+        }
         if (passTypes.some(pt => pt.includes('Silver'))) {
           eligibleEvents = [...eligibleEvents, ...eventSchedule.day2];
         }

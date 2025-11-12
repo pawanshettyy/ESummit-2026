@@ -180,13 +180,18 @@ export function UserDashboard({
   // Map pass type names to pass identifiers for event eligibility
   const getPassTypeId = (passTypeName: string): string => {
     const passTypeMap: Record<string, string> = {
+      // New pass types
+      "Pixel Pass": "pixel",
+      "Silicon Pass": "silicon",
+      "Quantum Pass": "quantum",
+      // Legacy pass types (for backward compatibility)
       "Gold Pass": "day1",
       "Silver Pass": "day2",
       "Platinum Pass": "full",
       "Group Pass (5+)": "group",
       "Group Pass": "group",
     };
-    return passTypeMap[passTypeName] || "day1"; // Default to day1 if unknown
+    return passTypeMap[passTypeName] || "pixel"; // Default to pixel if unknown
   };
 
   // Get all eligible events from all purchased passes
