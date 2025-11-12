@@ -76,6 +76,31 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li>
                 <button
+                  onClick={() => onNavigate("booking")}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Book Pass
+                </button>
+              </li>
+              {isSignedIn && (
+                <li>
+                  <button
+                    onClick={() => onNavigate("dashboard")}
+                    className="text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    Dashboard
+                  </button>
+                </li>
+              )}
+            </ul>
+          </div>
+
+          {/* Booking & Info */}
+          <div>
+            <h4 className="mb-4">Information</h4>
+            <ul className="space-y-2 text-sm">
+              <li>
+                <button
                   onClick={() => onNavigate("speakers")}
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
@@ -98,42 +123,12 @@ export function Footer({ onNavigate }: FooterProps) {
                   Team
                 </button>
               </li>
-            </ul>
-          </div>
-
-          {/* Booking & Info */}
-          <div>
-            <h4 className="mb-4">Information</h4>
-            <ul className="space-y-2 text-sm">
-              <li>
-                <button
-                  onClick={() => onNavigate("booking")}
-                  className="text-muted-foreground transition-colors hover:text-foreground"
-                >
-                  Book Pass
-                </button>
-              </li>
-              {isSignedIn && (
-                <li>
-                  <button
-                    onClick={() => onNavigate("dashboard")}
-                    className="text-muted-foreground transition-colors hover:text-foreground"
-                  >
-                    Dashboard
-                  </button>
-                </li>
-              )}
               <li>
                 <button
                   onClick={() => onNavigate("venue")}
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
                   Venue
-                </button>
-              </li>
-              <li>
-                <button className="text-muted-foreground transition-colors hover:text-foreground">
-                  FAQ
                 </button>
               </li>
             </ul>
