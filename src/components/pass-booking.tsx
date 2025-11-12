@@ -527,15 +527,6 @@ export function PassBooking({
               Select the perfect pass for your E-Summit
               experience
             </p>
-            {!hasExistingPass && !isCheckingPass && (
-              <Alert className="mx-auto mt-4 max-w-2xl">
-                <Info className="h-4 w-4" />
-                <AlertDescription>
-                  Early bird offer ends Feb 1st! Save up to 40% on
-                  pass prices.
-                </AlertDescription>
-              </Alert>
-            )}
           </div>
 
           <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">

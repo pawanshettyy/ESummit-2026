@@ -16,8 +16,8 @@ export type TransactionStatus = 'pending' | 'completed' | 'failed' | 'refunded';
 
 export type PaymentMethod = 'upi' | 'card' | 'netbanking' | 'wallet';
 
-// Event types
-export type EventCategory = 'competitions' | 'workshops' | 'speakers' | 'hackathon' | 'networking';
+// Event types (Updated for E-Summit 2026)
+export type EventCategory = 'pitching' | 'competitions' | 'workshops' | 'networking' | 'speakers' | 'hackathon';
 
 export type EventStatus = 'upcoming' | 'ongoing' | 'completed' | 'cancelled';
 
