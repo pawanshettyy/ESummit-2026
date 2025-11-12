@@ -172,63 +172,53 @@ export function PassBooking({
 
   const passes = [
     {
-      id: "day1",
-      name: "Gold Pass",
-      price: 499,
-      originalPrice: 699,
+      id: "pixel",
+      name: "Pixel Pass",
+      price: 0,
+      originalPrice: 299,
       features: [
-        "Access to all Day 1 events",
-        "Keynote sessions",
-        "Networking lunch",
-        "Welcome kit",
+        "Startup Expo",
+        "Panel Discussion",
+        "IPL Auction",
+        "AI Build-A-Thon",
+        "Biz-Arena League",
+        "Certificate of participation",
+      ],
+      badge: "Free Entry",
+    },
+    {
+      id: "silicon",
+      name: "Silicon Pass",
+      price: 499,
+      originalPrice: 799,
+      features: [
+        "All Pixel Pass events",
+        "Pitch Arena",
+        "Startup Youth Conclave",
+        "All 3 Workshops",
+        "Networking Arena",
+        "Lunch included",
         "Certificate of participation",
       ],
       badge: "Popular",
-    },
-    {
-      id: "day2",
-      name: "Silver Pass",
-      price: 499,
-      originalPrice: 699,
-      features: [
-        "Access to all Day 2 events",
-        "Competition finals",
-        "Panel discussions",
-        "Networking dinner",
-        "Certificate of participation",
-      ],
-    },
-    {
-      id: "full",
-      name: "Platinum Pass",
-      price: 799,
-      originalPrice: 1199,
-      features: [
-        "Access to all events (both days)",
-        "All keynote sessions",
-        "Priority seating",
-        "Exclusive networking sessions",
-        "Welcome kit & merchandise",
-        "Certificate of participation",
-        "Access to recordings",
-      ],
-      badge: "Best Value",
       recommended: true,
     },
     {
-      id: "group",
-      name: "Group Pass (5+)",
-      price: 599,
-      originalPrice: 799,
+      id: "quantum",
+      name: "Quantum Pass",
+      price: 999,
+      originalPrice: 1299,
       features: [
-        "For teams of 5 or more",
-        "All Full Summit Pass benefits",
-        "25% discount per person",
-        "Dedicated team coordinator",
-        "Group photo with speakers",
-        "Special group activities",
+        "All Silicon Pass events",
+        "The Ten Minute Million",
+        "The Angel Investor Roundtable",
+        "Incubator Summit",
+        "Internship Fair",
+        "Premium networking sessions",
+        "Priority access to all events",
+        "Certificate of participation",
       ],
-      badge: "Team Discount",
+      badge: "Best Value",
     },
   ];
 
@@ -577,12 +567,25 @@ export function PassBooking({
                           <div>
                             <h3>{pass.name}</h3>
                             <div className="mt-2 flex items-baseline gap-2">
-                              <span className="text-3xl text-primary">
-                                ₹{pass.price}
-                              </span>
-                              <span className="text-sm text-muted-foreground line-through">
-                                ₹{pass.originalPrice}
-                              </span>
+                              {pass.price === 0 ? (
+                                <>
+                                  <span className="text-3xl font-bold text-primary">
+                                    FREE
+                                  </span>
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{pass.originalPrice}
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-3xl text-primary">
+                                    ₹{pass.price}
+                                  </span>
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{pass.originalPrice}
+                                  </span>
+                                </>
+                              )}
                             </div>
                           </div>
                           <motion.div
@@ -644,12 +647,25 @@ export function PassBooking({
                           <div>
                             <h3>{pass.name}</h3>
                             <div className="mt-2 flex items-baseline gap-2">
-                              <span className="text-3xl text-primary">
-                                ₹{pass.price}
-                              </span>
-                              <span className="text-sm text-muted-foreground line-through">
-                                ₹{pass.originalPrice}
-                              </span>
+                              {pass.price === 0 ? (
+                                <>
+                                  <span className="text-3xl font-bold text-primary">
+                                    FREE
+                                  </span>
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{pass.originalPrice}
+                                  </span>
+                                </>
+                              ) : (
+                                <>
+                                  <span className="text-3xl text-primary">
+                                    ₹{pass.price}
+                                  </span>
+                                  <span className="text-sm text-muted-foreground line-through">
+                                    ₹{pass.originalPrice}
+                                  </span>
+                                </>
+                              )}
                             </div>
                           </div>
                           <Ticket className="h-8 w-8 text-primary" />
@@ -692,47 +708,51 @@ export function PassBooking({
                 <thead className="border-b bg-muted/50">
                   <tr>
                     <th className="p-4 text-left">Feature</th>
-                    {passes.slice(0, 4).map((pass) => (
+                    {passes.map((pass) => (
                       <th
                         key={pass.id}
                         className="p-4 text-center"
                       >
-                        {pass.name.split(" ")[0]}
+                        {pass.name}
                       </th>
                     ))}
                   </tr>
                 </thead>
                 <tbody>
                   {[
-                    "Access to events",
-                    "Keynote sessions",
-                    "Networking opportunities",
-                    "Certificate",
-                    "Priority seating",
-                    "VIP lounge",
-                    "Meet speakers",
+                    "Startup Expo",
+                    "Panel Discussion",
+                    "IPL Auction",
+                    "AI Build-A-Thon",
+                    "Biz-Arena League",
+                    "Pitch Arena",
+                    "Startup Youth Conclave",
+                    "All 3 Workshops",
+                    "Networking Arena",
+                    "Lunch included",
+                    "The Ten Minute Million",
+                    "Angel Investor Roundtable",
+                    "Incubator Summit",
+                    "Internship Fair",
                   ].map((feature, idx) => (
                     <tr key={feature} className="border-b">
                       <td className="p-4">{feature}</td>
-                      {passes
-                        .slice(0, 4)
-                        .map((pass, passIdx) => (
-                          <td
-                            key={pass.id}
-                            className="p-4 text-center"
-                          >
-                            {(passIdx === 0 && idx < 4) ||
-                            (passIdx === 1 && idx < 4) ||
-                            (passIdx === 2 && idx < 5) ||
-                            passIdx === 3 ? (
-                              <Check className="mx-auto h-5 w-5 text-primary" />
-                            ) : (
-                              <span className="text-muted-foreground">
-                                —
-                              </span>
-                            )}
-                          </td>
-                        ))}
+                      {passes.map((pass, passIdx) => (
+                        <td
+                          key={pass.id}
+                          className="p-4 text-center"
+                        >
+                          {(passIdx === 0 && idx < 5) ||
+                          (passIdx === 1 && idx < 10) ||
+                          (passIdx === 2 && idx < 14) ? (
+                            <Check className="mx-auto h-5 w-5 text-primary" />
+                          ) : (
+                            <span className="text-muted-foreground">
+                              —
+                            </span>
+                          )}
+                        </td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>
@@ -959,13 +979,17 @@ export function PassBooking({
                   <div>
                     <div className="flex items-center justify-between">
                       <span>{selectedPassData.name}</span>
-                      <span>₹{selectedPassData.price}</span>
+                      <span>
+                        {selectedPassData.price === 0 ? "FREE" : `₹${selectedPassData.price}`}
+                      </span>
                     </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      You save ₹
-                      {selectedPassData.originalPrice -
-                        selectedPassData.price}
-                    </div>
+                    {selectedPassData.originalPrice > selectedPassData.price && (
+                      <div className="mt-1 text-xs text-muted-foreground">
+                        You save ₹
+                        {selectedPassData.originalPrice -
+                          selectedPassData.price}
+                      </div>
+                    )}
                   </div>
 
                   {totalAddons > 0 && (
@@ -1035,7 +1059,7 @@ export function PassBooking({
                   <span className="text-sm font-medium">Order Total</span>
                 </div>
                 <div className="text-3xl font-bold text-primary">
-                  ₹{totalPrice}
+                  {totalPrice === 0 ? "FREE" : `₹${totalPrice}`}
                 </div>
                 <div className="mt-2 text-sm text-muted-foreground">
                   {selectedPassData.name}
@@ -1096,7 +1120,7 @@ export function PassBooking({
                   {selectedPassData.name}
                 </h3>
                 <div className="mb-4 text-2xl text-primary">
-                  ₹{totalPrice}
+                  {totalPrice === 0 ? "FREE" : `₹${totalPrice}`}
                 </div>
                 
                 {/* Display actual QR code */}
