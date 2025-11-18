@@ -1,18 +1,18 @@
-# E-Summit 2026 - Event Management Platform
+# E-Summit 2026
 
-A complete event management platform for E-Summit 2026 at Thakur College of Engineering and Technology, featuring pass booking, QR-based check-in system, event management, and admin dashboard.
+A full-stack event management platform for E-Summit 2026 at Thakur College of Engineering and Technology. Features include pass booking, QR-based check-in, event management, and comprehensive admin dashboard.
 
-## 🎯 Project Overview
+## Project Overview
 
-This platform handles the complete lifecycle of E-Summit 2026:
+This platform manages the complete event lifecycle:
 
 - **Pass Booking**: Multiple pass types (Gold, Silver, Platinum, Group) with Razorpay payment integration
-- **QR Code System**: Unique, encrypted QR codes for each booking with secure check-in
-- **Event Management**: Competitions, workshops, keynote sessions, and networking events
-- **Admin Dashboard**: Real-time analytics, participant management, and QR scanning
-- **User Dashboard**: View passes, registered events, and event schedule
+- **QR Code System**: AES-256-GCM encrypted QR codes for secure check-in
+- **Event Management**: Competitions, workshops, keynotes, and networking events
+- **Admin Dashboard**: Real-time analytics, participant management, QR scanning, and reporting
+- **User Dashboard**: Pass viewing, event registration, and schedule access
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 ESummit-2026/
@@ -48,9 +48,9 @@ ESummit-2026/
 └── README.md                     # This file
 ```
 
-## 🚀 Quick Start
+## Quick Start
 
-### Frontend (Already Built ✓)
+### Frontend
 
 ```bash
 # Install dependencies
@@ -66,22 +66,22 @@ npm run build
 npm run preview
 ```
 
-The frontend will be available at `http://localhost:5173`
+Frontend: `http://localhost:5173`
 
-### Backend (Phase 1 ✓ - Auth System Complete)
+### Backend
 
 ```bash
-# Navigate to backend
+# Navigate to backend directory
 cd backend
 
 # Install dependencies
 npm install
 
-# Set up environment
+# Configure environment
 cp .env.example .env
-# Edit .env with your PostgreSQL credentials
+# Edit .env with your database credentials
 
-# Run Prisma migrations
+# Run database migrations
 npm run prisma:generate
 npm run prisma:migrate
 
@@ -89,115 +89,105 @@ npm run prisma:migrate
 npm run dev
 ```
 
-The backend API will be available at `http://localhost:5000`
+Backend API: `http://localhost:5000`
 
-**Quick Setup Guide**: See [BACKEND_SETUP.md](./BACKEND_SETUP.md)
+**Documentation**:
 
-**Full Documentation**:
+- [backend/README.md](./backend/README.md) - Backend API reference
+- [BACKEND_ARCHITECTURE.md](./docs/BACKEND_ARCHITECTURE.md) - System architecture
+- [IMPLEMENTATION_GUIDE.md](./docs/IMPLEMENTATION_GUIDE.md) - Development roadmap
 
-- **[backend/README.md](./backend/README.md)** - Backend documentation and API reference
-- **[BACKEND_ARCHITECTURE.md](./BACKEND_ARCHITECTURE.md)** - Complete backend architecture
-- **[QR_CODE_SYSTEM.md](./QR_CODE_SYSTEM.md)** - QR code implementation guide
-- **[IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md)** - Development roadmap
+## QR Code System
 
-## 📱 QR Code System
+### Workflow
 
-### How It Works
+1. **Booking**: User completes booking → Backend generates encrypted QR code → Stored in database
+2. **Check-in**: User presents QR code → Admin scans → System validates → Entry logged
 
-1. **After Booking**: User completes booking → Backend generates unique encrypted QR code → Stored in database
-2. **At Event**: User shows QR code from dashboard → Admin scans with QR Scanner → System validates → Entry logged
+### Features
 
-### Key Features
+- AES-256-GCM encryption with SHA-256 checksum
+- Pass validation (Active/Cancelled/Refunded)
+- Multi-event scanning (up to 30 events per pass)
+- 30-minute cooldown per event to prevent duplicates
+- General entry mode for venue access
+- Complete audit trail with timestamps
+- Camera and manual entry support
+- Real-time admin panel updates
 
-- ✅ **AES-256-GCM encryption** - Military-grade security
-- ✅ **SHA-256 checksum** - Tamper detection
-- ✅ **Pass validation** - Checks pass status (Active/Cancelled/Refunded)
-- ✅ **Multi-event scanning** - One pass can check into 30 different events
-- ✅ **Cooldown system** - 30-minute cooldown for same event (prevents duplicates)
-- ✅ **General entry mode** - Leave event ID empty for unlimited venue scans
-- ✅ **Complete audit trail** - All scans logged with timestamps
-- ✅ **Camera & Manual entry** - Flexible scanning options
-- ✅ **Real-time updates** - Admin panel refreshes automatically
+### Implementation Status
 
-### Current Implementation
+- QR code generation on pass creation
+- QR scanner with camera support
+- Manual entry with pass ID validation
+- Event-specific check-ins
+- Check-in history tracking
+- PDF pass with embedded QR code
+- Dynamic PDF invoice generation
 
-- ✅ QR code generation on pass creation
-- ✅ QR scanner with camera support
-- ✅ Manual entry with pass ID validation
-- ✅ Event-specific check-ins
-- ✅ Check-in history tracking
-- ✅ **PDF pass with embedded QR code**
-- ✅ **Dynamic PDF invoice generation**
-- ⏳ Email delivery (planned)
+## Payment Integration
 
-**Visual Guide**: See [QR_FLOW_DIAGRAM.md](./QR_FLOW_DIAGRAM.md)
+- **Gateway**: Razorpay
+- **Current Status**: Direct pass creation (development mode)
+- **Supported Methods**: UPI, Cards, Net Banking, Wallets
+- **Security**: Payment signature verification, webhook handling
 
-## 💳 Payment Integration
+## Database Schema
 
-- **Gateway**: Razorpay (bypassed for testing)
-- **Current Status**: Direct pass creation without payment (for development)
-- **Supported Methods**: UPI, Cards, Net Banking, Wallets (when enabled)
-- **Security**: Payment signature verification, webhook handling (ready for production)
+### Core Tables
 
-## 🗄️ Database Schema
-
-Core tables:
-
-- `users` - User accounts
-- `passes` - Purchased passes with QR codes
+- `users` - User accounts and profiles
+- `passes` - Pass purchases with QR codes
 - `transactions` - Payment records
-- `events` - All events/competitions
-- `event_registrations` - User event sign-ups
+- `events` - Event listings
+- `event_registrations` - User event registrations
 - `check_ins` - QR scan records
-- `admin_users` - Admin accounts
+- `admin_users` - Admin accounts with role-based access
 
-**Full Schema**: See [BACKEND_ARCHITECTURE.md#database-schema](./BACKEND_ARCHITECTURE.md#database-schema)
+See [BACKEND_ARCHITECTURE.md](./docs/BACKEND_ARCHITECTURE.md#database-schema) for complete schema details.
 
-## 🔐 Security Features
+## Security
 
 - JWT authentication (access + refresh tokens)
 - Password hashing (bcrypt)
-- Rate limiting (100 req/15min per IP)
+- Rate limiting (100 requests per 15 minutes per IP)
 - CORS configuration
-- Input validation (Zod)
+- Input validation (Zod schemas)
 - SQL injection prevention (Prisma ORM)
 - XSS protection
 - Encrypted QR codes
 
-## 📊 Key Features
+## Features
 
-### For Attendees
+### User Features
 
-- ✅ Browse events and speakers
-- ✅ Book passes (multiple types)
-- ✅ View personal dashboard
-- ✅ Access QR code for entry
-- ✅ **Download pass as PDF** (with logo & QR code)
-- ✅ **Download payment invoice as PDF**
-- ⏳ Register for specific events
-- ⏳ Receive QR code via email
-- ⏳ Download event schedule PDF
+- Browse events and speakers
+- Book passes (multiple types)
+- Personal dashboard with pass access
+- QR code for entry
+- Download pass as PDF
+- Download payment invoice
+- Register for specific events
+- View event schedule
 
-### For Admins
+### Admin Features
 
-- ✅ Real-time dashboard (auto-refresh every 3 seconds)
-- ✅ Participant management
-- ✅ QR code scanner (Camera + Manual Entry)
-- ✅ Multi-event check-in system
-- ✅ Event ID Generator
-- ✅ Analytics & reporting
-- ✅ Export participant data (CSV)
-- ✅ Role-based access control (4 roles)
-- ✅ Pass type distribution charts
-- ✅ College-wise statistics
-- ✅ **PDF Pass Generation** (Dynamic, with QR code & logo)
-- ✅ **PDF Invoice Generation** (Dynamic, with GST breakdown)
-- ⏳ Audit logs viewer
-- ⏳ Event management UI
+- Real-time dashboard (auto-refresh every 3 seconds)
+- Participant management
+- QR code scanner (camera + manual entry)
+- Multi-event check-in system
+- Event ID generator
+- Analytics and reporting
+- Export participant data (CSV)
+- Role-based access control (4 roles)
+- Pass type distribution charts
+- College-wise statistics
+- PDF pass generation
+- PDF invoice generation
 
-## 🛠️ Tech Stack
+## Tech Stack
 
-### Frontend ✓
+### Frontend
 
 - React 18
 - TypeScript
@@ -207,7 +197,7 @@ Core tables:
 - Framer Motion
 - Razorpay SDK
 
-### Backend (Implemented ✅)
+### Backend
 
 - Node.js + Express
 - TypeScript
@@ -215,122 +205,89 @@ Core tables:
 - Clerk Authentication
 - QR Code Generation (qrcode library)
 - AES-256-GCM Encryption
-- **PDFKit** (PDF generation)
+- PDFKit (PDF generation)
 - JWT tokens
 - Zod validation
 - Winston logging
 
-## 📦 Dependencies
-
-```json
-{
-  "dependencies": {
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "lucide-react": "^0.487.0",
-    "motion": "*",
-    "class-variance-authority": "^0.7.1",
-    "tailwind-merge": "*",
-    "@radix-ui/react-*": "latest"
-  },
-  "devDependencies": {
-    "@types/react": "^18.2.21",
-    "@types/react-dom": "^18.2.7",
-    "@vitejs/plugin-react-swc": "^3.10.2",
-    "vite": "^6.3.6"
-  }
-}
-```
-
-## 🎓 Event Details
+## Event Details
 
 - **Name**: E-Summit 2026
 - **Venue**: Thakur College of Engineering and Technology, Kandivali East, Mumbai - 400101
 - **Dates**: January 23-24, 2026 (2 Days)
 - **Expected Attendance**: 5,000+ participants
 
-## 📖 Documentation
+## Development Status
 
-| Document                                          | Description                                                   |
-| ------------------------------------------------- | ------------------------------------------------------------- |
-| [BACKEND_ARCHITECTURE.md](./BACKEND_ARCHITECTURE.md) | Complete backend architecture, API endpoints, database schema |
-| [QR_CODE_SYSTEM.md](./QR_CODE_SYSTEM.md)             | QR code generation & scanning implementation                  |
-| [QR_FLOW_DIAGRAM.md](./QR_FLOW_DIAGRAM.md)           | Visual flow from booking to entry                             |
-| [IMPLEMENTATION_GUIDE.md](./IMPLEMENTATION_GUIDE.md) | Week-by-week development roadmap                              |
+### Completed
 
-## 🚦 Development Roadmap
+**Frontend**
 
-### ✅ Phase 1: Frontend (Completed)
+- Homepage, events listing, speakers showcase
+- Team page, venue information
+- Pass booking UI, admin panel UI, user dashboard UI
 
-- [X] Homepage with hero section
-- [X] Events listing and schedule
-- [X] Speakers showcase
-- [X] Team page
-- [X] Venue information
-- [X] Pass booking UI
-- [X] Admin panel UI
-- [X] User dashboard UI
+**Backend Foundation**
 
-### ✅ Phase 2: Backend Foundation (Completed)
+- Database setup (PostgreSQL + Prisma)
+- 10-table schema with relationships
+- Authentication system (Clerk integration)
+- Request validation (Zod), error handling, logging
+- Security middleware (helmet, CORS, rate limiting)
 
-- [X] Database setup (PostgreSQL + Prisma)
-- [X] 10-table schema with relationships
-- [X] Authentication system (Clerk integration)
-- [X] User registration & login
-- [X] Profile completion system
-- [X] Request validation (Zod)
-- [X] Error handling & logging
-- [X] Security middleware (helmet, CORS, rate limiting)
+**Core Features**
 
-### ✅ Phase 3: Core Features (Completed)
+- Pass booking system
+- QR code generation (AES-256-GCM encryption)
+- User dashboard with pass display
+- Admin panel with role-based access
+- Multi-event check-in system (up to 30 events per pass)
+- QR Scanner (camera + manual entry)
+- Event ID generator
+- Real-time admin dashboard (auto-refresh)
+- Check-in status tracking
+- Pass distribution analytics
+- College-wise statistics
+- CSV export functionality
+- PDF pass and invoice generation
 
-- [X] Pass booking system (bypass Razorpay for testing)
-- [X] QR code generation (AES-256-GCM encryption)
-- [X] User dashboard with pass display
-- [X] Admin panel with role-based access
-- [X] Multi-event check-in system (up to 30 events per pass)
-- [X] QR Scanner (Camera + Manual Entry)
-- [X] Event ID Generator (kebab-case identifiers)
-- [X] Real-time admin dashboard (auto-refresh every 3 seconds)
-- [X] Check-in status tracking
-- [X] Pass distribution analytics
-- [X] College-wise registration stats
-- [X] CSV export functionality
-- [X] One pass per user validation
+**Advanced Features**
 
-### 🔄 Phase 4: Advanced Features (In Progress)
+- Event management APIs (CRUD)
+- Check-in APIs with cooldown system
+- Admin statistics endpoints
+- Silent background data refresh
 
-- [X] Event management APIs (CRUD)
-- [X] Check-in APIs with cooldown system
-- [X] Admin statistics endpoints
-- [X] Silent background data refresh
-- [X] Instant check-in status updates
-- [ ] Razorpay payment integration (production)
-- [ ] Email notifications with QR codes
-- [ ] PDF pass generation
-- [ ] Seed 30 events to database
-- [ ] WebSocket for true real-time updates
+### In Progress
 
-### 📅 Phase 5: Polish & Testing (Planned)
+- Razorpay payment integration (production mode)
+- Email notifications with QR codes
+- Seed 30 events to database
+- WebSocket for real-time updates
 
-- [ ] End-to-end testing
-- [ ] Performance optimization
-- [ ] Security audit
-- [ ] Mobile responsiveness testing
-- [ ] Admin role management UI
-- [ ] Audit log viewer
+### Planned
 
-### 🚀 Phase 5: Deployment (Planned)
+- End-to-end testing
+- Performance optimization
+- Security audit
+- Mobile responsiveness testing
+- Admin role management UI
+- Audit log viewer
+- Deployment (Backend: DigitalOcean/AWS, Frontend: Vercel/Netlify)
+- Domain configuration and SSL
+- Monitoring and load testing
 
-- [ ] Deploy backend (DigitalOcean/AWS)
-- [ ] Deploy frontend (Vercel/Netlify)
-- [ ] Configure domain & SSL
-- [ ] Set up monitoring
-- [ ] Load testing
-
-## 🔧 Environment Variables
+## Environment Variables
 
 Create `.env` file in backend:
+
+```env
+# Database
+DATABASE_URL=postgresql://user:pass@localhost:5432/esummit2026
+
+## Environment Variables
+
+Create `.env` file in backend directory:
 
 ```env
 # Database
@@ -357,19 +314,23 @@ SENDGRID_API_KEY=SG.xxxxx
 FROM_EMAIL=noreply@esummit2026.com
 ```
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Frontend
 npm run test        # Run unit tests
 npm run test:e2e    # Run E2E tests
 
-# Backend (when implemented)
+# Backend
 cd backend
 npm run test        # Run all tests
 npm run test:watch  # Watch mode
 ```
 
-**Built with ❤️ for E-Summit 2026**
+## License
 
-*Last Updated: January 2026*
+This project is proprietary and confidential. Unauthorized copying or distribution is prohibited.
+
+---
+
+Last Updated: November 2025
