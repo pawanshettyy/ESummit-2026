@@ -5,6 +5,24 @@ import { HomePage } from "./components/homepage";
 import { PassBooking } from "./components/pass-booking";
 import { EventSchedule } from "./components/event-schedule";
 import { EventsListing } from "./components/events-listing";
+import {
+  TenMinuteMillionPage,
+  AngelInvestorsRoundtablePage,
+  PitchArenaPage,
+  IncubatorSummitPage,
+  IplAuctionPage,
+  AiBuildathonPage,
+  StartupLeaguePage,
+  DesignThinkingPage,
+  FinanceMarketingPage,
+  DataAnalyticsBdmPage,
+  AiEarlyStageStartupsPage,
+  StartupExpoPage,
+  PanelDiscussionPage,
+  NetworkingArenaPage,
+  InternshipFairPage,
+  StartupYouthConclavePage,
+} from "./components/events";
 import { Speakers } from "./components/speakers";
 import { Venue } from "./components/venue";
 import { Sponsors } from "./components/sponsors";
@@ -24,6 +42,15 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [isDark, setIsDark] = useState(false);
   const [userHasPass, setUserHasPass] = useState(false);
+
+  // Check if we're on an event detail page
+  useEffect(() => {
+    const path = window.location.pathname;
+    if (path.startsWith('/event/')) {
+      const eventId = path.split('/event/')[1];
+      setCurrentPage(`event-${eventId}`);
+    }
+  }, []);
 
   // Check if user has any valid admin role (Core, JC, or OC)
   const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
@@ -102,6 +129,38 @@ export default function App() {
         return <EventSchedule />;
       case "events":
         return <EventsListing onNavigate={handleNavigate} />;
+      case "event-1":
+        return <TenMinuteMillionPage />;
+      case "event-2":
+        return <AngelInvestorsRoundtablePage />;
+      case "event-3":
+        return <PitchArenaPage />;
+      case "event-4":
+        return <IncubatorSummitPage />;
+      case "event-5":
+        return <IplAuctionPage />;
+      case "event-6":
+        return <AiBuildathonPage />;
+      case "event-7":
+        return <StartupLeaguePage />;
+      case "event-8":
+        return <DesignThinkingPage />;
+      case "event-9":
+        return <FinanceMarketingPage />;
+      case "event-10":
+        return <DataAnalyticsBdmPage />;
+      case "event-11":
+        return <AiEarlyStageStartupsPage />;
+      case "event-12":
+        return <StartupExpoPage />;
+      case "event-13":
+        return <PanelDiscussionPage />;
+      case "event-14":
+        return <NetworkingArenaPage />;
+      case "event-15":
+        return <InternshipFairPage />;
+      case "event-16":
+        return <StartupYouthConclavePage />;
       case "speakers":
         return <Speakers />;
       case "venue":
@@ -155,8 +214,8 @@ export default function App() {
     }
   };
 
-  // Don't show navigation and footer for admin pages
-  const showNavAndFooter = currentPage !== "admin-dashboard";
+  // Don't show navigation and footer for admin pages and event detail pages
+  const showNavAndFooter = currentPage !== "admin-dashboard" && !currentPage.startsWith("event-");
 
   return (
     <div className="min-h-screen bg-background">

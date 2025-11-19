@@ -5,7 +5,6 @@ import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Input } from "./ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 
 interface EventsListingProps {
   onNavigate: (page: string) => void;
@@ -13,7 +12,13 @@ interface EventsListingProps {
 
 export function EventsListing({ onNavigate }: EventsListingProps) {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
+
+  const handleViewDetails = (event: any) => {
+    // Store event data in sessionStorage for the new window
+    sessionStorage.setItem('selectedEvent', JSON.stringify(event));
+    // Open new window with event details page
+    window.open(`/event/${event.id}`, '_blank');
+  };
 
   const eventCategories = [
     { id: "all", label: "All Events", icon: Trophy },
@@ -378,117 +383,14 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
                       </div>
                     </div>
 
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="outline" className="mt-auto w-full" onClick={() => setSelectedEvent(event)}>
-                          View Details
-                          <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
-                        <DialogHeader>
-                          <DialogTitle className="flex items-center gap-3">
-                            <event.icon className="h-6 w-6 text-primary" />
-                            {event.title}
-                          </DialogTitle>
-                          <DialogDescription>
-                            {event.description}
-                          </DialogDescription>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          
-                          <div className="grid gap-3 rounded-lg bg-muted p-4">
-                            <div className="flex items-center gap-2">
-                              <Calendar className="h-4 w-4" />
-                              <span className="text-sm">{event.date} | {event.time}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              <MapPin className="h-4 w-4" />
-                              <span className="text-sm">{event.venue}</span>
-                            </div>
-                            {event.speaker && (
-                              <div className="flex items-center gap-2">
-                                <Users className="h-4 w-4" />
-                                <span className="text-sm">{event.speaker}</span>
-                              </div>
-                            )}
-                            {event.prize && (
-                              <div className="flex items-center gap-2">
-                                <Award className="h-4 w-4 text-primary" />
-                                <span className="text-sm text-primary">Prize: {event.prize}</span>
-                              </div>
-                            )}
-                          </div>
-
-                          {event.objective && (
-                            <div>
-                              <h4 className="mb-2">Objective</h4>
-                              <p className="text-sm text-muted-foreground">{event.objective}</p>
-                            </div>
-                          )}
-
-                          {event.outcome && (
-                            <div>
-                              <h4 className="mb-2">Expected Outcome</h4>
-                              <p className="text-sm text-muted-foreground">{event.outcome}</p>
-                            </div>
-                          )}
-
-                          {event.eligibility && (
-                            <div>
-                              <h4 className="mb-2">Eligibility</h4>
-                              <p className="text-sm text-muted-foreground">{event.eligibility}</p>
-                            </div>
-                          )}
-
-                          {event.rules && (
-                            <div>
-                              <h4 className="mb-2">Rules</h4>
-                              <ul className="space-y-1 text-sm text-muted-foreground">
-                                {event.rules.map((rule, idx) => (
-                                  <li key={idx}>• {rule}</li>
-                                ))}
-                              </ul>
-                            </div>
-                          )}
-
-                          {event.judges && (
-                            <div>
-                              <h4 className="mb-2">Judges/Speakers</h4>
-                              <div className="flex flex-wrap gap-2">
-                                {event.judges.map((judge, idx) => (
-                                  <Badge key={idx} variant="secondary">
-                                    {judge}
-                                  </Badge>
-                                ))}
-                              </div>
-                            </div>
-                          )}
-
-                          {event.prerequisites && (
-                            <div>
-                              <h4 className="mb-2">Prerequisites</h4>
-                              <p className="text-sm text-muted-foreground">{event.prerequisites}</p>
-                            </div>
-                          )}
-
-                          {event.registrationDeadline && (
-                            <div className="rounded-lg bg-primary/10 p-3 text-sm">
-                              Registration deadline: {event.registrationDeadline}
-                            </div>
-                          )}
-
-                          <div className="flex gap-2">
-                            <Button className="flex-1" onClick={() => onNavigate("booking")}>
-                              Register Now
-                            </Button>
-                            <Button variant="outline" onClick={() => onNavigate("schedule")}>
-                              Add to Schedule
-                            </Button>
-                          </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <Button 
+                      variant="outline" 
+                      className="mt-auto w-full"
+                      onClick={() => handleViewDetails(event)}
+                    >
+                      View Details
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
                   </CardContent>
                 </Card>
               ))}
