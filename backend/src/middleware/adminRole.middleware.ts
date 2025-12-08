@@ -1,5 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
+import { createClerkClient } from '@clerk/backend';
 import logger from '../utils/logger.util';
+
+// Initialize Clerk client with environment variables
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+  publishableKey: process.env.CLERK_PUBLISHABLE_KEY,
+});
 
 // Valid admin roles
 const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
@@ -15,26 +22,71 @@ export async function requireAdmin(
 ): Promise<void> {
   try {
     // @ts-ignore - auth is added by Clerk middleware
-    const userId = req.auth?.userId;
+    // NOTE: In Clerk Express v1.7+, req.auth is a function, not an object
+    const authType = typeof req.auth;
+    const authIsFunction = authType === 'function';
+    
+    const auth = authIsFunction ? req.auth() : req.auth;
+    let userId = auth?.userId;
+
+    // WORKAROUND: If Clerk middleware didn't populate userId, extract from JWT manually
+    // This is needed because getToken() from @clerk/clerk-react returns a custom JWT format
+    // that @clerk/express middleware doesn't automatically validate
+    if (!userId && req.headers.authorization) {
+      try {
+        const token = req.headers.authorization.replace('Bearer ', '');
+        const parts = token.split('.');
+        if (parts.length === 3) {
+          const payload = JSON.parse(Buffer.from(parts[1], 'base64').toString());
+          // Extract userId from 'sub' claim
+          if (payload.sub) {
+            userId = payload.sub;
+          }
+        }
+      } catch (e) {
+        logger.warn('Failed to extract userId from JWT:', e);
+      }
+    }
+
+    logger.debug('Admin middleware - checking auth', {
+      authType,
+      hasAuth: !!auth,
+      userId: userId,
+    });
 
     if (!userId) {
+      logger.warn('Admin access denied - no user ID in request', {
+        headers: req.headers.authorization ? 'present' : 'missing',
+        path: req.path,
+        authWasFunction: authIsFunction,
+        authObject: auth ? JSON.stringify(auth) : 'null',
+      });
       res.status(401).json({
         success: false,
-        error: 'Unauthorized - No user ID found',
+        error: 'Unauthorized - Please sign in to access admin panel',
+        details: 'No authentication token found',
       });
       return;
     }
 
     // Get user from Clerk to check role
-    const { clerkClient } = await import('@clerk/clerk-sdk-node');
     const user = await clerkClient.users.getUser(userId);
     const role = user.publicMetadata?.role as string;
+    logger.debug('Admin role check', {
+      userId,
+      role,
+      publicMetadata: user.publicMetadata,
+    });
 
     if (!role || !VALID_ADMIN_ROLES.includes(role)) {
-      logger.warn(`Unauthorized admin access attempt by user ${userId}`);
+      logger.warn(`Unauthorized admin access attempt by user ${userId}`, {
+        currentRole: role,
+        validRoles: VALID_ADMIN_ROLES,
+      });
       res.status(403).json({
         success: false,
         error: 'Access denied. Admin role required.',
+        details: `Your current role: ${role || 'none'}. Required: ${VALID_ADMIN_ROLES.join(', ')}`,
       });
       return;
     }
@@ -45,11 +97,13 @@ export async function requireAdmin(
 
     logger.info(`Admin access granted: ${userId} (${role})`);
     next();
-  } catch (error) {
+  } catch (error: any) {
+    console.error('🔴 ADMIN MIDDLEWARE ERROR:', error);
     logger.error('Admin role check failed:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to verify admin role',
+      details: error.message,
     });
   }
 }
@@ -66,18 +120,24 @@ export function requireRole(allowedRoles: string[]) {
   ): Promise<void> => {
     try {
       // @ts-ignore - auth is added by Clerk middleware
-      const userId = req.auth?.userId;
+      // NOTE: In Clerk Express v1.7+, req.auth is a function, not an object
+      const auth = typeof req.auth === 'function' ? req.auth() : req.auth;
+      const userId = auth?.userId;
 
       if (!userId) {
+        logger.warn('Role check failed - no user ID in request', {
+          path: req.path,
+          allowedRoles,
+        });
         res.status(401).json({
           success: false,
-          error: 'Unauthorized - No user ID found',
+          error: 'Unauthorized - Please sign in to access this resource',
+          details: 'No authentication token found',
         });
         return;
       }
 
       // Get user from Clerk to check role
-      const { clerkClient } = await import('@clerk/clerk-sdk-node');
       const user = await clerkClient.users.getUser(userId);
       const role = user.publicMetadata?.role as string;
 
@@ -98,11 +158,12 @@ export function requireRole(allowedRoles: string[]) {
       req.clerkUserId = userId;
 
       next();
-    } catch (error) {
+    } catch (error: any) {
       logger.error('Role check failed:', error);
       res.status(500).json({
         success: false,
         error: 'Failed to verify role permissions',
+        details: error.message,
       });
     }
   };
@@ -119,7 +180,9 @@ export function requirePermission(permission: string) {
   ): Promise<void> => {
     try {
       // @ts-ignore - auth is added by Clerk middleware
-      const userId = req.auth?.userId;
+      // NOTE: In Clerk Express v1.7+, req.auth is a function, not an object
+      const auth = typeof req.auth === 'function' ? req.auth() : req.auth;
+      const userId = auth?.userId;
 
       if (!userId) {
         res.status(401).json({
@@ -130,7 +193,6 @@ export function requirePermission(permission: string) {
       }
 
       // Get user from Clerk to check role and permissions
-      const { clerkClient } = await import('@clerk/clerk-sdk-node');
       const user = await clerkClient.users.getUser(userId);
       const role = user.publicMetadata?.role as string;
       

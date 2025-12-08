@@ -83,6 +83,7 @@ export function UserDashboard({
   const [downloadingSchedule, setDownloadingSchedule] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState<Set<string>>(new Set());
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
+  const [isLoadingRegistrations, setIsLoadingRegistrations] = useState(true);
 
   const mockUser = {
     name: user?.fullName || userData?.name || "User",
@@ -114,6 +115,33 @@ export function UserDashboard({
     };
 
     fetchPasses();
+  }, [user?.id]);
+
+  // Fetch user's registered events
+  useEffect(() => {
+    const fetchRegisteredEvents = async () => {
+      if (!user?.id) {
+        setIsLoadingRegistrations(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/users/events/registered/${user.id}`
+        );
+        const data = await response.json();
+
+        if (data.success && data.data.registeredEventIds) {
+          setRegisteredEvents(new Set(data.data.registeredEventIds));
+        }
+      } catch (error) {
+        console.error("Error fetching registered events:", error);
+      } finally {
+        setIsLoadingRegistrations(false);
+      }
+    };
+
+    fetchRegisteredEvents();
   }, [user?.id]);
 
   // Check if user profile is complete
@@ -203,6 +231,11 @@ export function UserDashboard({
   const uniqueSchedule = mySchedule.filter(
     (event, index, self) => 
       index === self.findIndex((e) => e.id === event.id)
+  );
+
+  // Filter to show only registered events in "My Schedule"
+  const registeredSchedule = uniqueSchedule.filter(event => 
+    registeredEvents.has(event.id)
   );
 
   // Format date for display
@@ -506,14 +539,14 @@ export function UserDashboard({
           )}
         </TabsContent>
 
-        <TabsContent value="schedule">{isLoadingPasses ? (
+        <TabsContent value="schedule">{isLoadingPasses || isLoadingRegistrations ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
               <span className="ml-2 text-muted-foreground">Loading your schedule...</span>
             </div>
           ) : (
           <div className="space-y-4">
-            {myPasses.length > 0 && uniqueSchedule.length > 0 && (
+            {myPasses.length > 0 && registeredSchedule.length > 0 && (
               <div className="flex justify-end mb-4">
                 <Button
                   onClick={downloadSchedulePDF}
@@ -539,11 +572,11 @@ export function UserDashboard({
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-4">
                   <div className="flex items-start gap-3">
-                    <Ticket className="h-5 w-5 text-primary mt-0.5" />
+                    <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
                     <div className="flex-1">
-                      <h4 className="mb-1">Your Pass Access</h4>
+                      <h4 className="mb-1">My Registered Events</h4>
                       <p className="text-sm text-muted-foreground mb-2">
-                        You have access to the following events based on your pass{myPasses.length > 1 ? 'es' : ''}:
+                        Events you have registered for will appear here. {registeredSchedule.length === 0 ? 'Register for events to build your schedule.' : `You're registered for ${registeredSchedule.length} event${registeredSchedule.length > 1 ? 's' : ''}.`}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {myPasses.map((pass) => (
@@ -558,16 +591,20 @@ export function UserDashboard({
               </Card>
             )}
 
-            {uniqueSchedule.length > 0 ? (
+            {registeredSchedule.length > 0 ? (
               <>
-                {uniqueSchedule.map((event) => (
-                  <Card key={event.id}>
+                {registeredSchedule.map((event) => (
+                  <Card key={event.id} className="border-primary/20">
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between gap-4">
                         <div className="flex-1">
                           <div className="flex items-start gap-3 mb-3">
                             <Badge variant="outline" className="mt-1">
                               {event.category}
+                            </Badge>
+                            <Badge variant="default" className="mt-1 bg-green-600">
+                              <CheckCircle2 className="h-3 w-3 mr-1" />
+                              Registered
                             </Badge>
                             <div className="flex-1">
                               <h3 className="mb-2">{event.title}</h3>
@@ -605,20 +642,20 @@ export function UserDashboard({
               <Card className="border-dashed">
                 <CardContent className="p-6 text-center">
                   <Calendar className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                  <h3 className="mb-2">No events in your schedule</h3>
+                  <h3 className="mb-2">No registered events yet</h3>
                   <p className="mb-4 text-sm text-muted-foreground">
                     {myPasses.length > 0
-                      ? "You'll see events here based on your purchased pass"
+                      ? "Register for events to see them in your schedule"
                       : "Purchase a pass to access E-Summit events"}
                   </p>
                   <Button onClick={() => onNavigate(myPasses.length > 0 ? "schedule" : "booking")}>
-                    {myPasses.length > 0 ? "View All Events" : "Book Pass"}
+                    {myPasses.length > 0 ? "Browse Events" : "Book Pass"}
                   </Button>
                 </CardContent>
               </Card>
             )}
 
-            {uniqueSchedule.length > 0 && (
+            {registeredSchedule.length > 0 && (
               <Card className="border-dashed">
                 <CardContent className="p-6 text-center">
                   <Calendar className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />

@@ -210,4 +210,147 @@ router.get('/check-profile/:clerkUserId', async (req: Request, res: Response) =>
   }
 });
 
+/**
+ * Register user for an event
+ * POST /api/v1/users/events/register
+ */
+router.post('/events/register', async (req: Request, res: Response) => {
+  try {
+    const { clerkUserId, eventId } = req.body;
+
+    if (!clerkUserId || !eventId) {
+      sendError(res, 'clerkUserId and eventId are required', 400);
+      return;
+    }
+
+    // Get user from database
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      include: {
+        passes: {
+          where: { status: 'Active' },
+          orderBy: { purchaseDate: 'desc' },
+        },
+      },
+    });
+
+    if (!user) {
+      sendError(res, 'User not found', 404);
+      return;
+    }
+
+    // Check if user has any active pass
+    if (!user.passes || user.passes.length === 0) {
+      sendError(res, 'NO_PASS', 403, {
+        message: 'Please purchase a pass to register for events',
+        requiresPass: true,
+      });
+      return;
+    }
+
+    // Get the highest tier pass (order: Quantum > Silicon > Pixel)
+    const passTypeOrder = ['Quantum Pass', 'Silicon Pass', 'Pixel Pass'];
+    const userPass = user.passes.sort((a, b) => {
+      return passTypeOrder.indexOf(a.passType) - passTypeOrder.indexOf(b.passType);
+    })[0];
+
+    // Define event eligibility based on pass type
+    const eventEligibility: Record<string, string[]> = {
+      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass'],
+      'd1-ten-minute-million': ['Quantum Pass'],
+      'd1-angel-roundtable': ['Quantum Pass'],
+      'd2-incubator-summit': ['Quantum Pass'],
+      'd1-design-thinking': ['Silicon Pass', 'Quantum Pass'],
+      'd1-finance-marketing': ['Silicon Pass', 'Quantum Pass'],
+      'd2-data-analytics': ['Silicon Pass', 'Quantum Pass'],
+      'd2-ai-workshop': ['Quantum Pass'],
+    };
+
+    // Check if event requires specific pass eligibility
+    const requiredPasses = eventEligibility[eventId];
+    if (requiredPasses && !requiredPasses.includes(userPass.passType)) {
+      // Determine the required pass tier
+      const requiredPassType = requiredPasses[requiredPasses.length - 1];
+      
+      sendError(res, 'INSUFFICIENT_PASS', 403, {
+        message: `This event requires ${requiredPassType} or higher. Please upgrade your pass to register.`,
+        currentPass: userPass.passType,
+        requiredPass: requiredPassType,
+        requiresUpgrade: true,
+      });
+      return;
+    }
+
+    // Check if user is already registered
+    const existingRegistration = await prisma.eventRegistration.findUnique({
+      where: {
+        userId_eventId: {
+          userId: user.id,
+          eventId: eventId,
+        },
+      },
+    });
+
+    if (existingRegistration) {
+      sendError(res, 'Already registered for this event', 400);
+      return;
+    }
+
+    // Create event registration
+    const registration = await prisma.eventRegistration.create({
+      data: {
+        userId: user.id,
+        eventId: eventId,
+        passId: userPass.passId,
+        participantName: user.fullName || undefined,
+        participantEmail: user.email,
+        participantPhone: user.phone || undefined,
+        status: 'registered',
+      },
+    });
+
+    logger.info(`User ${user.email} registered for event ${eventId}`);
+
+    sendSuccess(res, 'Successfully registered for event', { registration }, 201);
+  } catch (error: any) {
+    logger.error('Event registration error:', error);
+    sendError(res, error.message || 'Failed to register for event', 500);
+  }
+});
+
+/**
+ * Get user's registered events
+ * GET /api/v1/users/events/registered/:clerkUserId
+ */
+router.get('/events/registered/:clerkUserId', async (req: Request, res: Response) => {
+  try {
+    const { clerkUserId } = req.params;
+
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      include: {
+        eventRegistrations: {
+          where: { status: 'registered' },
+          orderBy: { registrationDate: 'desc' },
+        },
+      },
+    });
+
+    if (!user) {
+      sendError(res, 'User not found', 404);
+      return;
+    }
+
+    const registeredEventIds = user.eventRegistrations.map(reg => reg.eventId);
+
+    sendSuccess(res, 'Registered events fetched successfully', { 
+      registeredEventIds,
+      registrations: user.eventRegistrations,
+    });
+  } catch (error: any) {
+    logger.error('Get registered events error:', error);
+    sendError(res, error.message || 'Failed to fetch registered events', 500);
+  }
+});
+
 export default router;
