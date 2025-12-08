@@ -4,6 +4,14 @@ import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { generateQRCode } from '../services/qrcode.service';
 import { generateUniqueIdentifiers } from '../utils/identifier.util';
+import {
+  canUpgradePass,
+  getUpgradeOptions,
+  upgradePass,
+  getUpgradeHistory,
+  isValidUpgrade,
+  calculateUpgradeFee,
+} from '../services/pass-upgrade.service';
 
 const router = Router();
 
@@ -271,6 +279,257 @@ router.get('/stats/:clerkUserId', async (req: Request, res: Response) => {
   } catch (error: any) {
     logger.error('Get pass statistics error:', error);
     sendError(res, error.message || 'Failed to fetch statistics', 500);
+  }
+});
+
+/**
+ * Check upgrade eligibility for a pass
+ * GET /api/v1/passes/:passId/upgrade/eligibility
+ */
+router.get('/:passId/upgrade/eligibility', async (req: Request, res: Response) => {
+  try {
+    const { passId } = req.params;
+
+    const eligibility = await canUpgradePass(passId);
+
+    if (!eligibility.canUpgrade) {
+      sendSuccess(res, eligibility.reason || 'Cannot upgrade pass', {
+        canUpgrade: false,
+        reason: eligibility.reason,
+      });
+      return;
+    }
+
+    const upgradeOptions = getUpgradeOptions(eligibility.currentPass.passType);
+
+    sendSuccess(res, 'Upgrade options available', {
+      canUpgrade: true,
+      currentPass: {
+        passId: eligibility.currentPass.passId,
+        passType: eligibility.currentPass.passType,
+        price: eligibility.currentPass.price,
+      },
+      upgradeOptions,
+    });
+  } catch (error: any) {
+    logger.error('Check upgrade eligibility error:', error);
+    sendError(res, error.message || 'Failed to check upgrade eligibility', 500);
+  }
+});
+
+/**
+ * Get upgrade history for a pass
+ * GET /api/v1/passes/:passId/upgrade/history
+ */
+router.get('/:passId/upgrade/history', async (req: Request, res: Response) => {
+  try {
+    const { passId } = req.params;
+
+    const history = await getUpgradeHistory(passId);
+
+    sendSuccess(res, 'Upgrade history fetched successfully', { history });
+  } catch (error: any) {
+    logger.error('Get upgrade history error:', error);
+    sendError(res, error.message || 'Failed to fetch upgrade history', 500);
+  }
+});
+
+/**
+ * Initiate pass upgrade (create upgrade order)
+ * POST /api/v1/passes/:passId/upgrade/initiate
+ * Body: { newPassType: string }
+ */
+router.post('/:passId/upgrade/initiate', async (req: Request, res: Response) => {
+  try {
+    const { passId } = req.params;
+    const { newPassType } = req.body;
+
+    if (!newPassType) {
+      sendError(res, 'New pass type is required', 400);
+      return;
+    }
+
+    // Check eligibility
+    const eligibility = await canUpgradePass(passId);
+
+    if (!eligibility.canUpgrade) {
+      sendError(res, eligibility.reason || 'Cannot upgrade pass', 400);
+      return;
+    }
+
+    const currentPass = eligibility.currentPass;
+
+    // Validate upgrade path
+    if (!isValidUpgrade(currentPass.passType, newPassType)) {
+      sendError(res, 'Invalid upgrade path. Can only upgrade to higher tier.', 400);
+      return;
+    }
+
+    // Calculate upgrade fee
+    const upgradeFee = calculateUpgradeFee(currentPass.passType, newPassType);
+
+    if (upgradeFee <= 0) {
+      sendError(res, 'Invalid upgrade fee', 400);
+      return;
+    }
+
+    // Create Razorpay order
+    const Razorpay = require('razorpay');
+    const razorpay = new Razorpay({
+      key_id: process.env.RAZORPAY_KEY_ID,
+      key_secret: process.env.RAZORPAY_KEY_SECRET,
+    });
+
+    const { invoiceNumber, transactionNumber } = generateUniqueIdentifiers();
+
+    const razorpayOrder = await razorpay.orders.create({
+      amount: upgradeFee * 100, // Convert to paise
+      currency: 'INR',
+      receipt: transactionNumber,
+      notes: {
+        passId: currentPass.passId,
+        userId: currentPass.userId,
+        upgradeFrom: currentPass.passType,
+        upgradeTo: newPassType,
+        type: 'upgrade',
+      },
+    });
+
+    // Create transaction record
+    const transaction = await prisma.transaction.create({
+      data: {
+        userId: currentPass.userId,
+        passId: currentPass.id,
+        razorpayOrderId: razorpayOrder.id,
+        amount: upgradeFee,
+        currency: 'INR',
+        status: 'pending',
+        invoiceNumber,
+        transactionNumber,
+        transactionType: 'upgrade',
+        metadata: {
+          upgradeFrom: currentPass.passType,
+          upgradeTo: newPassType,
+          upgradeFee,
+        },
+      },
+    });
+
+    logger.info(`Upgrade order created for pass ${passId}: ${currentPass.passType} → ${newPassType}`);
+
+    sendSuccess(res, 'Upgrade order created successfully', {
+      orderId: razorpayOrder.id,
+      amount: upgradeFee,
+      currency: 'INR',
+      transactionId: transaction.id,
+      upgradeDetails: {
+        from: currentPass.passType,
+        to: newPassType,
+        upgradeFee,
+      },
+    });
+  } catch (error: any) {
+    logger.error('Initiate upgrade error:', error);
+    sendError(res, error.message || 'Failed to initiate upgrade', 500);
+  }
+});
+
+/**
+ * Complete pass upgrade after payment
+ * POST /api/v1/passes/:passId/upgrade/complete
+ * Body: { transactionId, razorpayPaymentId, razorpaySignature, newPassType }
+ */
+router.post('/:passId/upgrade/complete', async (req: Request, res: Response) => {
+  try {
+    const { passId } = req.params;
+    const { transactionId, razorpayPaymentId, razorpaySignature, newPassType } = req.body;
+
+    if (!transactionId || !razorpayPaymentId || !razorpaySignature || !newPassType) {
+      sendError(res, 'Missing required payment details', 400);
+      return;
+    }
+
+    // Verify transaction exists and is pending
+    const transaction = await prisma.transaction.findUnique({
+      where: { id: transactionId },
+      include: {
+        pass: true,
+      },
+    });
+
+    if (!transaction) {
+      sendError(res, 'Transaction not found', 404);
+      return;
+    }
+
+    if (transaction.status !== 'pending') {
+      sendError(res, 'Transaction already processed', 400);
+      return;
+    }
+
+    // Verify Razorpay signature
+    const crypto = require('crypto');
+    const generated_signature = crypto
+      .createHmac('sha256', process.env.RAZORPAY_KEY_SECRET!)
+      .update(`${transaction.razorpayOrderId}|${razorpayPaymentId}`)
+      .digest('hex');
+
+    if (generated_signature !== razorpaySignature) {
+      // Update transaction as failed
+      await prisma.transaction.update({
+        where: { id: transactionId },
+        data: { status: 'failed' },
+      });
+
+      sendError(res, 'Payment verification failed', 400);
+      return;
+    }
+
+    // Update transaction
+    await prisma.transaction.update({
+      where: { id: transactionId },
+      data: {
+        razorpayPaymentId,
+        razorpaySignature,
+        status: 'completed',
+        paymentMethod: 'razorpay',
+      },
+    });
+
+    // Process upgrade
+    const upgradeResult = await upgradePass(passId, newPassType, transactionId);
+
+    if (!upgradeResult.success) {
+      sendError(res, upgradeResult.error || 'Failed to upgrade pass', 500);
+      return;
+    }
+
+    // Fetch updated pass with full details
+    const updatedPass = await prisma.pass.findUnique({
+      where: { passId },
+      include: {
+        user: {
+          select: {
+            email: true,
+            fullName: true,
+          },
+        },
+      },
+    });
+
+    logger.info(`Pass upgrade completed: ${passId} upgraded to ${newPassType}`);
+
+    sendSuccess(res, 'Pass upgraded successfully', {
+      pass: updatedPass,
+      transaction: {
+        id: transaction.id,
+        amount: transaction.amount,
+        status: 'completed',
+      },
+    });
+  } catch (error: any) {
+    logger.error('Complete upgrade error:', error);
+    sendError(res, error.message || 'Failed to complete upgrade', 500);
   }
 });
 

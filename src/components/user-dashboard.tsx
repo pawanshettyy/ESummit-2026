@@ -23,6 +23,7 @@ import { getFormattedEventsForPass } from "../utils/pass-events";
 import { ProfileCompletionModal } from "./profile-completion-modal";
 import { API_BASE_URL } from "../lib/api";
 import { AuroraText } from "./magicui/aurora-text";
+import { PassUpgradeButton } from "./pass-upgrade-button";
 
 interface Pass {
   id: number;
@@ -82,6 +83,7 @@ export function UserDashboard({
   const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
   const [downloadingSchedule, setDownloadingSchedule] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState<Set<string>>(new Set());
+  const [registeredEventDetails, setRegisteredEventDetails] = useState<Event[]>([]);
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
   const [isLoadingRegistrations, setIsLoadingRegistrations] = useState(true);
 
@@ -133,6 +135,49 @@ export function UserDashboard({
 
         if (data.success && data.data.registeredEventIds) {
           setRegisteredEvents(new Set(data.data.registeredEventIds));
+          
+          // Fetch full event details for each registered event
+          const eventIds = data.data.registeredEventIds;
+          if (eventIds.length > 0) {
+            const eventDetailsPromises = eventIds.map(async (eventId: string) => {
+              try {
+                const eventResponse = await fetch(
+                  `${API_BASE_URL}/events/${eventId}`
+                );
+                const eventData = await eventResponse.json();
+                if (eventData.success && eventData.data && eventData.data.event) {
+                  const event = eventData.data.event;
+                  return {
+                    id: event.eventId || event.id,
+                    title: event.title,
+                    description: event.description || '',
+                    date: new Date(event.date).toLocaleDateString('en-US', {
+                      weekday: 'long',
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric'
+                    }),
+                    time: `${new Date(`1970-01-01T${event.startTime}`).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })} - ${new Date(`1970-01-01T${event.endTime}`).toLocaleTimeString('en-US', {
+                      hour: '2-digit',
+                      minute: '2-digit'
+                    })}`,
+                    venue: event.venue,
+                    category: event.category,
+                    speaker: event.speakerName || null,
+                  };
+                }
+              } catch (err) {
+                console.error(`Error fetching event ${eventId}:`, err);
+              }
+              return null;
+            });
+            
+            const events = await Promise.all(eventDetailsPromises);
+            setRegisteredEventDetails(events.filter((e): e is Event => e !== null));
+          }
         }
       } catch (error) {
         console.error("Error fetching registered events:", error);
@@ -222,21 +267,8 @@ export function UserDashboard({
     return passTypeMap[passTypeName] || "pixel"; // Default to pixel if unknown
   };
 
-  // Get all eligible events from all purchased passes
-  const mySchedule = myPasses.length > 0
-    ? myPasses.flatMap((pass) => getFormattedEventsForPass(getPassTypeId(pass.passType)))
-    : [];
-
-  // Remove duplicate events (in case user has multiple passes)
-  const uniqueSchedule = mySchedule.filter(
-    (event, index, self) => 
-      index === self.findIndex((e) => e.id === event.id)
-  );
-
-  // Filter to show only registered events in "My Schedule"
-  const registeredSchedule = uniqueSchedule.filter(event => 
-    registeredEvents.has(event.id)
-  );
+  // Use the fetched registered event details directly
+  const registeredSchedule = registeredEventDetails;
 
   // Format date for display
   const formatDate = (dateString: string) => {
@@ -408,9 +440,6 @@ export function UserDashboard({
           <TabsTrigger value="schedule">
             My Schedule
           </TabsTrigger>
-          <TabsTrigger value="register">
-            Register for Events
-          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="passes">
@@ -483,42 +512,67 @@ export function UserDashboard({
                         )}
                       </div>
 
-                      <div className="flex gap-2">
-                        <Button 
-                          className="flex-1"
-                          onClick={() => downloadPassPDF(pass.passId)}
-                          disabled={downloadingPassId === pass.passId}
-                        >
-                          {downloadingPassId === pass.passId ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Downloading...
-                            </>
-                          ) : (
-                            <>
-                              <Download className="mr-2 h-4 w-4" />
-                              Download Pass
-                            </>
-                          )}
-                        </Button>
-                        <Button
-                          variant="outline"
-                          className="flex-1"
-                          onClick={() => pass.transaction && downloadInvoicePDF(pass.transaction.id)}
-                          disabled={!pass.transaction || downloadingInvoiceId === pass.transaction?.id}
-                        >
-                          {downloadingInvoiceId === pass.transaction?.id ? (
-                            <>
-                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                              Downloading...
-                            </>
-                          ) : (
-                            <>
-                              <FileText className="mr-2 h-4 w-4" />
-                              Invoice
-                            </>
-                          )}
-                        </Button>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex gap-2">
+                          <Button 
+                            className="flex-1"
+                            onClick={() => downloadPassPDF(pass.passId)}
+                            disabled={downloadingPassId === pass.passId}
+                          >
+                            {downloadingPassId === pass.passId ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Downloading...
+                              </>
+                            ) : (
+                              <>
+                                <Download className="mr-2 h-4 w-4" />
+                                Download Pass
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            variant="outline"
+                            className="flex-1"
+                            onClick={() => pass.transaction && downloadInvoicePDF(pass.transaction.id)}
+                            disabled={!pass.transaction || downloadingInvoiceId === pass.transaction?.id}
+                          >
+                            {downloadingInvoiceId === pass.transaction?.id ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Downloading...
+                              </>
+                            ) : (
+                              <>
+                                <FileText className="mr-2 h-4 w-4" />
+                                Invoice
+                              </>
+                            )}
+                          </Button>
+                        </div>
+                        {pass.status === "Active" && pass.passType.toLowerCase() !== "quantum" && (
+                          <PassUpgradeButton
+                            passId={pass.passId}
+                            currentPassType={pass.passType}
+                            onUpgradeSuccess={() => {
+                              // Reload passes after successful upgrade
+                              const fetchPasses = async () => {
+                                try {
+                                  const response = await fetch(
+                                    `${API_BASE_URL}/passes/user/${user?.id}`
+                                  );
+                                  const data = await response.json();
+                                  if (data.success && data.data.passes) {
+                                    setMyPasses(data.data.passes);
+                                  }
+                                } catch (error) {
+                                  console.error("Error fetching passes:", error);
+                                }
+                              };
+                              fetchPasses();
+                            }}
+                          />
+                        )}
                       </div>
                     </CardContent>
                   </Card>
@@ -576,7 +630,7 @@ export function UserDashboard({
                     <div className="flex-1">
                       <h4 className="mb-1">My Registered Events</h4>
                       <p className="text-sm text-muted-foreground mb-2">
-                        Events you have registered for will appear here. {registeredSchedule.length === 0 ? 'Register for events to build your schedule.' : `You're registered for ${registeredSchedule.length} event${registeredSchedule.length > 1 ? 's' : ''}.`}
+                        Events you have registered for will appear here. {registeredEventDetails.length === 0 ? 'Register for events to build your schedule.' : `You're registered for ${registeredEventDetails.length} event${registeredEventDetails.length > 1 ? 's' : ''}.`}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {myPasses.map((pass) => (
@@ -670,139 +724,6 @@ export function UserDashboard({
               </Card>
             )}
           </div>
-          )}
-        </TabsContent>
-
-        <TabsContent value="register">
-          {isLoadingPasses ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Loading events...</span>
-            </div>
-          ) : myPasses.length === 0 ? (
-            <Card className="border-dashed">
-              <CardContent className="p-6 text-center">
-                <UserPlus className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                <h3 className="mb-2">No pass found</h3>
-                <p className="mb-4 text-sm text-muted-foreground">
-                  Purchase a pass to register for E-Summit events
-                </p>
-                <Button onClick={() => onNavigate("booking")}>
-                  Book Pass
-                </Button>
-              </CardContent>
-            </Card>
-          ) : (
-            <div className="space-y-4">
-              <Card className="bg-primary/5 border-primary/20">
-                <CardContent className="p-4">
-                  <div className="flex items-start gap-3">
-                    <Ticket className="h-5 w-5 text-primary mt-0.5" />
-                    <div className="flex-1">
-                      <h4 className="mb-1">Event Registration</h4>
-                      <p className="text-sm text-muted-foreground mb-2">
-                        Register for individual events you want to attend. Based on your pass{myPasses.length > 1 ? 'es' : ''}, you're eligible for the following events:
-                      </p>
-                      <div className="flex flex-wrap gap-2">
-                        {myPasses.map((pass) => (
-                          <Badge key={pass.passId} variant="default">
-                            {pass.passType}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <div className="grid gap-4">
-                {uniqueSchedule.map((event) => {
-                  const isRegistered = registeredEvents.has(event.id);
-                  const isRegistering = registeringEventId === event.id;
-
-                  return (
-                    <Card key={event.id}>
-                      <CardContent className="p-6">
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex-1">
-                            <div className="flex items-start gap-3 mb-3">
-                              <Badge variant="outline" className="mt-1">
-                                {event.category}
-                              </Badge>
-                              <div className="flex-1">
-                                <h3 className="mb-2">{event.title}</h3>
-                                {event.speaker && (
-                                  <p className="text-sm text-muted-foreground mb-2">
-                                    Speaker: {event.speaker}
-                                  </p>
-                                )}
-                                <p className="text-sm text-muted-foreground">
-                                  {event.description}
-                                </p>
-                              </div>
-                            </div>
-                            <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mb-4">
-                              <div className="flex items-center gap-1">
-                                <Calendar className="h-4 w-4" />
-                                {event.date}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Calendar className="h-4 w-4" />
-                                {event.time}
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <Ticket className="h-4 w-4" />
-                                {event.venue}
-                              </div>
-                            </div>
-                            
-                            {isRegistered ? (
-                              <Button disabled className="w-full md:w-auto" variant="outline">
-                                <CheckCircle2 className="mr-2 h-4 w-4" />
-                                Registered
-                              </Button>
-                            ) : (
-                              <Button 
-                                onClick={() => handleEventRegistration(event.id)}
-                                disabled={isRegistering}
-                                className="w-full md:w-auto"
-                              >
-                                {isRegistering ? (
-                                  <>
-                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                    Registering...
-                                  </>
-                                ) : (
-                                  <>
-                                    <UserPlus className="mr-2 h-4 w-4" />
-                                    Register for Event
-                                  </>
-                                )}
-                              </Button>
-                            )}
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
-              </div>
-
-              {uniqueSchedule.length === 0 && (
-                <Card className="border-dashed">
-                  <CardContent className="p-6 text-center">
-                    <Calendar className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
-                    <h3 className="mb-2">No events available</h3>
-                    <p className="mb-4 text-sm text-muted-foreground">
-                      You'll see available events here based on your purchased pass
-                    </p>
-                    <Button onClick={() => onNavigate("schedule")}>
-                      View Full Schedule
-                    </Button>
-                  </CardContent>
-                </Card>
-              )}
-            </div>
           )}
         </TabsContent>
       </Tabs>
