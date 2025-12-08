@@ -152,6 +152,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       }
       
       // Get fresh token for each request
+      // Get the session token (not a custom JWT template)
       const token = await getToken();
       
       if (!token) {
@@ -162,7 +163,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         return;
       }
       
+      console.log('🔑 Token obtained:', token ? 'YES (length: ' + token.length + ')' : 'NO');
+      
       const response = await fetch(`${API_BASE_URL}/admin/stats`, {
+        credentials: 'include', // Send cookies with request (includes __session cookie)
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',

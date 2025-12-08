@@ -4,8 +4,6 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -126,30 +124,30 @@ model EventRegistration {
   passId           String?  @map("pass_id")
   registrationDate DateTime @default(now()) @map("registration_date")
   status           String   @default("registered")
-  
+
   // Basic participant details
-  participantName  String?  @map("participant_name")
-  participantEmail String?  @map("participant_email")
-  participantPhone String?  @map("participant_phone")
-  
+  participantName  String? @map("participant_name")
+  participantEmail String? @map("participant_email")
+  participantPhone String? @map("participant_phone")
+
   // Team/Group details (for team events)
-  teamName         String?  @map("team_name")
-  teamSize         Int?     @map("team_size")
-  teamMembers      Json?    @map("team_members")
-  isTeamLead       Boolean  @default(true) @map("is_team_lead")
-  
+  teamName    String? @map("team_name")
+  teamSize    Int?    @map("team_size")
+  teamMembers Json?   @map("team_members")
+  isTeamLead  Boolean @default(true) @map("is_team_lead")
+
   // Event-specific form data (stored as JSON for flexibility)
-  formData         Json?    @map("form_data")
-  
+  formData Json? @map("form_data")
+
   // Additional fields
   specialRequirements String? @map("special_requirements")
   dietaryPreferences  String? @map("dietary_preferences")
   emergencyContact    String? @map("emergency_contact")
-  
-  createdAt        DateTime @default(now()) @map("created_at")
-  updatedAt        DateTime @updatedAt @map("updated_at")
-  event            Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, eventId])
   @@index([userId])

@@ -32,14 +32,15 @@ export const sendError = (
   res: Response,
   message: string,
   statusCode: number = 400,
-  error?: string,
+  errorDataOrString?: string | Record<string, any>,
   errors?: Record<string, string>
 ): Response => {
   const response: ApiResponse = {
     success: false,
     message,
-    error,
+    error: typeof errorDataOrString === 'string' ? errorDataOrString : message,
     errors,
+    data: typeof errorDataOrString === 'object' ? errorDataOrString : undefined,
   };
   return res.status(statusCode).json(response);
 };

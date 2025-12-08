@@ -215,8 +215,8 @@ export default function App() {
     }
   };
 
-  // Don't show navigation and footer for admin pages and event detail pages
-  const showNavAndFooter = currentPage !== "admin-dashboard" && !currentPage.startsWith("event-");
+  // Don't show navigation and footer for admin pages only
+  const showNavAndFooter = currentPage !== "admin-dashboard";
 
   return (
     <div className="min-h-screen bg-background">
