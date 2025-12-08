@@ -1,153 +1,177 @@
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearchPostgres", "postgresqlExtensions"]
 }
 
 datasource db {
-  provider  = "postgresql"
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  directUrl  = env("DIRECT_URL")
+  extensions = [pgcrypto]
 }
 
+/// User accounts with authentication via Clerk
 model User {
-  id                 String              @id @default(uuid())
-  email              String              @unique
-  fullName           String?             @map("full_name")
-  phone              String?
+  id                 String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email              String              @unique @db.VarChar(255)
+  fullName           String?             @map("full_name") @db.VarChar(255)
+  phone              String?             @db.VarChar(20)
   college            String?
   yearOfStudy        String?             @map("year_of_study")
   rollNumber         String?             @map("roll_number")
   createdAt          DateTime            @default(now()) @map("created_at")
   updatedAt          DateTime            @updatedAt @map("updated_at")
-  lastLogin          DateTime?           @map("last_login")
-  clerkUserId        String              @unique @map("clerk_user_id")
-  firstName          String?             @map("first_name")
-  imageUrl           String?             @map("image_url")
-  lastName           String?             @map("last_name")
+  lastLogin          DateTime?           @map("last_login") @db.Timestamptz(6)
+  clerkUserId        String              @unique @map("clerk_user_id") @db.VarChar(255)
+  firstName          String?             @map("first_name") @db.VarChar(100)
+  imageUrl           String?             @map("image_url") @db.Text
+  lastName           String?             @map("last_name") @db.VarChar(100)
   checkIns           CheckIn[]
   eventRegistrations EventRegistration[]
   passes             Pass[]
   transactions       Transaction[]
 
-  @@index([email])
+  @@index([email], type: Hash)
   @@index([phone])
-  @@index([clerkUserId])
+  @@index([clerkUserId], type: Hash)
+  @@index([createdAt(sort: Desc)])
   @@map("users")
 }
 
+/// Event passes with QR codes and access control
 model Pass {
-  id                String       @id @default(uuid())
-  userId            String       @map("user_id")
-  passType          String       @map("pass_type")
-  passId            String       @unique @map("pass_id")
-  price             Decimal      @db.Decimal(10, 2)
-  purchaseDate      DateTime     @default(now()) @map("purchase_date")
-  status            String       @default("Active")
-  hasMeals          Boolean      @default(false) @map("has_meals")
-  hasMerchandise    Boolean      @default(false) @map("has_merchandise")
-  hasWorkshopAccess Boolean      @default(false) @map("has_workshop_access")
-  qrCodeUrl         String?      @map("qr_code_url")
-  qrCodeData        String?      @map("qr_code_data")
-  createdAt         DateTime     @default(now()) @map("created_at")
-  updatedAt         DateTime     @updatedAt @map("updated_at")
+  id                String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String        @map("user_id") @db.Uuid
+  passType          String        @map("pass_type") @db.VarChar(50)
+  passId            String        @unique @map("pass_id") @db.VarChar(100)
+  price             Decimal       @db.Decimal(12, 2)
+  purchaseDate      DateTime      @default(now()) @map("purchase_date")
+  status            String        @default("Active")
+  hasMeals          Boolean       @default(false) @map("has_meals")
+  hasMerchandise    Boolean       @default(false) @map("has_merchandise")
+  hasWorkshopAccess Boolean       @default(false) @map("has_workshop_access")
+  qrCodeUrl         String?       @map("qr_code_url") @db.Text
+  qrCodeData        String?       @map("qr_code_data") @db.Text
+  createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  originalPassType  String?       @map("original_pass_type") @db.VarChar(50)
+  upgradedFrom      String?       @map("upgraded_from") @db.VarChar(50)
+  upgradeDate       DateTime?     @map("upgrade_date") @db.Timestamptz(6)
   checkIns          CheckIn[]
-  user              User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User          @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   transaction       Transaction?
+  upgradeHistory    PassUpgrade[]
 
   @@index([userId])
-  @@index([passId])
+  @@index([passId], type: Hash)
   @@index([status])
+  @@index([passType])
+  @@index([purchaseDate(sort: Desc)])
   @@map("passes")
 }
 
+/// Payment transactions with Razorpay integration
 model Transaction {
-  id                String   @id @default(uuid())
-  userId            String   @map("user_id")
-  passId            String?  @unique @map("pass_id")
-  razorpayOrderId   String?  @unique @map("razorpay_order_id")
-  razorpayPaymentId String?  @map("razorpay_payment_id")
-  razorpaySignature String?  @map("razorpay_signature")
-  amount            Decimal  @db.Decimal(10, 2)
-  currency          String   @default("INR")
-  status            String
-  paymentMethod     String?  @map("payment_method")
-  metadata          Json?
-  createdAt         DateTime @default(now()) @map("created_at")
-  updatedAt         DateTime @updatedAt @map("updated_at")
-  invoiceNumber     String   @unique @map("invoice_number")
-  transactionNumber String   @unique @map("transaction_number")
-  pass              Pass?    @relation(fields: [passId], references: [id])
-  user              User     @relation(fields: [userId], references: [id])
+  id                String       @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId            String       @map("user_id") @db.Uuid
+  passId            String?      @unique @map("pass_id") @db.Uuid
+  razorpayOrderId   String?      @unique @map("razorpay_order_id") @db.VarChar(255)
+  razorpayPaymentId String?      @map("razorpay_payment_id") @db.VarChar(255)
+  razorpaySignature String?      @map("razorpay_signature") @db.Text
+  amount            Decimal      @db.Decimal(12, 2)
+  currency          String       @default("INR") @db.VarChar(3)
+  status            String       @db.VarChar(50)
+  paymentMethod     String?      @map("payment_method") @db.VarChar(50)
+  metadata          Json?        @db.JsonB
+  createdAt         DateTime     @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime     @updatedAt @map("updated_at") @db.Timestamptz(6)
+  invoiceNumber     String       @unique @map("invoice_number") @db.VarChar(100)
+  transactionNumber String       @unique @map("transaction_number") @db.VarChar(100)
+  transactionType   String       @default("purchase") @map("transaction_type") @db.VarChar(50)
+  upgradeId         String?      @map("upgrade_id") @db.Uuid
+  pass              Pass?        @relation(fields: [passId], references: [id], onUpdate: Cascade)
+  user              User         @relation(fields: [userId], references: [id], onUpdate: Cascade)
+  upgrade           PassUpgrade? @relation(fields: [upgradeId], references: [id], onUpdate: Cascade)
 
   @@index([userId])
   @@index([status])
-  @@index([razorpayOrderId])
-  @@index([invoiceNumber])
-  @@index([transactionNumber])
+  @@index([razorpayOrderId], type: Hash)
+  @@index([invoiceNumber], type: Hash)
+  @@index([transactionNumber], type: Hash)
+  @@index([transactionType])
+  @@index([createdAt(sort: Desc)])
+  @@index([userId, status])
   @@map("transactions")
 }
 
+/// Events and competitions at E-Summit
 model Event {
-  id                   String              @id @default(uuid())
-  title                String
-  description          String?
-  category             String
+  id                   String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  title                String              @db.VarChar(255)
+  description          String?             @db.Text
+  category             String              @db.VarChar(100)
   date                 DateTime            @db.Date
   startTime            DateTime            @db.Time(6)
   endTime              DateTime            @db.Time(6)
-  venue                String
-  prizeAmount          Decimal?            @map("prize_amount") @db.Decimal(10, 2)
-  eligibility          String?
-  rules                Json?
-  judges               Json?
-  prerequisites        String?
-  registrationDeadline DateTime?           @map("registration_deadline")
-  speakerName          String?             @map("speaker_name")
-  speakerBio           String?             @map("speaker_bio")
-  speakerImageUrl      String?             @map("speaker_image_url")
+  venue                String              @db.VarChar(255)
+  prizeAmount          Decimal?            @map("prize_amount") @db.Decimal(12, 2)
+  eligibility          String?             @db.Text
+  rules                Json?               @db.JsonB
+  judges               Json?               @db.JsonB
+  prerequisites        String?             @db.Text
+  registrationDeadline DateTime?           @map("registration_deadline") @db.Timestamptz(6)
+  speakerName          String?             @map("speaker_name") @db.VarChar(255)
+  speakerBio           String?             @map("speaker_bio") @db.Text
+  speakerImageUrl      String?             @map("speaker_image_url") @db.Text
   maxParticipants      Int?                @map("max_participants")
   currentParticipants  Int                 @default(0) @map("current_participants")
-  status               String              @default("upcoming")
-  createdAt            DateTime            @default(now()) @map("created_at")
-  updatedAt            DateTime            @updatedAt @map("updated_at")
-  eventId              String?             @unique @map("event_id")
+  status               String              @default("upcoming") @db.VarChar(50)
+  createdAt            DateTime            @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt            DateTime            @updatedAt @map("updated_at") @db.Timestamptz(6)
+  eventId              String?             @unique @map("event_id") @db.VarChar(100)
   checkIns             CheckIn[]
   registrations        EventRegistration[]
 
   @@index([category])
   @@index([date])
   @@index([status])
+  @@index([eventId], type: Hash)
+  @@index([date, startTime])
   @@map("events")
 }
 
+/// Event registrations with team support
 model EventRegistration {
-  id               String   @id @default(uuid())
-  userId           String   @map("user_id")
-  eventId          String   @map("event_id")
-  passId           String?  @map("pass_id")
-  registrationDate DateTime @default(now()) @map("registration_date")
-  status           String   @default("registered")
+  id               String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.VarChar(100)
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
 
   // Basic participant details
-  participantName  String? @map("participant_name")
-  participantEmail String? @map("participant_email")
-  participantPhone String? @map("participant_phone")
+  participantName  String? @map("participant_name") @db.VarChar(255)
+  participantEmail String? @map("participant_email") @db.VarChar(255)
+  participantPhone String? @map("participant_phone") @db.VarChar(20)
 
   // Team/Group details (for team events)
-  teamName    String? @map("team_name")
+  teamName    String? @map("team_name") @db.VarChar(255)
   teamSize    Int?    @map("team_size")
-  teamMembers Json?   @map("team_members")
+  teamMembers Json?   @map("team_members") @db.JsonB
   isTeamLead  Boolean @default(true) @map("is_team_lead")
 
   // Event-specific form data (stored as JSON for flexibility)
-  formData Json? @map("form_data")
+  formData Json? @map("form_data") @db.JsonB
 
   // Additional fields
-  specialRequirements String? @map("special_requirements")
-  dietaryPreferences  String? @map("dietary_preferences")
-  emergencyContact    String? @map("emergency_contact")
+  specialRequirements String? @map("special_requirements") @db.Text
+  dietaryPreferences  String? @map("dietary_preferences") @db.VarChar(255)
+  emergencyContact    String? @map("emergency_contact") @db.VarChar(100)
 
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
 
   @@unique([userId, eventId])
   @@index([userId])
@@ -156,58 +180,90 @@ model EventRegistration {
   @@map("event_registrations")
 }
 
+/// Check-in records for events and venue entry
 model CheckIn {
-  id          String   @id @default(uuid())
-  passId      String   @map("pass_id")
-  userId      String   @map("user_id")
-  eventId     String?  @map("event_id")
-  checkInTime DateTime @default(now()) @map("check_in_time")
-  checkInType String   @map("check_in_type")
-  scannedBy   String?  @map("scanned_by")
-  location    String?
-  createdAt   DateTime @default(now()) @map("created_at")
-  event       Event?   @relation(fields: [eventId], references: [id])
-  pass        Pass     @relation(fields: [passId], references: [id])
-  user        User     @relation(fields: [userId], references: [id])
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  passId      String   @map("pass_id") @db.Uuid
+  userId      String   @map("user_id") @db.Uuid
+  eventId     String?  @map("event_id") @db.Uuid
+  checkInTime DateTime @default(now()) @map("check_in_time") @db.Timestamptz(6)
+  checkInType String   @map("check_in_type") @db.VarChar(50)
+  scannedBy   String?  @map("scanned_by") @db.VarChar(255)
+  location    String?  @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  event       Event?   @relation(fields: [eventId], references: [id], onUpdate: Cascade)
+  pass        Pass     @relation(fields: [passId], references: [id], onUpdate: Cascade)
+  user        User     @relation(fields: [userId], references: [id], onUpdate: Cascade)
 
   @@index([passId])
   @@index([userId])
   @@index([eventId])
-  @@index([checkInTime])
+  @@index([checkInTime(sort: Desc)])
   @@index([scannedBy])
+  @@index([userId, eventId])
+  @@index([passId, checkInTime(sort: Desc)])
   @@map("check_ins")
 }
 
+/// Audit trail for all system actions
 model AuditLog {
-  id          String   @id @default(uuid())
-  action      String
-  entityType  String   @map("entity_type")
-  entityId    String   @map("entity_id")
-  changes     Json?
-  ipAddress   String?  @map("ip_address")
-  userAgent   String?  @map("user_agent")
-  createdAt   DateTime @default(now()) @map("created_at")
-  clerkUserId String?  @map("clerk_user_id")
+  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  action      String   @db.VarChar(100)
+  entityType  String   @map("entity_type") @db.VarChar(100)
+  entityId    String   @map("entity_id") @db.VarChar(255)
+  changes     Json?    @db.JsonB
+  ipAddress   String?  @map("ip_address") @db.Inet
+  userAgent   String?  @map("user_agent") @db.Text
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  clerkUserId String?  @map("clerk_user_id") @db.VarChar(255)
 
   @@index([clerkUserId])
   @@index([entityType, entityId])
-  @@index([createdAt])
+  @@index([createdAt(sort: Desc)])
+  @@index([action, createdAt(sort: Desc)])
   @@map("audit_logs")
 }
 
+/// Event sponsors and partners
 model Sponsor {
-  id           String   @id @default(uuid())
-  name         String
-  logoUrl      String?  @map("logo_url")
-  websiteUrl   String?  @map("website_url")
-  tier         String
-  description  String?
+  id           String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  name         String   @db.VarChar(255)
+  logoUrl      String?  @map("logo_url") @db.Text
+  websiteUrl   String?  @map("website_url") @db.Text
+  tier         String   @db.VarChar(50)
+  description  String?  @db.Text
   displayOrder Int      @default(0) @map("display_order")
   isActive     Boolean  @default(true) @map("is_active")
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  createdAt    DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt    DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
 
   @@index([tier])
   @@index([displayOrder])
+  @@index([isActive, tier, displayOrder])
   @@map("sponsors")
+}
+
+/// Pass upgrade history and tracking
+model PassUpgrade {
+  id            String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  passId        String        @map("pass_id") @db.Uuid
+  userId        String        @map("user_id") @db.Uuid
+  fromPassType  String        @map("from_pass_type") @db.VarChar(50)
+  toPassType    String        @map("to_pass_type") @db.VarChar(50)
+  upgradeFee    Decimal       @map("upgrade_fee") @db.Decimal(12, 2)
+  originalPrice Decimal       @map("original_price") @db.Decimal(12, 2)
+  newPrice      Decimal       @map("new_price") @db.Decimal(12, 2)
+  status        String        @default("pending") @db.VarChar(50)
+  upgradeDate   DateTime      @default(now()) @map("upgrade_date") @db.Timestamptz(6)
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
+  pass          Pass          @relation(fields: [passId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  transactions  Transaction[]
+
+  @@index([passId])
+  @@index([userId])
+  @@index([status])
+  @@index([upgradeDate(sort: Desc)])
+  @@index([userId, status])
+  @@map("pass_upgrades")
 }

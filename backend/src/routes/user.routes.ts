@@ -218,8 +218,25 @@ router.post('/events/register', async (req: Request, res: Response) => {
   try {
     const { clerkUserId, eventId } = req.body;
 
+    console.log('=== EVENT REGISTRATION REQUEST ===');
+    console.log('Received eventId:', eventId);
+    console.log('Received clerkUserId:', clerkUserId);
+
     if (!clerkUserId || !eventId) {
       sendError(res, 'clerkUserId and eventId are required', 400);
+      return;
+    }
+
+    // Check if event exists
+    console.log('Looking for event with eventId:', eventId);
+    const event = await prisma.event.findFirst({
+      where: { eventId },
+    });
+
+    console.log('Event found:', event ? `${event.title} (id: ${event.id})` : 'NULL');
+
+    if (!event) {
+      sendError(res, 'Event not found', 404);
       return;
     }
 
@@ -286,7 +303,7 @@ router.post('/events/register', async (req: Request, res: Response) => {
       where: {
         userId_eventId: {
           userId: user.id,
-          eventId: eventId,
+          eventId: event.id,
         },
       },
     });
@@ -296,11 +313,19 @@ router.post('/events/register', async (req: Request, res: Response) => {
       return;
     }
 
+    // Debug logging
+    console.log('Registration attempt:', {
+      userId: user.id,
+      eventId: event.id,
+      eventIdField: event.eventId,
+      passId: userPass.passId,
+    });
+
     // Create event registration
     const registration = await prisma.eventRegistration.create({
       data: {
         userId: user.id,
-        eventId: eventId,
+        eventId: event.id, // Use the actual event.id from database instead of eventId
         passId: userPass.passId,
         participantName: user.fullName || undefined,
         participantEmail: user.email,
@@ -331,6 +356,13 @@ router.get('/events/registered/:clerkUserId', async (req: Request, res: Response
       include: {
         eventRegistrations: {
           where: { status: 'registered' },
+          include: {
+            event: {
+              select: {
+                eventId: true, // Get the custom string ID like "d1-pitch-arena"
+              },
+            },
+          },
           orderBy: { registrationDate: 'desc' },
         },
       },
@@ -341,7 +373,10 @@ router.get('/events/registered/:clerkUserId', async (req: Request, res: Response
       return;
     }
 
-    const registeredEventIds = user.eventRegistrations.map(reg => reg.eventId);
+    // Map to custom eventId strings instead of UUIDs
+    const registeredEventIds = user.eventRegistrations
+      .map(reg => reg.event.eventId)
+      .filter(id => id !== null); // Filter out any null eventIds
 
     sendSuccess(res, 'Registered events fetched successfully', { 
       registeredEventIds,

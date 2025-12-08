@@ -20,7 +20,7 @@ export function PitchArenaPage() {
   const [isRegistering, setIsRegistering] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
 
-  const eventId = "d2-pitch-arena"; // Pitch Arena event ID
+  const eventId = "d1-pitch-arena"; // Pitch Arena event ID (Day 1)
 
   // Check if user is already registered for this event
   useEffect(() => {
@@ -277,7 +277,8 @@ export function PitchArenaPage() {
                 ) : isRegistered ? (
                   <Button
                     disabled
-                    className="px-12 py-4 text-lg font-bold bg-green-600 hover:bg-green-700 text-white shadow-lg"
+                    style={{ backgroundColor: '#dc2626', color: '#ffffff' }}
+                    className="px-12 py-4 text-lg font-bold shadow-lg"
                   >
                     <CheckCircle2 className="w-5 h-5 mr-2" />
                     Registered Successfully
