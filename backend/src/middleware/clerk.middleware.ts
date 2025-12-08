@@ -25,12 +25,7 @@ export const clerkAuth = clerkMiddleware();
  * 
  * Use this on routes that MUST have an authenticated user
  */
-export const requireClerkAuth = requireAuth({
-  // Custom error response
-  onError(error: any) {
-    console.error('Clerk authentication error:', error);
-  },
-});
+export const requireClerkAuth = requireAuth();
 
 /**
  * Extract user ID from Clerk auth

@@ -2,6 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import { createClerkClient } from '@clerk/backend';
 import logger from '../utils/logger.util';
 
+// Extend Express Request to include Clerk auth
+interface ClerkRequest extends Request {
+  auth?: (() => { userId?: string | null }) | { userId?: string | null };
+}
+
 // Initialize Clerk client with environment variables
 const clerkClient = createClerkClient({
   secretKey: process.env.CLERK_SECRET_KEY,
@@ -16,17 +21,13 @@ const VALID_ADMIN_ROLES = ['Core', 'JC', 'OC'];
  * Note: Requires Clerk middleware to be applied first
  */
 export async function requireAdmin(
-  req: Request,
+  req: ClerkRequest,
   res: Response,
   next: NextFunction
 ): Promise<void> {
   try {
-    // @ts-ignore - auth is added by Clerk middleware
     // NOTE: In Clerk Express v1.7+, req.auth is a function, not an object
-    const authType = typeof req.auth;
-    const authIsFunction = authType === 'function';
-    
-    const auth = authIsFunction ? req.auth() : req.auth;
+    const auth = typeof req.auth === 'function' ? req.auth() : req.auth;
     let userId = auth?.userId;
 
     // WORKAROUND: If Clerk middleware didn't populate userId, extract from JWT manually
@@ -49,7 +50,6 @@ export async function requireAdmin(
     }
 
     logger.debug('Admin middleware - checking auth', {
-      authType,
       hasAuth: !!auth,
       userId: userId,
     });
@@ -58,7 +58,6 @@ export async function requireAdmin(
       logger.warn('Admin access denied - no user ID in request', {
         headers: req.headers.authorization ? 'present' : 'missing',
         path: req.path,
-        authWasFunction: authIsFunction,
         authObject: auth ? JSON.stringify(auth) : 'null',
       });
       res.status(401).json({
@@ -114,14 +113,13 @@ export async function requireAdmin(
  */
 export function requireRole(allowedRoles: string[]) {
   return async (
-    req: Request,
+    req: ClerkRequest,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
-      // @ts-ignore - auth is added by Clerk middleware
       // NOTE: In Clerk Express v1.7+, req.auth is a function, not an object
-      const auth = typeof req.auth === 'function' ? req.auth() : req.auth;
+      const auth = req.auth && typeof req.auth === 'function' ? req.auth() : req.auth;
       const userId = auth?.userId;
 
       if (!userId) {
@@ -174,14 +172,13 @@ export function requireRole(allowedRoles: string[]) {
  */
 export function requirePermission(permission: string) {
   return async (
-    req: Request,
+    req: ClerkRequest,
     res: Response,
     next: NextFunction
   ): Promise<void> => {
     try {
-      // @ts-ignore - auth is added by Clerk middleware
       // NOTE: In Clerk Express v1.7+, req.auth is a function, not an object
-      const auth = typeof req.auth === 'function' ? req.auth() : req.auth;
+      const auth = req.auth && typeof req.auth === 'function' ? req.auth() : req.auth;
       const userId = auth?.userId;
 
       if (!userId) {
