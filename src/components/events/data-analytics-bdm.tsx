@@ -640,4 +640,5 @@ export function DataAnalyticsBdmPage() {
       <FAQSection faqs={faqs} />
     </div>
   );
-}
+} 
+ 
