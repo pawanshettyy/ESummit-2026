@@ -1,9 +1,9 @@
-import { motion } from "motion/react";
-import { Circle, ChevronDown, Mail, MapPin, Clock, Calendar, TrendingUp, Award, Target, BarChart2, PieChart, LineChart } from "lucide-react";
+import { motion } from "framer-motion";
+import { Circle, ChevronDown, Clock, Calendar, TrendingUp, Award, BarChart2, PieChart, MapPin } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "../ui/button";
-import { Card } from "../ui/card";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 
 interface Speaker {
   name: string;
@@ -170,9 +170,26 @@ function HeroSection({
             animate="visible"
           >
             <h1 className="font-bold mb-6 tracking-tight leading-tight">
-              <span className="data-bdm-title block pb-6 text-6xl md:text-8xl">
+              <motion.span 
+                className="block pb-6 text-6xl md:text-8xl font-bold text-transparent bg-clip-text"
+                style={{
+                  backgroundImage: "linear-gradient(90deg, #dc143c 0%, #dc143c 70%, #e6e6e6 85%, #dc143c 100%)",
+                  backgroundSize: "250% auto",
+                  WebkitBackgroundClip: "text",
+                  backgroundClip: "text",
+                  textShadow: "0 0 6px rgba(220, 20, 60, 0.35), 0 0 12px rgba(220, 20, 60, 0.25)"
+                }}
+                animate={{
+                  backgroundPosition: ["0% 50%", "200% 50%"]
+                }}
+                transition={{
+                  duration: 5,
+                  ease: "easeInOut",
+                  repeat: Infinity
+                }}
+              >
                 {title}
-              </span>
+              </motion.span>
               <span className="text-red-200 block text-3xl md:text-5xl mt-2">
                 {tagline}
               </span>
@@ -180,40 +197,6 @@ function HeroSection({
                 {subtitle}
               </span>
             </h1>
-            <style>{`
-              .data-bdm-title {
-                font-weight: 700;
-
-                background: linear-gradient(
-                  90deg,
-                  #dc143c 0%,
-                  #dc143c 70%,
-                  #e6e6e6 85%,
-                  #dc143c 100%
-                );
-
-                background-size: 250% auto;
-                background-clip: text;
-                -webkit-background-clip: text;
-                color: transparent;
-
-                animation: crimsonShine 5s ease-in-out infinite;
-
-                /* softer glow */
-                text-shadow:
-                  0 0 6px rgba(220, 20, 60, 0.35),
-                  0 0 12px rgba(220, 20, 60, 0.25);
-              }
-
-              @keyframes crimsonShine {
-                0% {
-                  background-position: 0% 50%;
-                }
-                100% {
-                  background-position: 200% 50%;
-                }
-              }
-            `}</style>
           </motion.div>
 
           <motion.div
@@ -519,6 +502,7 @@ function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] }) 
                 )}
               >
                 <button
+                  type="button"
                   onClick={() => setOpenIndex(openIndex === index ? null : index)}
                   className="w-full p-6 text-left flex items-start justify-between gap-4"
                 >
@@ -533,19 +517,18 @@ function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] }) 
                     <ChevronDown className="h-5 w-5 text-red-400" />
                   </motion.div>
                 </button>
-                <motion.div
-                  initial={false}
-                  animate={{
-                    height: openIndex === index ? "auto" : 0,
-                    opacity: openIndex === index ? 1 : 0,
-                  }}
-                  transition={{ duration: 0.3 }}
-                  className="overflow-hidden"
+                <div
+                  className={cn(
+                    "grid transition-all duration-300 ease-in-out",
+                    openIndex === index ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"
+                  )}
                 >
-                  <div className="px-6 pb-6">
-                    <p className="text-white/70">{faq.answer}</p>
+                  <div className="overflow-hidden">
+                    <div className="px-6 pb-6">
+                      <p className="text-white/70">{faq.answer}</p>
+                    </div>
                   </div>
-                </motion.div>
+                </div>
               </Card>
             </motion.div>
           ))}
@@ -555,7 +538,7 @@ function FAQSection({ faqs }: { faqs: { question: string; answer: string }[] }) 
   );
 }
 
-export function DataAnalyticsBdmPage() {
+export default function DataAnalyticsBdmPage() {
   const speakers: Speaker[] = [
     {
       name: "Dr. Ananya Singh",
@@ -640,5 +623,4 @@ export function DataAnalyticsBdmPage() {
       <FAQSection faqs={faqs} />
     </div>
   );
-} 
- 
+}
