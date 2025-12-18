@@ -8,28 +8,28 @@ export const organizingCommittee: TeamMember[] = [
     name: "Shruti Nale",
     role: "Organizing Committee",
     subRole: "OC Member",
-    image: "/images/dummy/akshay.jpg", 
+    image: "https://ukfostering.org.uk/wp-content/uploads/2016/11/dummy-female-img.jpg", 
     phone: "+91 XXXXXXXXXX",
   },
   {
     name: "Aryan Singh",
     role: "Organizing Committee",
     subRole: "OC Member",
-    image: "/images/dummy/saloni.jpg",
+    image: "https://www.clipartmax.com/png/middle/144-1442578_flat-person-icon-download-dummy-man.png",
     phone: "+91 XXXXXXXXXX",
   },
   {
     name: "Rutuja Bunke",
     role: "Organizing Committee",
     subRole: "OC Member",
-    image: "/images/dummy/shruti.jpg",
+    image: "https://ukfostering.org.uk/wp-content/uploads/2016/11/dummy-female-img.jpg",
     phone: "+91 XXXXXXXXXX",
   },
   {
     name: "Dhanush Shetty",
     role: "Organizing Committee",
     subRole: "OC Member",
-    image: "/images/dummy/sakshi.jpg",
+    image: "https://www.clipartmax.com/png/middle/144-1442578_flat-person-icon-download-dummy-man.png",
     phone: "+91 XXXXXXXXXX",
   },
 ];
@@ -82,7 +82,7 @@ export const coreTeam: TeamMember[] = [
 // --- Event Venue, Benefits, Event Listings ---
 export const eventVenue: Venue = { 
     name: "Thakur College of Engineering and Technology",
-    addressLine1: "Room 530, 531" 
+    addressLine1: "SH-1", 
 };
 
 export const eventBenefits: Benefit[] = [
@@ -97,8 +97,8 @@ export const eventListings: EventListing[] = [
         title: "The Angel Investors Roundtable", 
         tag: "Pre-Seed Funding", 
         description: "Present your early-stage startup to angel investors and secure pre-seed funding.", 
-        date: "January 23–24, 2026", 
-        location: "Room 530, 531", 
+        date: "February 2, 2026", 
+        location: "SH-1", 
         time: "10:00 AM - 1:00 PM" 
     }
 ];
