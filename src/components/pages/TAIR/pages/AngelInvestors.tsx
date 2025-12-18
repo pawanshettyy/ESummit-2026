@@ -2,6 +2,7 @@
 import React, { useEffect } from 'react';
 import MemberCard from '../componens/MemberCard';
 import AboutSectionContent from '../componens/AboutSection';
+import "../styles/design.css";
 
 import { 
   organizingCommittee, 
