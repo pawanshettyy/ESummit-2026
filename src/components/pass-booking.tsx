@@ -94,6 +94,7 @@ export function PassBooking({
         "Certificate of participation",
       ],
       badge: "Free",
+      description: undefined,
     },
     {
       id: "silicon",
@@ -110,6 +111,7 @@ export function PassBooking({
       ],
       badge: "Popular",
       recommended: true,
+      description: undefined,
     },
     {
       id: "quantum",
@@ -127,6 +129,7 @@ export function PassBooking({
         "Certificate of participation",
       ],
       badge: "Best Value",
+      description: undefined,
     },
   ];
 
@@ -350,8 +353,14 @@ export function PassBooking({
                               <span>{feature}</span>
                             </motion.li>
                           ))}
-                        </ul>
-                        {hasExistingPass ? (
+                        </ul>                        {pass.description && (
+                          <Alert className="mb-4">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription className="text-xs">
+                              {pass.description}
+                            </AlertDescription>
+                          </Alert>
+                        )}                        {hasExistingPass ? (
                           <Button
                             className="w-full"
                             disabled
@@ -418,6 +427,14 @@ export function PassBooking({
                             </li>
                           ))}
                         </ul>
+                        {pass.description && (
+                          <Alert className="mb-4">
+                            <AlertCircle className="h-4 w-4" />
+                            <AlertDescription className="text-xs">
+                              {pass.description}
+                            </AlertDescription>
+                          </Alert>
+                        )}
                         {hasExistingPass ? (
                           <Button
                             className="w-full"

@@ -12,6 +12,7 @@ import {
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { Alert, AlertDescription } from "./ui/alert";
 import {
   Tabs,
   TabsContent,
@@ -23,7 +24,6 @@ import { getFormattedEventsForPass } from "../utils/pass-events";
 import { ProfileCompletionModal } from "./profile-completion-modal";
 import { API_BASE_URL } from "../lib/api";
 import { AuroraText } from "./magicui/aurora-text";
-import { PassUpgradeButton } from "./pass-upgrade-button";
 
 interface Pass {
   id: number;
@@ -468,7 +468,7 @@ export function UserDashboard({
         className="w-full"
       >
         <TabsList className="mb-6">
-          <TabsTrigger value="passes">My Passes</TabsTrigger>
+          <TabsTrigger value="passes">TCET Student Pass</TabsTrigger>
           <TabsTrigger value="schedule">
             My Schedule
           </TabsTrigger>
@@ -478,162 +478,50 @@ export function UserDashboard({
           {isLoadingPasses ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Loading your passes...</span>
+              <span className="ml-2 text-muted-foreground">Loading...</span>
             </div>
           ) : (
-            <div className="grid gap-6 md:grid-cols-2">
-              {myPasses.length > 0 ? (
-                myPasses.map((pass) => (
-                  <Card key={pass.passId}>
-                    <CardHeader>
-                      <div className="flex items-start justify-between">
-                        <div>
-                          <h3>{pass.passType}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            Purchased on {formatDate(pass.purchaseDate)}
-                          </p>
-                          {pass.transaction?.konfhubPaymentId && (
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Payment ID: {pass.transaction.konfhubPaymentId.substring(0, 20)}...
-                            </p>
-                          )}
-                        </div>
-                        <div className="flex flex-col gap-2">
-                          <Badge variant={pass.status === 'Active' ? 'default' : 'secondary'}>
-                            {pass.status}
-                          </Badge>
-                          {pass.transaction && (
-                            <Badge variant={pass.transaction.status === 'completed' ? 'default' : 'secondary'} className="bg-green-600">
-                              ✓ Confirmed
-                            </Badge>
-                          )}
-                        </div>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                      <div className="rounded-lg border-2 border-dashed p-6 text-center">
-                        <div className="mb-4 text-4xl">🎟️</div>
-                        {pass.qrCodeUrl ? (
-                          <div className="mx-auto mb-4">
-                            <img 
-                              src={pass.qrCodeUrl} 
-                              alt={`QR Code for ${pass.passId}`}
-                              className="mx-auto h-48 w-48 rounded-lg"
-                            />
-                          </div>
-                        ) : (
-                          <div className="mx-auto mb-4 h-24 w-24 rounded-lg bg-muted flex items-center justify-center">
-                            <div className="text-xs text-muted-foreground">
-                              QR Code
-                            </div>
-                          </div>
-                        )}
-                        <div className="font-mono text-sm text-muted-foreground">
-                          {pass.passId}
-                        </div>
-                      </div>
-                      
-                      {/* Pass Features */}
-                      <div className="space-y-2 text-sm">
-                        <div className="flex items-center justify-between">
-                          <span className="text-muted-foreground">Price</span>
-                          <span className="font-semibold">₹{pass.price}</span>
-                        </div>
-                        {pass.hasMeals && (
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">Meals Included</Badge>
-                          </div>
-                        )}
-                        {pass.hasMerchandise && (
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">Merchandise</Badge>
-                          </div>
-                        )}
-                        {pass.hasWorkshopAccess && (
-                          <div className="flex items-center gap-2">
-                            <Badge variant="outline" className="text-xs">Workshop Access</Badge>
-                          </div>
-                        )}
-                      </div>
-
-                      <div className="flex flex-col gap-2">
-                        <div className="flex gap-2">
-                          <Button 
-                            className="flex-1"
-                            onClick={() => downloadPassPDF(pass.passId)}
-                            disabled={downloadingPassId === pass.passId}
-                          >
-                            {downloadingPassId === pass.passId ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Downloading...
-                              </>
-                            ) : (
-                              <>
-                                <Download className="mr-2 h-4 w-4" />
-                                Download Pass
-                              </>
-                            )}
-                          </Button>
-                          <Button
-                            variant="outline"
-                            className="flex-1"
-                            onClick={() => pass.transaction && downloadInvoicePDF(pass.transaction.id)}
-                            disabled={!pass.transaction || downloadingInvoiceId === pass.transaction?.id}
-                          >
-                            {downloadingInvoiceId === pass.transaction?.id ? (
-                              <>
-                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                                Downloading...
-                              </>
-                            ) : (
-                              <>
-                                <FileText className="mr-2 h-4 w-4" />
-                                Invoice
-                              </>
-                            )}
-                          </Button>
-                        </div>
-                        {pass.status === "Active" && pass.passType.toLowerCase() !== "quantum" && (
-                          <PassUpgradeButton
-                            passId={pass.passId}
-                            currentPassType={pass.passType}
-                            onUpgradeSuccess={() => {
-                              // Reload passes after successful upgrade
-                              const fetchPasses = async () => {
-                                try {
-                                  const response = await fetch(
-                                    `${API_BASE_URL}/passes/user/${user?.id}`
-                                  );
-                                  const data = await response.json();
-                                  if (data.success && data.data.passes) {
-                                    setMyPasses(data.data.passes);
-                                  }
-                                } catch (error) {
-                                  console.error("Error fetching passes:", error);
-                                }
-                              };
-                              fetchPasses();
-                            }}
-                          />
-                        )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))
-              ) : (
-                <div className="col-span-2 text-center py-12">
-                  <Ticket className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold mb-2">No confirmed passes yet</h3>
-                  <p className="text-muted-foreground mb-4">
-                    You haven't purchased any passes yet, or your payment is still being processed. Get your pass now!
+            <>
+              {/* TCET Students Special Booking */}
+              <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/10">
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold">🎓 TCET Students Pass</h3>
+                    <Badge className="bg-green-600 hover:bg-green-700">FREE</Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground mt-2">
+                    Exclusive free pass for TCET students! Book now and enjoy access to select events at E-Summit 2026.
                   </p>
-                  <Button onClick={() => onNavigate("passes")}>
-                    Browse Passes
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900">
+                    <CheckCircle2 className="h-4 w-4 text-amber-600" />
+                    <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
+                      ⚠️ <strong>Verification Required:</strong> You must bring your TCET ID card and a valid government-issued ID to the venue entrance for verification.
+                    </AlertDescription>
+                  </Alert>
+                  
+                  <div className="space-y-2 text-sm">
+                    <p className="font-semibold">Includes:</p>
+                    <ul className="space-y-1 ml-4">
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Startup Expo</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Panel Discussion</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> IPL Auction</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> AI Build-A-Thon</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Biz-Arena League</li>
+                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Certificate of participation</li>
+                    </ul>
+                  </div>
+
+                  <Button 
+                    className="w-full" 
+                    onClick={() => window.open('https://konfhub.com/tcet-esummit26', '_blank')}
+                  >
+                    Book TCET Students Pass (Free)
                   </Button>
-                </div>
-              )}
-            </div>
+                </CardContent>
+              </Card>
+            </>
           )}
         </TabsContent>
 

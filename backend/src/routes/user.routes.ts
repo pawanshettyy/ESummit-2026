@@ -216,14 +216,22 @@ router.get('/check-profile/:clerkUserId', async (req: Request, res: Response) =>
  */
 router.post('/events/register', async (req: Request, res: Response) => {
   try {
-    const { clerkUserId, eventId } = req.body;
+    const { 
+      clerkUserId, 
+      eventId, 
+      bookingId,
+      participantName,
+      participantEmail,
+      participantPhone 
+    } = req.body;
 
     console.log('=== EVENT REGISTRATION REQUEST ===');
     console.log('Received eventId:', eventId);
     console.log('Received clerkUserId:', clerkUserId);
+    console.log('Received bookingId:', bookingId);
 
-    if (!clerkUserId || !eventId) {
-      sendError(res, 'clerkUserId and eventId are required', 400);
+    if (!clerkUserId || !eventId || !bookingId) {
+      sendError(res, 'clerkUserId, eventId, and bookingId are required', 400);
       return;
     }
 
@@ -243,12 +251,6 @@ router.post('/events/register', async (req: Request, res: Response) => {
     // Get user from database
     const user = await prisma.user.findUnique({
       where: { clerkUserId },
-      include: {
-        passes: {
-          where: { status: 'Active' },
-          orderBy: { purchaseDate: 'desc' },
-        },
-      },
     });
 
     if (!user) {
@@ -256,24 +258,46 @@ router.post('/events/register', async (req: Request, res: Response) => {
       return;
     }
 
-    // Check if user has any active pass
-    if (!user.passes || user.passes.length === 0) {
-      sendError(res, 'NO_PASS', 403, {
-        message: 'Please purchase a pass to register for events',
-        requiresPass: true,
+    // Verify booking ID and get pass type
+    console.log('Verifying booking ID:', bookingId);
+    
+    // Check if user has booking ID stored in their profile
+    const userWithBooking = await prisma.user.findFirst({
+      where: {
+        clerkUserId,
+        bookingId: bookingId.trim(),
+      },
+    });
+
+    if (!userWithBooking) {
+      sendError(res, 'INVALID_BOOKING_ID', 403, {
+        message: 'The booking ID you entered is not valid or not associated with your account',
       });
       return;
     }
 
-    // Get the highest tier pass (order: Quantum > Silicon > Pixel)
-    const passTypeOrder = ['Quantum Pass', 'Silicon Pass', 'Pixel Pass'];
-    const userPass = user.passes.sort((a, b) => {
-      return passTypeOrder.indexOf(a.passType) - passTypeOrder.indexOf(b.passType);
-    })[0];
+    // Check if booking is verified
+    if (!userWithBooking.bookingVerified) {
+      sendError(res, 'BOOKING_NOT_VERIFIED', 403, {
+        message: 'Your booking has not been verified yet. Please wait for admin verification.',
+      });
+      return;
+    }
+
+    // Get the pass type from user's booking
+    const userPassType = userWithBooking.bookedPassType;
+    
+    if (!userPassType) {
+      sendError(res, 'NO_PASS', 403, {
+        message: 'No pass type associated with your booking',
+      });
+      return;
+    }
 
     // Define event eligibility based on pass type
     const eventEligibility: Record<string, string[]> = {
-      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass'],
+      'd1-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
       'd1-ten-minute-million': ['Quantum Pass'],
       'd1-angel-roundtable': ['Quantum Pass'],
       'd2-incubator-summit': ['Quantum Pass'],
@@ -281,19 +305,27 @@ router.post('/events/register', async (req: Request, res: Response) => {
       'd1-finance-marketing': ['Silicon Pass', 'Quantum Pass'],
       'd2-data-analytics': ['Silicon Pass', 'Quantum Pass'],
       'd2-ai-workshop': ['Quantum Pass'],
+      'd1-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd2-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd1-panel-discussion': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd1-ipl-auction': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd2-ipl-auction': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd1-ai-buildathon': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd2-ai-buildathon': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd1-biz-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      'd2-biz-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
     };
 
     // Check if event requires specific pass eligibility
     const requiredPasses = eventEligibility[eventId];
-    if (requiredPasses && !requiredPasses.includes(userPass.passType)) {
+    if (requiredPasses && !requiredPasses.includes(userPassType)) {
       // Determine the required pass tier
-      const requiredPassType = requiredPasses[requiredPasses.length - 1];
+      const requiredPassType = requiredPasses[0]; // Get minimum required pass
       
       sendError(res, 'INSUFFICIENT_PASS', 403, {
-        message: `This event requires ${requiredPassType} or higher. Please upgrade your pass to register.`,
-        currentPass: userPass.passType,
+        message: `This event requires ${requiredPassType} or higher. Your current pass (${userPassType}) does not provide access to this event.`,
+        currentPass: userPassType,
         requiredPass: requiredPassType,
-        requiresUpgrade: true,
       });
       return;
     }
@@ -318,23 +350,24 @@ router.post('/events/register', async (req: Request, res: Response) => {
       userId: user.id,
       eventId: event.id,
       eventIdField: event.eventId,
-      passId: userPass.passId,
+      bookingId: bookingId,
+      passType: userPassType,
     });
 
     // Create event registration
     const registration = await prisma.eventRegistration.create({
       data: {
         userId: user.id,
-        eventId: event.id, // Use the actual event.id from database instead of eventId
-        passId: userPass.passId,
-        participantName: user.fullName || undefined,
-        participantEmail: user.email,
-        participantPhone: user.phone || undefined,
+        eventId: event.id,
+        passId: bookingId.trim(), // Store booking ID as passId reference
+        participantName: participantName || user.fullName || undefined,
+        participantEmail: participantEmail || user.email,
+        participantPhone: participantPhone || user.phone || undefined,
         status: 'registered',
       },
     });
 
-    logger.info(`User ${user.email} registered for event ${eventId}`);
+    logger.info(`User ${user.email} registered for event ${eventId} with booking ID ${bookingId}`);
 
     sendSuccess(res, 'Successfully registered for event', { registration }, 201);
   } catch (error: any) {

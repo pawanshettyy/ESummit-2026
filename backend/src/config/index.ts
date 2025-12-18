@@ -37,10 +37,24 @@ const getCorsOrigin = () => {
         return callback(null, true);
       }
 
+      // Allow custom domain (tcetesummit.in and www.tcetesummit.in)
+      const customDomains = ['https://tcetesummit.in', 'https://www.tcetesummit.in'];
+      if (customDomains.includes(origin)) {
+        console.log(`✅ CORS (prod): Allowed custom domain - ${origin}`);
+        return callback(null, true);
+      }
+
       // Allow explicit frontend URL from env
       const frontendUrl = process.env.FRONTEND_URL;
       if (frontendUrl && origin === frontendUrl) {
         console.log(`✅ CORS (prod): Allowed explicit frontend - ${origin}`);
+        return callback(null, true);
+      }
+
+      // Allow ALLOWED_ORIGINS from env (comma-separated)
+      const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim());
+      if (allowedOrigins && allowedOrigins.includes(origin)) {
+        console.log(`✅ CORS (prod): Allowed from ALLOWED_ORIGINS - ${origin}`);
         return callback(null, true);
       }
 

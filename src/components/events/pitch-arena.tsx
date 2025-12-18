@@ -8,6 +8,9 @@ import { motion } from "motion/react";
 import { Card, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Button } from "../ui/button";
+import { Input } from "../ui/input";
+import { Label } from "../ui/label";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "../ui/dialog";
 import { Trophy, Lightbulb, Users, Rocket, Calendar, MapPin, Target, Mail, Phone, Sparkles, ArrowRight, Loader2, CheckCircle2 } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
@@ -19,6 +22,11 @@ export function PitchArenaPage() {
   const [isRegistered, setIsRegistered] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
   const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
+  const [showRegistrationForm, setShowRegistrationForm] = useState(false);
+  const [bookingId, setBookingId] = useState("");
+  const [participantName, setParticipantName] = useState("");
+  const [participantEmail, setParticipantEmail] = useState("");
+  const [participantPhone, setParticipantPhone] = useState("");
 
   const eventId = "d1-pitch-arena"; // Pitch Arena event ID (Day 1)
 
@@ -51,10 +59,32 @@ export function PitchArenaPage() {
     checkRegistration();
   }, [isSignedIn, user?.id, eventId]);
 
-  // Handle event registration
-  const handleRegister = async () => {
+  // Handle opening registration form
+  const handleRegisterClick = () => {
     if (!isSignedIn) {
       toast.error("Please sign in to register for events");
+      return;
+    }
+    
+    // Pre-fill form with user data
+    setParticipantName(user?.fullName || "");
+    setParticipantEmail(user?.primaryEmailAddress?.emailAddress || "");
+    setShowRegistrationForm(true);
+  };
+
+  // Handle event registration with booking ID
+  const handleRegister = async () => {
+    if (!bookingId.trim()) {
+      toast.error("Booking ID Required", {
+        description: "Please enter your booking ID to register",
+      });
+      return;
+    }
+
+    if (!participantName.trim() || !participantEmail.trim() || !participantPhone.trim()) {
+      toast.error("All Fields Required", {
+        description: "Please fill in all the required fields",
+      });
       return;
     }
 
@@ -69,6 +99,10 @@ export function PitchArenaPage() {
         body: JSON.stringify({
           clerkUserId: user?.id,
           eventId: eventId,
+          bookingId: bookingId.trim(),
+          participantName: participantName.trim(),
+          participantEmail: participantEmail.trim(),
+          participantPhone: participantPhone.trim(),
         }),
       });
 
@@ -76,30 +110,28 @@ export function PitchArenaPage() {
 
       if (response.ok && data.success) {
         setIsRegistered(true);
+        setShowRegistrationForm(false);
         toast.success("Successfully registered for Pitch Arena!", {
           description: "Check your dashboard to see this event in your schedule",
         });
       } else {
         // Handle specific error cases
-        if (data.error === "NO_PASS") {
-          toast.error("Pass Required", {
-            description: "Please purchase a pass first to register for events",
-            action: {
-              label: "Get Pass",
-              onClick: () => (window.location.href = "/booking"),
-            },
+        if (data.error === "INVALID_BOOKING_ID") {
+          toast.error("Invalid Booking ID", {
+            description: "The booking ID you entered is not valid or not found in our system",
+          });
+        } else if (data.error === "BOOKING_NOT_VERIFIED") {
+          toast.error("Booking Not Verified", {
+            description: "Your booking has not been verified yet. Please wait for admin verification.",
           });
         } else if (data.error === "INSUFFICIENT_PASS") {
           const errorData = data.data || {};
-          toast.error("Pass Upgrade Required", {
-            description: errorData.message || "This event requires a higher tier pass",
-            action: {
-              label: "Upgrade Pass",
-              onClick: () => (window.location.href = "/booking"),
-            },
+          toast.error("Pass Tier Insufficient", {
+            description: errorData.message || "This event requires a higher tier pass. Please upgrade your pass.",
           });
         } else if (data.error === "Already registered for this event") {
           setIsRegistered(true);
+          setShowRegistrationForm(false);
           toast.info("Already Registered", {
             description: "You're already registered for this event",
           });
@@ -285,29 +317,114 @@ export function PitchArenaPage() {
                   </Button>
                 ) : (
                   <Button
-                    onClick={handleRegister}
-                    disabled={isRegistering}
+                    onClick={handleRegisterClick}
                     className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-primary to-red-500 hover:from-primary/90 hover:to-red-500/90 text-white shadow-lg hover:shadow-xl transition-all duration-300"
                   >
-                    {isRegistering ? (
-                      <>
-                        <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                        Registering...
-                      </>
-                    ) : (
-                      <>
-                        <span className="flex items-center gap-2">
-                          Register Now
-                          <ArrowRight className="w-5 h-5" />
-                        </span>
-                      </>
-                    )}
+                    <span className="flex items-center gap-2">
+                      Register Now
+                      <ArrowRight className="w-5 h-5" />
+                    </span>
                   </Button>
                 )}
               </motion.div>
             </motion.div>
           </div>
         </section>
+
+        {/* Registration Form Dialog */}
+        <Dialog open={showRegistrationForm} onOpenChange={setShowRegistrationForm}>
+          <DialogContent className="sm:max-w-[500px]">
+            <DialogHeader>
+              <DialogTitle className="text-2xl">Register for Pitch Arena</DialogTitle>
+              <DialogDescription>
+                Please fill in your details and provide your booking ID to register for this event.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="booking-id" className="text-base font-semibold">
+                  Booking ID <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="booking-id"
+                  placeholder="Enter your KonfHub booking ID"
+                  value={bookingId}
+                  onChange={(e) => setBookingId(e.target.value)}
+                  className="h-11"
+                />
+                <p className="text-xs text-muted-foreground">
+                  You received this ID when you booked your pass on KonfHub
+                </p>
+              </div>
+              
+              <div className="space-y-2">
+                <Label htmlFor="participant-name" className="text-base font-semibold">
+                  Full Name <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="participant-name"
+                  placeholder="Enter your full name"
+                  value={participantName}
+                  onChange={(e) => setParticipantName(e.target.value)}
+                  className="h-11"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="participant-email" className="text-base font-semibold">
+                  Email <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="participant-email"
+                  type="email"
+                  placeholder="Enter your email"
+                  value={participantEmail}
+                  onChange={(e) => setParticipantEmail(e.target.value)}
+                  className="h-11"
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="participant-phone" className="text-base font-semibold">
+                  Phone Number <span className="text-red-500">*</span>
+                </Label>
+                <Input
+                  id="participant-phone"
+                  type="tel"
+                  placeholder="Enter your phone number"
+                  value={participantPhone}
+                  onChange={(e) => setParticipantPhone(e.target.value)}
+                  className="h-11"
+                />
+              </div>
+            </div>
+
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                onClick={() => setShowRegistrationForm(false)}
+                className="flex-1"
+                disabled={isRegistering}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={handleRegister}
+                disabled={isRegistering}
+                className="flex-1 bg-gradient-to-r from-primary to-red-500 hover:from-primary/90 hover:to-red-500/90"
+              >
+                {isRegistering ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Registering...
+                  </>
+                ) : (
+                  "Register"
+                )}
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
 
         {/* SPEAKERS & JUDGES */}
         <section id="speakers" className="bg-muted/10 px-4 py-20">
