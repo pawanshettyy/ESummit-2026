@@ -1,0 +1,402 @@
+
+:root {
+    /* Primary Color (Deep Maroon/Red) - Used for Headings, Accents, Glow */
+    --primary-red: #C82333; 
+    --secondary-red-border: #8B0000; 
+    
+    /* Neon shadow uses the new color */
+    --neon-shadow: 0 0 10px rgba(200, 35, 51, 0.5); 
+    --intense-red-shadow: 0 0 25px rgba(200, 35, 51, 1.5); 
+    --subtle-grey: #555;
+}
+
+/* ================================================= */
+/* 1. Global Theme and Structure */
+/* ================================================= */
+body {
+    background-color: #000;
+    color: #fff; 
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    font-size: 16px; 
+    text-align: center; 
+}
+
+.event-page-container {
+    max-width: 1000px; 
+    margin: 0 auto; 
+    padding: 0 20px; 
+}
+
+.section-container {
+    margin: 80px 0; 
+    padding: 0;
+    text-align: center; 
+}
+
+/* ================================================= */
+/* 2. ANIMATIONS & CARDS (Deep Red Neon Style) */
+/* ================================================= */
+
+/* Bounce-In on Scroll Effect */
+.slide-in-up {
+    opacity: 0;
+    transform: translateY(60px); 
+    transition: opacity 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                transform 1.0s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.slide-in-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Base Card Style (Generic for Core Team - WIDER CARDS) */
+.neon-card, .member-card {
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 50px 45px; /* Core Team: WIDER horizontal padding */
+    margin: 20px auto; 
+    border: 1px solid var(--secondary-red-border); 
+    box-shadow: var(--neon-shadow), inset 0 0 5px rgba(200, 35, 51, 0.2);
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s;
+    text-align: center;
+    position: relative; 
+}
+
+/* **CLASS FOR ORGANIZING COMMITTEE (NARROWER AND SHORTER CARDS)** */
+.oc-member-card {
+    /* REDUCED padding for compact card size */
+    padding: 25px 20px 30px 20px; /* Reduced vertical padding */
+    width: 250px; /* Narrow fixed width */
+}
+
+/* INTENSE PURE RED GLOW ON HOVER (Applies to all cards) */
+.neon-card:hover, .member-card:hover, .oc-member-card:hover {
+    transform: scale(1.03); 
+    box-shadow: var(--intense-red-shadow); 
+    border-color: var(--primary-red); 
+}
+
+/* Icon Hover */
+.benefit-card .benefit-icon,
+.senior-card .senior-icon,
+.venue-card .location-icon {
+    font-size: 3.5em; 
+    color: var(--primary-red);
+    margin-bottom: 10px;
+    transition: transform 0.2s ease-out;
+}
+
+.benefit-card:hover .benefit-icon,
+.senior-card:hover .senior-icon,
+.venue-card:hover .location-icon {
+    transform: scale(1.15); 
+}
+
+/* ================================================= */
+/* 3. Typography & Section Headings */
+/* ================================================= */
+
+/* MAIN TITLE (The Angel Investors Roundtable) */
+.main-event-title {
+    color: var(--primary-red); 
+    font-size: 2.5em !important; 
+    letter-spacing: 2px;
+    text-shadow: 0 0 10px rgba(200, 35, 51, 0.5); 
+    margin-bottom: 0.1em;
+    font-weight: 800;
+}
+
+/* EVENT TAG (Pre-Seed Funding) */
+.event-tag {
+    color: #fff;
+    font-size: 1.3em; 
+    font-weight: 500;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+}
+
+/* SECTION HEADINGS (Deep Red) */
+.section-title {
+    color: var(--primary-red); 
+    font-size: 2em; 
+    text-transform: uppercase;
+    margin-top: 0;
+    margin-bottom: 15px;
+    font-weight: bold;
+}
+.neon-card h3 {
+    font-size: 1.4em; 
+    margin: 10px 0 5px 0;
+    color: #fff; 
+}
+
+/* GENERAL TEXT (Light Grey/White) */
+.description, .event-pitch, .event-details p, .event-description-text {
+    font-size: 1.3em; 
+    color: #ccc; 
+    line-height: 1.7; 
+}
+
+.event-details {
+    display: flex;
+    justify-content: center;
+    gap: 50px; 
+    margin: 25px 0; 
+    color: #fff; 
+}
+
+/* Label above sections (Deep Red) */
+.section-label {
+    display: inline-block;
+    color: var(--primary-red);
+    border: 1px solid var(--primary-red);
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.85em; 
+    margin-bottom: 15px;
+    box-shadow: 0 0 4px rgba(200, 35, 51, 0.4); 
+    background: rgba(200, 35, 51, 0.05);
+    text-transform: uppercase;
+}
+
+/* ================================================= */
+/* 4. REGISTER BUTTON GLOW (Deep Red) */
+/* ================================================= */
+.register-button {
+    background: var(--primary-red);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-weight: bold;
+    box-shadow: 0 0 15px rgba(200, 35, 51, 0.8), 0 0 3px white; 
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+}
+
+.register-button:hover {
+    box-shadow: 0 0 25px rgba(200, 35, 51, 1.5); 
+    transform: translateY(-2px);
+}
+
+.glow-button {
+    padding: 12px 25px;
+    margin-top: 30px;
+    font-size: 1.1em;
+}
+
+/* ================================================= */
+/* 5. Layout Grids & Member Card Styling */
+/* ================================================= */
+
+/* Standard 2 and 3 column grids */
+.two-column-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 40px; 
+    margin-top: 25px;
+    justify-content: center;
+}
+
+.three-column-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 30px; 
+    margin-top: 25px;
+    justify-content: center;
+}
+
+.four-column-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 30px; 
+    margin-top: 25px;
+    justify-content: center;
+}
+
+/* Standard 4 column grid for non-members (Sponsors, etc.) */
+.four-in-a-row-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(200px, 1fr)); 
+    gap: 25px; 
+    overflow-x: auto;
+    padding-bottom: 15px; 
+    scrollbar-width: none;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+/* DEDICATED FLEX ROW (FOR OC & CONTACT SWIPE/SCROLL) */
+.single-flex-row {
+    display: flex; 
+    flex-wrap: nowrap; 
+    gap: 40px; 
+    overflow-x: auto; 
+    padding: 0 10px 15px; 
+    scrollbar-width: none;
+    max-width: 100%;
+    margin: 0 auto;
+    justify-content: flex-start;
+}
+.single-flex-row .member-card {
+    flex-shrink: 0; 
+    margin: 20px 0; 
+    text-align: center;
+    width: 300px; 
+}
+.single-flex-row .oc-member-card {
+    flex-shrink: 0; 
+    width: 250px; /* Narrow width for OC in flex row */
+    margin: 20px 0; 
+    text-align: center;
+}
+
+
+/* Hides scrollbar */
+.four-in-a-row-grid::-webkit-scrollbar,
+.single-flex-row::-webkit-scrollbar {
+    display: none;
+}
+
+/* ================================================= */
+/* 6. MEMBER SPECIFIC STYLES (Image and Contact) */
+/* ================================================= */
+
+/* Generic Member Image (Faculty/Core Team - 150px Avatar) */
+.member-card .member-image {
+    width: 150px !important; 
+    height: 150px !important; 
+    border-radius: 50% !important; 
+    object-fit: cover !important; 
+    margin-bottom: 10px !important;
+    border: 3px solid var(--primary-red) !important; 
+    box-shadow: 0 0 5px var(--primary-red) !important; 
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+}
+/* Generic Placeholder Icon (Faculty/Core Team) */
+.member-card .member-icon-placeholder {
+    font-size: 4.2em; 
+    margin: 0 auto 10px auto; 
+    width: 150px; 
+    height: 150px; 
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-red);
+    border: 3px solid var(--primary-red); 
+    box-shadow: 0 0 5px var(--primary-red); 
+}
+
+/* **OC Member Image (Smaller Avatar - 120px)** */
+.oc-member-card .member-image {
+    width: 120px !important; 
+    height: 120px !important; 
+    border-radius: 50% !important; 
+    object-fit: cover !important; 
+    margin-bottom: 8px !important; 
+    border: 3px solid var(--primary-red) !important; 
+    box-shadow: 0 0 5px var(--primary-red) !important; 
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+}
+/* **OC Placeholder Icon (Smaller Avatar)** */
+.oc-member-card .member-icon-placeholder {
+    font-size: 3.5em; 
+    margin: 0 auto 8px auto; 
+    width: 120px; 
+    height: 120px; 
+    border-radius: 50%; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-red);
+    border: 3px solid var(--primary-red); 
+    box-shadow: 0 0 5px var(--primary-red); 
+}
+
+/* Generic Name text styling (Vertical stacking) */
+.member-card h4 {
+    margin: 5px 0 2px 0; 
+    font-size: 1.4em; 
+    color: #fff; 
+}
+/* **OC Name text styling (Tighter Vertical stacking)** */
+.oc-member-card h4 {
+    margin: 4px 0 2px 0; 
+    font-size: 1.3em; 
+    color: #fff; 
+}
+
+
+/* Generic Member Tag (Vertical stacking - Rounded Corner) */
+.member-card .member-tag {
+    display: block; 
+    background: var(--primary-red);
+    color: white;
+    padding: 3px 8px;
+    border-radius: 4px; 
+    font-size: 0.9em; 
+    font-weight: bold;
+    margin-bottom: 5px; 
+    margin-right: 0; 
+    width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* **OC Member Tag (Tighter Vertical stacking)** */
+.oc-member-card .member-tag {
+    display: block; 
+    padding: 3px 8px; 
+    border-radius: 4px; 
+    margin-bottom: 4px; 
+    margin-right: auto; 
+    margin-left: auto;
+    font-size: 0.85em; 
+}
+
+/* Generic Contact Text Styling (Vertical stacking) */
+.member-card .member-contact, .senior-contact-info p {
+    font-size: 1em; 
+    color: #ccc; 
+    margin: 2px 0; 
+    /* Ensures icon and text are aligned horizontally */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+}
+
+/* **OC Contact Text Styling (Tighter Spacing & Horizontal Alignment FIX)** */
+.oc-member-card .member-contact, .oc-member-card .senior-contact-info p {
+    /* FIX: Ensure icon and phone number are on one line, centered */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+    
+    margin: 1px 0; /* Minimal vertical spacing between contact lines */
+    font-size: 0.9em; 
+}
+
+/* Hyperlink styling (Red links) */
+.member-contact a {
+    color: var(--primary-red); 
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.member-contact a:hover {
+    color: #fff; 
+}
+
+/* Icons (Deep Red) */
+.contact-icon {
+    margin-right: 8px;
+    color: var(--primary-red); 
+    font-size: 1em; 
+}
