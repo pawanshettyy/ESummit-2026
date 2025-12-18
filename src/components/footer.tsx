@@ -156,9 +156,11 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="mt-0.5 h-4 w-4 flex-shrink-0" />
-                <a href="tel:+912228471000" className="hover:text-foreground transition-colors">
-                  +91 22 2847 1000
-                </a>
+                <div className="flex flex-col gap-1">
+                  <a href="tel:+918766536270" className="hover:text-foreground transition-colors">Ayush Pardeshi (CEO): +91 87665 36270</a>
+                  <a href="tel:+918928352406" className="hover:text-foreground transition-colors">Ahana Kulkarni (CTO): +91 89283 52406</a>
+                  <a href="tel:+919004724466" className="hover:text-foreground transition-colors">Hredey Chaand (CMO): +91 90047 24466</a>
+                </div>
               </li>
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 h-4 w-4 flex-shrink-0" />
@@ -166,8 +168,9 @@ export function Footer({ onNavigate }: FooterProps) {
               </li>
             </ul>
             <div className="mt-4 text-xs text-muted-foreground">
-              <p>Office Hours:</p>
-              <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+              <p className="font-semibold mb-1">Faculty Coordinators:</p>
+              <p>Prof. Chaitali: 9405915566</p>
+              <p>Dr. Pankaj Nandurkar: 9763669859</p>
             </div>
           </div>
         </div>

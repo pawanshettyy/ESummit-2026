@@ -93,7 +93,7 @@ export function PassBooking({
         "Biz-Arena League",
         "Certificate of participation",
       ],
-      badge: "Free Entry",
+      badge: "Free",
     },
     {
       id: "silicon",
@@ -105,8 +105,7 @@ export function PassBooking({
         "Pitch Arena",
         "Startup Youth Conclave",
         "All 3 Workshops",
-        "Networking Arena",
-        "Lunch included",
+        "Informals (Networking Arena)",
         "Certificate of participation",
       ],
       badge: "Popular",
@@ -120,7 +119,7 @@ export function PassBooking({
       features: [
         "All Silicon Pass events",
         "The Ten Minute Million",
-        "The Angel Investor Roundtable",
+        "The Angel Investor's Roundtable",
         "Incubator Summit",
         "Internship Fair",
         "Premium networking sessions",
