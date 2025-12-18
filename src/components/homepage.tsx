@@ -34,8 +34,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
   });
   const [currentSpeaker, setCurrentSpeaker] = useState(0);
 
-  // Event date: January 23-24, 2026
-  const eventDate = new Date("2026-01-23T00:00:00");
+  // Event date: February 2-3, 2026
+  const eventDate = new Date("2026-02-02T00:00:00");
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -154,7 +154,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <TextReveal>
               <p className="mb-8 text-muted-foreground">
-                TCET Mumbai's historic first-ever Entrepreneurship Summit coinciding with the 25th Anniversary. 
+                Thakur College of Engineering and Technology announces its inaugural E-Summit 2026, 
+                celebrating 25 years of excellence. In collaboration with TIMSR & TGBS, organized by TCET's AXIOS EDIC. 
                 A two-day celebration uniting visionaries, investors, startup founders, and students to ignite 
                 a lasting culture of entrepreneurship and innovation-driven excellence.
               </p>
