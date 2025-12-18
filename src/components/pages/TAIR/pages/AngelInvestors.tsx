@@ -1,187 +1,209 @@
-// src/pages/EventPage.tsx (CORE TEAM SECTION REVERTED TO three-column-grid)
-import React, { useEffect } from 'react';
+// src/pages/angelInvestors.tsx
+import React, { useEffect, useState } from 'react'; // Added useState
 import MemberCard from '../componens/MemberCard';
 import AboutSectionContent from '../componens/AboutSection';
-import "../styles/design.css";
+import '../styles/design.css';
 
-import { 
-  organizingCommittee, 
-  eventVenue, 
-  eventBenefits, 
-  eventListings, 
-  facultyCoordinators,
-  coreTeam // Core team data imported
+import {
+  organizingCommittee,
+  eventVenue,
+  eventBenefits,
+  eventListings,
+  facultyCoordinators,
+  coreTeam
 } from '../data/teamData';
+
 import type { Benefit, TeamMember } from '../types/data';
 
-// =========================================================
-// --- DOM-BASED SCROLL ANIMATION LOGIC ---
-// =========================================================
+/* ------------------ Scroll Reveal ------------------ */
 const useRevealAnimation = () => {
-    useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        entry.target.classList.add("visible");
-                        observer.unobserve(entry.target); 
-                    }
-                });
-            },
-            { threshold: 0.25 }
-        );
-
-        document.querySelectorAll(".reveal").forEach((el) => {
-            observer.observe(el);
-        });
-
-        return () => observer.disconnect();
-    }, []);
+  useEffect(() => {
+    const sections = document.querySelectorAll('.section-container');
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.2 }
+    );
+    sections.forEach(section => observer.observe(section));
+    return () => observer.disconnect();
+  }, []);
 };
 
-// --- Sub-Components ---
-const BenefitCard: React.FC<{ benefit: Benefit }> = ({ benefit }) => (
-    <div className="neon-card benefit-card">
-        <div className="benefit-icon">{benefit.icon}</div>
-        <h4>{benefit.title}</h4>
-        <p>{benefit.description}</p>
-      </div>
+/* ------------------ Benefit Card ------------------ */
+// Added isActive and onClick props to handle glow
+const BenefitCard: React.FC<{ 
+  benefit: Benefit; 
+  isActive: boolean; 
+  onClick: () => void 
+}> = ({ benefit, isActive, onClick }) => (
+  <div 
+    className={`neon-card benefit-card ${isActive ? 'clicked' : ''}`} 
+    onClick={onClick}
+  >
+    <div className="benefit-icon">{benefit.icon}</div>
+    <h4>{benefit.title}</h4>
+    <p>{benefit.description}</p>
+  </div>
 );
 
-// Faculty section component includes the reveal classes
-const FacultySection: React.FC<{ title: string, members: TeamMember[] }> = ({ title, members }) => (
-    <div className="section-container reveal slide-in-up">
-        <div className="section-label">Faculty Guidance</div>
-        <h2 className="section-title">{title}</h2>
-        <p className="description">Expert faculty members guiding our event success.</p>
-        <div className="team-grid two-column-grid">
-            {members.map(member => (
-                <MemberCard key={member.name} member={member} /> 
-            ))}
-        </div>
-    </div>
+/* ------------------ Faculty Section ------------------ */
+// Added props to handle glow state for faculty members
+const FacultySection: React.FC<{ 
+  title: string; 
+  members: TeamMember[];
+  activeId: string | null;
+  onCardClick: (id: string) => void;
+}> = ({ title, members, activeId, onCardClick }) => (
+  <div className="section-container">
+    <div className="section-label">Faculty Guidance</div>
+    <h2 className="section-title">{title}</h2>
+    <div className="team-grid two-column-grid">
+      {members.map((m, i) => {
+        const id = `faculty-${i}`;
+        return (
+          <div 
+            key={m.name} 
+            onClick={() => onCardClick(id)}
+            className={activeId === id ? 'clicked' : ''}
+          >
+            <MemberCard member={m} />
+          </div>
+        );
+      })}
+    </div>
+  </div>
 );
 
+/* ================== MAIN PAGE ================== */
+const AngelInvestorsPage: React.FC = () => {
+  useRevealAnimation();
+  const mainEvent = eventListings[0];
 
-// =========================================================
-// --- Main Event Page Component ---
-// =========================================================
-const EventPage: React.FC = () => {
-  useRevealAnimation(); 
-  
-  const mainEvent = eventListings[0]; 
-  const allFaculty = facultyCoordinators; 
-  const allCoreTeam = coreTeam; // Using the simplified Core Team data
+  // State to track which card is currently glowing
+  const [clickedId, setClickedId] = useState<string | null>(null);
 
-  const handleRegisterClick = () => {
-    const aboutSection = document.getElementById('about-event');
-    if (aboutSection) {
-        aboutSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+  // Toggle function: if click same card, turn off glow; otherwise, glow new card
+  const handleCardClick = (id: string) => {
+    setClickedId(prev => (prev === id ? null : id));
+  };
 
-  return (
-    <>
-      <div className="event-page-container">
-        
-        {/* 1. Event Brief / Hero Section */}
-        <div className="section-container" id="hero-section" style={{ marginTop: '0px' }}>
-            <header className="hero-section-content">
-                <div className="top-title-wrapper">
-                    <p className="event-tag">{mainEvent.tag}</p> 
-                    <h1 className="main-event-title">{mainEvent.title}</h1>
-                </div>
-                
-                <p className="event-description-text">
-                    {mainEvent.description}
-                </p> 
-                
-                <div className="event-details">
-                  <p>📅 {mainEvent.date}</p>
-                  <p>⏰ {mainEvent.time}</p> 
-                  <p>📍 {mainEvent.location}</p>
-                </div>
-                
-                <button 
-                  className="register-button glow-button"
-                  onClick={handleRegisterClick}
-                >
-                  Register Now →
-                </button>
-            </header>
-        </div>
+  return (
+    <div className="event-page-container">
 
-        {/* 2. About The Event */}
-        <div className="section-container reveal slide-in-up" id="about-event"> 
-            <AboutSectionContent />
-        </div>
+      {/* HERO */}
+      <section className="section-container hero-section">
+        <p className="event-tag">{mainEvent.tag}</p>
+        <h1 className="main-event-title">{mainEvent.title}</h1>
+        <p className="event-description-text">{mainEvent.description}</p>
+        <div className="event-details">
+          <span>📅 {mainEvent.date}</span>
+          <span>⏰ {mainEvent.time}</span>
+          <span>📍 {mainEvent.location}</span>
+        </div>
+        <button className="register-button">Register Now →</button>
+      </section>
 
-        {/* 3. Speakers & Judges Section */}
-        <div className="section-container reveal slide-in-up">
-          <div className="section-label">Expert Panel</div>
-          <h2 className="section-title">Speakers & Judges</h2>
-          <h3 className="announcement">Will be announced soon</h3>
-          <p className="stay-tuned-text">Stay tuned for updates on our expert panel of industry leaders and successful entrepreneurs</p>
-        </div>
+      {/* ABOUT */}
+      <section className="section-container">
+        <AboutSectionContent />
+      </section>
 
-        {/* 4. Perks of the event (Benefits) */}
-        <div className="section-container reveal slide-in-up">
-          <div className="neon-card consolidated-section">
-            <div className="section-label">Benefits</div>
-            <h2 className="section-title">Why Participate?</h2>
-            <p className="description">Unlock exclusive opportunities and resources for your startup journey</p>
-            <div className="benefits-grid two-column-grid"> 
-              {eventBenefits.map((benefit, index) => (
-                <BenefitCard key={index} benefit={benefit} />
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        {/* 5. Organizing Committee */}
-        <div className="section-container reveal slide-in-up">
-          <div className="section-label">Get In Touch</div>
-          <h2 className="section-title">Organizing Committee</h2>
-          <p className="description">Meet our dedicated team realizing event success</p>
-          <div className="team-grid four-in-a-row-grid"> 
-            {organizingCommittee.map(member => (
-              <MemberCard key={member.name} member={member} /> 
-            ))}
-          </div>
-        </div>
-        
-        {/* 6. Faculty Section */}
-        <FacultySection 
-            title="Faculty Coordinators" 
-            members={allFaculty} 
-        />
-        
-        {/* 7. Event Venue Information */}
-        <div className="section-container reveal slide-in-up">
-          <div className="section-label">Location</div>
-          <h2 className="section-title">Event Venue</h2>
-          <div className="neon-card venue-card">
-            <div className="location-icon">📍</div> 
-            <h4>{eventVenue.name}</h4>
-            <p>{eventVenue.addressLine1}</p>
-          </div>
-        </div>
-        
-        {/* 8. Core Team (The section being updated) */}
-        <div className="section-container reveal slide-in-up">
-          <div className="section-label">Leadership Team</div>
-          <h2 className="section-title">Core Team</h2>
-          {/* *** CLASS NAME CHANGED BACK TO 'three-column-grid' *** */}
-          <div className="team-grid three-column-grid"> 
-            {allCoreTeam.map(member => (
-              <MemberCard key={member.name} member={member} />
-            ))}
-          </div>
-        </div>
+      {/* SPEAKERS */}
+      <section className="section-container">
+        <div className="section-label">Expert Panel</div>
+        <h2 className="section-title">Speakers & Judges</h2>
+        <h3 className="announcement">Will be announced soon</h3>
+        <p className="stay-tuned-text">
+          Stay tuned for updates on our expert panel of industry leaders and successful entrepreneurs
+        </p>
+      </section>
 
-      </div>
-    </>
-  );
+      {/* BENEFITS */}
+      <section className="section-container">
+        <div className="section-label">Benefits</div>
+        <h2 className="section-title">Why Participate?</h2>
+        <div className="two-column-grid">
+          {eventBenefits.map((b, i) => (
+            <BenefitCard 
+              key={i} 
+              benefit={b} 
+              isActive={clickedId === `benefit-${i}`}
+              onClick={() => handleCardClick(`benefit-${i}`)}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* ORGANIZING COMMITTEE */}
+      <section className="section-container">
+        <div className="section-label">Contacts</div>
+        <h2 className="section-title">Organizing Committee</h2>
+        <div className="single-flex-row">
+          {organizingCommittee.map((m, i) => {
+            const id = `oc-${i}`;
+            return (
+              <div 
+                key={m.name} 
+                onClick={() => handleCardClick(id)}
+                className={clickedId === id ? 'clicked' : ''}
+              >
+                <MemberCard member={m} />
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      {/* FACULTY */}
+      <FacultySection 
+        title="Faculty Coordinators" 
+        members={facultyCoordinators} 
+        activeId={clickedId}
+        onCardClick={handleCardClick}
+      />
+
+      {/* VENUE */}
+      <section className="section-container">
+        <div className="section-label">Location</div>
+        <h2 className="section-title">Event Venue</h2>
+        <div 
+          className={`neon-card venue-card ${clickedId === 'venue' ? 'clicked' : ''}`}
+          onClick={() => handleCardClick('venue')}
+        >
+          <div className="location-icon">📍</div>
+          <h4>{eventVenue.name}</h4>
+          <p>{eventVenue.addressLine1}</p>
+        </div>
+      </section>
+
+      {/* CORE TEAM */}
+      <section className="section-container">
+        <div className="section-label">Leadership</div>
+        <h2 className="section-title">Core Team</h2>
+        <div className="team-grid three-column-grid">
+          {coreTeam.map((m, i) => {
+            const id = `core-${i}`;
+            return (
+              <div 
+                key={m.name} 
+                onClick={() => handleCardClick(id)}
+                className={clickedId === id ? 'clicked' : ''}
+              >
+                <MemberCard member={m} />
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+    </div>
+  );
 };
 
-export default EventPage;
+export default AngelInvestorsPage;
