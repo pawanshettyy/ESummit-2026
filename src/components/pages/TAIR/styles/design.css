@@ -105,10 +105,13 @@ body {
 
 /* ================= EVENT BRIEF ================= */
 .event-description-text {
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   line-height: 2.4;
   margin-bottom: 20px;
   color: #f1f1f1;
+}
+.main-event-title{
+  font-size: 2.8rem;
 }
 
 .event-details {
@@ -354,3 +357,18 @@ body {
   }
 
 }
+/* === WHY PARTICIPATE – MOBILE VERTICAL STACK === */
+@media (max-width: 768px) {
+  .benefit-card {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    text-align: center !important;
+  }
+
+  /* Icon on top */
+  .benefit-card .benefit-icon {
+    margin-bottom: 12px;
+  }
+}
+
