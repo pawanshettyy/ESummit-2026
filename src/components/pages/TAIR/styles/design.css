@@ -158,7 +158,6 @@ body {
 /* ================= CARDS ================= */
 .neon-card,
 .member-card {
-  background: #fff;
   border: 1px solid var(--secondary-red-border);
   padding: 28px;
   border-radius: 12px;
