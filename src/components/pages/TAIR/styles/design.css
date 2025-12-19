@@ -9,7 +9,7 @@
 body {
   margin: 0;
   background: #fff;
-  color: rgb(114, 114, 114);
+  color:#89909d;
   font-family: 'Inter', sans-serif;
 }
 
@@ -108,7 +108,7 @@ body {
   font-size: 1.2rem;
   line-height: 2.4;
   margin-bottom: 20px;
-  color: rgb(114, 114, 114);
+  color: #89909d;
 }
 .main-event-title{
   font-size: 2.8rem;
