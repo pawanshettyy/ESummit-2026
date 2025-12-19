@@ -1,5 +1,5 @@
 // src/pages/angelInvestors.tsx
-import React, { useEffect, useState } from 'react'; // Added useState
+import React, { useEffect, useState } from 'react';
 import MemberCard from '../componens/MemberCard';
 import AboutSectionContent from '../componens/AboutSection';
 import '../styles/design.css';
@@ -36,7 +36,6 @@ const useRevealAnimation = () => {
 };
 
 /* ------------------ Benefit Card ------------------ */
-// Added isActive and onClick props to handle glow
 const BenefitCard: React.FC<{ 
   benefit: Benefit; 
   isActive: boolean; 
@@ -53,14 +52,13 @@ const BenefitCard: React.FC<{
 );
 
 /* ------------------ Faculty Section ------------------ */
-// Added props to handle glow state for faculty members
 const FacultySection: React.FC<{ 
   title: string; 
   members: TeamMember[];
   activeId: string | null;
   onCardClick: (id: string) => void;
 }> = ({ title, members, activeId, onCardClick }) => (
-  <div className="section-container">
+  <section className="section-container section-faculty">
     <div className="section-label">Faculty Guidance</div>
     <h2 className="section-title">{title}</h2>
     <div className="team-grid two-column-grid">
@@ -77,7 +75,7 @@ const FacultySection: React.FC<{
         );
       })}
     </div>
-  </div>
+  </section>
 );
 
 /* ================== MAIN PAGE ================== */
@@ -85,10 +83,8 @@ const AngelInvestorsPage: React.FC = () => {
   useRevealAnimation();
   const mainEvent = eventListings[0];
 
-  // State to track which card is currently glowing
   const [clickedId, setClickedId] = useState<string | null>(null);
 
-  // Toggle function: if click same card, turn off glow; otherwise, glow new card
   const handleCardClick = (id: string) => {
     setClickedId(prev => (prev === id ? null : id));
   };
@@ -110,12 +106,12 @@ const AngelInvestorsPage: React.FC = () => {
       </section>
 
       {/* ABOUT */}
-      <section className="section-container">
+      <section className="section-container section-about">
         <AboutSectionContent />
       </section>
 
       {/* SPEAKERS */}
-      <section className="section-container">
+      <section className="section-container section-speakers">
         <div className="section-label">Expert Panel</div>
         <h2 className="section-title">Speakers & Judges</h2>
         <h3 className="announcement">Will be announced soon</h3>
@@ -125,7 +121,7 @@ const AngelInvestorsPage: React.FC = () => {
       </section>
 
       {/* BENEFITS */}
-      <section className="section-container">
+      <section className="section-container section-benefits">
         <div className="section-label">Benefits</div>
         <h2 className="section-title">Why Participate?</h2>
         <div className="two-column-grid">
@@ -141,7 +137,7 @@ const AngelInvestorsPage: React.FC = () => {
       </section>
 
       {/* ORGANIZING COMMITTEE */}
-      <section className="section-container">
+      <section className="section-container section-oc">
         <div className="section-label">Contacts</div>
         <h2 className="section-title">Organizing Committee</h2>
         <div className="single-flex-row">
@@ -169,7 +165,7 @@ const AngelInvestorsPage: React.FC = () => {
       />
 
       {/* VENUE */}
-      <section className="section-container">
+      <section className="section-container section-venue">
         <div className="section-label">Location</div>
         <h2 className="section-title">Event Venue</h2>
         <div 
@@ -183,7 +179,7 @@ const AngelInvestorsPage: React.FC = () => {
       </section>
 
       {/* CORE TEAM */}
-      <section className="section-container">
+      <section className="section-container section-core">
         <div className="section-label">Leadership</div>
         <h2 className="section-title">Core Team</h2>
         <div className="team-grid three-column-grid">

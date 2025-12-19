@@ -57,7 +57,7 @@ export const coreTeam: TeamMember[] = [
   {
     name: "Hredey Chaand",
     role: "Core Team",
-    subRole: "Core Member - COO",
+    subRole: "Core Member - CMO",
     email: "xyz@example.com",
     phone: "+91 XXXXXXXXXX",
   },
@@ -82,7 +82,7 @@ export const coreTeam: TeamMember[] = [
 // --- Event Venue, Benefits, Event Listings ---
 export const eventVenue: Venue = { 
     name: "Thakur College of Engineering and Technology",
-    addressLine1: "SH-1", 
+    addressLine1: "SH-1" 
 };
 
 export const eventBenefits: Benefit[] = [
@@ -96,9 +96,9 @@ export const eventListings: EventListing[] = [
     { 
         title: "The Angel Investors Roundtable", 
         tag: "Pre-Seed Funding", 
-        description: "Present your early-stage startup to angel investors and secure pre-seed funding.", 
+        description: "Simulate real-world investment pitch scenarios and promote practical entrepreneurship.", 
         date: "February 2, 2026", 
-        location: "SH-1", 
+        location: "Seminar Hall - 1", 
         time: "10:00 AM - 1:00 PM" 
     }
 ];
