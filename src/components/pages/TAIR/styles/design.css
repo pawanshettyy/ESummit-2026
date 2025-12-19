@@ -330,6 +330,27 @@ body {
 .neon-card h4{
   font-size: 1.5rem;
 }
-.neon-card p{
-  font-size: 1.1rem;
+/* === WHY PARTICIPATE – MOBILE STACK FIX === */
+@media (max-width: 768px) {
+
+  /* Force benefit cards vertical */
+  .benefits-grid,
+  .three-column-grid,
+  .two-column-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Ensure cards are centered */
+  .benefits-grid > div {
+    display: flex;
+    justify-content: center;
+  }
+
+  /* Benefit card width control */
+  .benefit-card,
+  .neon-card {
+    width: 100%;
+    max-width: 340px;
+  }
+
 }
