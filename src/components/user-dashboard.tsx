@@ -8,6 +8,8 @@ import {
   Loader2,
   UserPlus,
   CheckCircle2,
+  Copy,
+  X,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -24,6 +26,8 @@ import { getFormattedEventsForPass } from "../utils/pass-events";
 import { ProfileCompletionModal } from "./profile-completion-modal";
 import { API_BASE_URL } from "../lib/api";
 import { AuroraText } from "./magicui/aurora-text";
+import { KonfHubWidget } from "./konfhub-widget";
+import { toast } from "sonner";
 
 interface Pass {
   id: number;
@@ -74,7 +78,6 @@ export function UserDashboard({
   onLogout,
 }: UserDashboardProps) {
   const { user } = useUser();
-  const [activeTab, setActiveTab] = useState("passes");
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [isCheckingProfile, setIsCheckingProfile] = useState(true);
   const [myPasses, setMyPasses] = useState<Pass[]>([]);
@@ -86,10 +89,82 @@ export function UserDashboard({
   const [registeredEventDetails, setRegisteredEventDetails] = useState<Event[]>([]);
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
   const [isLoadingRegistrations, setIsLoadingRegistrations] = useState(true);
+  const [tcetCode, setTcetCode] = useState<string | null>(null);
+  const [isAssigningCode, setIsAssigningCode] = useState(false);
+  const [showKonfHubWidget, setShowKonfHubWidget] = useState(false);
 
   const mockUser = {
     name: user?.fullName || userData?.name || "User",
     email: user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com",
+  };
+
+  // Check if user is a TCET student based on email domain
+  const isTCETStudent = mockUser.email.toLowerCase().endsWith("@tcetmumbai.in");
+
+  // Set initial tab based on whether user is TCET student
+  const [activeTab, setActiveTab] = useState(isTCETStudent ? "passes" : "schedule");
+
+  // Fetch TCET code for TCET students
+  useEffect(() => {
+    const fetchTcetCode = async () => {
+      if (!isTCETStudent || !user?.id) return;
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/tcet/code/${user.id}`
+        );
+        const data = await response.json();
+
+        if (data.success && data.data.code) {
+          setTcetCode(data.data.code);
+        }
+      } catch (error) {
+        console.error("Error fetching TCET code:", error);
+      }
+    };
+
+    fetchTcetCode();
+  }, [isTCETStudent, user?.id]);
+
+  // Handle TCET pass booking
+  const handleTcetPassBooking = async () => {
+    if (!user?.id) {
+      toast.error("Please login to book a pass");
+      return;
+    }
+
+    setIsAssigningCode(true);
+
+    try {
+      // Assign a code if not already assigned
+      if (!tcetCode) {
+        const response = await fetch(
+          `${API_BASE_URL}/tcet/assign/${user.id}`,
+          { method: 'POST' }
+        );
+        const data = await response.json();
+
+        if (!data.success) {
+          toast.error(data.error || "Failed to assign code");
+          setIsAssigningCode(false);
+          return;
+        }
+
+        setTcetCode(data.data.code);
+        toast.success(`Your unique code: ${data.data.code}`, {
+          description: "Please use this code when booking on KonfHub",
+          duration: 10000,
+        });
+      }
+
+      // Open KonfHub widget
+      setShowKonfHubWidget(true);
+    } catch (error) {
+      console.error("Error assigning TCET code:", error);
+      toast.error("Failed to process request. Please try again.");
+    } finally {
+      setIsAssigningCode(false);
+    }
   };
 
   // Fetch user passes from database
@@ -468,62 +543,100 @@ export function UserDashboard({
         className="w-full"
       >
         <TabsList className="mb-6">
-          <TabsTrigger value="passes">TCET Student Pass</TabsTrigger>
+          {isTCETStudent && (
+            <TabsTrigger value="passes">TCET Student Pass</TabsTrigger>
+          )}
           <TabsTrigger value="schedule">
             My Schedule
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="passes">
-          {isLoadingPasses ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-              <span className="ml-2 text-muted-foreground">Loading...</span>
-            </div>
-          ) : (
-            <>
-              {/* TCET Students Special Booking */}
-              <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/10">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold">🎓 TCET Students Pass</h3>
-                    <Badge className="bg-green-600 hover:bg-green-700">FREE</Badge>
-                  </div>
-                  <p className="text-sm text-muted-foreground mt-2">
-                    Exclusive free pass for TCET students! Book now and enjoy access to select events at E-Summit 2026.
-                  </p>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900">
-                    <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                    <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
-                      ⚠️ <strong>Verification Required:</strong> You must bring your TCET ID card and a valid government-issued ID to the venue entrance for verification.
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <div className="space-y-2 text-sm">
-                    <p className="font-semibold">Includes:</p>
-                    <ul className="space-y-1 ml-4">
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Startup Expo</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Panel Discussion</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> IPL Auction</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> AI Build-A-Thon</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Biz-Arena League</li>
-                      <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Certificate of participation</li>
-                    </ul>
-                  </div>
+        {isTCETStudent && (
+          <TabsContent value="passes">{isLoadingPasses ? (
+              <div className="flex items-center justify-center py-12">
+                <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                <span className="ml-2 text-muted-foreground">Loading...</span>
+              </div>
+            ) : (
+              <>
+                {/* TCET Students Special Booking */}
+                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/10">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <h3 className="text-xl font-bold">🎓 TCET Students Pass</h3>
+                      <Badge className="bg-green-600 hover:bg-green-700">FREE</Badge>
+                    </div>
+                    <p className="text-sm text-muted-foreground mt-2">
+                      Exclusive free pass for TCET students! Book now and enjoy access to select events at E-Summit 2026.
+                    </p>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {tcetCode && (
+                      <Alert className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-400 dark:from-blue-950/30 dark:to-indigo-950/30 dark:border-blue-600 shadow-md">
+                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
+                        <AlertDescription>
+                          <div className="space-y-2">
+                            <p className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-100">Your TCET Access Code:</p>
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 border-dashed border-blue-400 dark:border-blue-500">
+                              <span className="font-mono text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300 tracking-wider break-all">{tcetCode}</span>
+                              <Button
+                                size="sm"
+                                variant="ghost"
+                                onClick={() => {
+                                  navigator.clipboard.writeText(tcetCode);
+                                  toast.success("Code copied to clipboard!");
+                                }}
+                                className="sm:ml-auto w-full sm:w-auto"
+                              >
+                                <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                                <span className="text-xs sm:text-sm">Copy</span>
+                              </Button>
+                            </div>
+                            <p className="text-[10px] sm:text-xs text-blue-700 dark:text-blue-300 font-medium">💡 Save this code! Use it during KonfHub booking to access your TCET student pass</p>
+                          </div>
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    
+                    <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900">
+                      <CheckCircle2 className="h-4 w-4 text-amber-600" />
+                      <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
+                        ⚠️ <strong>Verification Required:</strong> You must bring your TCET ID card and a valid government-issued ID to the venue entrance for verification.
+                      </AlertDescription>
+                    </Alert>
+                    
+                    <div className="space-y-2 text-sm">
+                      <p className="font-semibold">Includes:</p>
+                      <ul className="space-y-1 ml-4">
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Startup Expo</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Panel Discussion</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> IPL Auction</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> AI Build-A-Thon</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Biz-Arena League</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Certificate of participation</li>
+                      </ul>
+                    </div>
 
-                  <Button 
-                    className="w-full" 
-                    onClick={() => window.open('https://konfhub.com/tcet-esummit26', '_blank')}
-                  >
-                    Book TCET Students Pass (Free)
-                  </Button>
-                </CardContent>
-              </Card>
-            </>
-          )}
-        </TabsContent>
+                    <Button 
+                      className="w-full" 
+                      onClick={handleTcetPassBooking}
+                      disabled={isAssigningCode}
+                    >
+                      {isAssigningCode ? (
+                        <>
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          Processing...
+                        </>
+                      ) : (
+                        <>Book TCET Students Pass (Free)</>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              </>
+            )}
+          </TabsContent>
+        )}
 
         <TabsContent value="schedule">{isLoadingPasses || isLoadingRegistrations ? (
             <div className="flex items-center justify-center py-12">
@@ -665,6 +778,74 @@ export function UserDashboard({
         isOpen={showProfileModal}
         onComplete={handleProfileComplete}
       />
+
+      {/* KonfHub Widget Modal for TCET Pass Booking */}
+      {showKonfHubWidget && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4">
+          <div className="relative w-full max-w-5xl max-h-[95vh] bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/20">
+            {/* Header with TCET Code Highlight */}
+            <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-purple-500/10 p-3 sm:p-6 border-b-2 border-primary/20">
+              <div className="flex items-start justify-between gap-2 sm:gap-4">
+                <div className="flex-1 min-w-0">
+                  <h3 className="text-lg sm:text-2xl font-bold mb-2 flex items-center gap-2">
+                    🎓 <span className="truncate">Book TCET Student Pass</span>
+                  </h3>
+                  {tcetCode && (
+                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border-2 border-dashed border-primary shadow-sm">
+                      <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide mb-1">Your TCET Access Code</p>
+                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
+                        <span className="font-mono text-2xl sm:text-4xl font-bold text-primary tracking-widest break-all">{tcetCode}</span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => {
+                            navigator.clipboard.writeText(tcetCode);
+                            toast.success("Code copied!", {
+                              description: "TCET access code copied to clipboard"
+                            });
+                          }}
+                          className="w-full sm:w-auto"
+                        >
+                          <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
+                          <span className="text-xs sm:text-sm">Copy</span>
+                        </Button>
+                      </div>
+                      <p className="text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 mt-2 font-medium">
+                        ⚠️ Use this code in the booking form to access your TCET student pass
+                      </p>
+                    </div>
+                  )}
+                </div>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setShowKonfHubWidget(false)}
+                  className="rounded-full hover:bg-destructive/10 hover:text-destructive shrink-0"
+                >
+                  <X className="h-4 w-4 sm:h-5 sm:w-5" />
+                </Button>
+              </div>
+            </div>
+            
+            {/* KonfHub Widget Container */}
+            <div className="overflow-y-auto bg-gray-50 dark:bg-gray-950" style={{ height: 'calc(95vh - 160px)' }}>
+              <KonfHubWidget
+                eventId="tcet-esummit26"
+                mode="iframe"
+                onSuccess={(data) => {
+                  console.log("TCET pass booking completed:", data);
+                  toast.success("🎉 Booking Successful!", {
+                    description: "Your TCET student pass has been booked. Check your email for confirmation."
+                  });
+                  setShowKonfHubWidget(false);
+                }}
+                onClose={() => setShowKonfHubWidget(false)}
+                className="w-full h-full min-h-[500px] sm:min-h-[600px]"
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { toast } from "sonner";
 import { API_BASE_URL } from "../lib/api";
 
@@ -25,45 +26,160 @@ interface ProfileCompletionModalProps {
   onComplete: () => void;
 }
 
+const TCET_BRANCHES = [
+  "B.E. Computer Engineering",
+  "B.E. Information Technology",
+  "B.E. Electronics & Telecommunication Engineering",
+  "B.E. Electronics and Computer Science",
+  "B.E. Mechanical Engineering",
+  "B.E. Civil Engineering",
+  "B.Tech Artificial Intelligence and Data Science",
+  "B.Tech Computer Science & Engineering (IoT)",
+  "B.Tech Artificial Intelligence and Machine Learning",
+  "B.E. Computer Science and Engineering (Cyber Security)",
+  "B.E - Mechanical and Mechatronics Engineering (Additive Manufacturing)",
+  "B.E. Computer Engineering (Working Professional)",
+  "B.Tech Artificial Intelligence & Data Science (Working Professional)",
+  "Bachelor Of Computer Application (BCA)",
+  "Bachelor Of Business Administration (BBA)",
+  "B.Voc Artificial Intelligence and Data Science",
+  "B.Voc Software Development",
+  "B.Voc Animation & Graphic Designing",
+  "B.Voc Data Analytics",
+  "B.Voc Data Science",
+  "B.Voc Artificial Intelligence",
+];
+
+type UserType = "tcet-student" | "company" | "entrepreneur" | "student" | null;
+
 export function ProfileCompletionModal({
   isOpen,
   onComplete,
 }: ProfileCompletionModalProps) {
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
+  const [userType, setUserType] = useState<UserType>(null);
+  const isTCETStudent = user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@tcetmumbai.in");
+
+  // Initialize userType based on email domain
+  useEffect(() => {
+    if (isTCETStudent) {
+      setUserType("tcet-student");
+    }
+  }, [isTCETStudent]);
+
+  // TCET Student Form
+  const [tcetFormData, setTcetFormData] = useState({
+    countryCode: "+91",
+    phone: "",
+    college: "Thakur College of Engineering and Technology",
+    branch: "",
+    yearOfStudy: "",
+    rollNumber: "",
+  });
+
+  // Company Form
+  const [companyFormData, setCompanyFormData] = useState({
+    countryCode: "+91",
+    phone: "",
+    companyName: "",
+    cin: "",
+    gstin: "",
+    companySize: "",
+    industry: "",
+    designation: "",
+    website: "",
+  });
+
+  // Entrepreneur Form
+  const [entrepreneurFormData, setEntrepreneurFormData] = useState({
+    countryCode: "+91",
+    phone: "",
+    businessName: "",
+    industry: "",
+    yearStarted: "",
+    businessStage: "",
+    website: "",
+  });
+
+  // Student Form
+  const [studentFormData, setStudentFormData] = useState({
+    countryCode: "+91",
     phone: "",
     college: "",
     yearOfStudy: "",
     rollNumber: "",
+    course: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (!formData.phone || !formData.college || !formData.yearOfStudy) {
-      toast.error("Please fill in all required fields");
+    let dataToSubmit: any = {
+      clerkUserId: user?.id,
+      email: user?.primaryEmailAddress?.emailAddress,
+      fullName: user?.fullName,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      imageUrl: user?.imageUrl,
+      userType: userType,
+    };
+
+    // Validate and prepare data based on user type
+    if (userType === "tcet-student") {
+      if (!tcetFormData.phone || !tcetFormData.branch || !tcetFormData.yearOfStudy) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+      dataToSubmit = { 
+        ...dataToSubmit, 
+        ...tcetFormData,
+        phone: `${tcetFormData.countryCode}${tcetFormData.phone}`
+      };
+    } else if (userType === "company") {
+      if (!companyFormData.phone || !companyFormData.companyName || !companyFormData.industry) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+      dataToSubmit = { 
+        ...dataToSubmit, 
+        ...companyFormData,
+        phone: `${companyFormData.countryCode}${companyFormData.phone}`
+      };
+    } else if (userType === "entrepreneur") {
+      if (!entrepreneurFormData.phone || !entrepreneurFormData.businessName || !entrepreneurFormData.industry) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+      dataToSubmit = { 
+        ...dataToSubmit, 
+        ...entrepreneurFormData,
+        phone: `${entrepreneurFormData.countryCode}${entrepreneurFormData.phone}`
+      };
+    } else if (userType === "student") {
+      if (!studentFormData.phone || !studentFormData.college || !studentFormData.yearOfStudy) {
+        toast.error("Please fill in all required fields");
+        return;
+      }
+      dataToSubmit = { 
+        ...dataToSubmit, 
+        ...studentFormData,
+        phone: `${studentFormData.countryCode}${studentFormData.phone}`
+      };
+    } else {
+      toast.error("Please select a registration type");
       return;
     }
 
     setLoading(true);
 
     try {
-      // Call your backend API to update user profile
       const response = await fetch(`${API_BASE_URL}/users/complete-profile`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          clerkUserId: user?.id,
-          email: user?.primaryEmailAddress?.emailAddress,
-          fullName: user?.fullName,
-          firstName: user?.firstName,
-          lastName: user?.lastName,
-          imageUrl: user?.imageUrl,
-          ...formData,
-        }),
+        body: JSON.stringify(dataToSubmit),
       });
 
       if (!response.ok) {
@@ -82,90 +198,512 @@ export function ProfileCompletionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={() => {}}>
-      <DialogContent className="sm:max-w-[500px]" hideClose>
+      <DialogContent className="w-[95vw] max-w-[600px] max-h-[90vh] overflow-y-auto p-4 sm:p-6" hideClose>
         <DialogHeader>
-          <DialogTitle>Complete Your Profile</DialogTitle>
-          <DialogDescription>
+          <DialogTitle className="text-lg sm:text-xl">Complete Your Profile</DialogTitle>
+          <DialogDescription className="text-sm">
             We need a few more details to personalize your E-Summit experience.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="phone">
-              Phone Number <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="phone"
-              type="tel"
-              placeholder="+91 98765 43210"
-              value={formData.phone}
-              onChange={(e) =>
-                setFormData({ ...formData, phone: e.target.value })
-              }
-              required
-            />
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+          {/* User Type Selection (only for non-TCET users) */}
+          {!isTCETStudent && !userType && (
+            <div className="space-y-3 sm:space-y-4">
+              <Label className="text-sm sm:text-base">I am registering as:</Label>
+              <RadioGroup value={userType || ""} onValueChange={(value: string) => setUserType(value as UserType)}>
+                <div className="flex items-center space-x-2 rounded-lg border p-3 sm:p-4 cursor-pointer hover:bg-accent">
+                  <RadioGroupItem value="company" id="company" />
+                  <Label htmlFor="company" className="cursor-pointer flex-1">
+                    <div className="font-semibold text-sm sm:text-base">Startup/Company</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Registered business or startup</div>
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2 rounded-lg border p-3 sm:p-4 cursor-pointer hover:bg-accent">
+                  <RadioGroupItem value="entrepreneur" id="entrepreneur" />
+                  <Label htmlFor="entrepreneur" className="cursor-pointer flex-1">
+                    <div className="font-semibold text-sm sm:text-base">Individual/Entrepreneur</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Solo entrepreneur or freelancer</div>
+                  </Label>
+                </div>
+                <div className="flex items-center space-x-2 rounded-lg border p-3 sm:p-4 cursor-pointer hover:bg-accent">
+                  <RadioGroupItem value="student" id="student" />
+                  <Label htmlFor="student" className="cursor-pointer flex-1">
+                    <div className="font-semibold text-sm sm:text-base">Student</div>
+                    <div className="text-xs sm:text-sm text-muted-foreground">Currently enrolled in an educational institution</div>
+                  </Label>
+                </div>
+              </RadioGroup>
+            </div>
+          )}
 
-          <div className="space-y-2">
-            <Label htmlFor="college">
-              College/Institution <span className="text-destructive">*</span>
-            </Label>
-            <Input
-              id="college"
-              placeholder="Your college name"
-              value={formData.college}
-              onChange={(e) =>
-                setFormData({ ...formData, college: e.target.value })
-              }
-              required
-            />
-          </div>
+          {/* TCET Student Form */}
+          {userType === "tcet-student" && (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-primary/10 border border-primary/20 p-3">
+                <p className="text-sm font-medium">🎓 TCET Student Registration</p>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="yearOfStudy">
-              Year of Study <span className="text-destructive">*</span>
-            </Label>
-            <Select
-              value={formData.yearOfStudy}
-              onValueChange={(value: string) =>
-                setFormData({ ...formData, yearOfStudy: value })
-              }
-              required
-            >
-              <SelectTrigger id="yearOfStudy">
-                <SelectValue placeholder="Select year" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="1st Year">1st Year</SelectItem>
-                <SelectItem value="2nd Year">2nd Year</SelectItem>
-                <SelectItem value="3rd Year">3rd Year</SelectItem>
-                <SelectItem value="4th Year">4th Year</SelectItem>
-                <SelectItem value="Graduate">Graduate</SelectItem>
-                <SelectItem value="Post Graduate">Post Graduate</SelectItem>
-                <SelectItem value="PhD">PhD</SelectItem>
-                <SelectItem value="Other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">
+                  Phone Number <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={tcetFormData.countryCode}
+                    onValueChange={(value: string) => setTcetFormData({ ...tcetFormData, countryCode: value })}
+                  >
+                    <SelectTrigger className="w-[90px] sm:w-[110px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                      <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                      <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    id="phone"
+                    type="tel"
+                    placeholder="98765 43210"
+                    value={tcetFormData.phone}
+                    onChange={(e) => setTcetFormData({ ...tcetFormData, phone: e.target.value.replace(/\D/g, '') })}
+                    className="flex-1"
+                    required
+                  />
+                </div>
+              </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="rollNumber">Roll Number (Optional)</Label>
-            <Input
-              id="rollNumber"
-              placeholder="Your roll number"
-              value={formData.rollNumber}
-              onChange={(e) =>
-                setFormData({ ...formData, rollNumber: e.target.value })
-              }
-            />
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="college">College/Institution</Label>
+                <Input
+                  id="college"
+                  value={tcetFormData.college}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
 
-          <div className="flex justify-end gap-2 pt-4">
-            <Button type="submit" disabled={loading} className="w-full">
-              {loading ? "Saving..." : "Complete Profile"}
-            </Button>
-          </div>
+              <div className="space-y-2">
+                <Label htmlFor="branch">
+                  Branch/Course <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  value={tcetFormData.branch}
+                  onValueChange={(value: string) => setTcetFormData({ ...tcetFormData, branch: value })}
+                  required
+                >
+                  <SelectTrigger id="branch">
+                    <SelectValue placeholder="Select your branch" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {TCET_BRANCHES.map((branch) => (
+                      <SelectItem key={branch} value={branch}>
+                        {branch}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="yearOfStudy">
+                  Year of Study <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  value={tcetFormData.yearOfStudy}
+                  onValueChange={(value: string) => setTcetFormData({ ...tcetFormData, yearOfStudy: value })}
+                  required
+                >
+                  <SelectTrigger id="yearOfStudy">
+                    <SelectValue placeholder="Select year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1st Year">1st Year</SelectItem>
+                    <SelectItem value="2nd Year">2nd Year</SelectItem>
+                    <SelectItem value="3rd Year">3rd Year</SelectItem>
+                    <SelectItem value="4th Year">4th Year</SelectItem>
+                    <SelectItem value="Graduate">Graduate</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="rollNumber">Roll Number (Optional)</Label>
+                <Input
+                  id="rollNumber"
+                  placeholder="Your roll number"
+                  value={tcetFormData.rollNumber}
+                  onChange={(e) => setTcetFormData({ ...tcetFormData, rollNumber: e.target.value })}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Company Form */}
+          {userType === "company" && (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-blue-50 dark:bg-blue-950/20 border border-blue-200 dark:border-blue-900 p-3">
+                <p className="text-sm font-medium">🏢 Company/Startup Registration</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companyPhone">
+                  Phone Number <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={companyFormData.countryCode}
+                    onValueChange={(value: string) => setCompanyFormData({ ...companyFormData, countryCode: value })}
+                  >
+                    <SelectTrigger className="w-[110px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                      <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                      <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    id="companyPhone"
+                    type="tel"
+                    placeholder="98765 43210"
+                    value={companyFormData.phone}
+                    onChange={(e) => setCompanyFormData({ ...companyFormData, phone: e.target.value.replace(/\D/g, '') })}
+                    className="flex-1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companyName">
+                  Company Name <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="companyName"
+                  placeholder="Your company name"
+                  value={companyFormData.companyName}
+                  onChange={(e) => setCompanyFormData({ ...companyFormData, companyName: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="cin">CIN (Optional)</Label>
+                  <Input
+                    id="cin"
+                    placeholder="L12345MH2020PTC123456"
+                    value={companyFormData.cin}
+                    onChange={(e) => setCompanyFormData({ ...companyFormData, cin: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="gstin">GSTIN (Optional)</Label>
+                  <Input
+                    id="gstin"
+                    placeholder="22AAAAA0000A1Z5"
+                    value={companyFormData.gstin}
+                    onChange={(e) => setCompanyFormData({ ...companyFormData, gstin: e.target.value })}
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="companySize">
+                  Company Size <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  value={companyFormData.companySize}
+                  onValueChange={(value: string) => setCompanyFormData({ ...companyFormData, companySize: value })}
+                  required
+                >
+                  <SelectTrigger id="companySize">
+                    <SelectValue placeholder="Select company size" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1-10">1-10 employees</SelectItem>
+                    <SelectItem value="11-50">11-50 employees</SelectItem>
+                    <SelectItem value="51-200">51-200 employees</SelectItem>
+                    <SelectItem value="201-500">201-500 employees</SelectItem>
+                    <SelectItem value="500+">500+ employees</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="industry">
+                  Industry <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="industry"
+                  placeholder="e.g., Technology, Healthcare, Finance"
+                  value={companyFormData.industry}
+                  onChange={(e) => setCompanyFormData({ ...companyFormData, industry: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="designation">Your Designation</Label>
+                <Input
+                  id="designation"
+                  placeholder="e.g., CEO, CTO, Manager"
+                  value={companyFormData.designation}
+                  onChange={(e) => setCompanyFormData({ ...companyFormData, designation: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="website">Company Website (Optional)</Label>
+                <Input
+                  id="website"
+                  type="url"
+                  placeholder="https://yourcompany.com"
+                  value={companyFormData.website}
+                  onChange={(e) => setCompanyFormData({ ...companyFormData, website: e.target.value })}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Entrepreneur Form */}
+          {userType === "entrepreneur" && (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-purple-50 dark:bg-purple-950/20 border border-purple-200 dark:border-purple-900 p-3">
+                <p className="text-sm font-medium">💡 Entrepreneur Registration</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="entrepreneurPhone">
+                  Phone Number <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={entrepreneurFormData.countryCode}
+                    onValueChange={(value: string) => setEntrepreneurFormData({ ...entrepreneurFormData, countryCode: value })}
+                  >
+                    <SelectTrigger className="w-[110px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                      <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                      <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    id="entrepreneurPhone"
+                    type="tel"
+                    placeholder="98765 43210"
+                    value={entrepreneurFormData.phone}
+                    onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, phone: e.target.value.replace(/\D/g, '') })}
+                    className="flex-1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="businessName">
+                  Business/Venture Name <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="businessName"
+                  placeholder="Your business name"
+                  value={entrepreneurFormData.businessName}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, businessName: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="entrepreneurIndustry">
+                  Industry/Sector <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="entrepreneurIndustry"
+                  placeholder="e.g., E-commerce, Consulting, Design"
+                  value={entrepreneurFormData.industry}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, industry: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="yearStarted">Year Started (Optional)</Label>
+                <Input
+                  id="yearStarted"
+                  type="number"
+                  placeholder="2023"
+                  min="1900"
+                  max={new Date().getFullYear()}
+                  value={entrepreneurFormData.yearStarted}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, yearStarted: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="businessStage">Business Stage</Label>
+                <Select
+                  value={entrepreneurFormData.businessStage}
+                  onValueChange={(value: string) => setEntrepreneurFormData({ ...entrepreneurFormData, businessStage: value })}
+                >
+                  <SelectTrigger id="businessStage">
+                    <SelectValue placeholder="Select stage" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Idea">Idea Stage</SelectItem>
+                    <SelectItem value="MVP">MVP/Prototype</SelectItem>
+                    <SelectItem value="Early Revenue">Early Revenue</SelectItem>
+                    <SelectItem value="Growth">Growth Stage</SelectItem>
+                    <SelectItem value="Established">Established</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="entrepreneurWebsite">Website/Portfolio (Optional)</Label>
+                <Input
+                  id="entrepreneurWebsite"
+                  type="url"
+                  placeholder="https://yourbusiness.com"
+                  value={entrepreneurFormData.website}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, website: e.target.value })}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Student Form */}
+          {userType === "student" && (
+            <div className="space-y-4">
+              <div className="rounded-lg bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-900 p-3">
+                <p className="text-sm font-medium">📚 Student Registration</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="studentPhone">
+                  Phone Number <span className="text-destructive">*</span>
+                </Label>
+                <div className="flex gap-2">
+                  <Select
+                    value={studentFormData.countryCode}
+                    onValueChange={(value: string) => setStudentFormData({ ...studentFormData, countryCode: value })}
+                  >
+                    <SelectTrigger className="w-[110px]">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="+91">🇮🇳 +91</SelectItem>
+                      <SelectItem value="+1">🇺🇸 +1</SelectItem>
+                      <SelectItem value="+44">🇬🇧 +44</SelectItem>
+                      <SelectItem value="+971">🇦🇪 +971</SelectItem>
+                      <SelectItem value="+65">🇸🇬 +65</SelectItem>
+                      <SelectItem value="+61">🇦🇺 +61</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Input
+                    id="studentPhone"
+                    type="tel"
+                    placeholder="98765 43210"
+                    value={studentFormData.phone}
+                    onChange={(e) => setStudentFormData({ ...studentFormData, phone: e.target.value.replace(/\D/g, '') })}
+                    className="flex-1"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="studentCollege">
+                  College/Institution <span className="text-destructive">*</span>
+                </Label>
+                <Input
+                  id="studentCollege"
+                  placeholder="Your college name"
+                  value={studentFormData.college}
+                  onChange={(e) => setStudentFormData({ ...studentFormData, college: e.target.value })}
+                  required
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="course">Course/Degree</Label>
+                <Input
+                  id="course"
+                  placeholder="e.g., B.Tech, MBA, BBA"
+                  value={studentFormData.course}
+                  onChange={(e) => setStudentFormData({ ...studentFormData, course: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="studentYear">
+                  Year of Study <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  value={studentFormData.yearOfStudy}
+                  onValueChange={(value: string) => setStudentFormData({ ...studentFormData, yearOfStudy: value })}
+                  required
+                >
+                  <SelectTrigger id="studentYear">
+                    <SelectValue placeholder="Select year" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="1st Year">1st Year</SelectItem>
+                    <SelectItem value="2nd Year">2nd Year</SelectItem>
+                    <SelectItem value="3rd Year">3rd Year</SelectItem>
+                    <SelectItem value="4th Year">4th Year</SelectItem>
+                    <SelectItem value="Graduate">Graduate</SelectItem>
+                    <SelectItem value="Post Graduate">Post Graduate</SelectItem>
+                    <SelectItem value="PhD">PhD</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="studentRoll">Roll Number (Optional)</Label>
+                <Input
+                  id="studentRoll"
+                  placeholder="Your roll number"
+                  value={studentFormData.rollNumber}
+                  onChange={(e) => setStudentFormData({ ...studentFormData, rollNumber: e.target.value })}
+                />
+              </div>
+            </div>
+          )}
+
+          {/* Submit Button */}
+          {userType && (
+            <div className="flex justify-end gap-2 pt-4">
+              {!isTCETStudent && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setUserType(null)}
+                  disabled={loading}
+                >
+                  Back
+                </Button>
+              )}
+              <Button type="submit" disabled={loading} className="min-w-[150px]">
+                {loading ? "Saving..." : "Complete Profile"}
+              </Button>
+            </div>
+          )}
         </form>
       </DialogContent>
     </Dialog>
