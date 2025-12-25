@@ -7,6 +7,7 @@ import eventRoutes from './event.routes';
 import pdfRoutes from './pdf.routes';
 import paymentRoutes from './payment.routes';
 import webhookRoutes from './webhook.routes';
+import tcetRoutes from './tcet.routes';
 
 const router = Router();
 
@@ -28,5 +29,6 @@ router.use('/webhooks', webhookRoutes);
 router.use('/checkin', checkinRoutes);
 router.use('/events', eventRoutes);
 router.use('/pdf', pdfRoutes);
+router.use('/tcet', tcetRoutes);
 
 export default router;
