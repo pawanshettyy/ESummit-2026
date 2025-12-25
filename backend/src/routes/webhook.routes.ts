@@ -117,11 +117,11 @@ router.post('/clerk', async (req: Request, res: Response) => {
  * 
  * SETUP INSTRUCTIONS:
  * 1. Add KONFHUB_WEBHOOK_SECRET to backend/.env
- * 2. Configure webhook in KonfHub Dashboard: https://tcetesummit.in/api/v1/webhooks/konfhub
+ * 2. Configure webhook in KonfHub Dashboard: https://api.tcetesummit.in/api/v1/webhooks/konfhub
  * 3. Enable events: ticket.issued, order.completed, order.cancelled
  * 4. Set KONFHUB_AUTO_SYNC=false in .env to disable automatic pass creation (use CSV import instead)
  * 
- * Production URL: https://tcetesummit.in/api/v1/webhooks/konfhub
+ * Production URL: https://api.tcetesummit.in/api/v1/webhooks/konfhub
  */
 router.post('/konfhub', async (req: Request, res: Response) => {
   try {
