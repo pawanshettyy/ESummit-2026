@@ -95,11 +95,12 @@ export function ProfileCompletionModal({
   const [entrepreneurFormData, setEntrepreneurFormData] = useState({
     countryCode: "+91",
     phone: "",
-    businessName: "",
-    industry: "",
-    yearStarted: "",
-    businessStage: "",
-    website: "",
+    professionalBackground: "",
+    yearsOfExperience: "",
+    expertise: "",
+    currentStatus: "",
+    linkedinProfile: "",
+    portfolio: "",
   });
 
   // Student Form
@@ -147,7 +148,7 @@ export function ProfileCompletionModal({
         phone: `${companyFormData.countryCode}${companyFormData.phone}`
       };
     } else if (userType === "entrepreneur") {
-      if (!entrepreneurFormData.phone || !entrepreneurFormData.businessName || !entrepreneurFormData.industry) {
+      if (!entrepreneurFormData.phone || !entrepreneurFormData.professionalBackground || !entrepreneurFormData.expertise) {
         toast.error("Please fill in all required fields");
         return;
       }
@@ -517,71 +518,94 @@ export function ProfileCompletionModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="businessName">
-                  Business/Venture Name <span className="text-destructive">*</span>
+                <Label htmlFor="professionalBackground">
+                  Professional Background <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                  id="businessName"
-                  placeholder="Your business name"
-                  value={entrepreneurFormData.businessName}
-                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, businessName: e.target.value })}
+                  id="professionalBackground"
+                  placeholder="e.g., Software Developer, Marketing Professional, Designer"
+                  value={entrepreneurFormData.professionalBackground}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, professionalBackground: e.target.value })}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="entrepreneurIndustry">
-                  Industry/Sector <span className="text-destructive">*</span>
+                <Label htmlFor="expertise">
+                  Area of Expertise <span className="text-destructive">*</span>
                 </Label>
                 <Input
-                  id="entrepreneurIndustry"
-                  placeholder="e.g., E-commerce, Consulting, Design"
-                  value={entrepreneurFormData.industry}
-                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, industry: e.target.value })}
+                  id="expertise"
+                  placeholder="e.g., Web Development, Digital Marketing, UI/UX Design"
+                  value={entrepreneurFormData.expertise}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, expertise: e.target.value })}
                   required
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="yearStarted">Year Started (Optional)</Label>
-                <Input
-                  id="yearStarted"
-                  type="number"
-                  placeholder="2023"
-                  min="1900"
-                  max={new Date().getFullYear()}
-                  value={entrepreneurFormData.yearStarted}
-                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, yearStarted: e.target.value })}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="businessStage">Business Stage</Label>
+                <Label htmlFor="yearsOfExperience">
+                  Years of Experience <span className="text-destructive">*</span>
+                </Label>
                 <Select
-                  value={entrepreneurFormData.businessStage}
-                  onValueChange={(value: string) => setEntrepreneurFormData({ ...entrepreneurFormData, businessStage: value })}
+                  value={entrepreneurFormData.yearsOfExperience}
+                  onValueChange={(value: string) => setEntrepreneurFormData({ ...entrepreneurFormData, yearsOfExperience: value })}
+                  required
                 >
-                  <SelectTrigger id="businessStage">
-                    <SelectValue placeholder="Select stage" />
+                  <SelectTrigger id="yearsOfExperience">
+                    <SelectValue placeholder="Select experience" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="Idea">Idea Stage</SelectItem>
-                    <SelectItem value="MVP">MVP/Prototype</SelectItem>
-                    <SelectItem value="Early Revenue">Early Revenue</SelectItem>
-                    <SelectItem value="Growth">Growth Stage</SelectItem>
-                    <SelectItem value="Established">Established</SelectItem>
+                    <SelectItem value="0-1">Less than 1 year</SelectItem>
+                    <SelectItem value="1-3">1-3 years</SelectItem>
+                    <SelectItem value="3-5">3-5 years</SelectItem>
+                    <SelectItem value="5-10">5-10 years</SelectItem>
+                    <SelectItem value="10+">10+ years</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="entrepreneurWebsite">Website/Portfolio (Optional)</Label>
+                <Label htmlFor="currentStatus">
+                  Current Status <span className="text-destructive">*</span>
+                </Label>
+                <Select
+                  value={entrepreneurFormData.currentStatus}
+                  onValueChange={(value: string) => setEntrepreneurFormData({ ...entrepreneurFormData, currentStatus: value })}
+                  required
+                >
+                  <SelectTrigger id="currentStatus">
+                    <SelectValue placeholder="Select status" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Freelancer">Freelancer</SelectItem>
+                    <SelectItem value="Self-Employed">Self-Employed</SelectItem>
+                    <SelectItem value="Entrepreneur">Entrepreneur</SelectItem>
+                    <SelectItem value="Looking for Opportunities">Looking for Opportunities</SelectItem>
+                    <SelectItem value="Working Professional">Working Professional</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="linkedinProfile">LinkedIn Profile (Optional)</Label>
                 <Input
-                  id="entrepreneurWebsite"
+                  id="linkedinProfile"
                   type="url"
-                  placeholder="https://yourbusiness.com"
-                  value={entrepreneurFormData.website}
-                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, website: e.target.value })}
+                  placeholder="https://linkedin.com/in/yourprofile"
+                  value={entrepreneurFormData.linkedinProfile}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, linkedinProfile: e.target.value })}
+                />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="portfolio">Portfolio/Website (Optional)</Label>
+                <Input
+                  id="portfolio"
+                  type="url"
+                  placeholder="https://yourportfolio.com"
+                  value={entrepreneurFormData.portfolio}
+                  onChange={(e) => setEntrepreneurFormData({ ...entrepreneurFormData, portfolio: e.target.value })}
                 />
               </div>
             </div>

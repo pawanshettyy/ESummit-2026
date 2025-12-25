@@ -103,7 +103,7 @@ export const getUserProfile = async (userId: string) => {
           passType: true,
           passId: true,
           status: true,
-          purchaseDate: true,
+          createdAt: true,
         },
       },
     },

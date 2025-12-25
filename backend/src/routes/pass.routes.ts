@@ -41,25 +41,15 @@ router.get('/user/:clerkUserId', async (req: Request, res: Response) => {
         id: true,
         passId: true,
         passType: true,
-        price: true,
-        purchaseDate: true,
+        bookingId: true,
         status: true,
-        hasMeals: true,
-        hasMerchandise: true,
-        hasWorkshopAccess: true,
         qrCodeUrl: true,
+        qrCodeData: true,
         createdAt: true,
-        transaction: {
-          select: {
-            id: true,
-            amount: true,
-            status: true,
-            konfhubPaymentId: true,
-          },
-        },
+        updatedAt: true,
       },
       orderBy: {
-        purchaseDate: 'desc',
+        createdAt: 'desc',
       },
     });
 

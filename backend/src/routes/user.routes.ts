@@ -27,7 +27,7 @@ router.post('/sync', async (req: Request, res: Response) => {
       return;
     }
 
-    // Check if user already exists
+    // Check if user already exists by clerkUserId
     let user = await prisma.user.findUnique({
       where: { clerkUserId },
     });
@@ -35,6 +35,28 @@ router.post('/sync', async (req: Request, res: Response) => {
     if (user) {
       logger.info(`User already exists: ${email}`);
       sendSuccess(res, 'User already exists', { user }, 200);
+      return;
+    }
+
+    // Check if user exists by email (in case clerk_user_id was updated)
+    user = await prisma.user.findUnique({
+      where: { email },
+    });
+
+    if (user) {
+      // User exists with different clerkUserId - update it
+      user = await prisma.user.update({
+        where: { email },
+        data: {
+          clerkUserId,
+          fullName: fullName || user.fullName,
+          firstName: firstName || user.firstName,
+          lastName: lastName || user.lastName,
+          imageUrl: imageUrl || user.imageUrl,
+        },
+      });
+      logger.info(`User updated with new clerkUserId: ${email}`);
+      sendSuccess(res, 'User updated successfully', { user }, 200);
       return;
     }
 
@@ -53,6 +75,20 @@ router.post('/sync', async (req: Request, res: Response) => {
     logger.info(`New user synced from Clerk: ${email}`);
     sendSuccess(res, 'User created successfully', { user }, 201);
   } catch (error: any) {
+    // Handle race condition - user might have been created between our checks
+    if (error.code === 'P2002') {
+      // Unique constraint violation - try to fetch the user one more time
+      const existingUser = await prisma.user.findUnique({
+        where: { email: req.body.email },
+      });
+      
+      if (existingUser) {
+        logger.info(`User found after race condition: ${req.body.email}`);
+        sendSuccess(res, 'User already exists', { user: existingUser }, 200);
+        return;
+      }
+    }
+    
     logger.error('User sync error:', error);
     sendError(res, error.message || 'Failed to sync user', 500);
   }

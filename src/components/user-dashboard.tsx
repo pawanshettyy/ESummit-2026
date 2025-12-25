@@ -30,22 +30,15 @@ import { KonfHubWidget } from "./konfhub-widget";
 import { toast } from "sonner";
 
 interface Pass {
-  id: number;
+  id: string; // UUID
   passId: string;
   passType: string;
-  price: number;
-  purchaseDate: string;
+  bookingId?: string;
   status: string;
-  hasMeals: boolean;
-  hasMerchandise: boolean;
-  hasWorkshopAccess: boolean;
   qrCodeUrl?: string;
-  transaction?: {
-    id: string;  // UUID string, not number
-    amount: number;
-    status: string;
-    konfhubPaymentId?: string;
-  };
+  qrCodeData?: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface Event {
@@ -83,7 +76,6 @@ export function UserDashboard({
   const [myPasses, setMyPasses] = useState<Pass[]>([]);
   const [isLoadingPasses, setIsLoadingPasses] = useState(true);
   const [downloadingPassId, setDownloadingPassId] = useState<string | null>(null);
-  const [downloadingInvoiceId, setDownloadingInvoiceId] = useState<string | null>(null);
   const [downloadingSchedule, setDownloadingSchedule] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState<Set<string>>(new Set());
   const [registeredEventDetails, setRegisteredEventDetails] = useState<Event[]>([]);
@@ -101,8 +93,8 @@ export function UserDashboard({
   // Check if user is a TCET student based on email domain
   const isTCETStudent = mockUser.email.toLowerCase().endsWith("@tcetmumbai.in");
 
-  // Set initial tab based on whether user is TCET student
-  const [activeTab, setActiveTab] = useState(isTCETStudent ? "passes" : "schedule");
+  // Set initial tab to My Passes for all users
+  const [activeTab, setActiveTab] = useState("mypasses");
 
   // Fetch TCET code for TCET students
   useEffect(() => {
@@ -182,11 +174,9 @@ export function UserDashboard({
         const data = await response.json();
 
         if (data.success && data.data.passes) {
-          // Only show passes with confirmed payment (Active status and completed transaction)
+          // Show all Active passes
           const confirmedPasses = data.data.passes.filter((pass: Pass) => {
-            return pass.status === 'Active' && 
-                   pass.transaction && 
-                   pass.transaction.status === 'completed';
+            return pass.status === 'Active';
           });
           setMyPasses(confirmedPasses);
           
@@ -417,36 +407,6 @@ export function UserDashboard({
     }
   };
 
-  // Download invoice PDF
-  const downloadInvoicePDF = async (transactionId: string) => {
-    try {
-      setDownloadingInvoiceId(transactionId);
-      const response = await fetch(
-        `${API_BASE_URL}/pdf/invoice/${transactionId}`
-      );
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to download invoice PDF');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `ESUMMIT-2026-Invoice.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Error downloading invoice PDF:', error);
-      alert(error instanceof Error ? error.message : 'Failed to download invoice PDF. Please try again.');
-    } finally {
-      setDownloadingInvoiceId(null);
-    }
-  };
-
   // Download personalized schedule PDF
   const downloadSchedulePDF = async () => {
     try {
@@ -543,16 +503,117 @@ export function UserDashboard({
         className="w-full"
       >
         <TabsList className="mb-6">
+          <TabsTrigger value="mypasses">My Passes</TabsTrigger>
           {isTCETStudent && (
-            <TabsTrigger value="passes">TCET Student Pass</TabsTrigger>
+            <TabsTrigger value="tcet">TCET Student Pass</TabsTrigger>
           )}
           <TabsTrigger value="schedule">
             My Schedule
           </TabsTrigger>
         </TabsList>
 
+        {/* My Passes Tab - For all users */}
+        <TabsContent value="mypasses">
+          {isLoadingPasses ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-8 w-8 animate-spin text-primary" />
+              <span className="ml-2 text-muted-foreground">Loading...</span>
+            </div>
+          ) : (
+            <div className="space-y-6">
+              {myPasses.length > 0 ? (
+                <>
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-xl font-bold">🎫 My Passes</h3>
+                    <Badge variant="secondary">{myPasses.length} Pass{myPasses.length > 1 ? 'es' : ''}</Badge>
+                  </div>
+                  
+                  <div className="grid gap-4 md:grid-cols-2">
+                    {myPasses.map((pass) => (
+                      <Card key={pass.passId} className="border-2 border-primary/20">
+                        <CardHeader>
+                          <div className="flex items-start justify-between">
+                            <div>
+                              <h4 className="text-lg font-bold">{pass.passType}</h4>
+                              <p className="text-sm text-muted-foreground">Pass ID: {pass.passId}</p>
+                              {pass.bookingId && (
+                                <p className="text-xs text-muted-foreground">Booking ID: {pass.bookingId}</p>
+                              )}
+                            </div>
+                            <Badge className="bg-green-600 hover:bg-green-700">
+                              {pass.status}
+                            </Badge>
+                          </div>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                          <div className="grid grid-cols-1 gap-3 text-sm">
+                            <div>
+                              <p className="text-muted-foreground">Registered</p>
+                              <p className="font-medium">{formatDate(pass.createdAt)}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="space-y-2">
+                            <p className="text-sm font-semibold">Pass Details:</p>
+                            <div className="text-xs text-muted-foreground">
+                              <p>✓ Access to E-Summit 2026 events</p>
+                              <p>✓ Entry to exclusive sessions</p>
+                              <p>✓ Networking opportunities</p>
+                            </div>
+                          </div>
+
+                          <div className="flex gap-2">
+                            {pass.qrCodeUrl ? (
+                              <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => downloadPassPDF(pass.passId)}
+                                disabled={downloadingPassId === pass.passId}
+                              >
+                                {downloadingPassId === pass.passId ? (
+                                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                  <Ticket className="mr-2 h-4 w-4" />
+                                )}
+                                Download Pass
+                              </Button>
+                            ) : (
+                              <Button
+                                variant="outline"
+                                className="flex-1"
+                                disabled
+                              >
+                                <Ticket className="mr-2 h-4 w-4" />
+                                Pass Processing
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <Card className="border-dashed">
+                  <CardContent className="p-6 text-center">
+                    <Ticket className="mx-auto mb-4 h-12 w-12 text-muted-foreground" />
+                    <h3 className="mb-2">No passes yet</h3>
+                    <p className="mb-4 text-sm text-muted-foreground">
+                      Book your E-Summit 2026 pass to get started
+                    </p>
+                    <Button onClick={() => onNavigate("booking")}>
+                      Book Pass Now
+                    </Button>
+                  </CardContent>
+                </Card>
+              )}
+            </div>
+          )}
+        </TabsContent>
+
+        {/* TCET Student Pass Tab */}
         {isTCETStudent && (
-          <TabsContent value="passes">{isLoadingPasses ? (
+          <TabsContent value="tcet">{isLoadingPasses ? (
               <div className="flex items-center justify-center py-12">
                 <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 <span className="ml-2 text-muted-foreground">Loading...</span>
