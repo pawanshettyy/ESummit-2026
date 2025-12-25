@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Calendar, Clock, MapPin, Users, Filter, Download, Plus, AlertCircle } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, Filter, Plus, AlertCircle } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -432,21 +432,6 @@ export function EventSchedule() {
     return cat?.color || "default";
   };
 
-  const exportSchedule = () => {
-    const myEvents = [...events.day1, ...events.day2].filter((e) => mySchedule.includes(e.id));
-    const icsContent = `BEGIN:VCALENDAR
-VERSION:2.0
-PRODID:-//E-Summit 2026//EN
-${myEvents.map((event) => `BEGIN:VEVENT
-SUMMARY:${event.title}
-LOCATION:${event.venue}
-DESCRIPTION:${event.description}
-END:VEVENT`).join("\n")}
-END:VCALENDAR`;
-    
-    toast.success("Calendar export prepared! (Demo)");
-  };
-
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="mb-8">
@@ -483,18 +468,24 @@ END:VCALENDAR`;
               <SelectContent>
                 <SelectItem value="all">All Venues</SelectItem>
                 <SelectItem value="Main Auditorium">Main Auditorium</SelectItem>
-                <SelectItem value="Workshop Hall A">Workshop Hall A</SelectItem>
-                <SelectItem value="Workshop Hall B">Workshop Hall B</SelectItem>
-                <SelectItem value="Conference Hall B">Conference Hall B</SelectItem>
-                <SelectItem value="Conference Hall C">Conference Hall C</SelectItem>
+                <SelectItem value="Auditorium">Auditorium</SelectItem>
+                <SelectItem value="Convocation Hall">Convocation Hall</SelectItem>
+                <SelectItem value="Lobby Area">Lobby Area</SelectItem>
+                <SelectItem value="SH-1">SH-1</SelectItem>
+                <SelectItem value="SH-3, 532, 533, 504">SH-3, 532, 533, 504</SelectItem>
+                <SelectItem value="SH-4">SH-4</SelectItem>
+                <SelectItem value="216, 217">216, 217</SelectItem>
+                <SelectItem value="505, 506">505, 506</SelectItem>
+                <SelectItem value="530, 531">530, 531</SelectItem>
+                <SelectItem value="Lab 520 & 521">Lab 520 & 521</SelectItem>
+                <SelectItem value="Lab 522 & 523">Lab 522 & 523</SelectItem>
+                <SelectItem value="Lab 524 & 525">Lab 524 & 525</SelectItem>
+                <SelectItem value="Lab 526 & 527">Lab 526 & 527</SelectItem>
+                <SelectItem value="Multipurpose Hall 1st floor">Multipurpose Hall 1st floor</SelectItem>
+                <SelectItem value="Multipurpose Hall 2nd Floor & Architecture Ground Floor">Multipurpose Hall 2nd Floor</SelectItem>
               </SelectContent>
             </Select>
           </div>
-          <Button variant="outline" onClick={exportSchedule} className="w-full md:w-auto md:ml-auto">
-            <Download className="mr-2 h-4 w-4" />
-            <span className="hidden sm:inline">Export My Schedule</span>
-            <span className="sm:hidden">Export</span>
-          </Button>
         </CardContent>
       </Card>
 
@@ -524,11 +515,6 @@ END:VCALENDAR`;
                         <Badge variant={getCategoryColor(event.category) as any}>
                           {categories.find((c) => c.id === event.category)?.label}
                         </Badge>
-                        {event.prize && (
-                          <Badge variant="default" className="bg-primary">
-                            Prize: {event.prize}
-                          </Badge>
-                        )}
                       </div>
                       
                       <h3 className="mb-2">{event.title}</h3>
@@ -592,11 +578,6 @@ END:VCALENDAR`;
                         <Badge variant={getCategoryColor(event.category) as any}>
                           {categories.find((c) => c.id === event.category)?.label}
                         </Badge>
-                        {event.prize && (
-                          <Badge variant="default" className="bg-primary">
-                            Prize: {event.prize}
-                          </Badge>
-                        )}
                       </div>
                       
                       <h3 className="mb-2">{event.title}</h3>

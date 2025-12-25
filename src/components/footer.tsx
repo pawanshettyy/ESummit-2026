@@ -167,26 +167,12 @@ export function Footer({ onNavigate }: FooterProps) {
                 <span>Thakur College of Engineering and Technology, Kandivali East, Mumbai - 400101</span>
               </li>
             </ul>
-            <div className="mt-4 text-xs text-muted-foreground">
-              <p className="font-semibold mb-1">Faculty Coordinators:</p>
-              <p>Prof. Chaitali: 9405915566</p>
-              <p>Dr. Pankaj Nandurkar: 9763669859</p>
-            </div>
           </div>
         </div>
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-sm text-muted-foreground md:flex-row">
-          <div className="flex items-center gap-4">
-            <p>© 2026 E-Summit TCET. All rights reserved.</p>
-            <button 
-              onClick={() => onNavigate("admin-dashboard")}
-              className="text-xs opacity-30 hover:opacity-100 transition-opacity"
-              title="Admin Access"
-            >
-              •
-            </button>
-          </div>
+          <p>© 2026 E-Summit TCET. All rights reserved.</p>
           <div className="flex gap-6">
             <button 
               onClick={() => onNavigate("privacy-policy")}
