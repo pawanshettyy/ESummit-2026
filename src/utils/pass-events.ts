@@ -299,7 +299,7 @@ export const eventSchedule = {
 export function getEligibleEvents(passType: string): Event[] {
   const allEvents = [...eventSchedule.day1, ...eventSchedule.day2];
   
-  // Pixel Pass events (FREE pass)
+  // TCET Student Pass / Pixel Pass events (FREE pass)
   const pixelEvents = [
     "d1-startup-expo", "d1-panel-discussion", "d1-ipl-auction", 
     "d1-ai-buildathon-start", "d2-ai-buildathon-final", "d2-startup-league",
@@ -324,6 +324,10 @@ export function getEligibleEvents(passType: string): Event[] {
   
   switch (passType) {
     case "pixel": // Pixel Pass - Free entry events
+      return allEvents.filter(e => pixelEvents.includes(e.id));
+    
+    case "tcet_student": // TCET Student Pass - Same as Pixel (free)
+    case "tcet student": 
       return allEvents.filter(e => pixelEvents.includes(e.id));
     
     case "silicon": // Silicon Pass - Pixel + workshops + pitch arena
@@ -356,6 +360,8 @@ export function getPassName(passId: string): string {
     pixel: "Pixel Pass",
     silicon: "Silicon Pass",
     quantum: "Quantum Pass",
+    tcet_student: "TCET Student Pass",
+    "tcet student": "TCET Student Pass",
     // Legacy pass names for backward compatibility
     day1: "Gold Pass",
     day2: "Silver Pass",

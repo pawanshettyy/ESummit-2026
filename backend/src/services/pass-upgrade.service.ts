@@ -3,23 +3,27 @@ import logger from '../utils/logger.util';
 
 // Pass pricing configuration
 export const PASS_PRICING = {
-  pixel: 0,
+  pixel: 299,
   silicon: 499,
   quantum: 999,
+  tcet_student: 0, // Free for TCET students
 } as const;
 
 // Pass upgrade hierarchy (from lowest to highest)
-export const PASS_HIERARCHY = ['pixel', 'silicon', 'quantum'] as const;
+// Note: TCET Student Pass cannot be upgraded (it's a special free pass)
+export const PASS_HIERARCHY = ['tcet_student', 'pixel', 'silicon', 'quantum'] as const;
 
 export type PassType = keyof typeof PASS_PRICING;
 
 /**
  * Normalize pass type to match PASS_HIERARCHY format
- * Converts "Quantum Pass", "quantum pass", "QUANTUM" etc. to "quantum"
+ * Converts "Quantum Pass", "quantum pass", "QUANTUM", "TCET Student Pass" etc. to lowercase key
  */
 export function normalizePassType(passType: string): string {
   // Remove "Pass" suffix and trim, then convert to lowercase
-  return passType.toLowerCase().replace(/\s*pass\s*$/i, '').trim();
+  const normalized = passType.toLowerCase().replace(/\s*pass\s*$/i, '').trim();
+  // Handle "tcet student" -> "tcet_student"
+  return normalized.replace(/\s+/g, '_');
 }
 
 /**

@@ -7,7 +7,7 @@ export interface AuthenticatedRequest extends Request {
 }
 
 // Pass types (Updated for E-Summit 2026)
-export type PassType = 'Pixel Pass' | 'Silicon Pass' | 'Quantum Pass' | 'Gold' | 'Silver' | 'Platinum' | 'Group';
+export type PassType = 'Pixel Pass' | 'Silicon Pass' | 'Quantum Pass' | 'TCET Student Pass' | 'Gold' | 'Silver' | 'Platinum' | 'Group';
 
 export type PassStatus = 'Active' | 'Cancelled' | 'Refunded';
 

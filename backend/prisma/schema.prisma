@@ -39,7 +39,7 @@ model User {
   bookingId          String?             @unique @map("booking_id") @db.VarChar(255)
   bookedPassType     String?             @map("booked_pass_type") @db.VarChar(50)
   bookingVerified    Boolean             @default(false) @map("booking_verified")
-  clerkUserId        String              @unique @map("clerk_user_id") @db.VarChar(255)
+  clerkUserId        String?             @unique @map("clerk_user_id") @db.VarChar(255)
   checkIns           CheckIn[]
   eventRegistrations EventRegistration[]
   otp_codes          otp_codes[]
@@ -60,19 +60,55 @@ model Pass {
   passType          String        @map("pass_type") @db.VarChar(50)
   passId            String        @unique @map("pass_id") @db.VarChar(100)
   bookingId         String?       @map("booking_id") @db.VarChar(255)
+  konfhubTicketId   String?       @map("konfhub_ticket_id") @db.VarChar(255)
+  konfhubOrderId    String?       @map("konfhub_order_id") @db.VarChar(255)
+  price             Decimal?      @db.Decimal(10, 2)
+  purchaseDate      DateTime?     @map("purchase_date") @db.Timestamptz(6)
+  ticketDetails     Json?         @map("ticket_details")
   status            String        @default("Active")
   qrCodeUrl         String?       @map("qr_code_url")
   qrCodeData        String?       @map("qr_code_data")
+  hasMeals          Boolean       @default(false) @map("has_meals")
+  hasMerchandise    Boolean       @default(false) @map("has_merchandise")
+  hasWorkshopAccess Boolean       @default(false) @map("has_workshop_access")
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt         DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
   checkIns          CheckIn[]
+  transaction       Transaction?
   user              User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([passId], type: Hash)
+  @@index([konfhubTicketId])
   @@index([status])
   @@index([passType])
   @@map("passes")
+}
+
+/// Payment transactions for passes (handled by KonfHub)
+model Transaction {
+  id                String   @id @default(uuid()) @db.Uuid
+  userId            String   @map("user_id") @db.Uuid
+  passId            String?  @unique @map("pass_id") @db.Uuid
+  invoiceNumber     String?  @unique @map("invoice_number") @db.VarChar(100)
+  transactionNumber String?  @unique @map("transaction_number") @db.VarChar(100)
+  amount            Decimal  @db.Decimal(10, 2)
+  currency          String   @default("INR") @db.VarChar(10)
+  status            String   @default("pending") @db.VarChar(50)
+  paymentMethod     String?  @default("konfhub") @map("payment_method") @db.VarChar(50)
+  konfhubOrderId    String?  @map("konfhub_order_id") @db.VarChar(255)
+  konfhubTicketId   String?  @map("konfhub_ticket_id") @db.VarChar(255)
+  konfhubPaymentId  String?  @map("konfhub_payment_id") @db.VarChar(255)
+  metadata          Json?
+  createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  pass              Pass?    @relation(fields: [passId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([passId])
+  @@index([status])
+  @@index([konfhubOrderId])
+  @@map("transactions")
 }
 
 /// Events and competitions at E-Summit
@@ -250,4 +286,30 @@ enum UserType {
   ENTREPRENEUR
   COMPANY
   TCET_STUDENT
+}
+
+/// Pending pass claims - Users who uploaded ticket PDF but not yet verified
+model PendingPassClaim {
+  id              String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  clerkUserId     String    @map("clerk_user_id") @db.VarChar(255)
+  email           String    @db.VarChar(255)
+  fullName        String?   @map("full_name") @db.VarChar(255)
+  passType        String    @map("pass_type") @db.VarChar(100)
+  bookingId       String?   @map("booking_id") @db.VarChar(255)
+  konfhubOrderId  String?   @map("konfhub_order_id") @db.VarChar(255)
+  ticketNumber    String?   @map("ticket_number") @db.VarChar(255)
+  qrCodeData      String?   @map("qr_code_data")
+  extractedData   Json?     @map("extracted_data")
+  status          String    @default("pending") @db.VarChar(50) // pending, verified, expired, rejected
+  verifiedAt      DateTime? @map("verified_at") @db.Timestamptz(6)
+  expiresAt       DateTime  @map("expires_at") @db.Timestamptz(6) // 32 hours from creation
+  createdAt       DateTime  @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt       DateTime  @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([clerkUserId, bookingId])
+  @@index([clerkUserId])
+  @@index([status])
+  @@index([expiresAt])
+  @@index([bookingId])
+  @@map("pending_pass_claims")
 }

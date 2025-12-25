@@ -788,6 +788,15 @@ export class PDFService {
           // Quantum Pass: All events
           eligibleEvents = [...eventSchedule.day1, ...eventSchedule.day2];
         }
+        // TCET Student Pass: Same as Pixel Pass events
+        if (passTypes.some(pt => pt.includes('TCET') || pt.toLowerCase().includes('tcet student'))) {
+          const tcetTitles = ['Startup Expo', 'Panel Discussion', 'IPL Auction', 
+                              'AI Build-A-Thon', 'Biz-Arena League', 'Networking Arena',
+                              'Registration & Welcome', 'Inaugural Ceremony', 'Closing Ceremony'];
+          eligibleEvents = [...eventSchedule.day1, ...eventSchedule.day2].filter(e => 
+            tcetTitles.some(title => e.title.includes(title))
+          );
+        }
         // Legacy pass types
         if (passTypes.some(pt => pt.includes('Gold'))) {
           eligibleEvents = [...eligibleEvents, ...eventSchedule.day1];
