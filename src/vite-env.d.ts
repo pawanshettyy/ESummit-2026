@@ -6,6 +6,7 @@ interface ImportMetaEnv {
   readonly VITE_APP_NAME: string;
   readonly VITE_EVENT_DATE: string;
   readonly VITE_KONFHUB_EVENT_ID: string;
+  readonly VITE_ADMIN_SECRET: string;
 }
 
 interface ImportMeta {

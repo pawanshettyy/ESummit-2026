@@ -22,7 +22,7 @@ const upload = multer({
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB max for larger exports
   },
-  fileFilter: (req, file, cb) => {
+  fileFilter: (_req, file, cb) => {
     const allowedTypes = [
       'text/csv',
       'application/vnd.ms-excel',
@@ -118,12 +118,31 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
 
     const importBatchId = `import_${Date.now()}`;
 
+    // Helper function to get field value case-insensitively
+    // KonfHub exports have inconsistent casing (e.g., "Booking Id" vs "Booking ID")
+    const getField = (record: any, ...possibleNames: string[]): string => {
+      for (const name of possibleNames) {
+        if (record[name] !== undefined && record[name] !== null) {
+          return String(record[name]).trim();
+        }
+      }
+      // Try case-insensitive search
+      const recordKeys = Object.keys(record);
+      for (const name of possibleNames) {
+        const found = recordKeys.find(k => k.toLowerCase() === name.toLowerCase());
+        if (found && record[found] !== undefined && record[found] !== null) {
+          return String(record[found]).trim();
+        }
+      }
+      return '';
+    };
+
     for (let i = 0; i < records.length; i++) {
       const record = records[i];
       const rowNum = i + 2; // Account for header row
       
       try {
-        const email = record['Email Address']?.toLowerCase().trim();
+        const email = getField(record, 'Email Address', 'Email', 'email', 'email_address')?.toLowerCase();
         
         if (!email) {
           results.skipped++;
@@ -131,9 +150,10 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           continue;
         }
 
-        // Skip cancelled/refunded registrations
-        const registrationStatus = record['Registration status']?.toLowerCase();
-        if (registrationStatus === 'cancelled' || registrationStatus === 'refunded') {
+        // Skip cancelled/refunded registrations (but not CANCEL - that's a valid status for cancelled orders we want to track)
+        const registrationStatus = getField(record, 'Registration Status', 'Registration status', 'registration_status')?.toLowerCase();
+        // Only skip if fully refunded - keep CANCEL status for tracking
+        if (registrationStatus === 'refunded') {
           results.skipped++;
           logger.debug(`Row ${rowNum}: Skipped - ${registrationStatus}`);
           continue;
@@ -142,25 +162,27 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
         // Find or create user
         let user = await prisma.user.findUnique({ where: { email } });
 
+        const name = getField(record, 'Name', 'name', 'Full Name', 'full_name') || email.split('@')[0];
+        const college = getField(record, 'College', 'college', 'Institution');
+        const phone = getField(record, 'Phone Number', 'Phone', 'phone', 'phone_number');
+
         if (!user) {
-          const name = record['Name'] || email.split('@')[0];
-          
           user = await prisma.user.create({
             data: {
               email,
               fullName: name,
               clerkUserId: `imported_${importBatchId}_${i}`, // Placeholder until they sign in with Clerk
-              ...(record['College'] && { college: record['College'] }),
-              ...(record['Phone Number'] && { phone: record['Phone Number'] }),
+              ...(college && { college }),
+              ...(phone && { phone }),
             },
           });
           logger.debug(`Row ${rowNum}: Created new user for ${email}`);
         }
 
         // Extract pass data from KonfHub export
-        const bookingId = record['Booking ID']?.trim();
-        const ticketName = record['Ticket name']?.trim();
-        const paymentId = record['Payment ID']?.trim();
+        const bookingId = getField(record, 'Booking Id', 'Booking ID', 'booking_id');
+        const ticketName = getField(record, 'Ticket Name', 'Ticket name', 'ticket_name');
+        const paymentId = getField(record, 'Payment ID', 'Payment Id', 'payment_id');
         
         // Parse monetary values (handle currency symbols and commas)
         const parseAmount = (val: string) => {
@@ -168,18 +190,35 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           return parseFloat(val.replace(/[^0-9.-]/g, '') || '0');
         };
 
-        const amountPaid = parseAmount(record['Amount paid']);
-        const ticketPrice = parseAmount(record['Ticket price']);
-        const balanceAmount = parseAmount(record['Balance amount']);
-        const refundAmount = parseAmount(record['Refund amount']);
-        const taxAmount = parseAmount(record['Tax amount']);
-        const processingFee = parseAmount(record['Processing fee']);
+        const amountPaid = parseAmount(getField(record, 'Amount Paid', 'Amount paid', 'amount_paid'));
+        const ticketPrice = parseAmount(getField(record, 'Ticket Price', 'Ticket price', 'ticket_price'));
+        // Parse additional amounts for ticketDetails storage
+        const balanceAmountStr = getField(record, 'Balance Amount', 'Balance amount', 'balance_amount');
+        const refundAmountStr = getField(record, 'Refund Amount', 'Refund amount', 'refund_amount');
+        const taxAmountStr = getField(record, 'Tax Amount', 'Tax amount', 'tax_amount');
+        const processingFeeStr = getField(record, 'Processing Fee', 'Processing fee', 'processing_fee');
+        const discountAmountStr = getField(record, 'Discount Amount', 'Discount amount', 'discount_amount');
 
-        // Parse registration date
+        // Parse registration date (handle format: DD-MM-YYYY HH:MM:SS)
         let purchaseDate = new Date();
-        if (record['Registered at']) {
+        const registeredAt = getField(record, 'Registered At', 'Registered at', 'registered_at');
+        if (registeredAt) {
           try {
-            purchaseDate = new Date(record['Registered at']);
+            // Handle DD-MM-YYYY HH:MM:SS format
+            const dateMatch = registeredAt.match(/(\d{2})-(\d{2})-(\d{4})\s+(\d{2}):(\d{2}):(\d{2})/);
+            if (dateMatch) {
+              const [, day, month, year, hour, minute, second] = dateMatch;
+              purchaseDate = new Date(
+                parseInt(year), 
+                parseInt(month) - 1, 
+                parseInt(day),
+                parseInt(hour),
+                parseInt(minute),
+                parseInt(second)
+              );
+            } else {
+              purchaseDate = new Date(registeredAt);
+            }
             if (isNaN(purchaseDate.getTime())) {
               purchaseDate = new Date();
             }
@@ -196,49 +235,70 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
         // Build comprehensive ticket details from all KonfHub fields
         const ticketDetails = {
           // Attendee Details
-          attendeeName: record['Name'],
-          email: record['Email Address'],
-          country: record['Country'],
-          attendeeCategory: record['Attendee category'],
-          accessCategory: record['Access category'],
-          countryCode: record['Country code'],
-          dialCode: record['Dial code'],
-          phone: record['Phone Number'],
-          college: record['College'],
-          checkInStatus: record['Check-in Status'],
+          attendeeName: name,
+          email: getField(record, 'Email Address', 'Email'),
+          country: getField(record, 'Country', 'country'),
+          attendeeCategory: getField(record, 'Attendee Category', 'Attendee category'),
+          accessCategory: getField(record, 'Access Category', 'Access category'),
+          countryCode: getField(record, 'Country Code', 'Country code'),
+          dialCode: getField(record, 'Dial Code', 'Dial code'),
+          phone,
+          college,
+          teamName: getField(record, 'Team Name', 'Team name'),
+          
+          // Check-in Details
+          checkInStatus: getField(record, 'Event Check-in Check In Status', 'Check-in Status', 'Check In Status'),
+          checkInTime: getField(record, 'Event Check-in Check In Time', 'Check In Time'),
+          checkInComment: getField(record, 'Check In Comment'),
+          checkedInBy: getField(record, 'Event Check-in Checked In By', 'Checked In By'),
           
           // WhatsApp Details
-          whatsappNumber: record['WhatsApp Number'],
-          waCountryCode: record['WA country code'],
-          waDialCode: record['WA dial code'],
-          whatsappConsent: record['Whatsapp consent'],
+          whatsappNumber: getField(record, 'WhatsApp Number', 'Whatsapp Number'),
+          waCountryCode: getField(record, 'Wa Country Code', 'WA country code'),
+          waDialCode: getField(record, 'Wa Dial Code', 'WA dial code'),
+          whatsappConsent: getField(record, 'Whatsapp Consent', 'Whatsapp consent'),
           
           // Registration Details
-          couponCode: record['Coupon code'],
-          paymentId: record['Payment ID'],
-          ticketName: record['Ticket name'],
-          registeredAt: record['Registered at'],
-          registrationStatus: record['Registration status'],
-          bookingId: record['Booking ID'],
-          ticketPrice: record['Ticket price'],
-          amountPaid: record['Amount paid'],
-          balanceAmount: record['Balance amount'],
-          refundAmount: record['Refund amount'],
-          refundType: record['Refund type'],
-          taxAmount: record['Tax amount'],
-          processingFee: record['Processing fee'],
-          codeTrackingId: record['Code tracking ID'],
-          ticketUrl: record['Ticket URL'],
-          invoiceUrl: record['Invoice URL'],
+          couponCode: getField(record, 'Coupon Code', 'Coupon code'),
+          paymentId,
+          ticketName,
+          registeredAt,
+          registrationStatus: getField(record, 'Registration Status', 'Registration status'),
+          bookingId,
+          ticketPrice: ticketPrice.toString(),
+          amountPaid: amountPaid.toString(),
+          balanceAmount: balanceAmountStr,
+          refundAmount: refundAmountStr,
+          refundType: getField(record, 'Refund Type', 'Refund type'),
+          taxAmount: taxAmountStr,
+          processingFee: processingFeeStr,
+          discountAmount: discountAmountStr,
+          codeTrackingId: getField(record, 'Code Tracking ID', 'Code tracking ID'),
+          ticketUrl: getField(record, 'Ticket URL', 'Ticket Url'),
+          invoiceUrl: getField(record, 'Invoice URL', 'Invoice Url'),
+          invoiceNumber: getField(record, 'Invoice Number'),
+          
+          // Payment Details
+          paymentMethod: getField(record, 'Payment Method'),
+          pgPercentage: getField(record, 'PG Percentage'),
+          
+          // Group/Waitlist Details
+          groupDiscountCode: getField(record, 'Group Discount Code'),
+          groupDiscount: getField(record, 'Group Discount'),
+          waitlistApprovalStatus: getField(record, 'Waitlist/Approval Status'),
           
           // UTM Details
-          utmSource: record['UTM source'],
-          utmMedium: record['UTM medium'],
-          utmCampaign: record['UTM campaign'],
+          utmSource: getField(record, 'UTM Source', 'UTM source'),
+          utmMedium: getField(record, 'UTM Medium', 'UTM medium'),
+          utmCampaign: getField(record, 'UTM Campaign', 'UTM campaign'),
+          referredBy: getField(record, 'Referred By'),
           
-          // GST Details
-          buyerName: record['Buyer name'],
-          buyerEmail: record['Buyer email'],
+          // Buyer/GST Details
+          buyerName: getField(record, 'Buyer Name', 'Buyer name'),
+          buyerEmail: getField(record, 'Buyer Email', 'Buyer email'),
+          
+          // QR Code (base64 if included)
+          qrCode: getField(record, 'QR Code', 'QR code'),
           
           // Import metadata
           importedAt: new Date().toISOString(),
@@ -246,11 +306,15 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           importedFrom: 'konfhub_export',
         };
 
-        // Determine pass status
+        // Determine pass status based on registration status
         let status = 'Pending';
-        if (registrationStatus === 'confirmed' || registrationStatus === 'success') {
+        const regStatusLower = registrationStatus?.toLowerCase();
+        if (regStatusLower === 'confirmed' || regStatusLower === 'success') {
           status = 'Active';
-        } else if (record['Check-in Status']?.toLowerCase() === 'checked-in') {
+        } else if (regStatusLower === 'cancel' || regStatusLower === 'cancelled') {
+          status = 'Cancelled';
+        } else if (ticketDetails.checkInStatus?.toLowerCase() === 'true' || 
+                   ticketDetails.checkInStatus?.toLowerCase() === 'checked-in') {
           status = 'Used';
         }
 
@@ -264,7 +328,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           price: amountPaid || ticketPrice,
           purchaseDate,
           ticketDetails,
-          qrCodeUrl: record['Ticket URL'] || null,
+          qrCodeUrl: ticketDetails.ticketUrl || null,
           qrCodeData: bookingId || paymentId || null,
           status,
         };
@@ -344,9 +408,10 @@ router.get('/import-history', async (req: Request, res: Response) => {
     // Get all passes with import metadata
     const importedPasses = await prisma.pass.findMany({
       where: {
-        ticketDetails: {
-          path: ['importBatchId'],
-          not: prisma.AnyNull,
+        NOT: {
+          ticketDetails: {
+            equals: null,
+          },
         },
       },
       select: {
@@ -419,16 +484,29 @@ router.get('/stats', async (req: Request, res: Response) => {
       return sendError(res, 'Unauthorized', 403);
     }
 
+    // Get today's date range
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999);
+
     // Get all passes with aggregations
     const [
+      totalUsers,
       totalPasses,
+      verifiedUsers,
       activePasses,
       usedPasses,
       passesByType,
       totalRevenue,
+      totalEvents,
+      totalRegistrations,
+      checkInsToday,
       recentPasses,
     ] = await Promise.all([
+      prisma.user.count(),
       prisma.pass.count(),
+      prisma.user.count({ where: { bookingVerified: true } }),
       prisma.pass.count({ where: { status: 'Active' } }),
       prisma.pass.count({ where: { status: 'Used' } }),
       prisma.pass.groupBy({
@@ -438,6 +516,16 @@ router.get('/stats', async (req: Request, res: Response) => {
       }),
       prisma.pass.aggregate({
         _sum: { price: true },
+      }),
+      prisma.event.count(),
+      prisma.eventRegistration.count(),
+      prisma.checkIn.count({
+        where: {
+          checkInTime: {
+            gte: todayStart,
+            lte: todayEnd,
+          },
+        },
       }),
       prisma.pass.findMany({
         take: 10,
@@ -457,7 +545,21 @@ router.get('/stats', async (req: Request, res: Response) => {
       }),
     ]);
 
+    // Build pass type breakdown object
+    const passTypeBreakdown: Record<string, number> = {};
+    passesByType.forEach(p => {
+      passTypeBreakdown[p.passType] = p._count;
+    });
+
     sendSuccess(res, 'Stats fetched', {
+      totalUsers,
+      totalPasses,
+      verifiedPasses: verifiedUsers, // Users with bookingVerified = true
+      unverifiedPasses: totalUsers - verifiedUsers,
+      totalEvents,
+      totalRegistrations,
+      checkInsToday,
+      passTypeBreakdown,
       overview: {
         totalPasses,
         activePasses,
@@ -785,6 +887,161 @@ router.get('/konfhub-tickets', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Get KonfHub tickets error:', error);
+    sendError(res, error.message, 500);
+  }
+});
+
+/**
+ * Get all users for admin dashboard
+ * GET /api/v1/admin/users
+ */
+router.get('/users', async (req: Request, res: Response) => {
+  try {
+    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
+    
+    if (adminSecret !== expectedSecret) {
+      return sendError(res, 'Unauthorized', 403);
+    }
+
+    const users = await prisma.user.findMany({
+      select: {
+        id: true,
+        email: true,
+        fullName: true,
+        phone: true,
+        college: true,
+        createdAt: true,
+        bookingVerified: true,
+        clerkUserId: true,
+        passes: {
+          select: {
+            id: true,
+            passId: true,
+            passType: true,
+            status: true,
+            createdAt: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    sendSuccess(res, 'Users fetched', {
+      users,
+      total: users.length,
+    });
+
+  } catch (error: any) {
+    logger.error('Get users error:', error);
+    sendError(res, error.message, 500);
+  }
+});
+
+/**
+ * Get all passes for admin dashboard
+ * GET /api/v1/admin/passes
+ */
+router.get('/passes', async (req: Request, res: Response) => {
+  try {
+    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
+    
+    if (adminSecret !== expectedSecret) {
+      return sendError(res, 'Unauthorized', 403);
+    }
+
+    const passes = await prisma.pass.findMany({
+      select: {
+        id: true,
+        passId: true,
+        passType: true,
+        status: true,
+        bookingId: true,
+        konfhubOrderId: true,
+        price: true,
+        createdAt: true,
+        purchaseDate: true,
+        ticketDetails: true,
+        user: {
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            phone: true,
+            college: true,
+            bookingVerified: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    sendSuccess(res, 'Passes fetched', {
+      passes,
+      total: passes.length,
+    });
+
+  } catch (error: any) {
+    logger.error('Get passes error:', error);
+    sendError(res, error.message, 500);
+  }
+});
+
+/**
+ * Get all event registrations for admin dashboard
+ * GET /api/v1/admin/registrations
+ */
+router.get('/registrations', async (req: Request, res: Response) => {
+  try {
+    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
+    
+    if (adminSecret !== expectedSecret) {
+      return sendError(res, 'Unauthorized', 403);
+    }
+
+    const registrations = await prisma.eventRegistration.findMany({
+      select: {
+        id: true,
+        eventId: true,
+        userId: true,
+        status: true,
+        registrationDate: true,
+        participantName: true,
+        participantEmail: true,
+        event: {
+          select: {
+            id: true,
+            title: true,
+            date: true,
+            venue: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+          },
+        },
+      },
+      orderBy: {
+        registrationDate: 'desc',
+      },
+    });
+
+    sendSuccess(res, 'Registrations fetched', {
+      registrations,
+      total: registrations.length,
+    });
+
+  } catch (error: any) {
+    logger.error('Get registrations error:', error);
     sendError(res, error.message, 500);
   }
 });

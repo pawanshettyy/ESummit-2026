@@ -33,6 +33,7 @@ import { AuthModal } from "./components/auth-modal";
 import { PrivacyPolicy } from "./components/privacy-policy";
 import { TermsOfService } from "./components/terms-of-service";
 import { CookiePolicy } from "./components/cookie-policy";
+import { AdminPanel } from "./components/admin-panel";
 import { Footer } from "./components/footer";
 import { Toaster } from "./components/ui/sonner";
 import { API_BASE_URL } from "./lib/api";
@@ -185,6 +186,8 @@ export default function App() {
         return <TermsOfService />;
       case "cookie-policy":
         return <CookiePolicy />;
+      case "admin":
+        return <AdminPanel onNavigate={handleNavigate} />;
       default:
         return <HomePage onNavigate={handleNavigate} />;
     }

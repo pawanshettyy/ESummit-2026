@@ -172,7 +172,18 @@ export function Footer({ onNavigate }: FooterProps) {
 
         {/* Bottom Bar */}
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-sm text-muted-foreground md:flex-row">
-          <p>© 2026 E-Summit TCET. All rights reserved.</p>
+          <div className="flex items-center gap-2">
+            <p>© 2026 E-Summit TCET. All rights reserved.</p>
+            {/* Hidden Admin Access Button */}
+            <button
+              onClick={() => onNavigate("admin")}
+              className="w-4 h-4 rounded-full opacity-0 hover:opacity-30 transition-opacity focus:opacity-30"
+              aria-label="Admin access"
+              title=""
+            >
+              .
+            </button>
+          </div>
           <div className="flex gap-6">
             <button 
               onClick={() => onNavigate("privacy-policy")}
