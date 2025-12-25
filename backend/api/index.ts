@@ -1,81 +1,70 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
+import serverlessHttp from 'serverless-http';
 
-// Check if origin is allowed
-const isOriginAllowed = (origin: string | undefined): boolean => {
-  if (!origin) return true; // Allow requests with no origin (postman, mobile apps, etc.)
+// Initialize database connection for serverless (connect once, reuse)
+import { connectDB } from '../src/config/database';
 
-  // Allow all Vercel deployments (*.vercel.app)
-  if (origin.endsWith('.vercel.app')) {
-    return true;
+// Connect to database on cold start
+let dbConnected = false;
+const ensureDbConnection = async () => {
+  if (!dbConnected) {
+    try {
+      await connectDB();
+      dbConnected = true;
+      console.log('✅ Database connected (serverless)');
+    } catch (error) {
+      console.error('❌ Database connection failed (serverless):', error);
+      // Don't throw - let the app handle errors
+    }
   }
-
-  // Allow localhost for development
-  if (origin.startsWith('http://localhost:')) {
-    return true;
-  }
-
-  // Allow explicit frontend URL from env
-  const frontendUrl = process.env.FRONTEND_URL;
-  if (frontendUrl && origin === frontendUrl) {
-    return true;
-  }
-
-  return false;
 };
 
-// Handler that returns a simple response first to test
-export default async function handler(req: VercelRequest, res: VercelResponse) {
+// Lazy load the Express app
+let app: any = null;
+let handler: any = null;
+
+const getApp = async () => {
+  if (!app) {
+    // Ensure DB connection before loading app
+    await ensureDbConnection();
+    
+    // Import the Express app
+    const expressApp = (await import('../src/app')).default;
+    app = expressApp;
+    
+    // Wrap Express app with serverless-http for Vercel compatibility
+    handler = serverlessHttp(app, {
+      binary: ['image/*', 'application/pdf'],
+    });
+  }
+  return handler;
+};
+
+// Vercel serverless function handler
+export default async function vercelHandler(
+  req: VercelRequest,
+  res: VercelResponse
+) {
   try {
-    // Get the origin from the request
-    const origin = req.headers.origin as string | undefined;
+    // Get the serverless-wrapped Express handler
+    const appHandler = await getApp();
     
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
+    // Call the serverless handler
+    return appHandler(req, res);
+  } catch (error: any) {
+    console.error('❌ Serverless function error:', error);
+    console.error('Error stack:', error?.stack);
     
-    // Check if origin is allowed and set appropriate header
-    if (isOriginAllowed(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin || '*');
-    } else {
-      // For security, don't allow the request
-      res.setHeader('Access-Control-Allow-Origin', 'null');
-      console.warn(`⚠️ CORS: Blocked origin - ${origin}`);
-    }
-    
-    res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
-    res.setHeader(
-      'Access-Control-Allow-Headers',
-      'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization, Origin'
-    );
-
-    // Handle preflight
-    if (req.method === 'OPTIONS') {
-      return res.status(200).end();
-    }
-
-    // Simple health check for root and health endpoints
-    if (req.url === '/' || req.url === '/api/v1/health') {
-      return res.status(200).json({
-        success: true,
-        message: '🚀 E-Summit 2026 API is running on Vercel',
+    // Return proper error response
+    if (!res.headersSent) {
+      return res.status(500).json({
+        success: false,
+        error: 'Internal Server Error',
+        message: process.env.NODE_ENV === 'development' 
+          ? error.message || 'An unexpected error occurred'
+          : 'An unexpected error occurred',
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
       });
     }
-
-    // Import and use the Express app for other routes
-    const app = (await import('../src/app')).default;
-    
-    // Call the Express app
-    return app(req, res);
-    
-  } catch (error: any) {
-    console.error('Serverless function error:', error);
-    
-    return res.status(500).json({
-      success: false,
-      error: 'Internal Server Error',
-      message: error.message || 'An unexpected error occurred',
-      timestamp: new Date().toISOString(),
-    });
   }
 }

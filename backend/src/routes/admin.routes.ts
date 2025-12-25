@@ -374,7 +374,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
       batchId: importBatchId,
     });
 
-    sendSuccess(res, 'Import completed successfully', {
+    return sendSuccess(res, 'Import completed successfully', {
       ...results,
       total: records.length,
       batchId: importBatchId,
@@ -388,7 +388,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
       fs.unlinkSync(filePath);
     }
     
-    sendError(res, error.message || 'Import failed', 500);
+    return sendError(res, error.message || 'Import failed', 500);
   }
 });
 
@@ -405,15 +405,9 @@ router.get('/import-history', async (req: Request, res: Response) => {
       return sendError(res, 'Unauthorized', 403);
     }
 
-    // Get all passes with import metadata
-    const importedPasses = await prisma.pass.findMany({
-      where: {
-        NOT: {
-          ticketDetails: {
-            equals: null,
-          },
-        },
-      },
+    // Get all passes with import metadata (where ticketDetails exists)
+    // Note: Prisma JSON field filtering is limited, so we filter client-side
+    const allPasses = await prisma.pass.findMany({
       select: {
         id: true,
         passType: true,
@@ -433,8 +427,11 @@ router.get('/import-history', async (req: Request, res: Response) => {
       },
     });
 
+    // Filter passes that have ticketDetails (import metadata)
+    const importedPasses = allPasses.filter(pass => pass.ticketDetails != null);
+
     // Group by batch
-    const batches = importedPasses.reduce((acc, pass) => {
+    const batches = importedPasses.reduce((acc: any, pass: any) => {
       const details = pass.ticketDetails as any;
       const batchId = details?.importBatchId;
       
@@ -458,7 +455,7 @@ router.get('/import-history', async (req: Request, res: Response) => {
       return acc;
     }, {} as any);
 
-    sendSuccess(res, 'Import history fetched', {
+    return sendSuccess(res, 'Import history fetched', {
       totalImportedPasses: importedPasses.length,
       batches: Object.values(batches).sort((a: any, b: any) => 
         new Date(b.importedAt).getTime() - new Date(a.importedAt).getTime()
@@ -467,7 +464,7 @@ router.get('/import-history', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Get import history error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -551,7 +548,7 @@ router.get('/stats', async (req: Request, res: Response) => {
       passTypeBreakdown[p.passType] = p._count;
     });
 
-    sendSuccess(res, 'Stats fetched', {
+    return sendSuccess(res, 'Stats fetched', {
       totalUsers,
       totalPasses,
       verifiedPasses: verifiedUsers, // Users with bookingVerified = true
@@ -577,7 +574,7 @@ router.get('/stats', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Get stats error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -601,11 +598,11 @@ router.delete('/passes/:passId', async (req: Request, res: Response) => {
     });
 
     logger.info('Pass deleted by admin', { passId, passType: pass.passType });
-    sendSuccess(res, 'Pass deleted', { deletedPass: pass });
+    return sendSuccess(res, 'Pass deleted', { deletedPass: pass });
 
   } catch (error: any) {
     logger.error('Delete pass error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -648,7 +645,7 @@ router.post('/sync-konfhub', async (req: Request, res: Response) => {
 
     const results = await konfhubService.syncAttendeesToDatabase();
 
-    sendSuccess(res, 'KonfHub sync completed', results);
+    return sendSuccess(res, 'KonfHub sync completed', results);
 
   } catch (error: any) {
     logger.error('KonfHub sync error:', error);
@@ -658,7 +655,7 @@ router.post('/sync-konfhub', async (req: Request, res: Response) => {
       return sendError(res, 'KonfHub API returned 403 Forbidden. Make sure you are using the PRIVATE API KEY from the KonfHub organizer dashboard (Event > Settings > API Settings), not the button/widget ID. If the issue persists, use the CSV import endpoint (/api/v1/admin/import-passes) instead.', 403);
     }
     
-    sendError(res, error.message || 'Sync failed', 500);
+    return sendError(res, error.message || 'Sync failed', 500);
   }
 });
 
@@ -677,7 +674,7 @@ router.get('/konfhub-status', async (req: Request, res: Response) => {
 
     const configStatus = konfhubService.getConfigStatus();
     
-    sendSuccess(res, 'KonfHub configuration status', {
+    return sendSuccess(res, 'KonfHub configuration status', {
       isConfigured: konfhubService.isConfigured(),
       ...configStatus,
       apiKeyConfigured: configStatus.apiKey ? 'Yes (hidden)' : 'No',
@@ -686,7 +683,7 @@ router.get('/konfhub-status', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Get KonfHub status error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -712,7 +709,7 @@ router.get('/test-konfhub', async (req: Request, res: Response) => {
     // Fetch just 5 attendees as a test
     const result = await konfhubService.fetchAllAttendees({ limit: 5 });
     
-    sendSuccess(res, 'KonfHub API test successful', {
+    return sendSuccess(res, 'KonfHub API test successful', {
       eventName: result.eventName,
       totalAttendees: result.count,
       sampleCount: result.attendees.length,
@@ -744,7 +741,7 @@ router.get('/test-konfhub', async (req: Request, res: Response) => {
       });
     }
     
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -853,7 +850,7 @@ router.post('/capture-ticket', async (req: Request, res: Response) => {
       passes.push({ bookingId, pass, ticketUrl });
     }
 
-    sendSuccess(res, 'Tickets captured successfully', {
+    return sendSuccess(res, 'Tickets captured successfully', {
       bookingIds: result.bookingIds,
       type: result.type,
       message: result.message,
@@ -862,7 +859,7 @@ router.post('/capture-ticket', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Capture ticket error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -879,7 +876,7 @@ router.get('/konfhub-tickets', async (req: Request, res: Response) => {
       return sendError(res, 'Unauthorized', 403);
     }
 
-    sendSuccess(res, 'KonfHub ticket configuration', {
+    return sendSuccess(res, 'KonfHub ticket configuration', {
       ticketIds: KONFHUB_TICKET_IDS,
       customFormIds: KONFHUB_CUSTOM_FORM_IDS,
       eventId: process.env.KONFHUB_EVENT_ID,
@@ -887,7 +884,7 @@ router.get('/konfhub-tickets', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Get KonfHub tickets error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -929,14 +926,14 @@ router.get('/users', async (req: Request, res: Response) => {
       },
     });
 
-    sendSuccess(res, 'Users fetched', {
+    return sendSuccess(res, 'Users fetched', {
       users,
       total: users.length,
     });
 
   } catch (error: any) {
     logger.error('Get users error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -981,14 +978,14 @@ router.get('/passes', async (req: Request, res: Response) => {
       },
     });
 
-    sendSuccess(res, 'Passes fetched', {
+    return sendSuccess(res, 'Passes fetched', {
       passes,
       total: passes.length,
     });
 
   } catch (error: any) {
     logger.error('Get passes error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 
@@ -1035,14 +1032,14 @@ router.get('/registrations', async (req: Request, res: Response) => {
       },
     });
 
-    sendSuccess(res, 'Registrations fetched', {
+    return sendSuccess(res, 'Registrations fetched', {
       registrations,
       total: registrations.length,
     });
 
   } catch (error: any) {
     logger.error('Get registrations error:', error);
-    sendError(res, error.message, 500);
+    return sendError(res, error.message, 500);
   }
 });
 

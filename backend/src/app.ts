@@ -1,13 +1,17 @@
 // Initialize Sentry FIRST, before any other imports
 import * as Sentry from '@sentry/node';
 
-const SENTRY_DSN = "https://f76345a28765c19bf814840320254294@o4510487277142016.ingest.de.sentry.io/4510493281747024";
+// Read Sentry configuration from environment variables
+const SENTRY_DSN = process.env.SENTRY_DSN || '';
+const SENTRY_TRACES_SAMPLE_RATE = parseFloat(process.env.SENTRY_TRACES_SAMPLE_RATE || '0.1');
+const SENTRY_PROFILES_SAMPLE_RATE = parseFloat(process.env.SENTRY_PROFILES_SAMPLE_RATE || '0.1');
 
 if (SENTRY_DSN) {
   try {
     Sentry.init({
       dsn: SENTRY_DSN,
-      tracesSampleRate: 1.0,
+      tracesSampleRate: SENTRY_TRACES_SAMPLE_RATE,
+      profilesSampleRate: SENTRY_PROFILES_SAMPLE_RATE as any,
       environment: process.env.NODE_ENV || 'development',
     });
     

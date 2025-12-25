@@ -146,7 +146,7 @@ export class PDFService {
 
         // === INCLUSIONS SECTION ===
         const inclusionsY = 630;
-        this.drawInclusions(doc, data, inclusionsY);
+        this.drawInclusions(doc, inclusionsY);
 
         // === FOOTER ===
         this.drawFooter(doc, pageHeight);
@@ -344,7 +344,7 @@ export class PDFService {
   /**
    * Draw inclusions section (perfectly aligned)
    */
-  private drawInclusions(doc: PDFKit.PDFDocument, data: PassPDFData, y: number): void {
+  private drawInclusions(doc: PDFKit.PDFDocument, y: number): void {
     // Section header
     doc.fontSize(15)
        .fillColor(this.colors.textDark)
