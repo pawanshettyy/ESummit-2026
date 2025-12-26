@@ -1,129 +1,6 @@
 import { Router, Request, Response } from 'express';
 import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
-import logger from '../utils/logger.util';
-import { generateQRCode } from '../services/qrcode.service';
-import { generateUniqueIdentifiers } from '../utils/identifier.util';
-
-const router = Router();
-
-/**
- * Get all passes for a user by Clerk ID
- * GET /api/v1/passes/user/:clerkUserId
- */
-router.get('/user/:clerkUserId', async (req: Request, res: Response) => {
-  try {
-    const { clerkUserId } = req.params;
-
-    // First, find the user by Clerk ID
-    const user = await prisma.user.findUnique({
-      where: { clerkUserId },
-      select: { id: true },
-    });
-
-    if (!user) {
-      sendError(res, 'User not found', 404);
-      return;
-    }
-
-    // Get all passes for this user
-    const passes = await prisma.pass.findMany({
-      where: { userId: user.id },
-      select: {
-        id: true,
-        passId: true,
-        passType: true,
-        bookingId: true,
-        konfhubTicketId: true,
-        konfhubOrderId: true,
-        price: true,
-        purchaseDate: true,
-        ticketDetails: true,
-        status: true,
-        qrCodeUrl: true,
-        qrCodeData: true,
-        createdAt: true,
-        updatedAt: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-
-    sendSuccess(res, 'Passes fetched successfully', { passes });
-  } catch (error: any) {
-    logger.error('Get user passes error:', error);
-    sendError(res, error.message || 'Failed to fetch passes', 500);
-  }
-});
-
-/**
- * Get single pass details by pass ID
- * GET /api/v1/passes/:passId
- */
-router.get('/:passId', async (req: Request, res: Response) => {
-  try {
-    const { passId } = req.params;
-
-    const pass = await prisma.pass.findUnique({
-      where: { passId },
-      include: {
-        user: {
-          select: {
-            id: true,
-            email: true,
-            fullName: true,
-            phone: true,
-          },
-        },
-        transaction: true,
-      },
-    });
-
-    if (!pass) {
-      sendError(res, 'Pass not found', 404);
-      return;
-    }
-
-    sendSuccess(res, 'Pass details fetched successfully', { pass });
-  } catch (error: any) {
-    logger.error('Get pass details error:', error);
-    sendError(res, error.message || 'Failed to fetch pass details', 500);
-  }
-});
-
-/**
- * Create a new pass (without payment - for testing/manual creation)
- * POST /api/v1/passes/create
- * 
- * WARNING: This endpoint bypasses payment verification.
- * For production, use /api/v1/payment/create-order and /api/v1/payment/verify-and-create-pass
- */
-router.post('/create', async (req: Request, res: Response) => {
-  try {
-    const {
-      clerkUserId,
-      passType,
-      price,
-      konfhubData,
-    } = req.body;
-
-    // Validate required fields
-    if (!clerkUserId || !passType || !price) {
-      sendError(res, 'clerkUserId, passType, and price are required', 400);
-      return;
-    }
-
-    // Find user by Clerk ID
-    const user = await prisma.user.findUnique({
-      where: { clerkUserId },
-      select: { id: true, email: true },
-    });
-
-    if (!user) {
-      sendError(res, 'User not found', 404);
-      return;
-    }
 
     // Check if user already has a pass (ONE PASS PER USER LIMIT)
     const existingPass = await prisma.pass.findFirst({
@@ -195,14 +72,14 @@ router.post('/create', async (req: Request, res: Response) => {
         konfhubTicketId: konfhubData?.ticketId || null,
         konfhubPaymentId: konfhubData?.paymentId || null,
         metadata: {
-          note: konfhubData ? 'Pass purchased via KonfHub' : 'Manually created pass (test/demo)',
+          note: konfhubData ? 'Pass purchased via KonfHub' : 'Manual pass creation',
           createdVia: konfhubData ? 'konfhub_widget' : 'direct_api_call',
           konfhubData: konfhubData || null,
         },
       },
     });
 
-    logger.info(`⚠️  Manual pass created: ${passId} for user: ${user.email} (TESTING MODE)`);
+    logger.info(`Manual pass created: ${passId} for user: ${user.email}`);
     logger.info(`Invoice: ${invoiceNumber}, Transaction: ${transactionNumber}`);
 
     sendSuccess(

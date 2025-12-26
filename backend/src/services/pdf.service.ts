@@ -55,7 +55,7 @@ export class PDFService {
     this.hasLogo = fs.existsSync(this.logoPath);
     
     if (!this.hasLogo) {
-      console.warn('Logo file not found at: ' + this.logoPath);
+      logger.warn('Logo file not found at: ' + this.logoPath);
     }
   }
 
@@ -153,7 +153,7 @@ export class PDFService {
 
         doc.end();
       } catch (error) {
-        console.error('Error generating pass PDF:', error);
+        logger.error('Error generating pass PDF:', error);
         reject(error);
       }
     });
@@ -656,7 +656,7 @@ export class PDFService {
 
         doc.end();
       } catch (error) {
-        console.error('Error generating invoice PDF:', error);
+        logger.error('Error generating invoice PDF:', error);
         reject(error);
       }
     });
@@ -898,7 +898,7 @@ export class PDFService {
 
         doc.end();
       } catch (error) {
-        console.error('Error generating schedule PDF:', error);
+        logger.error('Error generating schedule PDF:', error);
         reject(error);
       }
     });

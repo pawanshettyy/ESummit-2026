@@ -3,7 +3,7 @@ import { connectDB } from './config/database';
 
 // Initialize database connection for serverless
 connectDB().catch((error) => {
-  console.error('Database connection failed:', error);
+  logger.error('Database connection failed:', error);
 });
 
 // Export the Express app for Vercel serverless functions

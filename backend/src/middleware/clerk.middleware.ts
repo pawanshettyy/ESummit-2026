@@ -41,7 +41,7 @@ export function getClerkUserId(req: any): string | null {
       }
     }
   } catch (error) {
-    console.error('Error calling req.auth():', error);
+    logger.error('Error calling req.auth():', error);
   }
   
   // Fallback to getAuth() helper
@@ -49,7 +49,7 @@ export function getClerkUserId(req: any): string | null {
     const auth = getAuth(req);
     return auth?.userId || null;
   } catch (error) {
-    console.error('Error getting auth from request:', error);
+    logger.error('Error getting auth from request:', error);
     return null;
   }
 }

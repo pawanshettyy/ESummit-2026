@@ -57,7 +57,7 @@ router.get('/pass/:passId', async (req: Request, res: Response): Promise<void> =
     // Send PDF
     res.send(pdfBuffer);
   } catch (error) {
-    console.error('Error generating pass PDF:', error);
+    logger.error('Error generating pass PDF:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to generate pass PDF'
@@ -142,7 +142,7 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response): Promi
       subtotal,
       gstAmount,
       total,
-      paymentMethod: transaction.konfhubPaymentId ? 'Online Payment (KonfHub)' : 'Bypassed (Test Mode)',
+      paymentMethod: transaction.konfhubPaymentId ? 'Online Payment (KonfHub)' : 'Manual',
       transactionId: transaction.konfhubPaymentId || transactionNumber,
       paymentStatus: transaction.status.toUpperCase()
     };
@@ -161,7 +161,7 @@ router.get('/invoice/:transactionId', async (req: Request, res: Response): Promi
     // Send PDF
     res.send(pdfBuffer);
   } catch (error) {
-    console.error('Error generating invoice PDF:', error);
+    logger.error('Error generating invoice PDF:', error);
     res.status(500).json({
       success: false,
       error: 'Failed to generate invoice PDF'

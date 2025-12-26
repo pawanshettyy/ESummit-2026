@@ -75,7 +75,7 @@ export const assignTcetCode = async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('Error assigning TCET code:', error);
+    logger.error('Error assigning TCET code:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to assign code'
@@ -120,7 +120,7 @@ export const getUserTcetCode = async (req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('Error fetching TCET code:', error);
+    logger.error('Error fetching TCET code:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to fetch code'
@@ -149,7 +149,7 @@ export const getTcetCodeStats = async (_req: Request, res: Response) => {
     });
 
   } catch (error) {
-    console.error('Error fetching TCET code stats:', error);
+    logger.error('Error fetching TCET code stats:', error);
     return res.status(500).json({
       success: false,
       error: 'Failed to fetch statistics'

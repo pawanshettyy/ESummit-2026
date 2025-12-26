@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/react";
 import { Navigation } from "./components/navigation";
 import { HomePage } from "./components/homepage";
 import { PassBooking } from "./components/pass-booking";
-import { EventSchedule } from "./components/event-schedule";
+import EventSchedule from "./components/event-schedule";
 import { EventsListing } from "./components/events-listing";
 import {
   TenMinuteMillionPage,

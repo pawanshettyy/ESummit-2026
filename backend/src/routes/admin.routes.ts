@@ -690,63 +690,6 @@ router.get('/konfhub-status', async (req: Request, res: Response) => {
   }
 });
 
-/**
- * Test KonfHub API connection by fetching a few attendees
- * GET /api/v1/admin/test-konfhub
- */
-router.get('/test-konfhub', async (req: Request, res: Response) => {
-  try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
-    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
-    
-    if (adminSecret !== expectedSecret) {
-      return sendError(res, 'Unauthorized', 403);
-    }
-
-    if (!konfhubService.isConfigured()) {
-      return sendError(res, 'KonfHub not configured', 400, {
-        configStatus: konfhubService.getConfigStatus(),
-      });
-    }
-
-    // Fetch just 5 attendees as a test
-    const result = await konfhubService.fetchAllAttendees({ limit: 5 });
-    
-    return sendSuccess(res, 'KonfHub API test successful', {
-      eventName: result.eventName,
-      totalAttendees: result.count,
-      sampleCount: result.attendees.length,
-      sample: result.attendees.map((a: any) => ({
-        name: a.name,
-        email: a.email_id?.substring(0, 5) + '***', // Mask email
-        ticketName: a.ticket_name || a.ticket_type,
-        registrationStatus: a.registration_status,
-        bookingId: a.booking_id,
-      })),
-    });
-
-  } catch (error: any) {
-    logger.error('Test KonfHub error:', error);
-    
-    // Provide detailed help for 403 errors
-    if (error.message?.includes('403')) {
-      return sendError(res, 'KonfHub API returned 403 Forbidden', 403, {
-        possibleCauses: [
-          '1. The KONFHUB_API_KEY may be a widget/button key instead of the Private API Key',
-          '2. The Private API Key needs to be generated from: KonfHub Dashboard > Your Event > Settings > API Settings',
-          '3. The API Key may not have permission for the attendees endpoint',
-        ],
-        currentConfig: {
-          apiKeySet: !!process.env.KONFHUB_API_KEY,
-          eventId: process.env.KONFHUB_EVENT_ID,
-        },
-        recommendation: 'Use the CSV/Excel import at POST /api/v1/admin/import-passes instead. Export attendees from KonfHub Dashboard > Attendees > Export.',
-      });
-    }
-    
-    return sendError(res, error.message, 500);
-  }
-});
 
 /**
  * Register a free ticket via KonfHub Capture API

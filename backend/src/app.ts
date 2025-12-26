@@ -15,7 +15,7 @@ if (SENTRY_DSN) {
       environment: process.env.NODE_ENV || 'development',
     });
     
-    console.log('✅ Sentry initialized');
+    // Sentry initialized
   } catch (error) {
     console.warn('⚠️ Sentry initialization failed:', error);
   }

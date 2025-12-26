@@ -27,45 +27,45 @@ const getCorsOrigin = () => {
     return (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       // Allow requests with no origin (mobile apps, curl, postman)
       if (!origin) {
-        console.log(`✅ CORS (prod): No origin header - allowing`);
+        // CORS: No origin header - allowing
         return callback(null, true);
       }
 
       // Allow all Vercel deployments (*.vercel.app)
       if (origin.endsWith('.vercel.app')) {
-        console.log(`✅ CORS (prod): Allowed Vercel deployment - ${origin}`);
+        // CORS: Allowed Vercel deployment
         return callback(null, true);
       }
 
       // Allow custom domain (tcetesummit.in and www.tcetesummit.in)
       const customDomains = ['https://tcetesummit.in', 'https://www.tcetesummit.in'];
       if (customDomains.includes(origin)) {
-        console.log(`✅ CORS (prod): Allowed custom domain - ${origin}`);
+        // CORS: Allowed custom domain
         return callback(null, true);
       }
 
       // Allow explicit frontend URL from env
       const frontendUrl = process.env.FRONTEND_URL;
       if (frontendUrl && origin === frontendUrl) {
-        console.log(`✅ CORS (prod): Allowed explicit frontend - ${origin}`);
+        // CORS: Allowed explicit frontend
         return callback(null, true);
       }
 
       // Allow ALLOWED_ORIGINS from env (comma-separated)
       const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim());
       if (allowedOrigins && allowedOrigins.includes(origin)) {
-        console.log(`✅ CORS (prod): Allowed from ALLOWED_ORIGINS - ${origin}`);
+        // CORS: Allowed from ALLOWED_ORIGINS
         return callback(null, true);
       }
 
       // Allow localhost in production (for testing)
       if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        console.log(`✅ CORS (prod): Allowed localhost - ${origin}`);
+        // CORS: Allowed localhost
         return callback(null, true);
       }
 
       // Reject other origins
-      console.warn(`⚠️ CORS (prod): Blocked origin - ${origin}`);
+      logger.warn(`⚠️ CORS (prod): Blocked origin - ${origin}`);
       return callback(new Error('Not allowed by CORS'), false);
     };
   }
@@ -91,24 +91,24 @@ const getCorsOrigin = () => {
 
       // Allow any localhost/127.0.0.1 port
       if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        console.log(`✅ CORS (dev): Allowed localhost - ${origin}`);
+        // CORS: Allowed localhost (dev)
         return callback(null, true);
       }
 
       // Allow Vercel deployments
       if (origin.endsWith('.vercel.app')) {
-        console.log(`✅ CORS (dev): Allowed Vercel - ${origin}`);
+        // CORS: Allowed Vercel (dev)
         return callback(null, true);
       }
 
       // Allow if matches explicit origin
       if (devOrigins.includes(origin)) {
-        console.log(`✅ CORS (dev): Allowed explicit - ${origin}`);
+        // CORS: Allowed explicit (dev)
         return callback(null, true);
       }
 
       // In development, log but still allow
-      console.warn(`⚠️ CORS (dev): Unknown origin, but allowing - ${origin}`);
+      logger.warn(`⚠️ CORS (dev): Unknown origin, but allowing - ${origin}`);
       return callback(null, true);
     };
   }
@@ -135,13 +135,13 @@ const config: Config = {
 // Warn about missing critical env vars in production
 if (config.env === 'production') {
   if (!process.env.DATABASE_URL) {
-    console.warn('⚠️  WARNING: DATABASE_URL not set');
+    logger.warn('⚠️  WARNING: DATABASE_URL not set');
   }
   if (!process.env.JWT_SECRET || process.env.JWT_SECRET.includes('default')) {
-    console.warn('⚠️  WARNING: JWT_SECRET not set or using default');
+    logger.warn('⚠️  WARNING: JWT_SECRET not set or using default');
   }
   if (!process.env.FRONTEND_URL) {
-    console.warn('⚠️  WARNING: FRONTEND_URL not set, using wildcard CORS');
+    logger.warn('⚠️  WARNING: FRONTEND_URL not set, using wildcard CORS');
   }
 }
 

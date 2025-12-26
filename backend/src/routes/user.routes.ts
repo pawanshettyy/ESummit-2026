@@ -261,10 +261,6 @@ router.post('/events/register', async (req: Request, res: Response) => {
       participantPhone 
     } = req.body;
 
-    console.log('=== EVENT REGISTRATION REQUEST ===');
-    console.log('Received eventId:', eventId);
-    console.log('Received clerkUserId:', clerkUserId);
-    console.log('Received bookingId:', bookingId);
 
     if (!clerkUserId || !eventId || !bookingId) {
       sendError(res, 'clerkUserId, eventId, and bookingId are required', 400);
@@ -272,12 +268,10 @@ router.post('/events/register', async (req: Request, res: Response) => {
     }
 
     // Check if event exists
-    console.log('Looking for event with eventId:', eventId);
     const event = await prisma.event.findFirst({
       where: { eventId },
     });
 
-    console.log('Event found:', event ? `${event.title} (id: ${event.id})` : 'NULL');
 
     if (!event) {
       sendError(res, 'Event not found', 404);
@@ -295,7 +289,6 @@ router.post('/events/register', async (req: Request, res: Response) => {
     }
 
     // Verify booking ID and get pass type
-    console.log('Verifying booking ID:', bookingId);
     
     // Check if user has booking ID stored in their profile
     const userWithBooking = await prisma.user.findFirst({
@@ -382,7 +375,7 @@ router.post('/events/register', async (req: Request, res: Response) => {
     }
 
     // Debug logging
-    console.log('Registration attempt:', {
+    logger.info('Registration attempt:', {
       userId: user.id,
       eventId: event.id,
       eventIdField: event.eventId,

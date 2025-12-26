@@ -123,13 +123,10 @@ export function UserDashboard({
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  const mockUser = {
-    name: user?.fullName || userData?.name || "User",
-    email: user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com",
-  };
-
   // Check if user is a TCET student based on email domain
-  const isTCETStudent = mockUser.email.toLowerCase().endsWith("@tcetmumbai.in");
+  const userName = user?.fullName || userData?.name || "User";
+  const userEmail = user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com";
+  const isTCETStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in");
 
   // Set initial tab to My Passes for all users
   const [activeTab, setActiveTab] = useState("mypasses");
@@ -286,7 +283,7 @@ export function UserDashboard({
 
   // Handle pass claim submission
   const handleSubmitPassClaim = async () => {
-    if (!user?.id || !mockUser.email) {
+    if (!user?.id || !userEmail) {
       toast.error("Please login to submit a pass claim");
       return;
     }
@@ -301,8 +298,8 @@ export function UserDashboard({
     try {
       const formData = new FormData();
       formData.append('clerkUserId', user.id);
-      formData.append('email', mockUser.email);
-      formData.append('fullName', mockUser.name);
+      formData.append('email', userEmail);
+      formData.append('fullName', userName);
       formData.append('passType', claimFormData.passType);
       
       if (claimFormData.bookingId) {
@@ -642,9 +639,9 @@ export function UserDashboard({
       <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16">
-            <AvatarImage src={user?.imageUrl} alt={mockUser.name} />
+            <AvatarImage src={user?.imageUrl} alt={userName} />
             <AvatarFallback className="bg-primary text-primary-foreground text-xl">
-              {mockUser.name
+              {userName
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
@@ -652,10 +649,10 @@ export function UserDashboard({
           </Avatar>
           <div>
             <h1 className="mb-1">
-              Welcome back, {mockUser.name.split(" ")[0]}!
+              Welcome back, {userName.split(" ")[0]}!
             </h1>
             <p className="text-sm text-muted-foreground">
-              {mockUser.email}
+              {userEmail}
             </p>
           </div>
         </div>

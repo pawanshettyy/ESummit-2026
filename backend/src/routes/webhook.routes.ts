@@ -43,7 +43,7 @@ router.post('/clerk', async (req: Request, res: Response) => {
         'svix-signature': svix_signature,
       });
     } catch (err) {
-      console.error('Webhook verification failed:', err);
+      logger.error('Webhook verification failed:', err);
       return res.status(400).json({ error: 'Webhook verification failed' });
     }
 
@@ -51,7 +51,7 @@ router.post('/clerk', async (req: Request, res: Response) => {
 
     // Handle user.created event
     if (event.type === 'user.created') {
-      console.log('Creating user from Clerk webhook:', eventData.id);
+      logger.info('Creating user from Clerk webhook:', eventData.id);
 
       const fullName = `${eventData.first_name || ''} ${eventData.last_name || ''}`.trim();
 
@@ -66,12 +66,12 @@ router.post('/clerk', async (req: Request, res: Response) => {
         },
       });
 
-      console.log('User created successfully:', eventData.id);
+      logger.info('User created successfully:', eventData.id);
     }
 
     // Handle user.updated event
     if (event.type === 'user.updated') {
-      console.log('Updating user from Clerk webhook:', eventData.id);
+      logger.info('Updating user from Clerk webhook:', eventData.id);
 
       const fullName = `${eventData.first_name || ''} ${eventData.last_name || ''}`.trim();
 
@@ -88,12 +88,12 @@ router.post('/clerk', async (req: Request, res: Response) => {
         },
       });
 
-      console.log('User updated successfully:', eventData.id);
+      logger.info('User updated successfully:', eventData.id);
     }
 
     // Handle user.deleted event
     if (event.type === 'user.deleted') {
-      console.log('Deleting user from Clerk webhook:', eventData.id);
+      logger.info('Deleting user from Clerk webhook:', eventData.id);
 
       await prisma.user.deleteMany({
         where: { 
@@ -101,13 +101,13 @@ router.post('/clerk', async (req: Request, res: Response) => {
         } as any,
       });
 
-      console.log('User deleted successfully:', eventData.id);
+      logger.info('User deleted successfully:', eventData.id);
     }
 
     return res.status(200).json({ success: true });
 
   } catch (error) {
-    console.error('Webhook error:', error);
+    logger.error('Webhook error:', error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 });
