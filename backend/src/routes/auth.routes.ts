@@ -3,27 +3,14 @@ import * as authController from '../controllers/auth.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { validate } from '../middleware/validate.middleware';
 import {
-  registerSchema,
-  loginSchema,
   refreshTokenSchema,
   updateProfileSchema,
 } from '../validators/auth.validator';
 
 const router = Router();
 
-/**
- * @route   POST /api/v1/auth/register
- * @desc    Register a new user
- * @access  Public
- */
-router.post('/register', validate(registerSchema), authController.register);
-
-/**
- * @route   POST /api/v1/auth/login
- * @desc    Login user
- * @access  Public
- */
-router.post('/login', validate(loginSchema), authController.login);
+// Register and login endpoints removed - authentication is now handled by Clerk
+// Users are automatically created via Clerk webhook when they sign up
 
 /**
  * @route   POST /api/v1/auth/refresh

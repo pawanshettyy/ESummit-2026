@@ -67,10 +67,10 @@ export function KonfHubWidget({
       const data = event.data;
 
       if (data.type === 'konfhub_purchase_complete') {
-        console.log('✅ KonfHub purchase completed:', data);
+        // KonfHub purchase completed successfully
         onSuccess?.(data);
       } else if (data.type === 'konfhub_widget_closed') {
-        console.log('❌ KonfHub widget closed');
+        // KonfHub widget closed by user
         onClose?.();
       }
     };

@@ -197,7 +197,7 @@ export function QRScanner() {
         setTimeout(() => {
           const isDuplicate = responseData.data.alreadyCheckedIn === true;
           if (!isDuplicate) {
-            console.log('✅ Dispatching checkin-success event to update admin panel');
+            // Dispatching checkin-success event to update admin panel
             const event = new CustomEvent('checkin-success', {
               detail: {
                 passId: responseData.data.pass?.passId,
@@ -206,7 +206,7 @@ export function QRScanner() {
             });
             window.dispatchEvent(event);
           } else {
-            console.log('⚠️ Duplicate scan detected - not updating admin panel');
+            // Duplicate scan detected - not updating admin panel
           }
         }, 0);
       } else {

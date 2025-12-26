@@ -39,9 +39,7 @@ const renderApp = () => {
     );
   } else {
     // If Clerk key missing, render App directly
-    console.warn(
-      "Clerk publishable key missing. Rendering App without authentication."
-    );
+    // Clerk publishable key missing - rendering without authentication
     createRoot(rootElement).render(
       <StrictMode>
         <App />

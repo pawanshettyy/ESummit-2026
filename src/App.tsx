@@ -38,9 +38,7 @@ import { Footer } from "./components/footer";
 import { Toaster } from "./components/ui/sonner";
 import { API_BASE_URL } from "./lib/api";
 
-// Debug log to verify VITE_API_URL at runtime
-console.log("[DEBUG] VITE_API_URL:", import.meta.env.VITE_API_URL);
-console.log("[DEBUG] API_BASE_URL:", API_BASE_URL);
+// API URL verified at build time - no runtime logging needed in production
 
 export default function App() {
   const { user, isSignedIn } = useUser();

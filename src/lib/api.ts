@@ -22,29 +22,8 @@ export interface User {
   createdAt: string;
 }
 
-export interface AuthResponse {
-  user: User;
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: string;
-}
-
-// Register Data
-export interface RegisterData {
-  email: string;
-  password: string;
-  fullName: string;
-  phone?: string;
-  college?: string;
-  yearOfStudy?: string;
-  rollNumber?: string;
-}
-
-// Login Data
-export interface LoginData {
-  email: string;
-  password: string;
-}
+// Note: AuthResponse, RegisterData, and LoginData removed
+// Authentication is now handled by Clerk, these types are no longer needed
 
 /**
  * API Service Class
@@ -119,45 +98,8 @@ class ApiService {
     }
   }
 
-  /**
-   * Register new user
-   */
-  async register(data: RegisterData): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>('/auth/register', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-
-    if (response.success && response.data) {
-      // Store tokens and user
-      this.setToken(response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      return response.data;
-    }
-
-    throw new Error(response.message || 'Registration failed');
-  }
-
-  /**
-   * Login user
-   */
-  async login(data: LoginData): Promise<AuthResponse> {
-    const response = await this.request<AuthResponse>('/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(data),
-    });
-
-    if (response.success && response.data) {
-      // Store tokens and user
-      this.setToken(response.data.accessToken);
-      localStorage.setItem('refreshToken', response.data.refreshToken);
-      localStorage.setItem('user', JSON.stringify(response.data.user));
-      return response.data;
-    }
-
-    throw new Error(response.message || 'Login failed');
-  }
+  // Note: Registration and login are now handled by Clerk authentication
+  // These methods have been removed as they are no longer needed
 
   /**
    * Get current user profile
@@ -176,7 +118,7 @@ class ApiService {
   /**
    * Update user profile
    */
-  async updateProfile(data: Partial<RegisterData>): Promise<User> {
+  async updateProfile(data: Partial<Pick<User, 'fullName' | 'phone' | 'college' | 'yearOfStudy' | 'rollNumber'>>): Promise<User> {
     const response = await this.request<User>('/auth/profile', {
       method: 'PUT',
       body: JSON.stringify(data),

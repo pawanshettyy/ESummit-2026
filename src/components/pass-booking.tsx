@@ -155,7 +155,7 @@ export function PassBooking({
   };
 
   const handleKonfHubSuccess = async (data: any) => {
-    console.log("✅ KonfHub purchase completed:", data);
+    // KonfHub purchase completed successfully
     setIsProcessingPayment(true);
     
     try {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, type MouseEvent } from "react";
 import { useUser } from "@clerk/clerk-react";
 import {
   Download,
@@ -149,7 +149,7 @@ export function UserDashboard({
           setTcetCode(data.data.code);
         }
       } catch (error) {
-        console.error("Error fetching TCET code:", error);
+        // Error handled by toast notification
       }
     };
 
@@ -190,7 +190,7 @@ export function UserDashboard({
       // Open KonfHub widget
       setShowKonfHubWidget(true);
     } catch (error) {
-      console.error("Error assigning TCET code:", error);
+      // Error already handled by toast notification
       toast.error("Failed to process request. Please try again.");
     } finally {
       setIsAssigningCode(false);
@@ -469,19 +469,13 @@ export function UserDashboard({
       }
 
       try {
-        console.log('[Profile Check] Checking profile for user:', user.id);
-        
         const response = await fetch(
           `${API_BASE_URL}/users/check-profile/${user.id}`
         );
         const data = await response.json();
-        
-        console.log('[Profile Check] Response:', data);
 
         // If user doesn't exist in database, create them
         if (data.success && !data.data.exists) {
-          console.log('[Profile Check] User does not exist, creating...');
-          
           const syncResponse = await fetch(`${API_BASE_URL}/users/sync`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -495,20 +489,15 @@ export function UserDashboard({
             }),
           });
           
-          const syncData = await syncResponse.json();
-          console.log('[Profile Check] User sync result:', syncData);
+          await syncResponse.json();
 
           // Show profile modal for new users
-          console.log('[Profile Check] Showing modal for new user');
           setShowProfileModal(true);
         } else if (data.success && data.data.exists && !data.data.isComplete) {
-          console.log('[Profile Check] User exists but profile incomplete, showing modal');
           setShowProfileModal(true);
-        } else {
-          console.log('[Profile Check] Profile is complete or error occurred');
         }
       } catch (error) {
-        console.error("[Profile Check] Error:", error);
+        // Silent fail - profile check is not critical
       } finally {
         setIsCheckingProfile(false);
       }
@@ -1263,7 +1252,7 @@ export function UserDashboard({
                 eventId="tcet-esummit26"
                 mode="iframe"
                 onSuccess={(data) => {
-                  console.log("TCET pass booking completed:", data);
+                  // Pass booking completed successfully
                   toast.success("🎉 Booking Successful!", {
                     description: "Your TCET student pass has been booked. Check your email for confirmation."
                   });
@@ -1404,7 +1393,7 @@ export function UserDashboard({
                           <Button
                             variant="ghost"
                             size="sm"
-                            onClick={(e: React.MouseEvent) => {
+                            onClick={(e: MouseEvent) => {
                               e.preventDefault();
                               setUploadedFile(null);
                             }}

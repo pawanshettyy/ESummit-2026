@@ -4,61 +4,7 @@ import { sendSuccess, sendError } from '../utils/response.util';
 import { verifyRefreshToken, generateTokenPair } from '../utils/jwt.util';
 import logger from '../utils/logger.util';
 
-/**
- * DEPRECATED: Register is now handled by Clerk
- * This endpoint is kept for backward compatibility
- * New users should sign up through Clerk authentication
- */
-export const register = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { clerkUserId, email, fullName, firstName, lastName } = req.body;
-
-    if (!clerkUserId || !email) {
-      sendError(res, 'clerkUserId and email are required', 400);
-      return;
-    }
-
-    const user = await authService.registerUser(clerkUserId, email, fullName, firstName, lastName);
-
-    logger.info(`New user registered from Clerk: ${user.email}`);
-
-    sendSuccess(res, 'Registration successful', { user }, 201);
-  } catch (error: any) {
-    logger.error('Registration error:', error);
-    sendError(res, error.message || 'Registration failed', 400);
-  }
-};
-
-/**
- * DEPRECATED: Login is now handled by Clerk
- * This endpoint is kept for backward compatibility
- * Authentication should be done through Clerk
- */
-export const login = async (
-  req: Request,
-  res: Response
-): Promise<void> => {
-  try {
-    const { clerkUserId } = req.body;
-
-    if (!clerkUserId) {
-      sendError(res, 'clerkUserId is required', 400);
-      return;
-    }
-
-    const result = await authService.loginUser(clerkUserId);
-
-    logger.info(`User logged in: ${result.user.email}`);
-
-    sendSuccess(res, 'Login successful', result);
-  } catch (error: any) {
-    logger.error('Login error:', error);
-    sendError(res, error.message || 'Login failed', 401);
-  }
-};
+// Register and login controllers removed - authentication is now handled by Clerk
 
 /**
  * Get current user profile
