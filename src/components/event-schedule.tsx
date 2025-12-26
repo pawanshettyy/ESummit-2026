@@ -6,16 +6,15 @@ import { Badge } from "./ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Alert, AlertDescription } from "./ui/alert";
-import { toast } from "sonner";
+// import { toast } from "sonner";
 import { motion } from "motion/react";
 import { BentoGrid, BentoCard } from "./magicui/bento-grid";
 import { PulseDot } from "./accentricity/pulse-dot";
 import { FloatingCard } from "./accentricity/floating-card";
 
-export function EventSchedule() {
+const EventSchedule = () => {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedVenue, setSelectedVenue] = useState("all");
-  const [mySchedule, setMySchedule] = useState<string[]>([]);
 
   // Define event type for consistency
   type Event = {
@@ -396,28 +395,7 @@ export function EventSchedule() {
     ],
   };
 
-  const toggleEvent = (eventId: string) => {
-    if (mySchedule.includes(eventId)) {
-      setMySchedule(mySchedule.filter((id) => id !== eventId));
-      toast.info("Event removed from your schedule");
-    } else {
-      // Check for clash
-      const event = [...events.day1, ...events.day2].find((e) => e.id === eventId);
-      if (event) {
-        const hasClash = mySchedule.some((scheduledId) => {
-          const scheduledEvent = [...events.day1, ...events.day2].find((e) => e.id === scheduledId);
-          return scheduledEvent && scheduledEvent.time === event.time;
-        });
 
-        if (hasClash) {
-          toast.error("Time clash detected! Please remove conflicting event first.");
-          return;
-        }
-      }
-      setMySchedule([...mySchedule, eventId]);
-      toast.success("Event added to your schedule");
-    }
-  };
 
   const filterEvents = (eventsList: Event[]) => {
     return eventsList.filter((event) => {
@@ -489,15 +467,6 @@ export function EventSchedule() {
         </CardContent>
       </Card>
 
-      {mySchedule.length > 0 && (
-        <Alert className="mb-6">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>
-            You have {mySchedule.length} event(s) in your schedule. We'll send reminders 1 hour before each event.
-          </AlertDescription>
-        </Alert>
-      )}
-
       <Tabs defaultValue="day1" className="w-full">
         <TabsList className="grid w-full max-w-md grid-cols-2">
           <TabsTrigger value="day1">Day 1 - February 2, 2026</TabsTrigger>
@@ -507,7 +476,7 @@ export function EventSchedule() {
         <TabsContent value="day1" className="mt-6">
           <div className="space-y-4">
             {filterEvents(events.day1).map((event) => (
-              <Card key={event.id} className={mySchedule.includes(event.id) ? "border-primary" : ""}>
+              <Card key={event.id}>
                 <CardContent className="p-6">
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="flex-1">
@@ -545,21 +514,6 @@ export function EventSchedule() {
                         </div>
                       )}
                     </div>
-
-                    <Button
-                      variant={mySchedule.includes(event.id) ? "default" : "outline"}
-                      onClick={() => toggleEvent(event.id)}
-                      className="md:ml-4"
-                    >
-                      {mySchedule.includes(event.id) ? (
-                        <>Added</>
-                      ) : (
-                        <>
-                          <Plus className="mr-2 h-4 w-4" />
-                          Add to Schedule
-                        </>
-                      )}
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -570,7 +524,7 @@ export function EventSchedule() {
         <TabsContent value="day2" className="mt-6">
           <div className="space-y-4">
             {filterEvents(events.day2).map((event) => (
-              <Card key={event.id} className={mySchedule.includes(event.id) ? "border-primary" : ""}>
+              <Card key={event.id}>
                 <CardContent className="p-6">
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="flex-1">
@@ -608,21 +562,6 @@ export function EventSchedule() {
                         </div>
                       )}
                     </div>
-
-                    <Button
-                      variant={mySchedule.includes(event.id) ? "default" : "outline"}
-                      onClick={() => toggleEvent(event.id)}
-                      className="md:ml-4"
-                    >
-                      {mySchedule.includes(event.id) ? (
-                        <>Added</>
-                      ) : (
-                        <>
-                          <Plus className="mr-2 h-4 w-4" />
-                          Add to Schedule
-                        </>
-                      )}
-                    </Button>
                   </div>
                 </CardContent>
               </Card>
@@ -632,4 +571,6 @@ export function EventSchedule() {
       </Tabs>
     </div>
   );
-}
+};
+
+export default EventSchedule;

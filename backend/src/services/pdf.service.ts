@@ -662,42 +662,7 @@ export class PDFService {
     });
   }
 
-  /**
-   * Generate Personalized Schedule PDF based on user's passes
-   */
-  async generateSchedulePDF(data: {
-    userName: string;
-    userEmail: string;
-    passes: Array<{
-      passType: string;
-      passId: string;
-    }>;
-  }): Promise<Buffer> {
-    return new Promise((resolve, reject) => {
-      try {
-        const doc = new PDFDocument({
-          size: 'A4',
-          margins: { top: 50, bottom: 50, left: 50, right: 50 },
-          info: {
-            Title: `E-Summit 2026 - My Schedule`,
-            Author: 'E-Summit 2026',
-            Subject: 'Event Schedule',
-            Keywords: 'schedule, event, esummit',
-            Creator: 'E-Summit Platform',
-            Producer: 'E-Summit 2026'
-          }
-        });
-
-        const chunks: Buffer[] = [];
-        doc.on('data', (chunk) => chunks.push(chunk));
-        doc.on('end', () => resolve(Buffer.concat(chunks)));
-        doc.on('error', reject);
-
-        // Event schedule data (matching pass-events.ts structure)
-        const eventSchedule = {
-          day1: [
-            { time: "09:00 - 09:30", title: "Registration & Welcome", category: "Networking", venue: "Main Entrance" },
-            { time: "09:30 - 10:30", title: "Inaugural Ceremony", category: "Networking", venue: "Main Auditorium" },
+  // generateSchedulePDF removed
             { time: "10:00 - 13:00", title: "The Ten Minute Million", category: "Pitching", venue: "Main Auditorium" },
             { time: "14:00 - 17:00", title: "Angel Investors Roundtable", category: "Pitching", venue: "Conference Hall A" },
             { time: "11:00 - 13:00", title: "IPL Auction", category: "Competition", venue: "Competition Arena A" },
