@@ -10,8 +10,11 @@ import { konfhubService, KONFHUB_TICKET_IDS, KONFHUB_CUSTOM_FORM_IDS } from '../
 
 const router = Router();
 
-// Ensure uploads directory exists
-const uploadsDir = path.join(process.cwd(), 'uploads');
+// Use /tmp/uploads in serverless/production, otherwise use local uploads
+const uploadsDir =
+  process.env.VERCEL || process.env.NODE_ENV === 'production'
+    ? '/tmp/uploads'
+    : path.join(process.cwd(), 'uploads');
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }

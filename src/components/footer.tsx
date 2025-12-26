@@ -8,8 +8,21 @@ interface FooterProps {
 }
 
 export function Footer({ onNavigate }: FooterProps) {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user, isLoaded } = useUser();
   
+  // Determine admin role (same logic as AdminPanel)
+  let isAdmin = false;
+  if (isLoaded && isSignedIn && user) {
+    const adminRole = user.publicMetadata?.adminRole;
+    const orgRole = user.organizationMemberships?.[0]?.role;
+    // Fix: check for string equality, not reference
+    if (adminRole && ["core", "jc", "oc"].includes(String(adminRole).toLowerCase())) {
+      isAdmin = true;
+    } else if (orgRole && ["org:admin", "admin"].includes(String(orgRole).toLowerCase())) {
+      isAdmin = true;
+    }
+  }
+
   return (
     <footer className="border-t bg-muted/30">
       <div className="container mx-auto px-4 py-12">
@@ -174,15 +187,17 @@ export function Footer({ onNavigate }: FooterProps) {
         <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 text-sm text-muted-foreground md:flex-row">
           <div className="flex items-center gap-2">
             <p>© 2026 E-Summit TCET. All rights reserved.</p>
-            {/* Hidden Admin Access Button */}
-            <button
-              onClick={() => onNavigate("admin")}
-              className="w-4 h-4 rounded-full opacity-0 hover:opacity-30 transition-opacity focus:opacity-30"
-              aria-label="Admin access"
-              title=""
-            >
-              .
-            </button>
+            {/* Admin Access Link */}
+            {isAdmin && (
+              <button
+                onClick={() => onNavigate("admin")}
+                className="ml-4 underline text-primary hover:text-primary/80 transition-colors"
+                aria-label="Admin access"
+                title="Admin access"
+              >
+                Admin Access
+              </button>
+            )}
           </div>
           <div className="flex gap-6">
             <button 

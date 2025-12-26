@@ -30,6 +30,8 @@ import { Alert, AlertDescription } from "./ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { toast } from "sonner";
 import { API_BASE_URL } from "../lib/api";
+import { logger } from "../utils/logger";
+/// <reference types="vite/client" />
 
 // Role type definition
 type AdminRole = "core" | "jc" | "oc" | null;
@@ -202,11 +204,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         else if (memberRole === "oc") finalRole = "oc";
       }
       
-      // For development/testing - allow any signed-in user as core
-      // Remove this in production and use proper Clerk roles
-      if (!finalRole && process.env.NODE_ENV === "development") {
-        finalRole = "core";
-      }
+      // Remove dev-only fallback: only assign role if found in Clerk or mapping
       
       setUserRole(finalRole);
       setIsLoading(false);
@@ -226,7 +224,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/stats`, {
         headers: {
-          "x-admin-secret": import.meta.env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
         },
       });
       const data = await response.json();
@@ -234,18 +232,8 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setStats(data.data);
       }
     } catch (error) {
-      console.error("Error fetching stats:", error);
-      // Set mock stats for demo
-      setStats({
-        totalUsers: 0,
-        totalPasses: 0,
-        verifiedPasses: 0,
-        unverifiedPasses: 0,
-        totalEvents: 0,
-        totalRegistrations: 0,
-        checkInsToday: 0,
-        passTypeBreakdown: {},
-      });
+      // Log error, do not set mock stats in production
+      if (typeof logger !== 'undefined') logger.error("Error fetching stats:", error);
     }
   }, []);
 
@@ -254,7 +242,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/users`, {
         headers: {
-          "x-admin-secret": import.meta.env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
         },
       });
       const data = await response.json();
@@ -262,7 +250,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setUsers(data.data.users || []);
       }
     } catch (error) {
-      console.error("Error fetching users:", error);
+      if (typeof logger !== 'undefined') logger.error("Error fetching users:", error);
       setUsers([]);
     }
   }, []);
@@ -272,7 +260,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/passes`, {
         headers: {
-          "x-admin-secret": import.meta.env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
         },
       });
       const data = await response.json();
@@ -280,7 +268,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setPasses(data.data.passes || []);
       }
     } catch (error) {
-      console.error("Error fetching passes:", error);
+      if (typeof logger !== 'undefined') logger.error("Error fetching passes:", error);
       setPasses([]);
     }
   }, []);
@@ -290,7 +278,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/registrations`, {
         headers: {
-          "x-admin-secret": import.meta.env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
         },
       });
       const data = await response.json();
@@ -298,7 +286,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setEventRegistrations(data.data.registrations || []);
       }
     } catch (error) {
-      console.error("Error fetching registrations:", error);
+      if (typeof logger !== 'undefined') logger.error("Error fetching registrations:", error);
       setEventRegistrations([]);
     }
   }, []);
@@ -328,7 +316,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const response = await fetch(`${API_BASE_URL}/admin/import-passes`, {
         method: "POST",
         headers: {
-          "x-admin-secret": import.meta.env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
         },
         body: formData,
       });
@@ -348,7 +336,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         toast.error(data.error || "Failed to import passes");
       }
     } catch (error) {
-      console.error("Error uploading file:", error);
+      if (typeof logger !== 'undefined') logger.error("Error uploading file:", error);
       toast.error("Failed to upload file");
     } finally {
       setIsUploading(false);
@@ -545,30 +533,33 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/20 to-background">
       {/* Header */}
-      <div className="border-b bg-background/80 backdrop-blur-sm sticky top-0 z-40">
+      <div className="border-b bg-background/90 backdrop-blur-md sticky top-0 z-40 shadow-sm">
         <div className="container mx-auto px-4 py-4">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-primary/10">
-                <Shield className="h-6 w-6 text-primary" />
+            {/* Title and icon section */}
+            <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="p-2 rounded-xl bg-primary/10 shadow-sm flex-shrink-0">
+                <Shield className="text-primary h-6 w-6 sm:h-7 sm:w-7" />
               </div>
-              <div>
-                <h1 className="text-xl font-bold">Admin Panel</h1>
-                <p className="text-sm text-muted-foreground">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-2xl font-bold tracking-tight truncate">Admin Panel</h1>
+                <p className="text-sm text-muted-foreground font-medium truncate">
                   E-Summit 2026 Management
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-3">
-              <Badge variant="secondary" className="capitalize">
+            {/* Button and info group */}
+            <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 sm:gap-3">
+              <Badge variant="secondary" className="capitalize px-2 py-1 rounded-lg text-sm sm:text-base flex-shrink-0">
                 {userRole} Team
               </Badge>
-              <span className="text-sm text-muted-foreground hidden sm:inline">
+              <span className="text-xs sm:text-sm text-muted-foreground hidden sm:inline font-mono max-w-[160px] truncate" title={user?.primaryEmailAddress?.emailAddress}>
                 {user?.primaryEmailAddress?.emailAddress}
               </span>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
+                className="rounded-lg border-muted h-9 w-9 flex-shrink-0"
                 onClick={() => {
                   fetchStats();
                   if (hasPermission("users")) fetchUsers();
@@ -580,15 +571,17 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                 <RefreshCw className="h-4 w-4" />
               </Button>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
+                className="rounded-lg border-muted h-9 w-9 flex-shrink-0"
                 onClick={() => signOut()}
               >
                 <LogOut className="h-4 w-4" />
               </Button>
               <Button
-                variant="ghost"
+                variant="outline"
                 size="icon"
+                className="rounded-lg border-muted h-9 w-9 flex-shrink-0"
                 onClick={() => onNavigate("home")}
               >
                 <X className="h-4 w-4" />
@@ -599,7 +592,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       </div>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-2 sm:px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="mb-6 flex-wrap h-auto gap-1">
             <TabsTrigger value="stats" className="gap-2">
@@ -730,48 +723,52 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
             <TabsContent value="events">
               <Card>
                 <CardHeader>
-                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                       <CardTitle>Event Registrations</CardTitle>
                       <CardDescription>
                         {filteredRegistrations.length} registrations found
                       </CardDescription>
                     </div>
-                    <div className="flex flex-wrap gap-2">
-                      <div className="relative flex-1 min-w-[200px]">
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                      <div className="relative flex-1 min-w-[180px] max-w-full">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <input
                           type="text"
                           placeholder="Search by name or email..."
-                          className="w-full h-10 pl-9 pr-4 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50"
+                          className="w-full h-10 pl-9 pr-4 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
                           value={searchQuery}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                          style={{ minWidth: 0 }}
                         />
                       </div>
-                      <select
-                        className="h-10 px-3 rounded-lg border bg-background text-sm"
-                        value={eventFilter}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventFilter(e.target.value)}
-                      >
-                        <option value="all">All Events</option>
-                        {uniqueEvents.map((event) => (
-                          <option key={event.id} value={event.id}>
-                            {event.title}
-                          </option>
-                        ))}
-                      </select>
+                      <div className="flex-1 min-w-[140px] max-w-full">
+                        <select
+                          className="h-10 w-full px-3 rounded-lg border bg-background text-sm min-w-0"
+                          value={eventFilter}
+                          onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setEventFilter(e.target.value)}
+                          style={{ minWidth: 0 }}
+                        >
+                          <option value="all">All Events</option>
+                          {uniqueEvents.map((event) => (
+                            <option key={event.id} value={event.id}>
+                              {event.title}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm min-w-[700px]">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left py-3 px-4 font-medium">User</th>
-                          <th className="text-left py-3 px-4 font-medium">Event</th>
-                          <th className="text-left py-3 px-4 font-medium hidden md:table-cell">Date</th>
-                          <th className="text-left py-3 px-4 font-medium">Status</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[180px] break-words">User</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[180px] break-words">Event</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[140px] hidden md:table-cell break-words">Date</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[100px] break-words">Status</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -784,20 +781,20 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                         ) : (
                           paginatedRegistrations.map((reg) => (
                             <tr key={reg.id} className="border-b hover:bg-muted/50">
-                              <td className="py-3 px-4">
+                              <td className="py-3 px-4 break-words max-w-[220px]">
                                 <div>
                                   <p className="font-medium">{reg.user?.fullName || "N/A"}</p>
                                   <p className="text-xs text-muted-foreground">{reg.user?.email}</p>
                                 </div>
                               </td>
-                              <td className="py-3 px-4">
+                              <td className="py-3 px-4 break-words max-w-[220px]">
                                 <p className="font-medium">{reg.event?.title}</p>
                                 <p className="text-xs text-muted-foreground">{reg.event?.venue}</p>
                               </td>
-                              <td className="py-3 px-4 hidden md:table-cell text-muted-foreground">
+                              <td className="py-3 px-4 hidden md:table-cell text-muted-foreground break-words max-w-[180px]">
                                 {formatDate(reg.registrationDate)}
                               </td>
-                              <td className="py-3 px-4">
+                              <td className="py-3 px-4 break-words max-w-[120px]">
                                 <Badge
                                   variant={reg.status === "registered" ? "default" : "secondary"}
                                 >
@@ -813,7 +810,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
 
                   {/* Pagination */}
                   {totalPages > 1 && (
-                    <div className="flex items-center justify-between mt-4 pt-4 border-t">
+                    <div className="flex flex-col sm:flex-row items-center justify-between mt-4 pt-4 border-t gap-2">
                       <p className="text-sm text-muted-foreground">
                         Page {currentPage} of {totalPages}
                       </p>
@@ -890,15 +887,15 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                 </CardHeader>
                 <CardContent>
                   <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
+                    <table className="w-full text-sm min-w-[900px]">
                       <thead>
                         <tr className="border-b">
-                          <th className="text-left py-3 px-4 font-medium">Pass ID</th>
-                          <th className="text-left py-3 px-4 font-medium">User</th>
-                          <th className="text-left py-3 px-4 font-medium hidden md:table-cell">Type</th>
-                          <th className="text-left py-3 px-4 font-medium">Verified</th>
-                          <th className="text-left py-3 px-4 font-medium hidden lg:table-cell">Date</th>
-                          <th className="text-center py-3 px-4 font-medium">Actions</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[120px]">Pass ID</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[160px]">User</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[120px] hidden md:table-cell">Type</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[100px]">Verified</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[140px] hidden lg:table-cell">Date</th>
+                          <th className="text-center py-3 px-4 font-medium min-w-[80px]">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
@@ -959,7 +956,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                               {expandedRows.has(pass.id) && (
                                 <tr className="bg-muted/30">
                                   <td colSpan={6} className="py-4 px-4">
-                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-sm">
+                                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 text-sm break-words min-w-0">
                                       {/* Booking Info */}
                                       <div>
                                         <p className="text-muted-foreground text-xs uppercase tracking-wide mb-1">Booking ID</p>
