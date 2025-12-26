@@ -418,7 +418,7 @@ async function cleanupExpiredClaims(clerkUserId: string): Promise<void> {
  * Global cleanup job - run periodically to expire old claims
  * POST /api/v1/pass-claims/cleanup (admin only)
  */
-router.post('/cleanup', async (req: Request, res: Response) => {
+router.post('/cleanup', async (_req: Request, res: Response) => {
   try {
     const result = await prisma.pendingPassClaim.updateMany({
       where: {

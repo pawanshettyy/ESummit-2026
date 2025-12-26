@@ -1,5 +1,4 @@
 import prisma from '../config/database';
-import { generateTokenPair } from '../utils/jwt.util';
 import {
   UpdateProfileInput,
 } from '../validators/auth.validator';

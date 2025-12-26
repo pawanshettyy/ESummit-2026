@@ -1,12 +1,8 @@
 import { Router } from 'express';
-import authRoutes from './auth.routes';
-import userRoutes from './user.routes';
 import passRoutes from './pass.routes';
 import passClaimRoutes from './pass-claim.routes';
-import checkinRoutes from './checkin.routes';
 import eventRoutes from './event.routes';
 import pdfRoutes from './pdf.routes';
-import paymentRoutes from './payment.routes';
 import webhookRoutes from './webhook.routes';
 import tcetRoutes from './tcet.routes';
 import adminRoutes from './admin.routes';
@@ -23,13 +19,9 @@ router.get('/health', (_req, res) => {
 });
 
 // Mount routes
-router.use('/auth', authRoutes);
-router.use('/users', userRoutes);
 router.use('/passes', passRoutes);
 router.use('/pass-claims', passClaimRoutes);
-router.use('/payment', paymentRoutes);
 router.use('/webhooks', webhookRoutes);
-router.use('/checkin', checkinRoutes);
 router.use('/events', eventRoutes);
 router.use('/pdf', pdfRoutes);
 router.use('/tcet', tcetRoutes);
