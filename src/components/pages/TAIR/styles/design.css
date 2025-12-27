@@ -17,25 +17,11 @@ body {
   margin: auto;
   padding: 0 16px;
 }
-body.dark {
-  --bg-main: #000;
-  --text-main: #fff;
-  --card-bg: #050505;
-  --card-text: #ffffff;
-  --card-border: #2b2b2b;
-}
 
-body.light {
-  --bg-main: #ffffff;
-  --text-main: #000000;
-  --card-bg: #ffffff;
-  --card-text: #000000;
-  --card-border: #000000;
-}
 
 body {
   background: var(--bg-main);
-  color: var(--text-main);
+  color: rgb(130, 133, 135);
 }
 
 
@@ -120,7 +106,7 @@ body {
   font-size: 1.2rem;
   line-height: 2.4;
   margin-bottom: 20px;
-  color: black;
+  color: rgb(130, 133, 135);;
 }
 .main-event-title{
   font-size: 2.8rem;
@@ -170,7 +156,6 @@ body {
 /* ================= CARDS ================= */
 .neon-card,
 .member-card {
-  background: #fff;
   border: 1px solid var(--secondary-red-border);
   padding: 28px;
   border-radius: 12px;
@@ -254,7 +239,7 @@ body {
   line-height: 1.7;
 }
 .member-contact a{
-  color: black;
+  color: rgb(130, 133, 135);;
 }
 /* ================= BENEFITS ================= */
 .benefit-card .benefit-icon {
@@ -265,6 +250,9 @@ body {
   color: red;
 }
 
+.benefit-card.neon-card {
+  border: 1px solid var(--secondary-red-border);
+}
 /* ================= STAGGER ANIMATION ================= */
 .section-container.visible .member-card,
 .section-container.visible .neon-card {
@@ -430,7 +418,6 @@ body {
   padding: 28px 18px;
   border-radius: 20px;
   border: 2px solid rgba(255, 0, 0, 0.4);
-  background: #fff;
   transition: 0.35s ease;
 }
 
@@ -510,4 +497,17 @@ body {
   .main-event-title {
     font-size: 1.8rem;
   }
+}
+.neon-card,
+.member-card,
+.benefit-card {
+  background: var(--card-bg); /* instead of #fff */
+  color: var(--card-text);    /* text color for dark/light */
+  border: 1px solid var(--card-border);
+  padding: 28px;
+  border-radius: 12px;
+  box-shadow: var(--neon-shadow);
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease, color 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
