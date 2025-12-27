@@ -96,7 +96,7 @@ export const eventBenefits: Benefit[] = [
 
 export const eventListings: EventListing[] = [
     { 
-        title: "The Angel Investors Roundtable", 
+        title: "The Angel Investor's Roundtable", 
         tag: "Pre-Seed Funding", 
         description: "Simulate real-world investment pitch scenarios and promote practical entrepreneurship.", 
         date: "February 2, 2026", 

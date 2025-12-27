@@ -17,7 +17,7 @@ const BenefitsComponent: React.FC<{ benefits: Benefit[] }> = ({ benefits }) => {
         return (
           <div key={i} className="benefit-card neon-card">
             <div className="benefit-icon">
-              {Icon && <Icon size={46} />}
+              {Icon && <Icon size={45} />}
             </div>
             <h4>{b.title}</h4>
             <p>{b.description}</p>

@@ -89,17 +89,17 @@ const AngelInvestorsPage: React.FC = () => {
         <p className="event-description-text">{mainEvent.description}</p>
         <div className="event-details">
   <span>
-    <Calendar size={18} className="event-icon" />
+    <Calendar size={17} className="event-icon" />
     {mainEvent.date}
   </span>
 
   <span>
-    <Clock size={18} className="event-icon" />
+    <Clock size={17} className="event-icon" />
     {mainEvent.time}
   </span>
 
   <span>
-    <MapPin size={18} className="event-icon" />
+    <MapPin size={17} className="event-icon" />
     {mainEvent.location}
   </span>
 </div>

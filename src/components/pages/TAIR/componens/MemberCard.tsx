@@ -58,21 +58,21 @@ const MemberCard: React.FC<MemberCardProps> = ({ member }) => {
 
             {member.duty && (
                 <div className="member-contact duty">
-                    <Target size={18} className="contact-icon" />
+                    <Target size={17} className="contact-icon" />
                     {member.duty}
                 </div>
             )}
 
             {showPhone && (
                 <div className="member-contact phone">
-                    <Phone size={18} className="contact-icon" />
+                    <Phone size={17} className="contact-icon" />
                     <a href={`tel:${member.phone}`}>{member.phone}</a>
                 </div>
             )}
 
             {showEmail && (
                 <div className="member-contact email">
-                    <Mail size={18} className="contact-icon" />
+                    <Mail size={17} className="contact-icon" />
                     <a href={`mailto:${member.email}`}>{member.email}</a>
                 </div>
             )}
