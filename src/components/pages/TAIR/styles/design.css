@@ -347,7 +347,7 @@ body {
 .benefits-row-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 28px;
+  gap: 26px;
   margin-top: 40px;
   align-items: stretch;
 }
@@ -357,30 +357,42 @@ body {
   justify-content: center;
 }
 
+/* EXACT SAME STRUCTURE AS .member-card */
 .benefit-card {
-  text-align: center;
-  padding: 40px 20px;
-  border-radius: 20px;
-  border: 2px solid rgba(255, 0, 0, 0.4);
-  transition: 0.35s ease;
   width: 85%;
+  height: 100%;
   max-width: 250px;
+  padding: 38px 22px;
+  border-radius: 22px;
+  border: 2px solid rgba(255, 0, 0, 0.45);
+  text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 15px;
-}
-
-.benefit-card .benefit-icon {
-  margin-bottom: 15px;
+  gap: 14px;
+  transition: 0.35s ease;
 }
 
 .benefit-card:hover {
   transform: translateY(-6px) scale(1.04);
-  box-shadow: 0 0 25px rgba(255, 0, 0, 0.9);
+  box-shadow: 0 0 22px rgba(255, 0, 0, 0.85);
 }
 
-/* Medium screens */
+.benefit-icon {
+  margin-bottom: 10px;
+}
+
+.benefit-card h4 {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.benefit-card p {
+  font-size: 1.2rem;
+  line-height: 1.45;
+}
+
+/* ========== TABLET ========== */
 @media (max-width: 900px) {
   .benefits-row-grid {
     grid-template-columns: repeat(2, 1fr);
@@ -389,14 +401,8 @@ body {
 
   .benefit-card {
     width: 90%;
-    max-width: 200px;
-    padding: 35px 18px;
-    gap: 12px;
-  }
-
-  .benefit-icon svg {
-    width: 32px;
-    height: 32px;
+    max-width: 210px;
+    padding: 32px 18px;
   }
 
   .benefit-card p {
@@ -404,7 +410,7 @@ body {
   }
 }
 
-/* Small screens */
+/* ========== MOBILE ========== */
 @media (max-width: 500px) {
   .benefits-row-grid {
     grid-template-columns: 1fr;
@@ -419,23 +425,26 @@ body {
   .benefit-card {
     width: 95%;
     max-width: 180px;
-    padding: 30px 16px;
-    gap: 10px;
+    padding: 28px 16px;
+  }
+
+  .benefit-card h4 {
+    font-size: 16px;
+  }
+
+  .benefit-card p {
+    font-size: 13px;
   }
 
   .benefit-icon svg {
     width: 28px;
     height: 28px;
   }
-
-  .benefit-card p {
-    font-size: 13px; /* smaller text on mobile */
-  }
 }
 
 
 
-
+/**main-event**/
 .main-event-title {
   font-weight: 700;
   letter-spacing: 0.6px;
