@@ -359,7 +359,7 @@ body {
 
 .benefit-card {
   text-align: center;
-  padding: 40px 20px; /* increased padding for more height */
+  padding: 40px 20px;
   border-radius: 20px;
   border: 2px solid rgba(255, 0, 0, 0.4);
   transition: 0.35s ease;
@@ -367,8 +367,8 @@ body {
   max-width: 250px;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start; /* content starts at top with spacing */
-  gap: 15px; /* spacing between icon, heading, and text */
+  justify-content: flex-start;
+  gap: 15px;
 }
 
 .benefit-card .benefit-icon {
@@ -398,6 +398,10 @@ body {
     width: 32px;
     height: 32px;
   }
+
+  .benefit-card p {
+    font-size: 14px;
+  }
 }
 
 /* Small screens */
@@ -422,6 +426,10 @@ body {
   .benefit-icon svg {
     width: 28px;
     height: 28px;
+  }
+
+  .benefit-card p {
+    font-size: 13px; /* smaller text on mobile */
   }
 }
 
