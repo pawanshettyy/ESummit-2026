@@ -172,22 +172,36 @@ body {
 @media (max-width: 900px) {
   .single-flex-row {
     grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+  }
+
+  .single-flex-row .member-card {
+    width: 90%;
+    max-width: 200px;
   }
 }
 
+/* Small screens */
 @media (max-width: 500px) {
   .single-flex-row {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .single-flex-row .member-card {
+    width: 95%;
+    max-width: 180px;
   }
 }
-
 .single-flex-row > div {
   display: flex;
+  justify-content: center;
 }
 
 .single-flex-row .member-card {
   width: 85%;
   height: 100%;
+  max-width: 250px;
 }
 
 /* ================= MEMBER ================= */
@@ -330,20 +344,35 @@ body {
 
 
 /* ================= BENEFITS GRID FIX ================= */
-
 .benefits-row-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 28px;
   margin-top: 40px;
+  align-items: stretch;
+}
+
+.benefits-row-grid > div {
+  display: flex;
+  justify-content: center;
 }
 
 .benefit-card {
   text-align: center;
-  padding: 28px 18px;
+  padding: 40px 20px; /* increased padding for more height */
   border-radius: 20px;
   border: 2px solid rgba(255, 0, 0, 0.4);
   transition: 0.35s ease;
+  width: 85%;
+  max-width: 250px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* content starts at top with spacing */
+  gap: 15px; /* spacing between icon, heading, and text */
+}
+
+.benefit-card .benefit-icon {
+  margin-bottom: 15px;
 }
 
 .benefit-card:hover {
@@ -351,36 +380,52 @@ body {
   box-shadow: 0 0 25px rgba(255, 0, 0, 0.9);
 }
 
-
+/* Medium screens */
 @media (max-width: 900px) {
   .benefits-row-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 20px;
   }
+
+  .benefit-card {
+    width: 90%;
+    max-width: 200px;
+    padding: 35px 18px;
+    gap: 12px;
+  }
+
+  .benefit-icon svg {
+    width: 32px;
+    height: 32px;
+  }
 }
 
+/* Small screens */
 @media (max-width: 500px) {
   .benefits-row-grid {
     grid-template-columns: 1fr;
+    gap: 16px;
+  }
+
+  .benefits-row-grid > div {
+    display: flex;
+    justify-content: center;
   }
 
   .benefit-card {
-    height: 100%;
+    width: 95%;
+    max-width: 180px;
+    padding: 30px 16px;
+    gap: 10px;
   }
-  .benefits-row-grid {
-  align-items: stretch;
-}
-
-.benefits-row-grid > div {
-  display: flex;
-}
-
 
   .benefit-icon svg {
-    width: 36px;
-    height: 36px;
+    width: 28px;
+    height: 28px;
   }
 }
+
+
 
 
 .main-event-title {
