@@ -149,39 +149,6 @@ body {
   left: 100%;
 }
 
-/* ================= CARDS ================= */
-
-
-
-/* ===== LIGHT SWEEP ===== */
-.neon-card::after,
-.member-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  left: -120%;
-  width: 120%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255, 45, 45, 0.25),
-    transparent
-  );
-  transition: left 0.8s ease;
-}
-
-.neon-card:hover::after,
-.member-card:hover::after {
-  left: 120%;
-}
-
-/* Click glow */
-.clicked {
-  box-shadow:
-    0 0 18px rgba(255, 45, 45, 0.9),
-    0 0 36px rgba(255, 45, 45, 0.7);
-  transform: translateY(-6px) scale(1.05);
-}
 
 
 /* ================= GRIDS ================= */
