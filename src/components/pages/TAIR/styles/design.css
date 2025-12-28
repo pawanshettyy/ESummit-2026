@@ -163,11 +163,31 @@ body {
   grid-template-columns: repeat(3, 1fr);
   gap: 26px;
 }
-
 .single-flex-row {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 26px;
+  align-items: stretch;
+}
+@media (max-width: 900px) {
+  .single-flex-row {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .single-flex-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+.single-flex-row > div {
+  display: flex;
+}
+
+.single-flex-row .member-card {
+  width: 75%;
+  height: 90%;
 }
 
 /* ================= MEMBER ================= */
@@ -345,8 +365,16 @@ body {
   }
 
   .benefit-card {
-    padding: 22px 14px;
+    height: 100%;
   }
+  .benefits-row-grid {
+  align-items: stretch;
+}
+
+.benefits-row-grid > div {
+  display: flex;
+}
+
 
   .benefit-icon svg {
     width: 36px;
@@ -495,4 +523,17 @@ body {
 .member-card:hover::after,
 .benefit-card:hover::after {
   left: 120%;
+}
+
+.benefit-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.member-card img {
+   width: 120px;
+  height: 120px;
+  object-fit: cover;
+  margin: 0 auto 12px;
 }
