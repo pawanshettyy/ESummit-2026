@@ -150,36 +150,21 @@ body {
 }
 
 /* ================= CARDS ================= */
-.neon-card,
-.member-card {
-  border: 1px solid var(--secondary-red-border);
-  padding: 28px;
-  border-radius: 12px;
-  box-shadow: var(--neon-shadow);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  position: relative;
-  overflow: hidden;
-}
 
-.neon-card:hover,
-.member-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 15px rgba(233, 9, 20, 0.6);
-}
 
-/* Light sweep hover */
+
+/* ===== LIGHT SWEEP ===== */
 .neon-card::after,
 .member-card::after {
   content: "";
   position: absolute;
-  top: 0;
+  inset: 0;
   left: -120%;
   width: 120%;
-  height: 100%;
   background: linear-gradient(
     120deg,
     transparent,
-    rgba(233, 9, 20, 0.15),
+    rgba(255, 45, 45, 0.25),
     transparent
   );
   transition: left 0.8s ease;
@@ -193,10 +178,11 @@ body {
 /* Click glow */
 .clicked {
   box-shadow:
-    0 0 12px rgba(233, 9, 20, 0.8),
-    0 0 28px rgba(233, 9, 20, 0.45);
-  transform: translateY(-4px);
+    0 0 18px rgba(255, 45, 45, 0.9),
+    0 0 36px rgba(255, 45, 45, 0.7);
+  transform: translateY(-6px) scale(1.05);
 }
+
 
 /* ================= GRIDS ================= */
 .two-column-grid {
@@ -447,19 +433,6 @@ body {
     font-size: 1.8rem;
   }
 }
-.neon-card,
-.member-card,
-.benefit-card {
-  background: var(--card-bg); /* instead of #fff */
-  color: var(--card-text);    /* text color for dark/light */
-  border: 1px solid var(--card-border);
-  padding: 28px;
-  border-radius: 12px;
-  box-shadow: var(--neon-shadow);
-  transition: transform 0.5s ease, box-shadow 0.5s ease, background 0.5s ease, color 0.5s ease;
-  position: relative;
-  overflow: hidden;
-}
 
 /* ================= FINAL ICON ALIGNMENT (PRODUCTION SAFE) ================= */
 
@@ -505,17 +478,27 @@ body {
 }
 
 /* ===== UNIVERSAL RED GLOW CARD ===== */
-.neon-card.member-card{
-  position: relative;
+
+
+.neon-card,
+.member-card,
+.benefit-card {
   border-radius: 20px;
   border: 1.5px solid rgba(255, 45, 45, 0.6);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+
   box-shadow:
     0 0 10px rgba(255, 45, 45, 0.25),
     inset 0 0 6px rgba(255, 45, 45, 0.15);
+
   transition: all 0.4s ease;
 }
 
-.neon-card.member-card:hover {
+.neon-card:hover,
+.member-card:hover,
+.benefit-card:hover {
   transform: translateY(-6px) scale(1.04);
   box-shadow:
     0 0 20px rgba(255, 45, 45, 0.55),
@@ -523,3 +506,26 @@ body {
     inset 0 0 10px rgba(255, 45, 45, 0.25);
 }
 
+/* light sweep */
+.neon-card::after,
+.member-card::after,
+.benefit-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  left: -120%;
+  width: 120%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 45, 45, 0.25),
+    transparent
+  );
+  transition: left 0.8s ease;
+}
+
+.neon-card:hover::after,
+.member-card:hover::after,
+.benefit-card:hover::after {
+  left: 120%;
+}
