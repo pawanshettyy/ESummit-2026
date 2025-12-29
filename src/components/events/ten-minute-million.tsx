@@ -161,7 +161,10 @@ export function TenMinuteMillionPage() {
         <div className="mb-4">
           <Button
             variant="outline"
-            onClick={() => handleNavigate("events")}
+            onClick={() => {
+              sessionStorage.setItem('navigateTo', 'events');
+              window.location.href = '/';
+            }}
             className="gap-2 w-full sm:w-auto"
           >
             <ArrowRight className="rotate-180 h-4 w-4" />
@@ -354,24 +357,26 @@ export function TenMinuteMillionPage() {
               <h3 className="text-xl sm:text-2xl font-bold">Event Coordinators</h3>
             </CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
-              {primaryContacts.map((contact, index) => (
-                <div key={index} className="space-y-1">
-                  <h4 className="font-semibold text-sm sm:text-base">{contact.name}</h4>
-                  <p className="text-xs sm:text-sm text-muted-foreground">{contact.role}</p>
-                  {contact.phone && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <a href={`tel:${contact.phone}`} className="hover:text-primary break-all">{contact.phone}</a>
-                    </div>
-                  )}
-                  {contact.email && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <a href={`mailto:${contact.email}`} className="hover:text-primary break-all">{contact.email}</a>
-                    </div>
-                  )}
-                </div>
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {primaryContacts.map((contact, index) => (
+                  <div key={index} className="space-y-1 p-3 border rounded-lg bg-muted/20">
+                    <h4 className="font-semibold text-sm sm:text-base">{contact.name}</h4>
+                    <p className="text-xs sm:text-sm text-muted-foreground">{contact.role}</p>
+                    {contact.phone && (
+                      <div className="flex items-center gap-2 text-xs sm:text-sm">
+                        <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <a href={`tel:${contact.phone}`} className="hover:text-primary break-all">{contact.phone}</a>
+                      </div>
+                    )}
+                    {contact.email && (
+                      <div className="flex items-center gap-2 text-xs sm:text-sm">
+                        <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <a href={`mailto:${contact.email}`} className="hover:text-primary break-all">{contact.email}</a>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
