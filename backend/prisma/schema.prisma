@@ -44,6 +44,7 @@ model User {
   eventRegistrations EventRegistration[]
   otp_codes          otp_codes[]
   passes             Pass[]
+  transactions       Transaction[]
 
   @@index([email], type: Hash)
   @@index([phone])
@@ -68,6 +69,10 @@ model Pass {
   status            String        @default("Active")
   qrCodeUrl         String?       @map("qr_code_url")
   qrCodeData        String?       @map("qr_code_data")
+  pdfUrl            String?       @map("pdf_url")
+  hasMeals          Boolean?      @map("has_meals")
+  hasMerchandise    Boolean?      @map("has_merchandise")
+  hasWorkshopAccess Boolean?      @map("has_workshop_access")
   createdAt         DateTime      @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt         DateTime      @updatedAt @map("updated_at") @db.Timestamptz(6)
   checkIns          CheckIn[]
@@ -100,6 +105,7 @@ model Transaction {
   createdAt         DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt         DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
   pass              Pass?    @relation(fields: [passId], references: [id], onDelete: SetNull)
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([passId])

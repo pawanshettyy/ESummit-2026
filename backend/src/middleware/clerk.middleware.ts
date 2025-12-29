@@ -1,4 +1,5 @@
 import { clerkMiddleware, requireAuth, getAuth } from '@clerk/express';
+import logger from '../utils/logger.util';
 
 /**
  * Clerk middleware - adds auth to req object

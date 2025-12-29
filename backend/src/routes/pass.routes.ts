@@ -1,100 +1,141 @@
 
+import { Router, Request, Response } from 'express';
+import { prisma } from '../config/database';
+import { sendError, sendSuccess } from '../utils/response.util';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
+import logger from '../utils/logger.util';
+
 const router = Router();
 
-// Pass creation route (example: POST /api/v1/passes)
-router.post('/', async (req: Request, res: Response) => {
+// Configure multer for PDF uploads
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    const uploadDir = path.join(__dirname, '../../uploads/passes');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
+    }
+    cb(null, uploadDir);
+  },
+  filename: (req, _file, cb) => {
+    // Generate filename: ESUMMIT-2026-{passId}.pdf
+    const passId = req.body.passId || `UNKNOWN-${Date.now()}`;
+    cb(null, `ESUMMIT-2026-${passId}.pdf`);
+  }
+});
+
+const upload = multer({
+  storage,
+  fileFilter: (_req, file, cb) => {
+    if (file.mimetype === 'application/pdf') {
+      cb(null, true);
+    } else {
+      cb(new Error('Only PDF files are allowed'));
+    }
+  },
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  }
+});
+
+/**
+ * Upload PDF ticket from KonfHub
+ * POST /api/v1/passes/upload
+ */
+router.post('/upload', upload.single('pdf'), async (req: Request, res: Response) => {
   try {
-    const { user, passType, price, konfhubData } = req.body;
+    const { passId, userId, passType, konfhubOrderId, konfhubTicketId } = req.body;
 
-    // Check if user already has a pass (ONE PASS PER USER LIMIT)
-    const existingPass = await prisma.pass.findFirst({
-      where: { userId: user.id },
-    });
-
-    if (existingPass) {
-      sendError(res, 'You already have a pass. Only one pass per user is allowed.', 400);
+    if (!req.file) {
+      sendError(res, 'PDF file is required', 400);
       return;
     }
 
-    // Check if there's a pending/completed transaction for this user
-    const existingTransaction = await prisma.transaction.findFirst({
-      where: {
-        userId: user.id,
-        status: {
-          in: ['pending', 'completed'],
-        },
-      },
-    });
-
-    if (existingTransaction) {
-      if (existingTransaction.status === 'pending') {
-        sendError(
-          res,
-          'You have a pending payment. Please complete or cancel it first.',
-          400
-        );
-        return;
-      }
-      if (existingTransaction.status === 'completed') {
-        sendError(res, 'You already have a completed purchase.', 400);
-        return;
-      }
+    if (!passId || !userId) {
+      sendError(res, 'passId and userId are required', 400);
+      return;
     }
 
-    // Generate unique pass ID
-    const { passId, invoiceNumber, transactionNumber } = generateUniqueIdentifiers();
-
-    // Generate QR code for the pass
-    const qrCodeUrl = await generateQRCode(passId);
-
-    // Create pass
-    const pass = await prisma.pass.create({
-      data: {
-        userId: user.id,
-        passType,
-        passId,
-        price,
-        status: 'Active',
-        qrCodeUrl, // Store QR code data URL
-      },
+    // Check if pass already exists
+    const existingPass = await prisma.pass.findUnique({
+      where: { passId }
     });
 
-    // Create a transaction record
-    const transaction = await prisma.transaction.create({
-      data: {
-        userId: user.id,
-        passId: pass.id,
-        // @ts-ignore - These fields will exist after migration
-        invoiceNumber,
-        // @ts-ignore - These fields will exist after migration
-        transactionNumber,
-        amount: price,
-        currency: 'INR',
-        status: 'completed',
-        paymentMethod: konfhubData ? 'konfhub' : 'manual',
-        konfhubOrderId: konfhubData?.orderId || null,
-        konfhubTicketId: konfhubData?.ticketId || null,
-        konfhubPaymentId: konfhubData?.paymentId || null,
-        metadata: {
-          note: konfhubData ? 'Pass purchased via KonfHub' : 'Manual pass creation',
-          createdVia: konfhubData ? 'konfhub_widget' : 'direct_api_call',
-          konfhubData: konfhubData || null,
-        },
-      },
+    if (existingPass) {
+      // Update existing pass with PDF path
+      await prisma.pass.update({
+        where: { passId },
+        data: {
+          pdfUrl: `/uploads/passes/${req.file.filename}`,
+          konfhubOrderId,
+          konfhubTicketId,
+          updatedAt: new Date()
+        }
+      });
+    } else {
+      // Create new pass record
+      await prisma.pass.create({
+        data: {
+          userId,
+          passType: passType || 'Standard',
+          passId,
+          status: 'Active',
+          pdfUrl: `/uploads/passes/${req.file.filename}`,
+          konfhubOrderId,
+          konfhubTicketId
+        }
+      });
+    }
+
+    sendSuccess(res, 'PDF uploaded successfully', {
+      passId,
+      pdfUrl: `/uploads/passes/${req.file.filename}`,
+      filename: req.file.filename
     });
-
-    logger.info(`Manual pass created: ${passId} for user: ${user.email}`);
-    logger.info(`Invoice: ${invoiceNumber}, Transaction: ${transactionNumber}`);
-
-    sendSuccess(
-      res,
-      'Pass created successfully',
-      { pass, transaction },
-      201
-    );
   } catch (error: any) {
-    logger.error('Create pass error:', error);
-    sendError(res, error.message || 'Failed to create pass', 500);
+    logger.error('PDF upload error:', error);
+    sendError(res, error.message || 'Failed to upload PDF', 500);
+  }
+});
+
+/**
+ * Get user's passes with PDF URLs
+ * GET /api/v1/passes/user/:clerkUserId
+ */
+router.get('/user/:clerkUserId', async (req: Request, res: Response) => {
+  try {
+    const { clerkUserId } = req.params;
+
+    // Find user
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId },
+      select: { id: true }
+    });
+
+    if (!user) {
+      sendError(res, 'User not found', 404);
+      return;
+    }
+
+    // Get user's passes
+    const passes = await prisma.pass.findMany({
+      where: { userId: user.id },
+      select: {
+        id: true,
+        passId: true,
+        passType: true,
+        status: true,
+        pdfUrl: true,
+        createdAt: true
+      },
+      orderBy: { createdAt: 'desc' }
+    });
+
+    sendSuccess(res, 'Passes retrieved successfully', { passes });
+  } catch (error: any) {
+    logger.error('Get user passes error:', error);
+    sendError(res, error.message || 'Failed to retrieve passes', 500);
   }
 });
 
@@ -109,7 +150,7 @@ router.get('/stats/:clerkUserId', async (req: Request, res: Response) => {
     // Find user
     const user = await prisma.user.findUnique({
       where: { clerkUserId },
-      select: { id: true },
+      select: { id: true }
     });
 
     if (!user) {
@@ -118,30 +159,20 @@ router.get('/stats/:clerkUserId', async (req: Request, res: Response) => {
     }
 
     // Get statistics
-    const [totalPasses, activePasses, totalSpent] = await Promise.all([
+    const [totalPasses, activePasses] = await Promise.all([
       prisma.pass.count({
-        where: { userId: user.id },
+        where: { userId: user.id }
       }),
       prisma.pass.count({
-        where: { userId: user.id, status: 'Active' },
-      }),
-      prisma.transaction.aggregate({
-        where: {
-          userId: user.id,
-          status: 'completed',
-        },
-        _sum: {
-          amount: true,
-        },
-      }),
+        where: { userId: user.id, status: 'Active' }
+      })
     ]);
 
     sendSuccess(res, 'Statistics fetched successfully', {
       stats: {
         totalPasses,
-        activePasses,
-        totalSpent: totalSpent._sum.amount || 0,
-      },
+        activePasses
+      }
     });
   } catch (error: any) {
     logger.error('Get pass statistics error:', error);
@@ -150,7 +181,6 @@ router.get('/stats/:clerkUserId', async (req: Request, res: Response) => {
 });
 
 // Note: Pass purchases are handled through KonfHub.
-// Pass upgrades can be done at the venue during check-in.
-// Contact the registration desk for upgrade assistance.
+// This API only handles PDF storage and retrieval for dashboard display.
 
 export default router;

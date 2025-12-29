@@ -1,174 +1,98 @@
 import { Router, Request, Response } from 'express';
-import prisma from '../config/database';
-import pdfService from '../services/pdf.service';
+import { prisma } from '../config/database';
+import { sendError } from '../utils/response.util';
+import path from 'path';
+import fs from 'fs';
 
 const router = Router();
 
 /**
- * @route   GET /api/v1/pdf/pass/:passId
- * @desc    Generate and download pass PDF
- * @access  Public (with pass validation)
+ * Serve uploaded PDF ticket
+ * GET /api/v1/pdf/pass/:passId
  */
-router.get('/pass/:passId', async (req: Request, res: Response): Promise<void> => {
+router.get('/pass/:passId', async (req: Request, res: Response) => {
   try {
     const { passId } = req.params;
 
     // Fetch pass data from database
     const pass = await prisma.pass.findUnique({
       where: { passId },
-      include: {
-        user: true,
-        transaction: true
+      select: {
+        pdfUrl: true,
+        userId: true,
+        status: true
       }
     });
 
-    if (!pass) {
-      res.status(404).json({
-        success: false,
-        error: 'Pass not found'
-      });
+    if (!pass || !pass.pdfUrl) {
+      sendError(res, 'Pass PDF not found', 404);
       return;
     }
 
-    // Prepare PDF data
-    const pdfData = {
-      passId: pass.passId,
-      passType: pass.passType,
-      userName: pass.user.fullName || pass.user.firstName || 'Guest',
-      userEmail: pass.user.email,
-      userCollege: pass.user.college || undefined,
-      userPhone: pass.user.phone || undefined,
-      purchaseDate: pass.createdAt.toISOString(),
-      qrData: pass.passId, // The QR code contains the pass ID
-      status: pass.status
-    };
+    // Construct file path
+    const filePath = path.join(__dirname, '../../', pass.pdfUrl);
 
-    // Generate PDF
-    const pdfBuffer = await pdfService.generatePassPDF(pdfData);
+    // Check if file exists
+    if (!fs.existsSync(filePath)) {
+      sendError(res, 'PDF file not found on server', 404);
+      return;
+    }
 
     // Set response headers
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader(
       'Content-Disposition',
-      `attachment; filename="ESUMMIT-2026-${passId}-Pass.pdf"`
+      `inline; filename="ESUMMIT-2026-${passId}.pdf"`
     );
-    res.setHeader('Content-Length', pdfBuffer.length);
 
-    // Send PDF
-    res.send(pdfBuffer);
-  } catch (error) {
-    logger.error('Error generating pass PDF:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate pass PDF'
+    // Stream the PDF file
+    const fileStream = fs.createReadStream(filePath);
+    fileStream.pipe(res);
+
+    fileStream.on('error', (error) => {
+      console.error('Error streaming PDF:', error);
+      if (!res.headersSent) {
+        sendError(res, 'Error serving PDF', 500);
+      }
     });
+  } catch (error: any) {
+    console.error('Error serving pass PDF:', error);
+    sendError(res, error.message || 'Failed to serve pass PDF', 500);
   }
 });
 
 /**
- * @route   GET /api/v1/pdf/invoice/:transactionId
- * @desc    Generate and download invoice PDF
- * @access  Public (with transaction validation)
+ * Get PDF download URL for a pass
+ * GET /api/v1/pdf/download/:passId
  */
-router.get('/invoice/:transactionId', async (req: Request, res: Response): Promise<void> => {
+router.get('/download/:passId', async (req: Request, res: Response) => {
   try {
-    const { transactionId } = req.params;
+    const { passId } = req.params;
 
-    // Fetch transaction data from database
-    const transaction = await prisma.transaction.findFirst({
-      where: {
-        OR: [
-          { id: transactionId },
-          { konfhubPaymentId: transactionId }
-        ]
-      },
-      include: {
-        user: true
+    // Fetch pass data from database
+    const pass = await prisma.pass.findUnique({
+      where: { passId },
+      select: {
+        pdfUrl: true,
+        status: true
       }
     });
 
-    if (!transaction) {
-      res.status(404).json({
-        success: false,
-        error: 'Transaction not found'
-      });
+    if (!pass || !pass.pdfUrl) {
+      sendError(res, 'Pass PDF not found', 404);
       return;
     }
 
-    // Check if transaction has an associated pass
-    if (!transaction.passId) {
-      res.status(400).json({
-        success: false,
-        error: 'Transaction does not have an associated pass yet. Payment may still be pending.'
-      });
-      return;
-    }
-
-    // Fetch pass data using the pass UUID (not passId field)
-    const pass = await prisma.pass.findUnique({
-      where: { id: transaction.passId }  // transaction.passId is the Pass.id (UUID)
+    // Return the PDF URL for frontend to handle download
+    res.json({
+      success: true,
+      pdfUrl: pass.pdfUrl,
+      filename: `ESUMMIT-2026-${passId}.pdf`
     });
-
-    if (!pass) {
-      res.status(404).json({
-        success: false,
-        error: 'Pass not found'
-      });
-      return;
-    }
-
-    const user = transaction.user;
-
-    // Calculate pricing breakdown
-    const passPrice = Number(pass.price);
-    const subtotal = passPrice;
-    const gstAmount = Math.round(subtotal * 0.18);
-    const total = subtotal + gstAmount;
-
-    // Use the stored invoice number from the database (with fallback for pre-migration data)
-    const invoiceNumber = transaction.invoiceNumber || `INV-2026-${transaction.id.substring(0, 8).toUpperCase()}`;
-    const transactionNumber = transaction.transactionNumber || `TXN-2026-${transaction.id.substring(0, 8).toUpperCase()}`;
-
-    // Prepare PDF data
-    const pdfData = {
-      invoiceNumber,
-      invoiceDate: transaction.createdAt.toISOString(),
-      userName: user.fullName || user.firstName || 'Guest',
-      userEmail: user.email,
-      userPhone: user.phone || undefined,
-      userCollege: user.college || undefined,
-      passType: pass.passType,
-      passPrice,
-      subtotal,
-      gstAmount,
-      total,
-      paymentMethod: transaction.konfhubPaymentId ? 'Online Payment (KonfHub)' : 'Manual',
-      transactionId: transaction.konfhubPaymentId || transactionNumber,
-      paymentStatus: transaction.status.toUpperCase()
-    };
-
-    // Generate PDF
-    const pdfBuffer = await pdfService.generateInvoicePDF(pdfData);
-
-    // Set response headers
-    res.setHeader('Content-Type', 'application/pdf');
-    res.setHeader(
-      'Content-Disposition',
-      `attachment; filename="ESUMMIT-2026-Invoice-${invoiceNumber}.pdf"`
-    );
-    res.setHeader('Content-Length', pdfBuffer.length);
-
-    // Send PDF
-    res.send(pdfBuffer);
-  } catch (error) {
-    logger.error('Error generating invoice PDF:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Failed to generate invoice PDF'
-    });
+  } catch (error: any) {
+    console.error('Error getting PDF download URL:', error);
+    sendError(res, error.message || 'Failed to get PDF download URL', 500);
   }
 });
-
-
 
 export default router;
