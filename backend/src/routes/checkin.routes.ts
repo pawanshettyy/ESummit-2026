@@ -359,8 +359,6 @@ router.post('/verify', async (req: Request, res: Response) => {
         passType: pass.passType,
         status: pass.status,
         purchaseDate: pass.purchaseDate,
-        hasMeals: pass.hasMeals,
-        hasMerchandise: pass.hasMerchandise,
         hasWorkshopAccess: pass.hasWorkshopAccess,
         user: pass.user,
       },

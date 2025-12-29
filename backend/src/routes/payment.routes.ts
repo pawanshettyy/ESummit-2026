@@ -369,8 +369,6 @@ router.post('/webhook', async (req: Request, res: Response) => {
                 passType,
                 passId,
                 price: transaction.amount,
-                hasMeals: metadata.hasMeals || false,
-                hasMerchandise: metadata.hasMerchandise || false,
                 hasWorkshopAccess: metadata.hasWorkshopAccess || false,
                 status: 'Active',
                 qrCodeUrl,

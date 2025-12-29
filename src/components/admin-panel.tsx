@@ -356,6 +356,19 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     });
   };
 
+  // Filter users
+  const filteredUsers = users.filter((user) => {
+    const matchesSearch =
+      searchQuery === "" ||
+      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (user.fullName && user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.lastName && user.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.college && user.college.toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return matchesSearch;
+  });
+
   // Filter passes
   const filteredPasses = passes.filter((pass) => {
     const matchesSearch =
@@ -391,6 +404,11 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   });
 
   // Pagination
+  const paginatedUsers = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
   const paginatedPasses = filteredPasses.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
@@ -402,7 +420,8 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   );
 
   const totalPages = Math.ceil(
-    (activeTab === "passes" ? filteredPasses.length : filteredRegistrations.length) /
+    (activeTab === "users" ? filteredUsers.length :
+     activeTab === "passes" ? filteredPasses.length : filteredRegistrations.length) /
       itemsPerPage
   );
 
@@ -599,6 +618,12 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
               <BarChart3 className="h-4 w-4" />
               <span className="hidden sm:inline">Overview</span>
             </TabsTrigger>
+            {hasPermission("users") && (
+              <TabsTrigger value="users" className="gap-2">
+                <Users className="h-4 w-4" />
+                <span className="hidden sm:inline">Users</span>
+              </TabsTrigger>
+            )}
             {hasPermission("events") && (
               <TabsTrigger value="events" className="gap-2">
                 <Calendar className="h-4 w-4" />
@@ -717,6 +742,215 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
               </Card>
             )}
           </TabsContent>
+
+          {/* Users Tab */}
+          {hasPermission("users") && (
+            <TabsContent value="users">
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <CardTitle>User Management</CardTitle>
+                      <CardDescription>
+                        {filteredUsers.length} users found
+                      </CardDescription>
+                    </div>
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                      <div className="relative flex-1 min-w-[180px] max-w-full">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Search by name or email..."
+                          className="w-full h-10 pl-9 pr-4 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
+                          value={searchQuery}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                          style={{ minWidth: 0 }}
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => {
+                          setSearchQuery("");
+                          fetchUsers();
+                        }}
+                        className="shrink-0"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Users Table */}
+                    <div className="rounded-md border">
+                      <div className="overflow-x-auto">
+                        <table className="w-full">
+                          <thead>
+                            <tr className="border-b bg-muted/50">
+                              <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                                User
+                              </th>
+                              <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground hidden sm:table-cell">
+                                Email
+                              </th>
+                              <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground hidden md:table-cell">
+                                College
+                              </th>
+                              <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground hidden lg:table-cell">
+                                Pass Type
+                              </th>
+                              <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                                Status
+                              </th>
+                              <th className="h-12 px-4 text-left align-middle font-medium text-muted-foreground">
+                                Actions
+                              </th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {paginatedUsers.map((user) => (
+                              <tr key={user.id} className="border-b hover:bg-muted/50">
+                                <td className="p-4 align-middle">
+                                  <div className="flex items-center gap-3">
+                                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+                                      <Users className="h-4 w-4 text-primary" />
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">
+                                        {user.fullName || user.firstName + " " + user.lastName || "N/A"}
+                                      </div>
+                                      <div className="text-sm text-muted-foreground sm:hidden">
+                                        {user.email}
+                                      </div>
+                                    </div>
+                                  </div>
+                                </td>
+                                <td className="p-4 align-middle hidden sm:table-cell">
+                                  <div className="text-sm">{user.email}</div>
+                                </td>
+                                <td className="p-4 align-middle hidden md:table-cell">
+                                  <div className="text-sm">{user.college || "N/A"}</div>
+                                </td>
+                                <td className="p-4 align-middle hidden lg:table-cell">
+                                  <Badge variant="outline">
+                                    {user.passes?.[0]?.passType || "No Pass"}
+                                  </Badge>
+                                </td>
+                                <td className="p-4 align-middle">
+                                  <Badge
+                                    variant={user.is_active ? "default" : "secondary"}
+                                  >
+                                    {user.is_active ? "Active" : "Inactive"}
+                                  </Badge>
+                                </td>
+                                <td className="p-4 align-middle">
+                                  <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setExpandedRows((prev) => {
+                                      const newSet = new Set(prev);
+                                      if (newSet.has(user.id)) {
+                                        newSet.delete(user.id);
+                                      } else {
+                                        newSet.add(user.id);
+                                      }
+                                      return newSet;
+                                    })}
+                                  >
+                                    {expandedRows.has(user.id) ? (
+                                      <ChevronUp className="h-4 w-4" />
+                                    ) : (
+                                      <ChevronDown className="h-4 w-4" />
+                                    )}
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+
+                    {/* Expanded User Details */}
+                    {expandedRows.size > 0 && (
+                      <div className="space-y-4">
+                        {filteredUsers
+                          .filter((user) => expandedRows.has(user.id))
+                          .map((user) => (
+                            <Card key={`details-${user.id}`} className="border-l-4 border-l-primary">
+                              <CardHeader>
+                                <CardTitle className="text-lg">
+                                  {user.fullName || user.firstName + " " + user.lastName || "User Details"}
+                                </CardTitle>
+                              </CardHeader>
+                              <CardContent>
+                                <div className="grid gap-4 sm:grid-cols-2">
+                                  <div>
+                                    <h4 className="font-medium mb-2">Basic Information</h4>
+                                    <div className="space-y-1 text-sm">
+                                      <p><strong>Email:</strong> {user.email}</p>
+                                      <p><strong>Phone:</strong> {user.phone || "N/A"}</p>
+                                      <p><strong>College:</strong> {user.college || "N/A"}</p>
+                                      <p><strong>Year:</strong> {user.yearOfStudy || "N/A"}</p>
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <h4 className="font-medium mb-2">Pass Information</h4>
+                                    <div className="space-y-1 text-sm">
+                                      {user.passes && user.passes.length > 0 ? (
+                                        user.passes.map((pass) => (
+                                          <div key={pass.id} className="flex items-center gap-2">
+                                            <Badge variant="outline">{pass.passType}</Badge>
+                                            <span className="text-muted-foreground">
+                                              Status: {pass.status}
+                                            </span>
+                                          </div>
+                                        ))
+                                      ) : (
+                                        <p className="text-muted-foreground">No passes found</p>
+                                      )}
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          ))}
+                      </div>
+                    )}
+
+                    {/* Pagination */}
+                    {filteredUsers.length > itemsPerPage && (
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
+                          Showing {paginatedUsers.length} of {filteredUsers.length} users
+                        </p>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentPage === 1}
+                            onClick={() => setCurrentPage((prev) => Math.max(1, prev - 1))}
+                          >
+                            Previous
+                          </Button>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            disabled={currentPage * itemsPerPage >= filteredUsers.length}
+                            onClick={() => setCurrentPage((prev) => prev + 1)}
+                          >
+                            Next
+                          </Button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
 
           {/* Event Registrations Tab */}
           {hasPermission("events") && (

@@ -326,9 +326,9 @@ export function getEligibleEvents(passType: string): Event[] {
     case "pixel": // Pixel Pass - Free entry events
       return allEvents.filter(e => pixelEvents.includes(e.id));
     
-    case "tcet_student": // TCET Student Pass - Same as Pixel (free)
+    case "tcet_student": // TCET Student Pass - Same as Quantum (free)
     case "tcet student": 
-      return allEvents.filter(e => pixelEvents.includes(e.id));
+      return allEvents.filter(e => quantumEvents.includes(e.id));
     
     case "silicon": // Silicon Pass - Pixel + workshops + pitch arena
       return allEvents.filter(e => siliconEvents.includes(e.id));
