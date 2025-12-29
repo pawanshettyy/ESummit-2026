@@ -6,8 +6,14 @@ import multer from 'multer';
 import path from 'path';
 import fs from 'fs';
 import logger from '../utils/logger.util';
+import { createClerkClient } from '@clerk/backend';
 
 const router = Router();
+
+// Initialize Clerk client
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+});
 
 // Configure multer for PDF uploads
 const storage = multer.diskStorage({
@@ -108,14 +114,36 @@ router.get('/user/:clerkUserId', async (req: Request, res: Response) => {
     const { clerkUserId } = req.params;
 
     // Find user
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: { clerkUserId },
       select: { id: true }
     });
 
+    // If user doesn't exist, try to create from Clerk data
     if (!user) {
-      sendError(res, 'User not found', 404);
-      return;
+      try {
+        logger.info('User not found in DB, fetching from Clerk:', clerkUserId);
+        const clerkUser = await clerkClient.users.getUser(clerkUserId);
+        
+        // Create user in database
+        user = await prisma.user.create({
+          data: {
+            clerkUserId: clerkUser.id,
+            email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+            fullName: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
+            firstName: clerkUser.firstName || null,
+            lastName: clerkUser.lastName || null,
+            imageUrl: clerkUser.imageUrl || null,
+          },
+          select: { id: true }
+        });
+        
+        logger.info('User created from Clerk data:', clerkUserId);
+      } catch (clerkError) {
+        logger.error('Failed to fetch/create user from Clerk:', clerkError);
+        sendError(res, 'User not found and could not be created', 404);
+        return;
+      }
     }
 
     // Get user's passes

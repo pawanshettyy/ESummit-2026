@@ -3,8 +3,48 @@ import { Request, Response } from 'express';
 import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
+import { createClerkClient } from '@clerk/backend';
 
 const router = Router();
+
+// Initialize Clerk client
+const clerkClient = createClerkClient({
+  secretKey: process.env.CLERK_SECRET_KEY,
+});
+
+/**
+ * Helper function to ensure user exists in database
+ */
+async function ensureUserExists(clerkUserId: string) {
+  let user = await prisma.user.findUnique({
+    where: { clerkUserId },
+  });
+
+  if (!user) {
+    try {
+      logger.info('User not found in DB, fetching from Clerk:', clerkUserId);
+      const clerkUser = await clerkClient.users.getUser(clerkUserId);
+      
+      user = await prisma.user.create({
+        data: {
+          clerkUserId: clerkUser.id,
+          email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+          fullName: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
+          firstName: clerkUser.firstName || null,
+          lastName: clerkUser.lastName || null,
+          imageUrl: clerkUser.imageUrl || null,
+        },
+      });
+      
+      logger.info('User created from Clerk data:', clerkUserId);
+    } catch (clerkError) {
+      logger.error('Failed to fetch/create user from Clerk:', clerkError);
+      throw new Error('User not found and could not be created');
+    }
+  }
+
+  return user;
+}
 
 /**
  * Sync/create user from Clerk (fallback if webhook didn't fire)
@@ -412,6 +452,9 @@ router.post('/events/register', async (req: Request, res: Response) => {
 router.get('/events/registered/:clerkUserId', async (req: Request, res: Response) => {
   try {
     const { clerkUserId } = req.params;
+
+    // Ensure user exists
+    await ensureUserExists(clerkUserId);
 
     const user = await prisma.user.findUnique({
       where: { clerkUserId },
