@@ -648,7 +648,7 @@ export function UserDashboard({
             </AvatarFallback>
           </Avatar>
           <div>
-            <h1 className="mb-1">
+            <h1 className="mb-1 text-4xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
               Welcome back, {userName.split(" ")[0]}!
             </h1>
             <p className="text-sm text-muted-foreground">
