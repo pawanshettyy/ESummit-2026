@@ -1,21 +1,22 @@
+import { EventPageTemplate } from "./event-template";
+
 export function StartupExpoPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Startup Expo</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "The Startup Expo",
+    description:
+      "Display Your First Prototype! Showcase your early-stage idea and prototype to the entire college community in our main lobby. A perfect chance to get your first users and feedback.",
+    date: "February 2, 2026",
+    time: "1:00 PM – 5:00 PM",
+    venue: "Lobby Area",
+    eligibility: "All pass holders",
+  };
+  const primaryContacts = [
+    { name: "Anushka Yadav", role: "Core Member" },
+    { name: "Krish Choudhary", role: "Junior Core Member" },
+    { name: "Sankarshan Dwivedi", role: "OC Member" },
+    { name: "Aayush Mishra", role: "OC Member" },
+    { name: "Khushi Tyagi", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Guests" primaryContacts={primaryContacts} />;
 }

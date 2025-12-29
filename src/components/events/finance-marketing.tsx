@@ -1,21 +1,23 @@
+import { EventPageTemplate } from "./event-template";
+
 export function FinanceMarketingPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Finance & Marketing</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "Finance & Marketing for Startups",
+    description:
+      "Build a solid foundation for your venture. Get essential, practical knowledge on managing your startup's finances and crafting marketing strategies that actually convert. 3-hour interactive sessions.",
+    date: "February 2-3, 2026",
+    time: "10:00 - 17:00 (3 Hours Sessions)",
+    venue: "Lab 524 & 525",
+    eligibility: "Silicon & Quantum Pass holders",
+  };
+  const primaryContacts = [
+    { name: "Sayyam Lohade", role: "Core Member" },
+    { name: "Priyanshi Negi", role: "Junior Core Member" },
+    { name: "Ayush Giri", role: "OC Member" },
+    { name: "Himanshu Naik", role: "OC Member" },
+    { name: "Parthavi Rai", role: "OC Member" },
+    { name: "Siddhesh Wagh", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Speakers" primaryContacts={primaryContacts} />;
 }

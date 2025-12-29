@@ -1,21 +1,25 @@
+import { EventPageTemplate } from "./event-template";
+
 export function IncubatorSummitPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Incubator Summit</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "The Incubator Summit",
+    description:
+      "Where ideas earn their launchpad. Founders pitch to evaluators from five top incubation centers, competing for a spot and seed support to accelerate their venture.",
+    date: "February 2-3, 2026",
+    time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM – 1:00 PM",
+    venue: "SSC TIMSR",
+    prize: "Incubation Support",
+    eligibility: "Quantum Pass required",
+  };
+  const primaryContacts = [
+    { name: "Bhummi Girnara", role: "Core Member" },
+    { name: "Yash Yadav", role: "Core Member" },
+    { name: "Yash Mattha", role: "Junior Core Member" },
+    { name: "Kanchan Tripathi", role: "Junior Core Member" },
+    { name: "Avya Chaurasia", role: "OC Member" },
+    { name: "Arjun Parab", role: "OC Member" },
+    { name: "Hitarth Bhatt", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Incubation Centre Evaluators" primaryContacts={primaryContacts} />;
 }

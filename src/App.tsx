@@ -8,7 +8,6 @@ import EventSchedule from "./components/event-schedule";
 import { EventsListing } from "./components/events-listing";
 import {
   TenMinuteMillionPage,
-  AngelInvestorsRoundtablePage,
   PitchArenaPage,
   IncubatorSummitPage,
   IplAuctionPage,
@@ -24,6 +23,8 @@ import {
   InternshipFairPage,
   StartupYouthConclavePage,
 } from "./components/events";
+import { AngelInvestorsRoundtablePage } from "./components/events/angel-investors-roundtable-page";
+import { RoadmapToEntrepreneurshipPage } from "./components/events/roadmap-to-entrepreneurship";
 import { Speakers } from "./components/speakers";
 import { Venue } from "./components/venue";
 import { Sponsors } from "./components/sponsors";
@@ -52,6 +53,17 @@ export default function App() {
     if (path.startsWith('/event/')) {
       const eventId = path.split('/event/')[1];
       setCurrentPage(`event-${eventId}`);
+    } else if (path === '/events') {
+      setCurrentPage('events');
+    }
+  }, []);
+
+  // Support session-based navigation (e.g., Back to Events buttons)
+  useEffect(() => {
+    const target = sessionStorage.getItem('navigateTo');
+    if (target) {
+      setCurrentPage(target);
+      sessionStorage.removeItem('navigateTo');
     }
   }, []);
 
@@ -148,17 +160,19 @@ export default function App() {
       case "event-10":
         return <DataAnalyticsBdmPage />;
       case "event-11":
-        return <AiEarlyStageStartupsPage />;
-      case "event-12":
         return <StartupExpoPage />;
-      case "event-13":
+      case "event-12":
         return <PanelDiscussionPage />;
-      case "event-14":
+      case "event-13":
         return <NetworkingArenaPage />;
-      case "event-15":
+      case "event-14":
         return <InternshipFairPage />;
-      case "event-16":
+      case "event-15":
         return <StartupYouthConclavePage />;
+      case "event-16":
+        return <AiEarlyStageStartupsPage />;
+      case "event-17":
+        return <RoadmapToEntrepreneurshipPage />;
       case "speakers":
         return <Speakers />;
       case "venue":

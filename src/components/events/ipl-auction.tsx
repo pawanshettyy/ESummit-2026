@@ -1,21 +1,25 @@
+import { EventPageTemplate } from "./event-template";
+
 export function IplAuctionPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">IPL Auction</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "IPL Auction: The Bid for Brilliance",
+    description:
+      "Master the art of the deal. In this high-energy bidding game, build your dream team with a limited budget. Test your strategic thinking and financial savvy to outbid rivals and create a winning roster.",
+    date: "February 2-3, 2026",
+    time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 9:30 AM – 1:30 PM",
+    venue: "601, TIMSR",
+    prize: "TBD",
+    eligibility: "All pass holders (Pixel, Silicon, Quantum)",
+  };
+  const primaryContacts = [
+    { name: "Hredey Chaand", role: "Core Member" },
+    { name: "Aman Pandey", role: "Core Member" },
+    { name: "Pawan Shetty", role: "Junior Core Member" },
+    { name: "Sakshi Yadav", role: "Junior Core Member" },
+    { name: "Prachi Kumari", role: "OC Member" },
+    { name: "Aditya Pandey", role: "OC Member" },
+    { name: "Sitanshu Shetty", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
 }
