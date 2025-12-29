@@ -43,8 +43,10 @@ const upload = multer({
 });
 
 /**
- * Get import history and stats
- * GET /api/v1/admin/import-history
+ * Import passes from KonfHub export (CSV/Excel)
+ * POST /api/v1/admin/import-passes
+ */
+router.post('/import-passes', upload.single('file'), async (req: Request, res: Response) => {
   let filePath: string | undefined;
   
   try {
