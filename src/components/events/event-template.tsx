@@ -290,24 +290,26 @@ export function EventPageTemplate({
               {primaryContacts.length === 0 && (
                 <div className="text-muted-foreground">Will be announced soon</div>
               )}
-              {primaryContacts.map((contact, index) => (
-                <div key={index} className="space-y-1">
-                  <h4 className="font-semibold text-sm sm:text-base">{contact.name}</h4>
-                  {contact.role && <p className="text-xs sm:text-sm text-muted-foreground">{contact.role}</p>}
-                  {contact.phone && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <a href={`tel:${contact.phone}`} className="hover:text-primary break-all">{contact.phone}</a>
-                    </div>
-                  )}
-                  {contact.email && (
-                    <div className="flex items-center gap-2 text-xs sm:text-sm">
-                      <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                      <a href={`mailto:${contact.email}`} className="hover:text-primary break-all">{contact.email}</a>
-                    </div>
-                  )}
-                </div>
-              ))}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {primaryContacts.map((contact, index) => (
+                  <div key={index} className="space-y-1 p-3 border rounded-lg bg-muted/20">
+                    <h4 className="font-semibold text-sm sm:text-base">{contact.name}</h4>
+                    {contact.role && <p className="text-xs sm:text-sm text-muted-foreground">{contact.role}</p>}
+                    {contact.phone && (
+                      <div className="flex items-center gap-2 text-xs sm:text-sm">
+                        <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <a href={`tel:${contact.phone}`} className="hover:text-primary break-all">{contact.phone}</a>
+                      </div>
+                    )}
+                    {contact.email && (
+                      <div className="flex items-center gap-2 text-xs sm:text-sm">
+                        <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                        <a href={`mailto:${contact.email}`} className="hover:text-primary break-all">{contact.email}</a>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
