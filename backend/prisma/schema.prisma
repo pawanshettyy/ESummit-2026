@@ -42,7 +42,6 @@ model User {
   clerkUserId        String?             @unique @map("clerk_user_id") @db.VarChar(255)
   checkIns           CheckIn[]
   eventRegistrations EventRegistration[]
-  otp_codes          otp_codes[]
   passes             Pass[]
   transactions       Transaction[]
 
@@ -255,26 +254,6 @@ model TcetCode {
   @@index([isAssigned])
   @@index([assignedTo])
   @@map("tcet_codes")
-}
-
-model otp_codes {
-  id         String   @id @db.Uuid
-  user_id    String?  @db.Uuid
-  email      String?  @db.VarChar(255)
-  phone      String?  @db.VarChar(20)
-  code       String   @db.VarChar(6)
-  type       OtpType
-  purpose    String   @db.VarChar(50)
-  expires_at DateTime @db.Timestamptz(6)
-  verified   Boolean  @default(false)
-  attempts   Int      @default(0)
-  created_at DateTime @default(now())
-  users      User?    @relation(fields: [user_id], references: [id], onDelete: Cascade)
-
-  @@index([code])
-  @@index([email])
-  @@index([expires_at])
-  @@index([phone])
 }
 
 enum OtpType {

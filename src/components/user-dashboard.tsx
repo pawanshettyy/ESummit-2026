@@ -102,7 +102,6 @@ export function UserDashboard({
   const [myPasses, setMyPasses] = useState<Pass[]>([]);
   const [isLoadingPasses, setIsLoadingPasses] = useState(true);
   const [downloadingPassId, setDownloadingPassId] = useState<string | null>(null);
-  const [downloadingSchedule, setDownloadingSchedule] = useState(false);
   const [registeredEvents, setRegisteredEvents] = useState<Set<string>>(new Set());
   const [registeredEventDetails, setRegisteredEventDetails] = useState<Event[]>([]);
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
@@ -568,42 +567,6 @@ export function UserDashboard({
     }
   };
 
-  // Download personalized schedule PDF
-  const downloadSchedulePDF = async () => {
-    try {
-      setDownloadingSchedule(true);
-      
-      if (!user?.id) {
-        alert('Please login to download your schedule');
-        return;
-      }
-
-      const response = await fetch(
-        `${API_BASE_URL}/pdf/schedule/${user.id}`
-      );
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(errorData.error || 'Failed to download schedule PDF');
-      }
-
-      const blob = await response.blob();
-      const url = window.URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `ESUMMIT-2026-My-Schedule.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    } catch (error) {
-      console.error('Error downloading schedule PDF:', error);
-      alert(error instanceof Error ? error.message : 'Failed to download schedule PDF. Please try again.');
-    } finally {
-      setDownloadingSchedule(false);
-    }
-  };
-
   // Handle event registration
   const handleEventRegistration = async (eventId: string) => {
     if (!user?.id) {
@@ -1056,28 +1019,6 @@ export function UserDashboard({
             </div>
           ) : (
           <div className="space-y-4">
-            {myPasses.length > 0 && registeredSchedule.length > 0 && (
-              <div className="flex justify-end mb-4">
-                <Button
-                  onClick={downloadSchedulePDF}
-                  disabled={downloadingSchedule}
-                  variant="outline"
-                >
-                  {downloadingSchedule ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Downloading...
-                    </>
-                  ) : (
-                    <>
-                      <Download className="mr-2 h-4 w-4" />
-                      Download My Schedule (PDF)
-                    </>
-                  )}
-                </Button>
-              </div>
-            )}
-
             {myPasses.length > 0 && (
               <Card className="bg-primary/5 border-primary/20">
                 <CardContent className="p-4">

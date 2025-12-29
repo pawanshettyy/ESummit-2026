@@ -43,24 +43,8 @@ const upload = multer({
 });
 
 /**
- * Upload and import KonfHub CSV/Excel export
- * POST /api/v1/admin/import-passes
- * 
- * KonfHub Export Fields Supported:
- * - Attendee Details: Email Address, Name, Country, Attendee category, Access category, 
- *   Country code, Dial code, Phone Number, College, Check-in Status
- * - WhatsApp Details: WhatsApp Number, WA country code, WA dial code, Whatsapp consent
- * - Registration Details: Coupon code, Payment ID, Ticket name, Registered at, 
- *   Registration status, Booking ID, Ticket price, Amount paid, Balance amount,
- *   Refund amount, Refund type, Tax amount, Processing fee, Code tracking ID,
- *   Ticket URL, Invoice URL
- * - UTM Details: UTM source, UTM medium, UTM campaign
- * - GST Details: Buyer name, Buyer email
- * - Attendee QR Code: Embed QR codes in excel
- * 
- * Required: Admin authentication via secret key
- */
-router.post('/import-passes', upload.single('file'), async (req: Request, res: Response) => {
+ * Get import history and stats
+ * GET /api/v1/admin/import-history
   let filePath: string | undefined;
   
   try {
@@ -1103,7 +1087,7 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
             email: claim.email,
             phone: user.phone,
             college: user.college,
-            registrationStatus: 'Approved via Claim',
+            registrationStatus: 'Confirmed',
             registeredAt: new Date().toISOString(),
             source: 'admin_claim_approval',
             claimId: claim.id,

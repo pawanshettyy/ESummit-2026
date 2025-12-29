@@ -4,7 +4,6 @@ import {
   Users,
   Calendar,
   Ticket,
-  Upload,
   Download,
   RefreshCw,
   Search,
@@ -168,7 +167,7 @@ interface AdminPanelProps {
 
 // Role permissions configuration
 const ROLE_PERMISSIONS = {
-  core: ["stats", "users", "events", "passes", "claims", "upload"],
+  core: ["stats", "users", "events", "passes", "claims"],
   jc: ["stats", "users", "events", "passes", "claims"],
   oc: ["stats", "users", "events"],
 };
@@ -202,10 +201,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   const [passTypeFilter, setPassTypeFilter] = useState<string>("all");
   const [verificationFilter, setVerificationFilter] = useState<string>("all");
   const [eventFilter, setEventFilter] = useState<string>("all");
-  
-  // Upload state
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadFile, setUploadFile] = useState<File | null>(null);
   
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -737,12 +732,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
               <TabsTrigger value="claims" className="gap-2">
                 <FileCheck className="h-4 w-4" />
                 <span className="hidden sm:inline">Pass Claims</span>
-              </TabsTrigger>
-            )}
-            {hasPermission("upload") && (
-              <TabsTrigger value="upload" className="gap-2">
-                <Upload className="h-4 w-4" />
-                <span className="hidden sm:inline">Import CSV</span>
               </TabsTrigger>
             )}
           </TabsList>
@@ -1622,116 +1611,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
             </TabsContent>
           )}
 
-          {/* CSV Upload Tab */}
-          {hasPermission("upload") && (
-            <TabsContent value="upload">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Import Pass Data</CardTitle>
-                  <CardDescription>
-                    Upload a CSV or Excel file exported from KonfHub to import pass data
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <Alert className="bg-blue-50 border-blue-200 dark:bg-blue-950/20 dark:border-blue-800">
-                    <FileSpreadsheet className="h-4 w-4 text-blue-600" />
-                    <AlertDescription className="text-sm text-blue-800 dark:text-blue-200">
-                      <strong>Supported formats:</strong> CSV (.csv) and Excel (.xlsx, .xls) files exported from KonfHub.
-                      The import will create new passes and update existing ones based on email matching.
-                    </AlertDescription>
-                  </Alert>
-
-                  <div className="border-2 border-dashed rounded-xl p-8 text-center hover:border-primary/50 transition-colors">
-                    <input
-                      type="file"
-                      accept=".csv,.xlsx,.xls"
-                      className="hidden"
-                      id="csv-upload"
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          setUploadFile(file);
-                          toast.success(`File selected: ${file.name}`);
-                        }
-                      }}
-                    />
-                    <label htmlFor="csv-upload" className="cursor-pointer block">
-                      {uploadFile ? (
-                        <div className="space-y-3">
-                          <div className="mx-auto w-16 h-16 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center">
-                            <CheckCircle2 className="h-8 w-8 text-green-600" />
-                          </div>
-                          <div>
-                            <p className="font-medium">{uploadFile.name}</p>
-                            <p className="text-sm text-muted-foreground">
-                              {(uploadFile.size / 1024).toFixed(1)} KB
-                            </p>
-                          </div>
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={(e: React.MouseEvent) => {
-                              e.preventDefault();
-                              e.stopPropagation();
-                              setUploadFile(null);
-                            }}
-                            className="text-red-600 hover:text-red-700"
-                          >
-                            Remove file
-                          </Button>
-                        </div>
-                      ) : (
-                        <div className="space-y-3">
-                          <div className="mx-auto w-16 h-16 rounded-full bg-muted flex items-center justify-center">
-                            <Upload className="h-8 w-8 text-muted-foreground" />
-                          </div>
-                          <div>
-                            <p className="font-medium">Click to upload</p>
-                            <p className="text-sm text-muted-foreground">
-                              CSV or Excel file (max 50MB)
-                            </p>
-                          </div>
-                        </div>
-                      )}
-                    </label>
-                  </div>
-
-                  <Button
-                    className="w-full"
-                    size="lg"
-                    onClick={handleFileUpload}
-                    disabled={!uploadFile || isUploading}
-                  >
-                    {isUploading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Importing...
-                      </>
-                    ) : (
-                      <>
-                        <Upload className="mr-2 h-4 w-4" />
-                        Import Pass Data
-                      </>
-                    )}
-                  </Button>
-
-                  <div className="text-sm text-muted-foreground space-y-2">
-                    <p className="font-medium">Expected columns:</p>
-                    <ul className="list-disc list-inside space-y-1 ml-2">
-                      <li>Email Address (required)</li>
-                      <li>Name / Full Name</li>
-                      <li>Phone Number</li>
-                      <li>Ticket name (pass type)</li>
-                      <li>Booking ID</li>
-                      <li>Payment ID</li>
-                      <li>Amount paid</li>
-                      <li>Registration status</li>
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            </TabsContent>
-          )}
         </Tabs>
       </div>
     </div>
