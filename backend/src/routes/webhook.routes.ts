@@ -235,22 +235,66 @@ router.post('/konfhub', async (req: Request, res: Response) => {
       };
 
       if (existingPass) {
+        // Check if this is a TCET student booking (has assigned TCET code)
+        const tcetCode = await prisma.tcetCode.findFirst({
+          where: {
+            assignedTo: user.id,
+            isAssigned: true
+          }
+        });
+
+        // Determine pass type - upgrade TCET students to Quantum Pass
+        let finalPassType = ticketData.ticketType || ticketData.ticketName || ticketData.passType || existingPass.passType;
+        if (tcetCode) {
+          finalPassType = 'Quantum Pass';
+          logger.info('Upgrading existing TCET student pass to Quantum Pass', {
+            userId: user.id,
+            email: user.email,
+            tcetCode: tcetCode.code,
+            existingPassType: existingPass.passType
+          });
+        }
+
         logger.info('Pass already exists, updating details', { passId: existingPass.passId });
         await prisma.pass.update({
           where: { id: existingPass.id },
-          data: passData,
+          data: {
+            ...passData,
+            passType: finalPassType,
+          },
         });
         
         logger.info('Pass updated successfully', { 
           passId: existingPass.passId,
-          userId: user.id 
+          userId: user.id,
+          finalPassType,
+          isTCETUpgrade: !!tcetCode,
         });
       } else {
+        // Check if this is a TCET student booking (has assigned TCET code)
+        const tcetCode = await prisma.tcetCode.findFirst({
+          where: {
+            assignedTo: user.id,
+            isAssigned: true
+          }
+        });
+
+        // Determine pass type - upgrade TCET students to Quantum Pass
+        let finalPassType = ticketData.ticketType || ticketData.ticketName || ticketData.passType || 'General Pass';
+        if (tcetCode) {
+          finalPassType = 'Quantum Pass';
+          logger.info('Upgrading TCET student pass to Quantum Pass', {
+            userId: user.id,
+            email: user.email,
+            tcetCode: tcetCode.code
+          });
+        }
+
         // Create new pass from KonfHub ticket
         const newPass = await prisma.pass.create({
           data: {
             userId: user.id,
-            passType: ticketData.ticketType || ticketData.ticketName || ticketData.passType || 'General Pass',
+            passType: finalPassType,
             passId: ticketData.ticketNumber || `ESUMMIT-${Date.now()}`,
             bookingId: ticketData.ticketNumber || ticketData.bookingId || ticketId,
             konfhubTicketId: ticketId,
@@ -264,6 +308,7 @@ router.post('/konfhub', async (req: Request, res: Response) => {
           userId: user.id,
           email: user.email,
           passType: newPass.passType,
+          isTCETUpgrade: !!tcetCode,
         });
       }
 

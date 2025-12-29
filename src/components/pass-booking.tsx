@@ -84,6 +84,7 @@ export function PassBooking({
       id: "pixel",
       name: "Pixel Pass",
       price: 0,
+      earlyBirdPrice: 0,
       originalPrice: 299,
       features: [
         "Startup Expo",
@@ -269,11 +270,51 @@ export function PassBooking({
         )}
         
         <div className="mb-8 text-center">
-          <h1 className="mb-4">Choose Your Pass</h1>
-          <p className="text-muted-foreground">
-            Select the perfect pass for your E-Summit
-            experience
-          </p>
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <motion.h1
+              className="mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl"
+              animate={{
+                backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
+              }}
+              transition={{
+                duration: 3,
+                repeat: Infinity,
+                ease: "linear",
+              }}
+              style={{
+                backgroundSize: "200% 200%",
+              }}
+            >
+              Choose Your Pass
+            </motion.h1>
+            <p className="mx-auto mb-6 max-w-2xl text-lg text-muted-foreground">
+              Select the perfect pass for your E-Summit experience and unlock exclusive access to premium events
+            </p>
+            <div className="mx-auto mb-6 max-w-4xl">
+              <div className="flex flex-col md:flex-row gap-4">
+                <div className="flex-1">
+                  <Alert className="border-primary/20 bg-primary/5 text-center h-full">
+                    <Info className="mx-auto h-4 w-4 text-primary" />
+                    <AlertDescription className="text-center text-sm text-primary/80">
+                      <strong>Pass upgrades available!</strong> You can upgrade your pass at the venue during check-in for additional benefits.
+                    </AlertDescription>
+                  </Alert>
+                </div>
+                <div className="flex-1">
+                  <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20 h-full">
+                    <Check className="h-4 w-4 text-green-600" />
+                    <AlertDescription className="text-center text-sm text-green-800 dark:text-green-200">
+                      <strong>Early Bird Discount:</strong> Use code <code className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded font-mono text-xs">EARLYBIRDTCET</code> for exclusive pricing!
+                    </AlertDescription>
+                  </Alert>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
 
           <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -316,12 +357,21 @@ export function PassBooking({
                                 </>
                               ) : (
                                 <>
-                                  <span className="text-3xl text-primary">
-                                    ₹{pass.price}
-                                  </span>
-                                  <span className="text-sm text-muted-foreground line-through">
-                                    ₹{pass.originalPrice}
-                                  </span>
+                                  <div className="flex flex-col items-start">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-2xl font-bold text-green-600">
+                                        ₹{pass.earlyBirdPrice || pass.price}
+                                      </span>
+                                      <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1">
+                                        Early Bird
+                                      </Badge>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <span className="text-sm text-muted-foreground line-through">
+                                        ₹{pass.originalPrice}
+                                      </span>
+                                    </div>
+                                  </div>
                                 </>
                               )}
                             </div>
@@ -402,12 +452,21 @@ export function PassBooking({
                                 </>
                               ) : (
                                 <>
-                                  <span className="text-3xl text-primary">
-                                    ₹{pass.price}
-                                  </span>
-                                  <span className="text-sm text-muted-foreground line-through">
-                                    ₹{pass.originalPrice}
-                                  </span>
+                                  <div className="flex flex-col items-start">
+                                    <div className="flex items-center gap-2">
+                                      <span className="text-2xl font-bold text-green-600">
+                                        ₹{pass.earlyBirdPrice || pass.price}
+                                      </span>
+                                      <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1">
+                                        Early Bird
+                                      </Badge>
+                                    </div>
+                                    <div className="flex items-center gap-2 mt-1">
+                                      <span className="text-sm text-muted-foreground line-through">
+                                        ₹{pass.originalPrice}
+                                      </span>
+                                    </div>
+                                  </div>
                                 </>
                               )}
                             </div>

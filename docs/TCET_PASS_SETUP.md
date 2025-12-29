@@ -8,6 +8,20 @@ The TCET Student Pass feature allows students with `@tcetmumbai.in` email addres
 - Access a special free pass booking section in their dashboard
 - Receive a unique 6-digit code (from 100000 to 102499)
 - Book their pass through KonfHub with their assigned code
+- **Receive Quantum Pass benefits** including access to all premium events, networking sessions, and priority access
+
+## Pass Benefits
+
+TCET students receive **Quantum Pass** level access, which includes:
+
+- All Silicon Pass events
+- The Ten Minute Million
+- The Angel Investor's Roundtable
+- Incubator Summit
+- Internship Fair
+- Premium networking sessions
+- Priority access to all events
+- Certificate of participation
 
 ## Database Setup
 

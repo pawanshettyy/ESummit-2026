@@ -1024,12 +1024,7 @@ export function UserDashboard({
                     <div className="space-y-2 text-sm">
                       <p className="font-semibold">Includes:</p>
                       <ul className="space-y-1 ml-4">
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Startup Expo</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Panel Discussion</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> IPL Auction</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> AI Build-A-Thon</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Biz-Arena League</li>
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> Certificate of participation</li>
+                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> All Quantum Pass events</li>
                       </ul>
                     </div>
 
