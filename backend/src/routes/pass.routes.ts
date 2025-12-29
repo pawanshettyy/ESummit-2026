@@ -125,20 +125,41 @@ router.get('/user/:clerkUserId', async (req: Request, res: Response) => {
         logger.info('User not found in DB, fetching from Clerk:', clerkUserId);
         const clerkUser = await clerkClient.users.getUser(clerkUserId);
         
-        // Create user in database
-        user = await prisma.user.create({
-          data: {
-            clerkUserId: clerkUser.id,
-            email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
-            fullName: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
-            firstName: clerkUser.firstName || null,
-            lastName: clerkUser.lastName || null,
-            imageUrl: clerkUser.imageUrl || null,
-          },
+        // Check if user exists by email
+        const existingUser = await prisma.user.findUnique({
+          where: { email: clerkUser.emailAddresses?.[0]?.emailAddress || '' },
           select: { id: true }
         });
-        
-        logger.info('User created from Clerk data:', clerkUserId);
+
+        if (existingUser) {
+          // Update existing user with Clerk data
+          user = await prisma.user.update({
+            where: { id: existingUser.id },
+            data: {
+              clerkUserId: clerkUser.id,
+              fullName: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
+              firstName: clerkUser.firstName || null,
+              lastName: clerkUser.lastName || null,
+              imageUrl: clerkUser.imageUrl || null,
+            },
+            select: { id: true }
+          });
+          logger.info('Updated existing user with Clerk data:', clerkUserId);
+        } else {
+          // Create user in database
+          user = await prisma.user.create({
+            data: {
+              clerkUserId: clerkUser.id,
+              email: clerkUser.emailAddresses?.[0]?.emailAddress || '',
+              fullName: `${clerkUser.firstName || ''} ${clerkUser.lastName || ''}`.trim(),
+              firstName: clerkUser.firstName || null,
+              lastName: clerkUser.lastName || null,
+              imageUrl: clerkUser.imageUrl || null,
+            },
+            select: { id: true }
+          });
+          logger.info('User created from Clerk data:', clerkUserId);
+        }
       } catch (clerkError) {
         logger.error('Failed to fetch/create user from Clerk:', clerkError);
         sendError(res, 'User not found and could not be created', 404);
