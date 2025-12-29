@@ -49,6 +49,7 @@ app.use(
   cors({
     origin: config.cors.origin,
     credentials: true,
+    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with'],
   })
 );
 
