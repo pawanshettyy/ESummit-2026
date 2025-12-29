@@ -59,7 +59,8 @@ export function EventPageTemplate({
   const [isRegistering, setIsRegistering] = useState(false);
 
   const handleBackToEvents = () => {
-    window.location.href = "/events";
+    sessionStorage.setItem('navigateTo', 'events');
+    window.location.href = '/';
   };
 
   const handleRegistration = async () => {
