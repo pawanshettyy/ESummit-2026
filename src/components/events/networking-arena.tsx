@@ -1,21 +1,23 @@
+import { EventPageTemplate } from "./event-template";
+
 export function NetworkingArenaPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Networking Arena</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "Informals",
+    description:
+      "Connect beyond the stage. An informal session for founders to mingle with judges, speakers, and mentors over lunch, turning conversations into valuable connections.",
+    date: "February 2, 2026",
+    time: "5 PM to 5:30 PM",
+    venue: "Multipurpose Hall 2nd Floor and TSAP ground floor",
+    eligibility: "Silicon & Quantum Pass holders",
+  };
+  const primaryContacts = [
+    { name: "Yash Khatri", role: "Core Member" },
+    { name: "Pratiksha Upadhyay", role: "Junior Core Member" },
+    { name: "Diya Kandari", role: "OC Member" },
+    { name: "Shivanshi Pandit", role: "OC Member" },
+    { name: "Prashant Yadav", role: "OC Member" },
+    { name: "Arukesh Sahu", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Guests" primaryContacts={primaryContacts} />;
 }

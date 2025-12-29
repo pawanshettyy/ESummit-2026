@@ -1,21 +1,23 @@
+import { EventPageTemplate } from "./event-template";
+
 export function DataAnalyticsBdmPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Data Analytics & BDM</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "Data Analytics & Business Development Essentials",
+    description:
+      "Make smarter decisions with data. Learn to analyze market trends, track key metrics, and use data-driven insights to fuel your business growth and strategy. 3-hour interactive sessions.",
+    date: "February 2-3, 2026",
+    time: "10:00 - 17:00 (3 Hours Sessions)",
+    venue: "Lab 526 & 527",
+    eligibility: "Silicon & Quantum Pass holders",
+  };
+  const primaryContacts = [
+    { name: "Anushka Yadav", role: "Core Member" },
+    { name: "Varun Maurya", role: "Junior Core Member" },
+    { name: "Shubham Prajapati", role: "OC Member" },
+    { name: "Ayush Tyagi", role: "OC Member" },
+    { name: "SHLOK YADAV", role: "OC Member" },
+    { name: "Arpit Gawande", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Speakers" primaryContacts={primaryContacts} />;
 }

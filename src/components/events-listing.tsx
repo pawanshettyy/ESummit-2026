@@ -41,7 +41,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       time: "10:00 AM – 5:00 PM (Both days)",
       venue: "SH-1",
       prize: "Seed Funding",
-      eligibility: "TRL 4+",
+      eligibility: "Quantum Pass required",
       objective: "Fundraising",
       outcome: "Receive Seed Funding",
       rules: ["10-minute pitch presentation", "Live Q&A with VCs", "Pitch deck required"],
@@ -60,7 +60,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       time: "9:30 AM – 1:30 PM",
       venue: "Seminar Hall",
       prize: "Pre-Seed Funding",
-      eligibility: "Early stage Startups",
+      eligibility: "Quantum Pass required",
       objective: "Receive Investment",
       outcome: "Receive Pre-Seed Funding",
       rules: ["Pitch to panel of angel investors", "15-minute presentation + Q&A", "MVP demonstration required"],
@@ -79,7 +79,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       time: "10:00 AM – 5:00 PM",
       venue: "314, 315, 316",
       prize: "Shortlisting for Round 2",
-      eligibility: "Early stage Startups",
+      eligibility: "Silicon & Quantum Pass required",
       objective: "Encourage First Time Founders",
       outcome: "Shortlisting Best Ideas for Round 2",
       rules: ["5-minute pitch", "Open to first-time founders", "Idea stage acceptable"],
@@ -98,7 +98,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM - 1:00 PM",
       venue: "SSC TIMSR",
       prize: "Incubation Support",
-      eligibility: "Early Stage Startups",
+      eligibility: "Quantum Pass required",
       objective: "To Provide Incubation",
       outcome: "Receiving Incubation",
       rules: ["Pitch to incubation centers", "Present growth roadmap", "Team introduction required"],
@@ -292,6 +292,37 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       icon: Users,
       color: "outline",
     },
+    // Additional workshops and pre-summit events
+    {
+      id: 16,
+      title: "AI for Early Stage Startups",
+      category: "workshops",
+      description: "Explore how AI can be leveraged in early-stage startups to accelerate growth. Hands-on and practical insights for founders.",
+      date: "February 3, 2026",
+      time: "2:00 PM – 4:30 PM",
+      venue: "Workshop Hall B",
+      eligibility: "All pass holders",
+      objective: "Use of AI in early stage startups",
+      outcome: "Understand where AI accelerates early-stage traction",
+      prerequisites: "None",
+      icon: Users,
+      color: "muted",
+    },
+    {
+      id: 17,
+      title: "Roadmap to Entrepreneurship (Pre E-summit Workshop)",
+      category: "workshops",
+      description: "Turn Ideas into Impact. One-hour hands-on workshop on Business Model Canvas with practical startup frameworks and mentor guidance.",
+      date: "TBA (Pre E-Summit)",
+      time: "1 hour session",
+      venue: "TBA",
+      eligibility: "Open to students, aspiring founders, and innovators",
+      objective: "Help participants convert ideas into viable business models",
+      outcome: "Clarity on business model using BMC and actionable next steps",
+      prerequisites: "None",
+      icon: Users,
+      color: "muted",
+    },
   ];
 
   const filteredEvents = (category: string) => {
@@ -385,7 +416,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
                       className="mt-auto w-full"
                       onClick={() => handleViewDetails(event)}
                     >
-                      View Details
+                      Register Now
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </CardContent>

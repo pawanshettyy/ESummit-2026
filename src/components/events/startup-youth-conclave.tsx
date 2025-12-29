@@ -1,21 +1,23 @@
+import { EventPageTemplate } from "./event-template";
+
 export function StartupYouthConclavePage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Startup Youth Conclave</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "The Startup Youth Conclave",
+    description:
+      "Connect with Top E-Cells! Network with entrepreneurship cells from other colleges, share best practices, and build collaborations that go beyond your campus.",
+    date: "February 3, 2026",
+    time: "11:00 AM to 1:00 PM (Post Lunch)",
+    venue: "Seminar Hall 2nd floor TSAP",
+    eligibility: "Silicon & Quantum Pass holders",
+  };
+  const primaryContacts = [
+    { name: "Krish Jain", role: "Core Member" },
+    { name: "Shaleen Singh", role: "Junior Core Member" },
+    { name: "Shreya Yadav", role: "OC Member" },
+    { name: "Nikhil Shukla", role: "OC Member" },
+    { name: "Namasavi Singh", role: "OC Member" },
+    { name: "Kavya Jhaveri", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="E-Cell Representatives" primaryContacts={primaryContacts} />;
 }

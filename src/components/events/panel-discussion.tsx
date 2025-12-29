@@ -1,21 +1,23 @@
+import { EventPageTemplate } from "./event-template";
+
 export function PanelDiscussionPage() {
-  return (
-    <div className="min-h-screen bg-background">
-      <div className="container mx-auto px-4 py-8">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Panel Discussion</h1>
-          <p className="text-muted-foreground mb-8">Custom event page - Design your content here</p>
-          
-          <div className="mt-8">
-            <button 
-              onClick={() => window.close()} 
-              className="px-6 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-            >
-              Close Window
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  const event = {
+    title: "The Panel Discussion",
+    description:
+      "Get the Final Insights. Hear from our expert judges and speakers in a final panel discussion, followed by the closing ceremony to celebrate the day's winners and achievements.",
+    date: "February 3, 2026",
+    time: "2:00 PM to 5:00 PM (Post Lunch)",
+    venue: "Auditorium",
+    eligibility: "All pass holders",
+  };
+  const primaryContacts = [
+    { name: "Nidhi Shukla", role: "Core Member" },
+    { name: "Mehwish Siddiqui", role: "Junior Core Member" },
+    { name: "Om Paranjape", role: "OC Member" },
+    { name: "Prakash Mandal", role: "OC Member" },
+    { name: "Sachin Kumawat", role: "OC Member" },
+    { name: "Siddharth Sangwan", role: "OC Member" },
+  ];
+
+  return <EventPageTemplate event={event} panelTitle="Speakers & Judges" primaryContacts={primaryContacts} />;
 }

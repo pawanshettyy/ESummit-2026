@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapPin, Calendar, Clock, Award, Users, Mail, Phone, ExternalLink, Trophy, Sparkles, Star, CheckCircle2 } from "lucide-react";
+import { MapPin, Calendar, Clock, Award, Users, Mail, Phone, ExternalLink, Trophy, Sparkles, Star, CheckCircle2, ArrowRight } from "lucide-react";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Badge } from "../ui/badge";
@@ -9,6 +9,7 @@ import { toast } from "sonner";
 import { Particles } from "../magicui/particles";
 import { GradientText } from "../magicui/gradient-text";
 import { Navigation } from "../navigation";
+import { motion } from "motion/react";
 
 export function TenMinuteMillionPage() {
   const { user, isSignedIn } = useUser();
@@ -33,12 +34,12 @@ export function TenMinuteMillionPage() {
     title: "The Ten Minute Million",
     tagline: "Pitch Your Vision, Secure Your Future",
     category: "Pitching Event",
-    description: "Pitch your startup to Venture Capitalists and compete for seed funding opportunities. This is your chance to turn your vision into reality with backing from top investors.",
-    date: "January 23-24, 2026",
-    time: "10:00 AM - 1:00 PM",
-    venue: "SH-4",
+    description: "A high-energy pitching event where founders get just 10 minutes to present their startup to investors and industry leaders, aiming to secure funding, partnerships, and validation on the spot.",
+    date: "February 2-3, 2026",
+    time: "10:00 AM – 5:00 PM (Both days)",
+    venue: "SH-1",
     prize: "Seed Funding Opportunity",
-    eligibility: "Quantum Pass Required",
+    eligibility: "Quantum Pass required",
   };
 
   const speakers = [
@@ -81,19 +82,14 @@ export function TenMinuteMillionPage() {
     { icon: CheckCircle2, text: "Access to exclusive investor database" }
   ];
 
-  const primaryContacts = [
-    {
-      name: "Amit Patel",
-      role: "Event Coordinator",
-      phone: "+91 98765 43210",
-      email: "amit.patel@esummit2026.com"
-    },
-    {
-      name: "Neha Gupta",
-      role: "Registration Lead",
-      phone: "+91 98765 43211",
-      email: "neha.gupta@esummit2026.com"
-    }
+  const primaryContacts: Array<{ name: string; role: string; phone?: string; email?: string }> = [
+    { name: "Aman Pandey", role: "Core Member" },
+    { name: "Yask Khatri", role: "Core Member" },
+    { name: "Ashita Sharma", role: "Junior Core Member" },
+    { name: "Vedant Singh", role: "OC Member" },
+    { name: "Pratik Verma", role: "OC Member" },
+    { name: "Roshni Joshi", role: "OC Member" },
+    { name: "Niyatee Thakur", role: "OC Member" },
   ];
 
   const seniorContacts = [
@@ -162,46 +158,91 @@ export function TenMinuteMillionPage() {
 
       {/* Main Content - Add top padding to account for fixed navigation */}
       <div className="container mx-auto px-4 py-8 pt-24 sm:pt-28 md:pt-32">
-        {/* Enhanced Hero Section */}
-        <div className="mb-12 sm:mb-16 text-center relative max-w-4xl mx-auto">
-          <Badge className="mb-4 sm:mb-6 inline-flex items-center bg-primary/20 text-primary border-primary/50 hover:bg-primary/30 transition-all duration-300 shadow-lg text-sm sm:text-base px-4 sm:px-5 py-1.5 sm:py-2">
-            <Trophy className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-bounce" />
-            {eventData.category}
-          </Badge>
-          
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-4 sm:mb-6 leading-tight bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
-            {eventData.title}
-          </h1>
-          
-          <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 sm:mb-8 font-light px-2 sm:px-4">
-            {eventData.tagline}
-          </p>
-          
-          <div className="flex flex-wrap justify-center gap-2 sm:gap-3 md:gap-4 mb-6 sm:mb-8">
-            <Badge variant="outline" className="text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 hover:bg-primary/10 transition-colors">
-              <Calendar className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-              <span className="whitespace-nowrap">{eventData.date}</span>
-            </Badge>
-            <Badge variant="outline" className="text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 hover:bg-primary/10 transition-colors">
-              <Clock className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-              <span className="whitespace-nowrap">{eventData.time}</span>
-            </Badge>
-            <Badge variant="outline" className="text-xs sm:text-sm md:text-base px-3 sm:px-4 md:px-6 py-2 sm:py-2.5 md:py-3 hover:bg-primary/10 transition-colors">
-              <MapPin className="mr-1 sm:mr-2 h-3 w-3 sm:h-4 sm:w-4 md:h-5 md:w-5" />
-              <span className="whitespace-nowrap">{eventData.venue}</span>
-            </Badge>
-          </div>
-          
-          <Button 
-            size="lg" 
-            onClick={handleRegistration}
-            disabled={isRegistering}
-            className="gap-2 text-base sm:text-lg px-6 sm:px-8 md:px-10 py-4 sm:py-5 md:py-6 shadow-xl hover:shadow-primary/50 transition-all duration-300 hover:scale-105 bg-gradient-to-r from-primary to-primary/80"
+        <div className="mb-4">
+          <Button
+            variant="outline"
+            onClick={() => handleNavigate("events")}
+            className="gap-2 w-full sm:w-auto"
           >
-            <Award className="h-5 w-5 sm:h-6 sm:w-6" />
-            {isRegistering ? "Registering..." : "Register Now"}
+            <ArrowRight className="rotate-180 h-4 w-4" />
+            Back to Events
           </Button>
         </div>
+        {/* HERO SECTION WITH EVENT BRIEF */}
+        <section id="event-brief" className="relative overflow-hidden bg-gradient-to-br from-primary/10 via-background to-background mb-12 sm:mb-16">
+          <div className="absolute inset-0 bg-grid-white/5 [mask-image:radial-gradient(white,transparent_85%)]" />
+          
+          <div className="container mx-auto px-4 py-20 md:py-32 relative">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center max-w-4xl mx-auto space-y-8"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                transition={{ duration: 0.3 }}
+              >
+              </motion.div>
+
+              <GradientText className="text-6xl md:text-8xl lg:text-9xl font-bold mb-6">
+                The Ten Minute Million
+              </GradientText>
+
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-semibold bg-gradient-to-r from-primary via-purple-500 to-primary bg-clip-text text-transparent">
+                Pitch Your Vision, Secure Your Future
+              </h2>
+
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5, duration: 0.6 }}
+                className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed"
+              >
+                Pitch your startup to Venture Capitalists and compete for seed funding opportunities. This is your chance to turn your vision into reality with backing from top investors.
+              </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7, duration: 0.6 }}
+                className="flex flex-wrap justify-center gap-6 pt-4"
+              >
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Calendar className="w-5 h-5 text-primary" />
+                  <span className="font-medium">{eventData.date}</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <Clock className="w-5 h-5 text-primary" />
+                  <span className="font-medium">{eventData.time}</span>
+                </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <MapPin className="w-5 h-5 text-primary" />
+                  <span className="font-medium">{eventData.venue}</span>
+                </div>
+              </motion.div>
+
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.9, duration: 0.5 }}
+                className="pt-6"
+              >
+                <Button 
+                  size="lg" 
+                  onClick={handleRegistration}
+                  disabled={isRegistering}
+                  className="px-12 py-4 text-lg font-bold bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-white shadow-lg hover:shadow-xl transition-all duration-300"
+                >
+                  <span className="flex items-center gap-2">
+                    {isRegistering ? "Registering..." : "Register Now"}
+                    {!isRegistering && <ArrowRight className="w-5 h-5" />}
+                  </span>
+                </Button>
+              </motion.div>
+            </motion.div>
+          </div>
+        </section>
 
         {/* Event Description */}
         <Card className="mb-8 sm:mb-10 md:mb-12">
@@ -247,6 +288,12 @@ export function TenMinuteMillionPage() {
             <p className="text-muted-foreground text-sm sm:text-base">Pitch to leading Venture Capitalists</p>
           </CardHeader>
           <CardContent>
+            <div className="text-center text-muted-foreground py-6">Will be announced soon</div>
+            {/**
+             * The VC panel grid is intentionally commented out per instruction.
+             * Do not delete this code. Uncomment when panel details are ready.
+             */}
+            {/**
             <div className="grid gap-4 sm:gap-6 grid-cols-2 lg:grid-cols-4">
               {speakers.map((speaker, index) => (
                 <div key={index} className="text-center">
@@ -262,6 +309,7 @@ export function TenMinuteMillionPage() {
                 </div>
               ))}
             </div>
+            */}
           </CardContent>
         </Card>
 
@@ -310,14 +358,18 @@ export function TenMinuteMillionPage() {
                 <div key={index} className="space-y-1">
                   <h4 className="font-semibold text-sm sm:text-base">{contact.name}</h4>
                   <p className="text-xs sm:text-sm text-muted-foreground">{contact.role}</p>
-                  <div className="flex items-center gap-2 text-xs sm:text-sm">
-                    <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <a href={`tel:${contact.phone}`} className="hover:text-primary break-all">{contact.phone}</a>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs sm:text-sm">
-                    <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
-                    <a href={`mailto:${contact.email}`} className="hover:text-primary break-all">{contact.email}</a>
-                  </div>
+                  {contact.phone && (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                      <Phone className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <a href={`tel:${contact.phone}`} className="hover:text-primary break-all">{contact.phone}</a>
+                    </div>
+                  )}
+                  {contact.email && (
+                    <div className="flex items-center gap-2 text-xs sm:text-sm">
+                      <Mail className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <a href={`mailto:${contact.email}`} className="hover:text-primary break-all">{contact.email}</a>
+                    </div>
+                  )}
                 </div>
               ))}
             </CardContent>
