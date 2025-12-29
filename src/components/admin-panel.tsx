@@ -22,6 +22,8 @@ import {
   Loader2,
   Home,
   X,
+  FileCheck,
+  CheckCircle,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
@@ -129,14 +131,45 @@ interface EventRegistrationData {
   };
 }
 
+// Pass Claim interface
+interface PassClaimData {
+  id: string;
+  clerkUserId: string;
+  attendeeName: string;
+  email: string;
+  phone: string;
+  college: string;
+  passType: string;
+  bookingId: string | null;
+  konfhubOrderId: string | null;
+  price: number | null;
+  ticketUrl: string | null;
+  ticketFileUrl: string | null;
+  status: 'pending' | 'approved' | 'rejected' | 'expired';
+  reason: string;
+  adminNotes: string | null;
+  createdAt: string;
+  processedAt: string | null;
+  expiresAt: string;
+  user: {
+    id: string;
+    email: string;
+    fullName: string | null;
+    phone: string | null;
+    college: string | null;
+    bookingVerified: boolean;
+  };
+  passes: PassData[];
+}
+
 interface AdminPanelProps {
   onNavigate: (page: string) => void;
 }
 
 // Role permissions configuration
 const ROLE_PERMISSIONS = {
-  core: ["stats", "users", "events", "passes", "upload"],
-  jc: ["stats", "users", "events", "passes"],
+  core: ["stats", "users", "events", "passes", "claims", "upload"],
+  jc: ["stats", "users", "events", "passes", "claims"],
   oc: ["stats", "users", "events"],
 };
 
@@ -162,6 +195,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   const [users, setUsers] = useState<UserData[]>([]);
   const [passes, setPasses] = useState<PassData[]>([]);
   const [eventRegistrations, setEventRegistrations] = useState<EventRegistrationData[]>([]);
+  const [claims, setClaims] = useState<PassClaimData[]>([]);
   
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
@@ -291,6 +325,24 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     }
   }, []);
 
+  // Fetch pass claims
+  const fetchClaims = useCallback(async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/claims`, {
+        headers: {
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+        },
+      });
+      const data = await response.json();
+      if (data.success) {
+        setClaims(data.data.claims || []);
+      }
+    } catch (error) {
+      if (typeof logger !== 'undefined') logger.error("Error fetching claims:", error);
+      setClaims([]);
+    }
+  }, []);
+
   // Initial data fetch
   useEffect(() => {
     if (userRole) {
@@ -298,8 +350,9 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       if (hasPermission("users")) fetchUsers();
       if (hasPermission("passes")) fetchPasses();
       if (hasPermission("events")) fetchEventRegistrations();
+      if (hasPermission("claims")) fetchClaims();
     }
-  }, [userRole, fetchStats, fetchUsers, fetchPasses, fetchEventRegistrations]);
+  }, [userRole, fetchStats, fetchUsers, fetchPasses, fetchEventRegistrations, fetchClaims]);
 
   // Handle CSV upload
   const handleFileUpload = async () => {
@@ -340,6 +393,37 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       toast.error("Failed to upload file");
     } finally {
       setIsUploading(false);
+    }
+  };
+
+  // Handle claim approval/rejection
+  const handleClaimAction = async (claimId: string, action: 'approve' | 'reject') => {
+    const adminNotes = prompt(`Enter admin notes for ${action}ing this claim:`);
+    if (adminNotes === null) return; // User cancelled
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+        },
+        body: JSON.stringify({ action, adminNotes }),
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast.success(`Claim ${action}d successfully`);
+        fetchClaims(); // Refresh claims list
+        fetchStats(); // Refresh stats
+        fetchPasses(); // Refresh passes if approved
+      } else {
+        toast.error(data.error || `Failed to ${action} claim`);
+      }
+    } catch (error) {
+      if (typeof logger !== 'undefined') logger.error(`Error ${action}ing claim:`, error);
+      toast.error(`Failed to ${action} claim`);
     }
   };
 
@@ -401,6 +485,18 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       eventFilter === "all" || reg.event?.id === eventFilter;
 
     return matchesSearch && matchesEvent;
+  });
+
+  // Filter claims
+  const filteredClaims = claims.filter((claim) => {
+    const matchesSearch =
+      searchQuery === "" ||
+      claim.attendeeName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.user?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      claim.bookingId?.toLowerCase().includes(searchQuery.toLowerCase());
+
+    return matchesSearch;
   });
 
   // Pagination
@@ -584,6 +680,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                   if (hasPermission("users")) fetchUsers();
                   if (hasPermission("passes")) fetchPasses();
                   if (hasPermission("events")) fetchEventRegistrations();
+                  if (hasPermission("claims")) fetchClaims();
                   toast.success("Data refreshed");
                 }}
               >
@@ -634,6 +731,12 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
               <TabsTrigger value="passes" className="gap-2">
                 <Ticket className="h-4 w-4" />
                 <span className="hidden sm:inline">Pass Details</span>
+              </TabsTrigger>
+            )}
+            {hasPermission("claims") && (
+              <TabsTrigger value="claims" className="gap-2">
+                <FileCheck className="h-4 w-4" />
+                <span className="hidden sm:inline">Pass Claims</span>
               </TabsTrigger>
             )}
             {hasPermission("upload") && (
@@ -1327,6 +1430,193 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                       </div>
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+          )}
+
+          {/* Pass Claims Tab */}
+          {hasPermission("claims") && (
+            <TabsContent value="claims">
+              <Card>
+                <CardHeader>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <CardTitle>Pass Claims</CardTitle>
+                      <CardDescription>
+                        {filteredClaims.length} claims found
+                      </CardDescription>
+                    </div>
+                    <div className="flex flex-wrap gap-2 w-full sm:w-auto">
+                      <div className="relative flex-1 min-w-[180px] max-w-full">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Search by name or email..."
+                          className="w-full h-10 pl-9 pr-4 rounded-lg border bg-background text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 min-w-0"
+                          value={searchQuery}
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value)}
+                          style={{ minWidth: 0 }}
+                        />
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => fetchClaims()}
+                        className="shrink-0"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    {/* Claims List */}
+                    {filteredClaims.length === 0 ? (
+                      <div className="text-center py-8 text-muted-foreground">
+                        <FileCheck className="h-12 w-12 mx-auto mb-4 opacity-50" />
+                        <p>No pass claims found</p>
+                      </div>
+                    ) : (
+                      filteredClaims.map((claim) => (
+                        <Card key={claim.id} className="border-l-4 border-l-amber-500">
+                          <CardHeader>
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <h3 className="font-semibold">{claim.attendeeName}</h3>
+                                  <Badge variant={claim.status === 'pending' ? 'default' : claim.status === 'approved' ? 'default' : 'destructive'}>
+                                    {claim.status}
+                                  </Badge>
+                                </div>
+                                <p className="text-sm text-muted-foreground">{claim.email}</p>
+                                <p className="text-sm text-muted-foreground">{claim.phone} • {claim.college}</p>
+                              </div>
+                              <div className="text-right">
+                                <p className="font-medium">{claim.passType}</p>
+                                <p className="text-sm text-muted-foreground">
+                                  {formatDate(claim.createdAt)}
+                                </p>
+                              </div>
+                            </div>
+                          </CardHeader>
+                          <CardContent>
+                            <div className="space-y-4">
+                              {/* User Pass Information */}
+                              {claim.passes && claim.passes.length > 0 && (
+                                <div>
+                                  <h4 className="font-medium mb-2">Existing Passes</h4>
+                                  <div className="grid gap-2 sm:grid-cols-2">
+                                    {claim.passes.map((pass) => (
+                                      <div key={pass.id} className="p-3 bg-muted/50 rounded-lg">
+                                        <div className="flex justify-between items-start">
+                                          <div>
+                                            <p className="font-medium">{pass.passType}</p>
+                                            <p className="text-sm text-muted-foreground">{pass.passId}</p>
+                                            <p className="text-sm text-muted-foreground">
+                                              Status: <Badge variant="outline" className="ml-1">{pass.status}</Badge>
+                                            </p>
+                                          </div>
+                                          <Badge variant={pass.status === 'Active' ? 'default' : 'secondary'}>
+                                            {pass.status}
+                                          </Badge>
+                                        </div>
+                                      </div>
+                                    ))}
+                                  </div>
+                                </div>
+                              )}
+
+                              {/* Claim Details */}
+                              <div>
+                                <h4 className="font-medium mb-2">Claim Details</h4>
+                                <div className="grid gap-2 sm:grid-cols-2">
+                                  <div>
+                                    <p className="text-sm text-muted-foreground">Booking ID</p>
+                                    <p className="font-mono text-sm">{claim.bookingId || 'N/A'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm text-muted-foreground">KonfHub Order ID</p>
+                                    <p className="font-mono text-sm">{claim.konfhubOrderId || 'N/A'}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm text-muted-foreground">Price</p>
+                                    <p className="font-medium">₹{claim.price || 0}</p>
+                                  </div>
+                                  <div>
+                                    <p className="text-sm text-muted-foreground">Reason</p>
+                                    <p className="text-sm">{claim.reason}</p>
+                                  </div>
+                                </div>
+                              </div>
+
+                              {/* Ticket URL */}
+                              {claim.ticketUrl && (
+                                <div>
+                                  <p className="text-sm text-muted-foreground mb-1">Ticket URL</p>
+                                  <a
+                                    href={claim.ticketUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline text-sm break-all"
+                                  >
+                                    {claim.ticketUrl}
+                                  </a>
+                                </div>
+                              )}
+
+                              {/* Ticket File */}
+                              {claim.ticketFileUrl && (
+                                <div>
+                                  <p className="text-sm text-muted-foreground mb-1">Uploaded Ticket File</p>
+                                  <a
+                                    href={claim.ticketFileUrl}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 hover:underline text-sm"
+                                  >
+                                    View Uploaded File
+                                  </a>
+                                </div>
+                              )}
+
+                              {/* Admin Notes */}
+                              {claim.adminNotes && (
+                                <div>
+                                  <p className="text-sm text-muted-foreground mb-1">Admin Notes</p>
+                                  <p className="text-sm bg-muted p-2 rounded">{claim.adminNotes}</p>
+                                </div>
+                              )}
+
+                              {/* Action Buttons */}
+                              {claim.status === 'pending' && (
+                                <div className="flex gap-2 pt-4 border-t">
+                                  <Button
+                                    size="sm"
+                                    onClick={() => handleClaimAction(claim.id, 'approve')}
+                                    className="flex-1"
+                                  >
+                                    <CheckCircle className="h-4 w-4 mr-2" />
+                                    Approve
+                                  </Button>
+                                  <Button
+                                    variant="destructive"
+                                    size="sm"
+                                    onClick={() => handleClaimAction(claim.id, 'reject')}
+                                    className="flex-1"
+                                  >
+                                    <XCircle className="h-4 w-4 mr-2" />
+                                    Reject
+                                  </Button>
+                                </div>
+                              )}
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))
+                    )}
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>

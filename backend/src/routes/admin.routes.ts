@@ -989,4 +989,169 @@ router.get('/registrations', async (req: Request, res: Response) => {
   }
 });
 
+/**
+ * Get all pass claims for admin dashboard
+ * GET /api/v1/admin/claims
+ */
+router.get('/claims', async (req: Request, res: Response) => {
+  try {
+    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
+
+    if (adminSecret !== expectedSecret) {
+      return sendError(res, 'Unauthorized', 403);
+    }
+
+    const claims = await prisma.pendingPassClaim.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
+    // Fetch user details for each claim
+    const claimsWithUserData = await Promise.all(
+      claims.map(async (claim) => {
+        const user = await prisma.user.findUnique({
+          where: { clerkUserId: claim.clerkUserId },
+          select: {
+            id: true,
+            email: true,
+            fullName: true,
+            phone: true,
+            college: true,
+            bookingVerified: true,
+          },
+        });
+
+        return {
+          ...claim,
+          user,
+        };
+      })
+    );
+
+    return sendSuccess(res, 'Claims fetched', {
+      claims: claimsWithUserData,
+      total: claimsWithUserData.length,
+    });
+
+  } catch (error: any) {
+    logger.error('Get claims error:', error);
+    return sendError(res, error.message, 500);
+  }
+});
+
+/**
+ * Approve or reject a pass claim
+ * POST /api/v1/admin/claims/:claimId/action
+ */
+router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
+  try {
+    const adminSecret = req.headers['x-admin-secret'];
+    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
+
+    if (adminSecret !== expectedSecret) {
+      return sendError(res, 'Unauthorized', 403);
+    }
+
+    const { claimId } = req.params;
+    const { action, adminNotes } = req.body; // action: 'approve' | 'reject'
+
+    if (!['approve', 'reject'].includes(action)) {
+      return sendError(res, 'Invalid action. Must be "approve" or "reject"', 400);
+    }
+
+    // Get the claim and associated user
+    const claim = await prisma.pendingPassClaim.findUnique({
+      where: { id: claimId },
+    });
+
+    if (!claim) {
+      return sendError(res, 'Claim not found', 404);
+    }
+
+    if (claim.status !== 'pending') {
+      return sendError(res, 'Claim has already been processed', 400);
+    }
+
+    // Get the user
+    const user = await prisma.user.findUnique({
+      where: { clerkUserId: claim.clerkUserId },
+    });
+
+    if (!user) {
+      return sendError(res, 'User not found', 404);
+    }
+
+    if (action === 'approve') {
+      // Extract data from claim
+      const extractedData = claim.extractedData as any || {};
+
+      // Create the pass in the database
+      const pass = await prisma.pass.create({
+        data: {
+          userId: user.id,
+          passId: claim.bookingId || `CLAIM-${Date.now()}`,
+          passType: claim.passType,
+          bookingId: claim.bookingId,
+          konfhubOrderId: claim.konfhubOrderId,
+          price: extractedData.price || 0,
+          purchaseDate: new Date(),
+          status: 'Active',
+          qrCodeUrl: extractedData.ticketUrl || null,
+          qrCodeData: claim.qrCodeData || claim.bookingId || claimId,
+          ticketDetails: {
+            attendeeName: claim.fullName || extractedData.attendeeName || user.fullName,
+            email: claim.email,
+            phone: user.phone,
+            college: user.college,
+            registrationStatus: 'Approved via Claim',
+            registeredAt: new Date().toISOString(),
+            source: 'admin_claim_approval',
+            claimId: claim.id,
+            adminNotes: adminNotes,
+          },
+        },
+      });
+
+      // Update claim status
+      await prisma.pendingPassClaim.update({
+        where: { id: claimId },
+        data: {
+          status: 'approved',
+          verifiedAt: new Date(),
+        },
+      });
+
+      logger.info('Pass claim approved', { claimId, passId: pass.id, userId: user.id });
+
+      return sendSuccess(res, 'Claim approved and pass created', {
+        claim: { ...claim, status: 'approved', verifiedAt: new Date() },
+        pass,
+      });
+
+    } else if (action === 'reject') {
+      // Update claim status to rejected
+      const updatedClaim = await prisma.pendingPassClaim.update({
+        where: { id: claimId },
+        data: {
+          status: 'rejected',
+          verifiedAt: new Date(),
+        },
+      });
+
+      logger.info('Pass claim rejected', { claimId, userId: user.id });
+
+      return sendSuccess(res, 'Claim rejected', {
+        claim: updatedClaim,
+      });
+    }
+
+    // This should never be reached, but TypeScript requires it
+    return sendError(res, 'Invalid action', 400);
+
+  } catch (error: any) {
+    logger.error('Process claim error:', error);
+    return sendError(res, error.message, 500);
+  }
+});
+
 export default router;
