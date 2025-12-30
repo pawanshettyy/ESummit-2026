@@ -385,27 +385,27 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
             
             <div className="grid gap-4 sm:gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {filteredEvents(category.id).map((event) => (
-                <Card key={event.id} className="flex flex-col transition-shadow hover:shadow-lg">
+                <Card key={event.id} className="flex flex-col transition-shadow hover:shadow-lg max-w-full overflow-hidden">
                   <CardHeader className="pb-3">
                     <div className="mb-3 flex items-start justify-between">
-                      <event.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+                      <event.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
                       {event.prize && (
-                        <Badge variant="default" className="bg-primary text-xs">
+                        <Badge variant="default" className="bg-primary text-xs shrink-0">
                           {event.prize}
                         </Badge>
                       )}
                     </div>
-                    <h3 className="text-lg sm:text-xl font-semibold leading-tight">{event.title}</h3>
+                    <h3 className="text-lg sm:text-xl font-semibold leading-tight break-words">{event.title}</h3>
                   </CardHeader>
                   <CardContent className="flex flex-1 flex-col p-4 sm:p-6 pt-0">
-                    <p className="mb-4 text-sm text-muted-foreground leading-relaxed">{event.description}</p>
+                    <p className="mb-4 text-sm text-muted-foreground leading-relaxed break-words">{event.description}</p>
 
                     <div className="mb-4 space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         <Calendar className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                         <span className="truncate">{event.date}</span>
                       </div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 min-w-0">
                         <MapPin className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                         <span className="truncate">{event.venue}</span>
                       </div>
@@ -413,7 +413,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
 
                     <Button
                       variant="outline"
-                      className="mt-auto w-full"
+                      className="mt-auto w-full h-10 sm:h-11"
                       onClick={() => handleViewDetails(event)}
                     >
                       Register Now

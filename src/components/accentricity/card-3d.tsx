@@ -22,8 +22,8 @@ export function Card3D({ children, className = "" }: Card3DProps) {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateXValue = ((y - centerY) / centerY) * -10;
-    const rotateYValue = ((x - centerX) / centerX) * 10;
+    const rotateXValue = ((y - centerY) / centerY) * -5; // Reduced from -10 to -5
+    const rotateYValue = ((x - centerX) / centerX) * 5; // Reduced from 10 to 5
 
     setRotateX(rotateXValue);
     setRotateY(rotateYValue);
@@ -35,22 +35,26 @@ export function Card3D({ children, className = "" }: Card3DProps) {
   };
 
   return (
-    <motion.div
-      ref={cardRef}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      animate={{
-        rotateX,
-        rotateY,
-      }}
-      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-      style={{
-        transformStyle: "preserve-3d",
-        perspective: "1000px",
-      }}
-      className={className}
-    >
-      {children}
-    </motion.div>
+    <div className={`w-full max-w-full overflow-hidden ${className}`} data-card-3d>
+      <motion.div
+        ref={cardRef}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+        animate={{
+          rotateX,
+          rotateY,
+        }}
+        transition={{ type: "spring", stiffness: 300, damping: 20 }}
+        style={{
+          transformStyle: "preserve-3d",
+          perspective: "1000px",
+        }}
+        className="w-full max-w-full"
+      >
+        <div className="w-full max-w-full overflow-hidden">
+          {children}
+        </div>
+      </motion.div>
+    </div>
   );
 }

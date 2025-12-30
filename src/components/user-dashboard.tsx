@@ -654,9 +654,9 @@ export function UserDashboard({
                   
                   <div className="grid gap-4 sm:grid-cols-2">
                     {myPasses.map((pass) => (
-                      <Card key={pass.passId} className="border-2 border-primary/20">
+                      <Card key={pass.passId} className="border-2 border-primary/20 max-w-full overflow-hidden">
                         <CardHeader className="pb-3">
-                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 min-w-0">
                             <div className="min-w-0 flex-1">
                               <h4 className="text-base sm:text-lg font-bold truncate">{pass.passType}</h4>
                               <p className="text-xs sm:text-sm text-muted-foreground truncate">Pass ID: {pass.passId}</p>
@@ -664,7 +664,7 @@ export function UserDashboard({
                                 <p className="text-xs text-muted-foreground truncate">Booking ID: {pass.bookingId}</p>
                               )}
                             </div>
-                            <Badge className="bg-green-600 hover:bg-green-700 self-start">
+                            <Badge className="bg-green-600 hover:bg-green-700 self-start shrink-0">
                               {pass.status}
                             </Badge>
                           </div>
@@ -688,24 +688,24 @@ export function UserDashboard({
                             <div className="grid grid-cols-2 gap-2 text-xs">
                               {pass.ticketDetails?.inclusions && pass.ticketDetails.inclusions.length > 0 ? (
                                 pass.ticketDetails.inclusions.map((item, idx) => (
-                                  <div key={idx} className="flex items-center gap-1">
-                                    <CheckCircle2 className="h-3 w-3 text-green-600" />
-                                    <span>{item}</span>
+                                  <div key={idx} className="flex items-center gap-1 min-w-0">
+                                    <CheckCircle2 className="h-3 w-3 text-green-600 flex-shrink-0" />
+                                    <span className="break-words">{item}</span>
                                   </div>
                                 ))
                               ) : (
                                 <>
-                                  <div className="flex items-center gap-1">
-                                    <CheckCircle2 className="h-3 w-3 text-green-600" />
-                                    <span>Event Access</span>
+                                  <div className="flex items-center gap-1 min-w-0">
+                                    <CheckCircle2 className="h-3 w-3 text-green-600 flex-shrink-0" />
+                                    <span className="break-words">Event Access</span>
                                   </div>
-                                  <div className="flex items-center gap-1">
-                                    <CheckCircle2 className="h-3 w-3 text-green-600" />
-                                    <span>Networking</span>
+                                  <div className="flex items-center gap-1 min-w-0">
+                                    <CheckCircle2 className="h-3 w-3 text-green-600 flex-shrink-0" />
+                                    <span className="break-words">Networking</span>
                                   </div>
-                                  <div className="flex items-center gap-1">
-                                    <CheckCircle2 className="h-3 w-3 text-green-600" />
-                                    <span>Certificate</span>
+                                  <div className="flex items-center gap-1 min-w-0">
+                                    <CheckCircle2 className="h-3 w-3 text-green-600 flex-shrink-0" />
+                                    <span className="break-words">Certificate</span>
                                   </div>
                                 </>
                               )}

@@ -376,6 +376,16 @@ body {
     min-height: 44px; /* iOS recommended tap target size */
   }
 
+  /* Prevent Card3D overflow issues */
+  [data-card-3d] {
+    @apply max-w-full overflow-hidden;
+    contain: layout style paint;
+  }
+
+  [data-card-3d] > * {
+    @apply max-w-full overflow-hidden;
+  }
+
   /* Adjust Clerk spacing on mobile */
   @media (max-width: 640px) {
     .cl-internal-b3fm6y {
@@ -468,6 +478,28 @@ body {
     .form-mobile textarea,
     .form-mobile select {
       @apply text-base min-h-[44px] px-3 py-2;
+    }
+
+    /* Venue page mobile image fixes */
+    .venue-image-container {
+      @apply relative w-full;
+    }
+
+    .venue-image-container img {
+      @apply w-full h-full object-cover;
+      aspect-ratio: 16/9;
+    }
+
+    @media (min-width: 640px) {
+      .venue-image-container img {
+        aspect-ratio: 16/10;
+      }
+    }
+
+    @media (min-width: 768px) {
+      .venue-image-container img {
+        aspect-ratio: 16/9;
+      }
     }
   }
 }
