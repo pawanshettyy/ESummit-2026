@@ -98,7 +98,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
   
   try {
     // Admin authentication via secret key in header or body
-    const adminSecret = getAdminSecretFromReq(req) || req.body?.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.body?.adminSecret || req.query?.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
