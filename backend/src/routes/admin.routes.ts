@@ -10,6 +10,15 @@ import { konfhubService, KONFHUB_TICKET_IDS, KONFHUB_CUSTOM_FORM_IDS } from '../
 
 const router = Router();
 
+// CORS preflight handler for admin routes
+router.options('*', (req: Request, res: Response) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'x-admin-secret, content-type, authorization, x-requested-with');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
 // Use /tmp/uploads in serverless/production, otherwise use local uploads
 const uploadsDir =
   process.env.VERCEL || process.env.NODE_ENV === 'production'
