@@ -8,12 +8,6 @@ import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { konfhubService, KONFHUB_TICKET_IDS, KONFHUB_CUSTOM_FORM_IDS } from '../services/konfhub.service';
 import { getClerkUserId } from '../middleware/clerk.middleware';
-import { createClerkClient } from '@clerk/backend';
-
-// Initialize Clerk client for server-side user lookups
-const clerkClient = createClerkClient({
-  secretKey: process.env.CLERK_SECRET_KEY,
-});
 
 const router = Router();
 
