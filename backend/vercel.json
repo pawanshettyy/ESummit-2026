@@ -8,7 +8,12 @@
   ],
   "routes": [
     {
-      "src": "/(.*)",
+      "src": "/api/(.*)",
+      "methods": ["OPTIONS"],
+      "dest": "api/index.ts"
+    },
+    {
+      "src": "(.*)",
       "dest": "api/index.ts"
     }
   ],
