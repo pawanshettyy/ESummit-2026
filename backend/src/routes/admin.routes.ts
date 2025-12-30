@@ -941,8 +941,6 @@ router.get('/registrations', async (req: Request, res: Response) => {
         userId: true,
         status: true,
         registrationDate: true,
-        participantName: true,
-        participantEmail: true,
         formData: true,
         event: {
           select: {

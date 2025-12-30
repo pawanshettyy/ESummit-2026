@@ -74,7 +74,7 @@ export function EventRegistrationModal({
 
   // Angel Investor Roundtable Form
   const [angelRoundtableForm, setAngelRoundtableForm] = useState({
-    registrationType: "", // student, entrepreneur, company
+    attendeeType: "", // student, entrepreneur, company
     startupStage: "",
     problemStatement: "",
     solution: "",
@@ -85,7 +85,7 @@ export function EventRegistrationModal({
 
   // Pitch Arena Form
   const [pitchArenaForm, setPitchArenaForm] = useState({
-    registrationType: "", // student, startup
+    attendeeType: "", // student, startup
     ideaBrief: "",
     documentLink: "",
     pitchDeckLink: "",
@@ -178,7 +178,7 @@ export function EventRegistrationModal({
       });
 
       setPitchArenaForm({
-        registrationType: userProfile?.user_type === "student" ? "student" : "startup",
+        attendeeType: userProfile?.user_type === "student" ? "student" : "startup",
         ideaBrief: "",
         documentLink: "",
         pitchDeckLink: "",
@@ -248,8 +248,8 @@ export function EventRegistrationModal({
     if (!user?.id) return;
 
     // Validate required fields
-    if (!angelRoundtableForm.registrationType) {
-      toast.error("Registration type is required");
+    if (!angelRoundtableForm.attendeeType) {
+      toast.error("Attendee type is required");
       return;
     }
     if (!angelRoundtableForm.problemStatement.trim()) {
@@ -305,8 +305,8 @@ export function EventRegistrationModal({
     if (!user?.id) return;
 
     // Validate required fields
-    if (!pitchArenaForm.registrationType) {
-      toast.error("Registration type is required");
+    if (!pitchArenaForm.attendeeType) {
+      toast.error("Attendee type is required");
       return;
     }
     if (!pitchArenaForm.ideaBrief.trim()) {
@@ -517,8 +517,8 @@ export function EventRegistrationModal({
       <div>
         <Label>Register as *</Label>
         <RadioGroup
-          value={angelRoundtableForm.registrationType}
-          onValueChange={(value) => setAngelRoundtableForm(prev => ({ ...prev, registrationType: value }))}
+          value={angelRoundtableForm.attendeeType}
+          onValueChange={(value) => setAngelRoundtableForm(prev => ({ ...prev, attendeeType: value }))}
           className="flex gap-4 mt-2"
         >
           <div className="flex items-center space-x-2">
@@ -627,8 +627,8 @@ export function EventRegistrationModal({
       <div>
         <Label>Register as *</Label>
         <RadioGroup
-          value={pitchArenaForm.registrationType}
-          onValueChange={(value) => setPitchArenaForm(prev => ({ ...prev, registrationType: value }))}
+          value={pitchArenaForm.attendeeType}
+          onValueChange={(value) => setPitchArenaForm(prev => ({ ...prev, attendeeType: value }))}
           className="flex gap-4 mt-2"
         >
           <div className="flex items-center space-x-2">

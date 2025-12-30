@@ -4,6 +4,7 @@ import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { createClerkClient } from '@clerk/backend';
+import { eventRegistrationFormSchema } from '../validators/event-registration.validators';
 
 const router = Router();
 
@@ -296,9 +297,6 @@ router.post('/events/register', async (req: Request, res: Response) => {
       clerkUserId, 
       eventId, 
       bookingId,
-      participantName,
-      participantEmail,
-      participantPhone,
       formData
     } = req.body;
 
@@ -412,19 +410,34 @@ router.post('/events/register', async (req: Request, res: Response) => {
       return;
     }
 
-    // Check if user is already registered
-    const existingRegistration = await prisma.eventRegistration.findUnique({
-      where: {
-        userId_eventId: {
-          userId: user.id,
-          eventId: event.id,
-        },
-      },
-    });
+    // Validate formData if provided
+    let validatedFormData = null;
+    if (formData) {
+      try {
+        validatedFormData = eventRegistrationFormSchema.parse(formData);
+      } catch (validationError: any) {
+        logger.error('Form data validation error:', validationError.errors);
+        sendError(res, 'Invalid form data: ' + validationError.errors.map((e: any) => e.message).join(', '), 400);
+        return;
+      }
+    }
 
-    if (existingRegistration) {
-      sendError(res, 'Already registered for this event', 400);
-      return;
+    // Get the actual pass ID from booking ID
+    let passId = null;
+    if (bookingId && bookingId.trim()) {
+      const pass = await prisma.pass.findFirst({
+        where: {
+          userId: user.id,
+          bookingId: bookingId.trim(),
+          status: 'Active'
+        }
+      });
+      if (pass) {
+        passId = pass.id;
+      }
+    } else if (activePasses.length > 0) {
+      // Use the first active pass if no bookingId provided
+      passId = activePasses[0].id;
     }
 
     // Debug logging
@@ -433,6 +446,7 @@ router.post('/events/register', async (req: Request, res: Response) => {
       eventId: event.id,
       eventIdField: event.eventId,
       bookingId: bookingId,
+      passId: passId,
       passType: userPassType,
     });
 
@@ -441,12 +455,9 @@ router.post('/events/register', async (req: Request, res: Response) => {
       data: {
         userId: user.id,
         eventId: event.id,
-        passId: bookingId.trim(), // Store booking ID as passId reference
-        participantName: participantName || user.fullName || undefined,
-        participantEmail: participantEmail || user.email,
-        participantPhone: participantPhone || user.phone || undefined,
+        passId: passId,
         status: 'registered',
-        formData: formData || null,
+        formData: validatedFormData as any,
       },
     });
 
