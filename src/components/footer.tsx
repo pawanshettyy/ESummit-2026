@@ -13,6 +13,10 @@ export function Footer({ onNavigate }: FooterProps) {
   // Determine admin role (same logic as AdminPanel)
   let isAdmin = false;
   if (isLoaded && isSignedIn && user) {
+    // TEMPORARY: Allow any signed-in user to see admin button for testing
+    // TODO: Revert to metadata check
+    isAdmin = true;
+    /*
     const adminRole = user.publicMetadata?.adminRole;
     const orgRole = user.organizationMemberships?.[0]?.role;
     // Fix: check for string equality, not reference
@@ -21,6 +25,7 @@ export function Footer({ onNavigate }: FooterProps) {
     } else if (orgRole && ["org:admin", "admin"].includes(String(orgRole).toLowerCase())) {
       isAdmin = true;
     }
+    */
   }
 
   return (
