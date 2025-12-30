@@ -49,7 +49,9 @@ app.use(
   cors({
     origin: config.cors.origin,
     credentials: true,
-    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with'],
+    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with', 'accept', 'cache-control'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
   })
 );
 
