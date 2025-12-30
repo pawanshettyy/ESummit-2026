@@ -20,5 +20,5 @@ export function StartupLeaguePage() {
     { name: "Shiva Saraswati", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-startup-league" panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
 }

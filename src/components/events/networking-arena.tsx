@@ -19,5 +19,5 @@ export function NetworkingArenaPage() {
     { name: "Arukesh Sahu", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Guests" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-networking-arena" panelTitle="Guests" primaryContacts={primaryContacts} />;
 }

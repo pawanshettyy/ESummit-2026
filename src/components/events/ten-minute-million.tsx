@@ -10,11 +10,21 @@ import { Particles } from "../magicui/particles";
 import { GradientText } from "../magicui/gradient-text";
 import { Navigation } from "../navigation";
 import { motion } from "motion/react";
+import { EventRegistrationModal } from "../event-registration-modal";
 
 export function TenMinuteMillionPage() {
   const { user, isSignedIn } = useUser();
   const [isDark, setIsDark] = useState(false);
   const [isRegistering, setIsRegistering] = useState(false);
+  const [registrationModal, setRegistrationModal] = useState<{
+    isOpen: boolean;
+    eventId: string;
+    eventTitle: string;
+  }>({
+    isOpen: false,
+    eventId: "",
+    eventTitle: "",
+  });
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -122,18 +132,12 @@ export function TenMinuteMillionPage() {
       return;
     }
 
-    setIsRegistering(true);
-
-    try {
-      // Simulated registration API call
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      
-      toast.success("Registration successful! Check your email for confirmation.");
-    } catch (error) {
-      toast.error("Registration failed. Please try again.");
-    } finally {
-      setIsRegistering(false);
-    }
+    // Open registration modal
+    setRegistrationModal({
+      isOpen: true,
+      eventId: "d1-ten-minute-million",
+      eventTitle: "The Ten Minute Million",
+    });
   };
 
   const handleNavigate = (page: string) => {
@@ -403,6 +407,16 @@ export function TenMinuteMillionPage() {
           </Card>
         </div>
       </div>
+
+      <EventRegistrationModal
+        isOpen={registrationModal.isOpen}
+        onClose={() => setRegistrationModal({ isOpen: false, eventId: "", eventTitle: "" })}
+        eventId={registrationModal.eventId}
+        eventTitle={registrationModal.eventTitle}
+        onSuccess={() => {
+          setRegistrationModal({ isOpen: false, eventId: "", eventTitle: "" });
+        }}
+      />
     </div>
   );
 }

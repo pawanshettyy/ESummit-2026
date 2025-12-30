@@ -21,5 +21,5 @@ export function IplAuctionPage() {
     { name: "Sitanshu Shetty", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-ipl-auction" panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
 }

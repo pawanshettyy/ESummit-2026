@@ -175,6 +175,7 @@ router.get('/user/:clerkUserId', async (req: Request, res: Response) => {
         passId: true,
         passType: true,
         status: true,
+        bookingId: true,
         pdfUrl: true,
         createdAt: true
       },
