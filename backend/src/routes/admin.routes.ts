@@ -10,6 +10,17 @@ import { konfhubService, KONFHUB_TICKET_IDS, KONFHUB_CUSTOM_FORM_IDS } from '../
 
 const router = Router();
 
+// Helper to extract admin secret from headers (x-admin-secret or Authorization: Bearer ...)
+const getAdminSecretFromReq = (req: Request): string | undefined => {
+  const headerSecret = (req.headers['x-admin-secret'] as string) || undefined;
+  if (headerSecret) return headerSecret;
+  const auth = (req.headers['authorization'] as string) || (req.headers['Authorization'] as string) || undefined;
+  if (auth && auth.toLowerCase().startsWith('bearer ')) {
+    return auth.slice(7).trim();
+  }
+  return undefined;
+};
+
 // CORS middleware for admin routes
 router.use((req: Request, res: Response, next) => {
   const origin = req.headers.origin;
@@ -87,7 +98,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
   
   try {
     // Admin authentication via secret key in header or body
-    const adminSecret = req.headers['x-admin-secret'] || req.body?.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.body?.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -423,7 +434,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
  */
 router.get('/import-history', async (req: Request, res: Response) => {
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -510,7 +521,7 @@ router.get('/stats', async (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -620,7 +631,7 @@ router.get('/stats', async (req: Request, res: Response) => {
  */
 router.delete('/passes/:passId', async (req: Request, res: Response) => {
   try {
-    const adminSecret = req.headers['x-admin-secret'];
+    const adminSecret = getAdminSecretFromReq(req);
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -661,7 +672,7 @@ router.delete('/passes/:passId', async (req: Request, res: Response) => {
  */
 router.post('/sync-konfhub', async (req: Request, res: Response) => {
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.body?.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.body?.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -701,7 +712,7 @@ router.post('/sync-konfhub', async (req: Request, res: Response) => {
  */
 router.get('/konfhub-status', async (req: Request, res: Response) => {
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -848,7 +859,7 @@ router.post('/capture-ticket', async (req: Request, res: Response) => {
  */
 router.get('/konfhub-tickets', async (req: Request, res: Response) => {
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -884,7 +895,7 @@ router.get('/users', async (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -944,7 +955,7 @@ router.get('/passes', async (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -1007,7 +1018,7 @@ router.get('/registrations', async (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
+    const adminSecret = getAdminSecretFromReq(req) || req.query.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
     
     if (adminSecret !== expectedSecret) {
@@ -1130,7 +1141,7 @@ router.get('/claims', async (req: Request, res: Response) => {
  */
 router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
   try {
-    const adminSecret = req.headers['x-admin-secret'];
+    const adminSecret = getAdminSecretFromReq(req);
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
 
     if (adminSecret !== expectedSecret) {
