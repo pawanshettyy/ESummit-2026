@@ -1148,6 +1148,15 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
     const adminSecret = getAdminSecretFromReq(req) || req.body?.adminSecret || req.query?.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
 
+    // Debug: which source contained a secret
+    logger.info('adminSecret sources', {
+      x_admin_secret: !!req.headers['x-admin-secret'],
+      authorization_header: !!(req.headers['authorization'] || req.headers['Authorization']),
+      body_secret: !!req.body?.adminSecret,
+      query_secret: !!req.query?.adminSecret,
+    });
+    logger.info('adminSecret matches expected:', adminSecret === expectedSecret);
+
     if (adminSecret !== expectedSecret) {
       return sendError(res, 'Unauthorized', 403);
     }
