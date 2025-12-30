@@ -115,8 +115,6 @@ interface EventRegistrationData {
   userId: string;
   status: string;
   registrationDate: string;
-  participantName: string | null;
-  participantEmail: string | null;
   formData: any;
   event: {
     id: string;
