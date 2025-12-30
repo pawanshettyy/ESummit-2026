@@ -19,5 +19,5 @@ export function DesignThinkingPage() {
     { name: "Sneha Chauhan", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Speakers" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-design-thinking" panelTitle="Speakers" primaryContacts={primaryContacts} />;
 }

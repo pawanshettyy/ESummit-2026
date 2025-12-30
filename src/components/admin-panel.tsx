@@ -117,6 +117,7 @@ interface EventRegistrationData {
   registrationDate: string;
   participantName: string | null;
   participantEmail: string | null;
+  formData: any;
   event: {
     id: string;
     title: string;
@@ -1095,12 +1096,13 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                           <th className="text-left py-3 px-4 font-medium min-w-[180px] break-words">Event</th>
                           <th className="text-left py-3 px-4 font-medium min-w-[140px] hidden md:table-cell break-words">Date</th>
                           <th className="text-left py-3 px-4 font-medium min-w-[100px] break-words">Status</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[100px] break-words">Actions</th>
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedRegistrations.length === 0 ? (
                           <tr>
-                            <td colSpan={4} className="text-center py-8 text-muted-foreground">
+                            <td colSpan={5} className="text-center py-8 text-muted-foreground">
                               No registrations found
                             </td>
                           </tr>
@@ -1126,6 +1128,22 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                                 >
                                   {reg.status}
                                 </Badge>
+                              </td>
+                              <td className="py-3 px-4 break-words max-w-[120px]">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  onClick={() => {
+                                    // Show form data in a modal or alert
+                                    if (reg.formData) {
+                                      alert(`Form Data for ${reg.event?.title}:\n${JSON.stringify(reg.formData, null, 2)}`);
+                                    } else {
+                                      alert("No form data available for this registration.");
+                                    }
+                                  }}
+                                >
+                                  View Details
+                                </Button>
                               </td>
                             </tr>
                           ))

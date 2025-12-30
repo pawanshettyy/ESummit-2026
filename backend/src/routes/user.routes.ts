@@ -298,12 +298,13 @@ router.post('/events/register', async (req: Request, res: Response) => {
       bookingId,
       participantName,
       participantEmail,
-      participantPhone 
+      participantPhone,
+      formData
     } = req.body;
 
 
-    if (!clerkUserId || !eventId || !bookingId) {
-      sendError(res, 'clerkUserId, eventId, and bookingId are required', 400);
+    if (!clerkUserId || !eventId) {
+      sendError(res, 'clerkUserId and eventId are required', 400);
       return;
     }
 
@@ -328,37 +329,49 @@ router.post('/events/register', async (req: Request, res: Response) => {
       return;
     }
 
-    // Verify booking ID and get pass type
-    
-    // Check if user has booking ID stored in their profile
-    const userWithBooking = await prisma.user.findFirst({
+    // Check if user has any active passes
+    const activePasses = await prisma.pass.findMany({
       where: {
-        clerkUserId,
-        bookingId: bookingId.trim(),
-      },
+        userId: user.id,
+        status: 'Active'
+      }
     });
 
-    if (!userWithBooking) {
+    if (activePasses.length === 0) {
+      sendError(res, 'NO_ACTIVE_PASS', 403, {
+        message: 'You need an active E-Summit pass to register for events. Please purchase or verify your pass.',
+      });
+      return;
+    }
+
+    // Verify booking ID and get pass type (optional for users with active passes)
+    let userWithBooking = null;
+    if (bookingId && bookingId.trim()) {
+      userWithBooking = await prisma.user.findFirst({
+        where: {
+          clerkUserId,
+          bookingId: bookingId.trim(),
+        },
+      });
+    }
+
+    // If bookingId is provided but doesn't match, still allow if user has active passes
+    if (bookingId && bookingId.trim() && !userWithBooking && activePasses.length === 0) {
       sendError(res, 'INVALID_BOOKING_ID', 403, {
         message: 'The booking ID you entered is not valid or not associated with your account',
       });
       return;
     }
 
-    // Check if booking is verified
-    if (!userWithBooking.bookingVerified) {
-      sendError(res, 'BOOKING_NOT_VERIFIED', 403, {
-        message: 'Your booking has not been verified yet. Please wait for admin verification.',
-      });
-      return;
+    // Get pass type from active passes or user booking
+    let userPassType = userWithBooking?.bookedPassType;
+    if (!userPassType && activePasses.length > 0) {
+      userPassType = activePasses[0].passType;
     }
-
-    // Get the pass type from user's booking
-    const userPassType = userWithBooking.bookedPassType;
     
     if (!userPassType) {
-      sendError(res, 'NO_PASS', 403, {
-        message: 'No pass type associated with your booking',
+      sendError(res, 'NO_PASS_TYPE', 403, {
+        message: 'Unable to determine your pass type. Please contact support.',
       });
       return;
     }
@@ -433,6 +446,7 @@ router.post('/events/register', async (req: Request, res: Response) => {
         participantEmail: participantEmail || user.email,
         participantPhone: participantPhone || user.phone || undefined,
         status: 'registered',
+        formData: formData || null,
       },
     });
 

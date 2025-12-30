@@ -19,5 +19,5 @@ export function FinanceMarketingPage() {
     { name: "Siddhesh Wagh", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Speakers" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-finance-marketing" panelTitle="Speakers" primaryContacts={primaryContacts} />;
 }

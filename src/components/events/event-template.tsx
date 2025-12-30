@@ -7,6 +7,7 @@ import { GradientText } from "../magicui/gradient-text";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
 import { Calendar, Clock, MapPin, Mail, Phone, ArrowRight, ArrowLeft } from "lucide-react";
+import { EventRegistrationModal } from "../event-registration-modal";
 
 type EventData = {
   title: string;
@@ -38,6 +39,7 @@ type PanelMember = {
 
 interface EventPageTemplateProps {
   event: EventData;
+  eventId: string; // Add eventId prop
   perks?: Perk[];
   panelTitle?: string;
   panelSubtitle?: string;
@@ -48,6 +50,7 @@ interface EventPageTemplateProps {
 
 export function EventPageTemplate({
   event,
+  eventId,
   perks = [],
   panelTitle = "Speakers / Judges",
   panelSubtitle,
@@ -57,6 +60,15 @@ export function EventPageTemplate({
 }: EventPageTemplateProps) {
   const { isSignedIn } = useUser();
   const [isRegistering, setIsRegistering] = useState(false);
+  const [registrationModal, setRegistrationModal] = useState<{
+    isOpen: boolean;
+    eventId: string;
+    eventTitle: string;
+  }>({
+    isOpen: false,
+    eventId: "",
+    eventTitle: "",
+  });
 
   const handleBackToEvents = () => {
     sessionStorage.setItem('navigateTo', 'events');
@@ -68,15 +80,13 @@ export function EventPageTemplate({
       toast.error("Please sign in to register for this event");
       return;
     }
-    setIsRegistering(true);
-    try {
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      toast.success("Registration successful! Check your email for confirmation.");
-    } catch (e) {
-      toast.error("Registration failed. Please try again.");
-    } finally {
-      setIsRegistering(false);
-    }
+
+    // Open registration modal
+    setRegistrationModal({
+      isOpen: true,
+      eventId: eventId,
+      eventTitle: event.title,
+    });
   };
 
   const hasDetailsRow = Boolean(event.date || event.time || event.venue);
@@ -344,6 +354,16 @@ export function EventPageTemplate({
           </Card>
         </div>
       </div>
+
+      <EventRegistrationModal
+        isOpen={registrationModal.isOpen}
+        onClose={() => setRegistrationModal({ isOpen: false, eventId: "", eventTitle: "" })}
+        eventId={registrationModal.eventId}
+        eventTitle={registrationModal.eventTitle}
+        onSuccess={() => {
+          setRegistrationModal({ isOpen: false, eventId: "", eventTitle: "" });
+        }}
+      />
     </div>
   );
 }

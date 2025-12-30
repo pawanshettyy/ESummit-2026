@@ -19,5 +19,5 @@ export function PanelDiscussionPage() {
     { name: "Siddharth Sangwan", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Speakers & Judges" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d2-panel-discussion" panelTitle="Speakers & Judges" primaryContacts={primaryContacts} />;
 }

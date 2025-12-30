@@ -34,6 +34,7 @@ export function PitchArenaPage() {
   return (
     <EventPageTemplate
       event={event}
+      eventId="d1-pitch-arena"
       perks={perks}
       panelTitle="Mentors"
       primaryContacts={primaryContacts}

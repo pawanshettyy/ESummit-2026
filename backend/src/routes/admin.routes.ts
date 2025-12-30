@@ -943,6 +943,7 @@ router.get('/registrations', async (req: Request, res: Response) => {
         registrationDate: true,
         participantName: true,
         participantEmail: true,
+        formData: true,
         event: {
           select: {
             id: true,

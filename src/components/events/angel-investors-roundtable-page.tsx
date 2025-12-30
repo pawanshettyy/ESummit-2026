@@ -22,5 +22,5 @@ export function AngelInvestorsRoundtablePage() {
     { name: "Dhanush Shetty", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="Angel Investors Panel" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-angel-roundtable" panelTitle="Angel Investors Panel" primaryContacts={primaryContacts} />;
 }

@@ -11,5 +11,5 @@ export function AiEarlyStageStartupsPage() {
     eligibility: "All pass holders",
   };
 
-  return <EventPageTemplate event={event} panelTitle="Speakers" />;
+  return <EventPageTemplate event={event} eventId="d2-ai-early-stage-startups" panelTitle="Speakers" />;
 }

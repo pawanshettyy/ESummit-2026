@@ -19,5 +19,5 @@ export function StartupYouthConclavePage() {
     { name: "Kavya Jhaveri", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} panelTitle="E-Cell Representatives" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d2-startup-youth-conclave" panelTitle="E-Cell Representatives" primaryContacts={primaryContacts} />;
 }

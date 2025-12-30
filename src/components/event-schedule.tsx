@@ -547,6 +547,10 @@ const EventSchedule = () => {
                         </div>
                       )}
                     </div>
+
+                    <div className="flex flex-col gap-2 md:min-w-[120px]">
+                      {/* Register button removed - registration handled in individual event pages */}
+                    </div>
                   </div>
                 </CardContent>
               </Card>
@@ -594,6 +598,10 @@ const EventSchedule = () => {
                           {event.prerequisite && <span>• {event.prerequisite}</span>}
                         </div>
                       )}
+                    </div>
+
+                    <div className="flex flex-col gap-2 md:min-w-[120px]">
+                      {/* Register button removed - registration handled in individual event pages */}
                     </div>
                   </div>
                 </CardContent>
