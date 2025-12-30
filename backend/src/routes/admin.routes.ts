@@ -10,6 +10,28 @@ import { konfhubService, KONFHUB_TICKET_IDS, KONFHUB_CUSTOM_FORM_IDS } from '../
 
 const router = Router();
 
+// CORS middleware for admin routes
+router.use((req: Request, res: Response, next) => {
+  const origin = req.headers.origin;
+  const allowedOrigins = ['https://tcetesummit.in', 'https://www.tcetesummit.in'];
+  
+  if (allowedOrigins.includes(origin || '') || !origin) {
+    res.header('Access-Control-Allow-Origin', origin || '*');
+  }
+  
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'x-admin-secret, content-type, authorization, x-requested-with');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // Handle preflight requests
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(200);
+    return;
+  }
+  
+  next();
+});
+
 // CORS preflight handler for admin routes
 router.options('*', (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
