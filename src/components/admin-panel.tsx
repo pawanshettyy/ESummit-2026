@@ -17,7 +17,6 @@ import {
   LogOut,
   Shield,
   BarChart3,
-  FileSpreadsheet,
   Loader2,
   Home,
   X,
@@ -29,6 +28,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/
 import { Badge } from "./ui/badge";
 import { Alert, AlertDescription } from "./ui/alert";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "./ui/dialog";
 import { toast } from "sonner";
 import { API_BASE_URL } from "../lib/api";
 import { logger } from "../utils/logger";
@@ -113,6 +113,7 @@ interface EventRegistrationData {
   id: string;
   eventId: string;
   userId: string;
+  passId: string | null;
   status: string;
   registrationDate: string;
   formData: any;
@@ -127,6 +128,12 @@ interface EventRegistrationData {
     email: string;
     fullName: string | null;
   };
+  pass: {
+    id: string;
+    passId: string;
+    passType: string;
+    bookingId: string | null;
+  } | null;
 }
 
 // Pass Claim interface
@@ -195,6 +202,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   const [eventRegistrations, setEventRegistrations] = useState<EventRegistrationData[]>([]);
   const [claims, setClaims] = useState<PassClaimData[]>([]);
   
+  // Modal states
+  const [selectedRegistration, setSelectedRegistration] = useState<EventRegistrationData | null>(null);
+  const [showFormDataModal, setShowFormDataModal] = useState(false);
+  
   // Filter states
   const [searchQuery, setSearchQuery] = useState("");
   const [passTypeFilter, setPassTypeFilter] = useState<string>("all");
@@ -261,7 +272,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       }
     } catch (error) {
       // Log error, do not set mock stats in production
-      if (typeof logger !== 'undefined') logger.error("Error fetching stats:", error);
+      logger.error("Error fetching stats:", error);
     }
   }, []);
 
@@ -278,7 +289,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setUsers(data.data.users || []);
       }
     } catch (error) {
-      if (typeof logger !== 'undefined') logger.error("Error fetching users:", error);
+      logger.error("Error fetching users:", error);
       setUsers([]);
     }
   }, []);
@@ -296,7 +307,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setPasses(data.data.passes || []);
       }
     } catch (error) {
-      if (typeof logger !== 'undefined') logger.error("Error fetching passes:", error);
+      logger.error("Error fetching passes:", error);
       setPasses([]);
     }
   }, []);
@@ -314,7 +325,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setEventRegistrations(data.data.registrations || []);
       }
     } catch (error) {
-      if (typeof logger !== 'undefined') logger.error("Error fetching registrations:", error);
+      logger.error("Error fetching registrations:", error);
       setEventRegistrations([]);
     }
   }, []);
@@ -332,7 +343,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         setClaims(data.data.claims || []);
       }
     } catch (error) {
-      if (typeof logger !== 'undefined') logger.error("Error fetching claims:", error);
+      logger.error("Error fetching claims:", error);
       setClaims([]);
     }
   }, []);
@@ -347,48 +358,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       if (hasPermission("claims")) fetchClaims();
     }
   }, [userRole, fetchStats, fetchUsers, fetchPasses, fetchEventRegistrations, fetchClaims]);
-
-  // Handle CSV upload
-  const handleFileUpload = async () => {
-    if (!uploadFile) {
-      toast.error("Please select a file to upload");
-      return;
-    }
-
-    setIsUploading(true);
-    const formData = new FormData();
-    formData.append("file", uploadFile);
-
-    try {
-      const response = await fetch(`${API_BASE_URL}/admin/import-passes`, {
-        method: "POST",
-        headers: {
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
-        },
-        body: formData,
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success(`Successfully imported ${data.data.imported} passes!`, {
-          description: `Skipped: ${data.data.skipped}, Errors: ${data.data.errors}`,
-        });
-        setUploadFile(null);
-        // Refresh data
-        fetchStats();
-        fetchPasses();
-        fetchUsers();
-      } else {
-        toast.error(data.error || "Failed to import passes");
-      }
-    } catch (error) {
-      if (typeof logger !== 'undefined') logger.error("Error uploading file:", error);
-      toast.error("Failed to upload file");
-    } finally {
-      setIsUploading(false);
-    }
-  };
 
   // Handle claim approval/rejection
   const handleClaimAction = async (claimId: string, action: 'approve' | 'reject') => {
@@ -416,7 +385,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         toast.error(data.error || `Failed to ${action} claim`);
       }
     } catch (error) {
-      if (typeof logger !== 'undefined') logger.error(`Error ${action}ing claim:`, error);
+      logger.error(`Error ${action}ing claim:`, error);
       toast.error(`Failed to ${action} claim`);
     }
   };
@@ -1092,6 +1061,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                         <tr className="border-b">
                           <th className="text-left py-3 px-4 font-medium min-w-[180px] break-words">User</th>
                           <th className="text-left py-3 px-4 font-medium min-w-[180px] break-words">Event</th>
+                          <th className="text-left py-3 px-4 font-medium min-w-[120px] break-words">Pass</th>
                           <th className="text-left py-3 px-4 font-medium min-w-[140px] hidden md:table-cell break-words">Date</th>
                           <th className="text-left py-3 px-4 font-medium min-w-[100px] break-words">Status</th>
                           <th className="text-left py-3 px-4 font-medium min-w-[100px] break-words">Actions</th>
@@ -1100,7 +1070,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                       <tbody>
                         {paginatedRegistrations.length === 0 ? (
                           <tr>
-                            <td colSpan={5} className="text-center py-8 text-muted-foreground">
+                            <td colSpan={6} className="text-center py-8 text-muted-foreground">
                               No registrations found
                             </td>
                           </tr>
@@ -1117,6 +1087,16 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                                 <p className="font-medium">{reg.event?.title}</p>
                                 <p className="text-xs text-muted-foreground">{reg.event?.venue}</p>
                               </td>
+                              <td className="py-3 px-4 break-words max-w-[150px]">
+                                {reg.pass ? (
+                                  <div>
+                                    <p className="font-medium text-xs">{reg.pass.passType}</p>
+                                    <p className="text-xs text-muted-foreground font-mono">{reg.pass.passId}</p>
+                                  </div>
+                                ) : (
+                                  <span className="text-xs text-muted-foreground">No pass</span>
+                                )}
+                              </td>
                               <td className="py-3 px-4 hidden md:table-cell text-muted-foreground break-words max-w-[180px]">
                                 {formatDate(reg.registrationDate)}
                               </td>
@@ -1132,12 +1112,8 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                                   variant="outline"
                                   size="sm"
                                   onClick={() => {
-                                    // Show form data in a modal or alert
-                                    if (reg.formData) {
-                                      alert(`Form Data for ${reg.event?.title}:\n${JSON.stringify(reg.formData, null, 2)}`);
-                                    } else {
-                                      alert("No form data available for this registration.");
-                                    }
+                                    setSelectedRegistration(reg);
+                                    setShowFormDataModal(true);
                                   }}
                                 >
                                   View Details
@@ -1629,6 +1605,71 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
 
         </Tabs>
       </div>
+
+      {/* Form Data Modal */}
+      <Dialog open={showFormDataModal} onOpenChange={setShowFormDataModal}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              Registration Details - {selectedRegistration?.event?.title}
+            </DialogTitle>
+            <DialogDescription>
+              Form data submitted by {selectedRegistration?.user?.fullName || selectedRegistration?.user?.email}
+            </DialogDescription>
+          </DialogHeader>
+          
+          {selectedRegistration?.formData ? (
+            <div className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground mb-2">Registration Type</h4>
+                  <p className="text-sm capitalize">{selectedRegistration.formData.registrationType?.replace('_', ' ') || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground mb-2">Pass Type</h4>
+                  <p className="text-sm">{selectedRegistration.pass?.passType || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground mb-2">Pass ID</h4>
+                  <p className="text-sm font-mono">{selectedRegistration.pass?.passId || 'N/A'}</p>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-sm text-muted-foreground mb-2">Registration Date</h4>
+                  <p className="text-sm">{formatDate(selectedRegistration.registrationDate)}</p>
+                </div>
+              </div>
+              
+              <div className="border-t pt-4">
+                <h4 className="font-semibold text-sm text-muted-foreground mb-3">Form Details</h4>
+                <div className="space-y-2">
+                  {Object.entries(selectedRegistration.formData).map(([key, value]) => {
+                    if (key === 'registrationType') return null;
+                    return (
+                      <div key={key} className="flex flex-col sm:flex-row sm:items-center gap-1">
+                        <span className="text-sm font-medium min-w-[120px] capitalize">
+                          {key.replace(/([A-Z])/g, ' $1').toLowerCase()}:
+                        </span>
+                        <span className="text-sm text-muted-foreground break-words">
+                          {typeof value === 'boolean' 
+                            ? value ? 'Yes' : 'No'
+                            : Array.isArray(value) 
+                              ? value.join(', ')
+                              : String(value || 'N/A')
+                          }
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="text-center py-8 text-muted-foreground">
+              No form data available for this registration.
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

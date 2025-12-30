@@ -1,0 +1,32 @@
+{
+  "name": "E-Summit 2026 - TCET Entrepreneurship Summit",
+  "short_name": "E-Summit 2026",
+  "description": "TCET's inaugural E-Summit 2026 - Celebrating 25 years of excellence. Join 2000+ attendees for 16+ events, networking with 50+ speakers, and winning prizes worth ₹5+ lakhs.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#dc2626",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en-US",
+  "categories": ["education", "business", "events"],
+  "icons": [
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "16x16 32x32 48x48",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "192x192",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/favicon.ico",
+      "sizes": "512x512",
+      "type": "image/x-icon",
+      "purpose": "any maskable"
+    }
+  ]
+}

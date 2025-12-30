@@ -939,6 +939,7 @@ router.get('/registrations', async (req: Request, res: Response) => {
         id: true,
         eventId: true,
         userId: true,
+        passId: true,
         status: true,
         registrationDate: true,
         formData: true,
@@ -955,6 +956,14 @@ router.get('/registrations', async (req: Request, res: Response) => {
             id: true,
             email: true,
             fullName: true,
+          },
+        },
+        pass: {
+          select: {
+            id: true,
+            passId: true,
+            passType: true,
+            bookingId: true,
           },
         },
       },

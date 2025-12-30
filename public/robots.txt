@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Block access to admin areas
+Disallow: /admin/
+Disallow: /api/admin/
+
+# Block access to user-specific content
+Disallow: /user/
+Disallow: /profile/
+
+# Block access to development files
+Disallow: /src/
+Disallow: /node_modules/
+Disallow: /.git/
+
+# Block access to configuration files
+Disallow: /vite.config.ts
+Disallow: /package.json
+Disallow: /tsconfig.json
+
+# Allow access to CSS and JS files
+Allow: /assets/
+Allow: *.css
+Allow: *.js
+
+# Sitemap
+Sitemap: https://tcetesummit.in/sitemap.xml
