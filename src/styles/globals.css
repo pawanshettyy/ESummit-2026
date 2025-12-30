@@ -258,14 +258,46 @@ html {
   .container {
     @apply px-4;
   }
-  
+
   /* Reduce heading sizes on mobile */
   h1 {
     font-size: var(--text-xl) !important;
   }
-  
+
   h2 {
     font-size: var(--text-lg) !important;
+  }
+
+  /* Better mobile typography */
+  body {
+    font-size: 16px;
+    line-height: 1.6;
+  }
+
+  /* Improve button touch targets */
+  button {
+    min-height: 44px;
+  }
+
+  /* Better form inputs on mobile */
+  input, textarea, select {
+    font-size: 16px !important;
+    min-height: 44px;
+  }
+
+  /* Improve card spacing on mobile */
+  .card-padding {
+    @apply p-4;
+  }
+
+  /* Better grid layouts on mobile */
+  .mobile-grid {
+    @apply grid gap-4;
+  }
+
+  /* Improve navigation spacing */
+  nav {
+    @apply px-4 py-3;
   }
 }
 
@@ -403,6 +435,39 @@ body {
 
     img {
       @apply max-w-full h-auto;
+    }
+
+    /* Better touch targets */
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
+
+    /* Improve text readability */
+    p, li, span {
+      line-height: 1.6;
+    }
+
+    /* Better spacing for mobile cards */
+    .card-spacing {
+      @apply p-4 space-y-3;
+    }
+
+    /* Mobile-optimized grid gaps */
+    .grid-mobile {
+      @apply gap-3 sm:gap-4 md:gap-6;
+    }
+
+    /* Better mobile navigation */
+    .nav-mobile {
+      @apply px-4 py-3;
+    }
+
+    /* Mobile-friendly form elements */
+    .form-mobile input,
+    .form-mobile textarea,
+    .form-mobile select {
+      @apply text-base min-h-[44px] px-3 py-2;
     }
   }
 }

@@ -140,8 +140,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
               className="mb-6 flex justify-center items-center"
             >
               <div className="logo-wrapper logo-wrapper-hero">
-                <Logo 
-                  className="h-40 md:h-48 lg:h-56 w-auto object-contain"
+                <Logo
+                  className="h-24 sm:h-32 md:h-40 lg:h-48 xl:h-56 w-auto object-contain"
                   alt="E-Summit 2026 Logo"
                 />
               </div>
@@ -165,12 +165,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="flex flex-wrap justify-center gap-4"
+              className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 px-4 sm:px-0"
             >
               <AnimatedBorder>
                 <Button
                   size="lg"
                   onClick={() => onNavigate("booking")}
+                  className="w-full sm:w-auto"
                 >
                   Register Now
                   <ArrowRight className="ml-2 h-5 w-5" />
@@ -180,6 +181,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 size="lg"
                 variant="outline"
                 onClick={() => onNavigate("events")}
+                className="w-full sm:w-auto"
               >
                 View Events
               </Button>
@@ -191,7 +193,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mx-auto mt-12 grid max-w-2xl grid-cols-4 gap-4"
+            className="mx-auto mt-12 grid max-w-2xl grid-cols-4 gap-2 sm:gap-4"
           >
             {Object.entries(countdown).map(
               ([unit, value], index) => (
@@ -205,11 +207,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
                   }}
                 >
                   <Card className="backdrop-blur-sm bg-card/80">
-                    <CardContent className="flex flex-col items-center justify-center p-6">
-                      <div className="mb-2 text-3xl text-primary">
+                    <CardContent className="flex flex-col items-center justify-center p-3 sm:p-6">
+                      <div className="mb-1 sm:mb-2 text-2xl sm:text-3xl text-primary">
                         {value}
                       </div>
-                      <div className="text-sm text-muted-foreground capitalize">
+                      <div className="text-xs sm:text-sm text-muted-foreground capitalize">
                         {unit}
                       </div>
                     </CardContent>
@@ -226,9 +228,9 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
 
       {/* Stats Section */}
-      <section className="border-b py-12">
+      <section className="border-b py-8 sm:py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-4">
+          <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4">
             {stats.map((stat, index) => (
               <motion.div
                 key={stat.label}
@@ -241,12 +243,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
                 }}
               >
                 <Card className="text-center transition-all hover:shadow-lg hover:-translate-y-1">
-                  <CardContent className="flex flex-col items-center justify-center p-6">
+                  <CardContent className="flex flex-col items-center justify-center p-4 sm:p-6">
                     <motion.div
                       whileHover={{ scale: 1.2, rotate: 360 }}
                       transition={{ duration: 0.5 }}
                     >
-                      <stat.icon className="mb-3 h-8 w-8 text-primary" />
+                      <stat.icon className="mb-2 sm:mb-3 h-6 w-6 sm:h-8 sm:w-8 text-primary" />
                     </motion.div>
                     <div className="mb-1 text-3xl text-primary">
                       {stat.value}

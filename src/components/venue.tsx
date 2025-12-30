@@ -231,40 +231,40 @@ export function Venue() {
       >
         <HoverGlow>
           <Card className="mb-12 overflow-hidden">
-            <div className="relative h-96">
+            <div className="relative h-64 sm:h-80 md:h-96">
               <img
                 src={tcetSrc}
                 alt="Thakur College of Engineering and Technology Campus"
                 className="h-full w-full object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-8 left-8 text-white">
-            <h2 className="mb-2 text-white">Thakur College of Engineering and Technology</h2>
-            <div className="flex items-center gap-2">
-              <MapPin className="h-5 w-5" />
-              <span>Thakur Village, Kandivali East</span>
+          <div className="absolute bottom-4 left-4 right-4 md:bottom-8 md:left-8 md:right-8 text-white">
+            <h2 className="mb-2 text-lg md:text-xl font-semibold text-white">Thakur College of Engineering and Technology</h2>
+            <div className="flex items-center gap-2 text-sm md:text-base">
+              <MapPin className="h-4 w-4 md:h-5 md:w-5 flex-shrink-0" />
+              <span className="truncate">Thakur Village, Kandivali East</span>
             </div>
           </div>
         </div>
-        <CardContent className="p-6">
-          <div className="grid gap-4 md:grid-cols-3">
-            <div>
-              <h4 className="mb-1">Address</h4>
-              <p className="text-sm text-muted-foreground">
+        <CardContent className="p-4 md:p-6">
+          <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3">
+            <div className="col-span-full sm:col-span-1">
+              <h4 className="mb-1 font-medium">Address</h4>
+              <p className="text-sm text-muted-foreground leading-relaxed">
                 Thakur College of Engineering and Technology, Kandivali East,<br />
                 Mumbai - 400101
               </p>
             </div>
-            <div>
-              <h4 className="mb-1">Contact</h4>
+            <div className="col-span-full sm:col-span-1">
+              <h4 className="mb-1 font-medium">Contact</h4>
               <p className="text-sm text-muted-foreground">
                 <Phone className="mr-2 inline h-4 w-4" />
                 +91 98765 43210
               </p>
             </div>
-            <div>
-              <Button 
-                className="w-full"
+            <div className="col-span-full sm:col-span-1">
+              <Button
+                className="w-full mt-2 sm:mt-0"
                 onClick={() => window.open('https://maps.google.com/?q=Thakur+College+of+Engineering+and+Technology+Kandivali+East+Mumbai', '_blank')}
               >
                 <Navigation className="mr-2 h-4 w-4" />
@@ -287,8 +287,8 @@ export function Venue() {
 
       {/* Venue Halls */}
       <div className="mb-12">
-        <h2 className="mb-6">Event Venues</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <h2 className="mb-6 text-2xl md:text-3xl font-bold">Event Venues</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {venues.map((venue, index) => (
             <motion.div
               key={venue.name}
@@ -299,30 +299,30 @@ export function Venue() {
             >
               <Card3D>
                 <Card className="h-full transition-all hover:shadow-xl">
-                  <CardHeader>
+                  <CardHeader className="pb-3">
                     <div className="flex items-start justify-between">
-                      <div>
-                        <h3>{venue.name}</h3>
-                        <p className="text-sm text-muted-foreground">{venue.floor}</p>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="text-lg md:text-xl font-semibold truncate">{venue.name}</h3>
+                        <p className="text-sm text-muted-foreground truncate">{venue.floor}</p>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent className="space-y-3">
+                  <CardContent className="space-y-3 pt-0">
                     <div>
-                      <h4 className="mb-1 text-sm">Events</h4>
+                      <h4 className="mb-1 text-sm font-medium">Events</h4>
                       <div className="flex flex-wrap gap-1">
                         {venue.events.map((event) => (
-                          <Badge key={event} variant="secondary" className="text-xs">
+                          <Badge key={event} variant="secondary" className="text-xs px-2 py-0.5">
                             {event}
                           </Badge>
                         ))}
                       </div>
                     </div>
                     <div>
-                      <h4 className="mb-1 text-sm">Features</h4>
+                      <h4 className="mb-1 text-sm font-medium">Features</h4>
                       <ul className="space-y-1 text-xs text-muted-foreground">
                         {venue.features.map((feature) => (
-                          <li key={feature}>• {feature}</li>
+                          <li key={feature} className="leading-relaxed">• {feature}</li>
                         ))}
                       </ul>
                     </div>
@@ -358,15 +358,15 @@ export function Venue() {
 
       {/* Amenities */}
       <div className="mb-12">
-        <h2 className="mb-6">Amenities & Facilities</h2>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+        <h2 className="mb-6 text-2xl md:text-3xl font-bold">Amenities & Facilities</h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {amenities.map((amenity) => (
-            <Card key={amenity.title}>
-              <CardContent className="p-6 text-center">
-                <amenity.icon className="mx-auto mb-3 h-10 w-10 text-primary" />
-                <h3 className="mb-2">{amenity.title}</h3>
-                <p className="mb-1 text-sm">{amenity.description}</p>
-                <p className="text-xs text-muted-foreground">{amenity.details}</p>
+            <Card key={amenity.title} className="text-center">
+              <CardContent className="p-4 md:p-6">
+                <amenity.icon className="mx-auto mb-3 h-8 w-8 md:h-10 md:w-10 text-primary" />
+                <h3 className="mb-2 text-sm md:text-base font-semibold">{amenity.title}</h3>
+                <p className="mb-1 text-xs md:text-sm">{amenity.description}</p>
+                <p className="text-xs text-muted-foreground leading-relaxed">{amenity.details}</p>
               </CardContent>
             </Card>
           ))}
@@ -375,16 +375,16 @@ export function Venue() {
 
       {/* Directions */}
       <div className="mb-12">
-        <h2 className="mb-6">How to Reach</h2>
-        <div className="grid gap-6 md:grid-cols-3">
+        <h2 className="mb-6 text-2xl md:text-3xl font-bold">How to Reach</h2>
+        <div className="grid gap-4 md:grid-cols-3">
           {directions.map((direction) => (
-            <Card key={direction.title}>
-              <CardContent className="p-6">
-                <direction.icon className="mb-4 h-10 w-10 text-primary" />
-                <h3 className="mb-3">{direction.title}</h3>
+            <Card key={direction.title} className="h-full">
+              <CardContent className="p-4 md:p-6">
+                <direction.icon className="mb-4 h-8 w-8 md:h-10 md:w-10 text-primary" />
+                <h3 className="mb-3 text-lg md:text-xl font-semibold">{direction.title}</h3>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   {direction.routes.map((route) => (
-                    <li key={route}>• {route}</li>
+                    <li key={route} className="leading-relaxed">• {route}</li>
                   ))}
                 </ul>
               </CardContent>
@@ -396,35 +396,35 @@ export function Venue() {
       {/* Emergency Contacts */}
       <Card>
         <CardHeader>
-          <h2>Emergency Contacts</h2>
+          <h2 className="text-xl md:text-2xl font-bold">Emergency Contacts</h2>
           <p className="text-sm text-muted-foreground">
             Dedicated event support team available online and offline at R&D Cell, 4th Floor
           </p>
         </CardHeader>
-        <CardContent className="grid gap-4 md:grid-cols-2">
+        <CardContent className="grid gap-4 sm:grid-cols-2">
           <div>
-            <h4 className="mb-2">Event Helpdesk</h4>
+            <h4 className="mb-2 font-medium">Event Helpdesk</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
               Ayush Pardeshi (CEO): +91 87665 36270
             </p>
           </div>
           <div>
-            <h4 className="mb-2">Operations & Coordination</h4>
+            <h4 className="mb-2 font-medium">Operations & Coordination</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
               Bhummi Girnara (COO): +91 98698 32960
             </p>
           </div>
           <div>
-            <h4 className="mb-2">Technical Support</h4>
+            <h4 className="mb-2 font-medium">Technical Support</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
               Ahana Kulkarni (CTO): +91 89283 52406
             </p>
           </div>
           <div>
-            <h4 className="mb-2">General Coordination</h4>
+            <h4 className="mb-2 font-medium">General Coordination</h4>
             <p className="text-sm text-muted-foreground">
               <Phone className="mr-2 inline h-4 w-4" />
               Yash Khatri (Chairperson): +91 95185 09120

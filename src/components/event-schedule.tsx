@@ -510,38 +510,38 @@ const EventSchedule = () => {
           <div className="space-y-4">
             {filterEvents(events.day1).map((event) => (
               <Card key={event.id}>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="flex-1">
                       <div className="mb-3 flex flex-wrap items-center gap-2">
-                        <Badge variant={getCategoryColor(event.category) as any}>
+                        <Badge variant={getCategoryColor(event.category) as any} className="text-xs">
                           {categories.find((c) => c.id === event.category)?.label}
                         </Badge>
                       </div>
-                      
-                      <h3 className="mb-2">{event.title}</h3>
-                      
-                      <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+
+                      <h3 className="mb-2 text-lg sm:text-xl font-semibold">{event.title}</h3>
+
+                      <div className="mb-3 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {event.time}
+                          <Clock className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{event.time}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {event.venue}
+                          <MapPin className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{event.venue}</span>
                         </div>
                         {event.speaker && (
                           <div className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {event.speaker}
+                            <Users className="h-4 w-4 flex-shrink-0" />
+                            <span className="truncate">{event.speaker}</span>
                           </div>
                         )}
                       </div>
 
-                      <p className="mb-2 text-sm">{event.description}</p>
+                      <p className="mb-2 text-sm leading-relaxed">{event.description}</p>
 
                       {(event.eligibility || event.prerequisite) && (
-                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                        <div className="flex flex-col gap-1 text-xs text-muted-foreground">
                           {event.eligibility && <span>• {event.eligibility}</span>}
                           {event.prerequisite && <span>• {event.prerequisite}</span>}
                         </div>
@@ -562,38 +562,38 @@ const EventSchedule = () => {
           <div className="space-y-4">
             {filterEvents(events.day2).map((event) => (
               <Card key={event.id}>
-                <CardContent className="p-6">
+                <CardContent className="p-4 sm:p-6">
                   <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                     <div className="flex-1">
                       <div className="mb-3 flex flex-wrap items-center gap-2">
-                        <Badge variant={getCategoryColor(event.category) as any}>
+                        <Badge variant={getCategoryColor(event.category) as any} className="text-xs">
                           {categories.find((c) => c.id === event.category)?.label}
                         </Badge>
                       </div>
-                      
-                      <h3 className="mb-2">{event.title}</h3>
-                      
-                      <div className="mb-3 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+
+                      <h3 className="mb-2 text-lg sm:text-xl font-semibold">{event.title}</h3>
+
+                      <div className="mb-3 flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
-                          <Clock className="h-4 w-4" />
-                          {event.time}
+                          <Clock className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{event.time}</span>
                         </div>
                         <div className="flex items-center gap-1">
-                          <MapPin className="h-4 w-4" />
-                          {event.venue}
+                          <MapPin className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{event.venue}</span>
                         </div>
                         {event.speaker && (
                           <div className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            {event.speaker}
+                            <Users className="h-4 w-4 flex-shrink-0" />
+                            <span className="truncate">{event.speaker}</span>
                           </div>
                         )}
                       </div>
 
-                      <p className="mb-2 text-sm">{event.description}</p>
+                      <p className="mb-2 text-sm leading-relaxed">{event.description}</p>
 
                       {(event.eligibility || event.prerequisite) && (
-                        <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+                        <div className="flex flex-col gap-1 text-xs text-muted-foreground">
                           {event.eligibility && <span>• {event.eligibility}</span>}
                           {event.prerequisite && <span>• {event.prerequisite}</span>}
                         </div>

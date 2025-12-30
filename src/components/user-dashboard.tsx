@@ -599,19 +599,19 @@ export function UserDashboard({
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-        <div className="flex items-center gap-4">
-          <Avatar className="h-16 w-16">
+      <div className="mb-6 sm:mb-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
+          <Avatar className="h-12 w-12 sm:h-16 sm:w-16 mx-auto sm:mx-0">
             <AvatarImage src={user?.imageUrl} alt={userName} />
-            <AvatarFallback className="bg-primary text-primary-foreground text-xl">
+            <AvatarFallback className="bg-primary text-primary-foreground text-lg sm:text-xl">
               {userName
                 .split(" ")
                 .map((n) => n[0])
                 .join("")}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <h1 className="mb-1 text-4xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          <div className="text-center sm:text-left">
+            <h1 className="mb-1 text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
               Welcome back, {userName.split(" ")[0]}!
             </h1>
             <p className="text-sm text-muted-foreground">
@@ -652,33 +652,33 @@ export function UserDashboard({
                     <Badge variant="secondary">{myPasses.length} Pass{myPasses.length > 1 ? 'es' : ''}</Badge>
                   </div>
                   
-                  <div className="grid gap-4 md:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     {myPasses.map((pass) => (
                       <Card key={pass.passId} className="border-2 border-primary/20">
-                        <CardHeader>
-                          <div className="flex items-start justify-between">
-                            <div>
-                              <h4 className="text-lg font-bold">{pass.passType}</h4>
-                              <p className="text-sm text-muted-foreground">Pass ID: {pass.passId}</p>
+                        <CardHeader className="pb-3">
+                          <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2">
+                            <div className="min-w-0 flex-1">
+                              <h4 className="text-base sm:text-lg font-bold truncate">{pass.passType}</h4>
+                              <p className="text-xs sm:text-sm text-muted-foreground truncate">Pass ID: {pass.passId}</p>
                               {pass.bookingId && (
-                                <p className="text-xs text-muted-foreground">Booking ID: {pass.bookingId}</p>
+                                <p className="text-xs text-muted-foreground truncate">Booking ID: {pass.bookingId}</p>
                               )}
                             </div>
-                            <Badge className="bg-green-600 hover:bg-green-700">
+                            <Badge className="bg-green-600 hover:bg-green-700 self-start">
                               {pass.status}
                             </Badge>
                           </div>
                         </CardHeader>
-                        <CardContent className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4 text-sm">
+                        <CardContent className="space-y-3 sm:space-y-4 p-4 sm:p-6 pt-0">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-sm">
                             <div>
-                              <p className="text-muted-foreground">{pass.purchaseDate ? 'Purchase Date' : 'Registered'}</p>
-                              <p className="font-medium">{formatDate(pass.purchaseDate || pass.createdAt)}</p>
+                              <p className="text-muted-foreground text-xs sm:text-sm">{pass.purchaseDate ? 'Purchase Date' : 'Registered'}</p>
+                              <p className="font-medium text-sm sm:text-base">{formatDate(pass.purchaseDate || pass.createdAt)}</p>
                             </div>
                             {pass.price && (
                               <div>
-                                <p className="text-muted-foreground">Amount Paid</p>
-                                <p className="font-medium">₹{pass.price.toLocaleString()}</p>
+                                <p className="text-muted-foreground text-xs sm:text-sm">Amount Paid</p>
+                                <p className="font-medium text-sm sm:text-base">₹{pass.price.toLocaleString()}</p>
                               </div>
                             )}
                           </div>
