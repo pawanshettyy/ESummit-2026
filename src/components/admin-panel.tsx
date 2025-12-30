@@ -348,9 +348,8 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const form = new URLSearchParams();
       form.append('action', action);
       form.append('adminNotes', adminNotes);
-      form.append('adminSecret', (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || 'esummit2026-admin-import');
 
-      const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action`, {
+      const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || 'esummit2026-admin-import')}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
