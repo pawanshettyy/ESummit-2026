@@ -60,6 +60,26 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Clerk authentication middleware - MUST be before routes
+// Move non-JWT Authorization values (admin secret) to `x-admin-secret`
+// so Clerk doesn't attempt to validate them as JWTs.
+app.use((req, _res, next) => {
+  try {
+    const auth = (req.headers['authorization'] as string) || (req.headers['Authorization'] as string) || undefined;
+    if (auth && auth.toLowerCase().startsWith('bearer ')) {
+      const token = auth.slice(7).trim();
+      // Heuristic: JWTs contain two dots separating three parts
+      if (!token.includes('.')) {
+        // treat as admin secret: copy to x-admin-secret and remove Authorization
+        req.headers['x-admin-secret'] = token as any;
+        delete req.headers['authorization'];
+        delete req.headers['Authorization'];
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+});
+
 app.use(clerkAuth);
 
 // HTTP request logger
