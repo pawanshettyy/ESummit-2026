@@ -68,11 +68,6 @@ app.use((req, res, next) => {
     const xAdminSecret = (req.headers['x-admin-secret'] as string) || '';
     const expectedAdminSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
 
-    // If request is for admin endpoints, skip Clerk middleware
-    if (url.startsWith('/api/v1/admin') || url.startsWith('/api/admin') || req.path.startsWith('/api/v1/admin')) {
-      return next();
-    }
-
     // If an admin secret is present in Authorization or x-admin-secret, skip Clerk
     if (authHeader && authHeader.toLowerCase().startsWith('bearer ')) {
       const token = authHeader.slice(7).trim();
@@ -81,6 +76,7 @@ app.use((req, res, next) => {
 
     if (xAdminSecret && xAdminSecret === expectedAdminSecret) return next();
 
+    // Otherwise, run Clerk middleware (this ensures Clerk-authenticated admin sessions work)
     return clerkAuth(req, res, next);
   } catch (e) {
     return next();

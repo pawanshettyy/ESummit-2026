@@ -5,22 +5,21 @@ import {
   Calendar,
   Ticket,
   Download,
-        <div className="flex items-center gap-2">
+  RefreshCw,
   Search,
   Filter,
   CheckCircle2,
-            <>
-              <Button variant="outline" onClick={checkClerkAdmin} title="Verify Clerk admin metadata">Verify Clerk Admin</Button>
-              {isSignedIn ? (
-                <Button variant="ghost" onClick={() => signOut()}>
-                  <LogOut className="mr-2" /> Sign out
-                </Button>
-              ) : (
-                <Button variant="secondary" onClick={() => window.location.hash = '#/login'}>
-                  Sign in
-                </Button>
-              )}
-            </>
+  XCircle,
+  AlertCircle,
+  Eye,
+  ChevronDown,
+  ChevronUp,
+  LogOut,
+  Shield,
+  BarChart3,
+  Loader2,
+  Home,
+  X,
   FileCheck,
   CheckCircle,
 } from "lucide-react";
@@ -262,7 +261,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   // Fetch dashboard stats
   const fetchStats = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/stats?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`);
+      const response = await fetch(`${API_BASE_URL}/admin/stats`, { credentials: 'include' });
       const data = await response.json();
       if (data.success) {
         setStats(data.data);
@@ -276,7 +275,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   // Fetch all users
   const fetchUsers = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/users?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`);
+      const response = await fetch(`${API_BASE_URL}/admin/users`, { credentials: 'include' });
       const data = await response.json();
       if (data.success) {
         setUsers(data.data.users || []);
@@ -290,7 +289,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   // Fetch all passes
   const fetchPasses = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/passes?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`);
+      const response = await fetch(`${API_BASE_URL}/admin/passes`, { credentials: 'include' });
       const data = await response.json();
       if (data.success) {
         setPasses(data.data.passes || []);
@@ -304,7 +303,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   // Fetch event registrations
   const fetchEventRegistrations = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/registrations?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`);
+      const response = await fetch(`${API_BASE_URL}/admin/registrations`, { credentials: 'include' });
       const data = await response.json();
       if (data.success) {
         setEventRegistrations(data.data.registrations || []);
@@ -318,7 +317,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
   // Fetch pass claims
   const fetchClaims = useCallback(async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/admin/claims?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`);
+      const response = await fetch(`${API_BASE_URL}/admin/claims`, { credentials: 'include' });
       const data = await response.json();
       if (data.success) {
         setClaims(data.data.claims || []);
@@ -373,8 +372,9 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       form.append('action', action);
       form.append('adminNotes', adminNotes);
 
-      const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action?adminSecret=${encodeURIComponent((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || 'esummit2026-admin-import')}`, {
+      const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action`, {
         method: 'POST',
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
