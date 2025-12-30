@@ -1145,7 +1145,7 @@ router.get('/claims', async (req: Request, res: Response) => {
  */
 router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
   try {
-    const adminSecret = getAdminSecretFromReq(req);
+    const adminSecret = getAdminSecretFromReq(req) || req.body?.adminSecret || req.query?.adminSecret;
     const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
 
     if (adminSecret !== expectedSecret) {
