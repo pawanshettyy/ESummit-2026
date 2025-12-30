@@ -263,7 +263,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/stats`, {
         headers: {
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          Authorization: `Bearer ${((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`,
         },
       });
       const data = await response.json();
@@ -281,7 +281,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/users`, {
         headers: {
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          Authorization: `Bearer ${((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`,
         },
       });
       const data = await response.json();
@@ -299,7 +299,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/passes`, {
         headers: {
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          Authorization: `Bearer ${((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`,
         },
       });
       const data = await response.json();
@@ -317,7 +317,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/registrations`, {
         headers: {
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          Authorization: `Bearer ${((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`,
         },
       });
       const data = await response.json();
@@ -335,7 +335,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     try {
       const response = await fetch(`${API_BASE_URL}/admin/claims`, {
         headers: {
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          Authorization: `Bearer ${((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`,
         },
       });
       const data = await response.json();
@@ -369,7 +369,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          "x-admin-secret": (import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import",
+          Authorization: `Bearer ${((import.meta as ImportMeta).env.VITE_ADMIN_SECRET || "esummit2026-admin-import")}`,
         },
         body: JSON.stringify({ action, adminNotes }),
       });
