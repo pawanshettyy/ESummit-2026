@@ -53,6 +53,12 @@ router.post('/submit', upload.single('ticketFile'), async (req: MulterRequest, r
       return;
     }
 
+    // Make ticket file upload MANDATORY
+    if (!req.file) {
+      sendError(res, 'Ticket PDF/image file is required for verification', 400);
+      return;
+    }
+
     if (!bookingId && !konfhubOrderId && !ticketNumber) {
       sendError(res, 'At least one identifier (bookingId, konfhubOrderId, or ticketNumber) is required', 400);
       return;
@@ -115,18 +121,34 @@ router.post('/submit', upload.single('ticketFile'), async (req: MulterRequest, r
     // Calculate expiry time (32 hours from now)
     const expiresAt = new Date(Date.now() + CLAIM_EXPIRY_MS);
 
-    // Extract data from uploaded file if present
-    let extractedData: any = {};
-    if (req.file) {
-      // For now, store file info - actual PDF parsing would require pdf-parse library
-      extractedData = {
-        fileName: req.file.originalname,
-        fileSize: req.file.size,
-        mimeType: req.file.mimetype,
-        uploadedAt: new Date().toISOString(),
-      };
-      logger.info(`File uploaded for pass claim: ${req.file.originalname}`);
+    // Save uploaded file to disk
+    const fs = require('fs');
+    const path = require('path');
+    
+    // Create uploads directory if it doesn't exist
+    const uploadDir = path.join(__dirname, '../../uploads/pass-claims');
+    if (!fs.existsSync(uploadDir)) {
+      fs.mkdirSync(uploadDir, { recursive: true });
     }
+    
+    // Generate unique filename
+    const fileExtension = path.extname(req.file.originalname);
+    const uniqueFilename = `${clerkUserId}-${Date.now()}${fileExtension}`;
+    const filePath = path.join(uploadDir, uniqueFilename);
+    const relativeFilePath = `uploads/pass-claims/${uniqueFilename}`;
+    
+    // Write file to disk
+    fs.writeFileSync(filePath, req.file.buffer);
+    logger.info(`Ticket file saved: ${relativeFilePath}`);
+
+    // Store file info and path
+    const extractedData: any = {
+      fileName: req.file.originalname,
+      fileSize: req.file.size,
+      mimeType: req.file.mimetype,
+      uploadedAt: new Date().toISOString(),
+      filePath: relativeFilePath,
+    };
 
     // Create pending claim
     const claim = await prisma.pendingPassClaim.create({

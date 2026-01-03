@@ -1187,8 +1187,18 @@ router.get('/claims', async (req: Request, res: Response) => {
       orderBy: { createdAt: 'desc' },
     });
 
+    // Add PDF file URLs to claims for admin viewing
+    const claimsWithFiles = claims.map(claim => {
+      const extractedData = claim.extractedData as any;
+      return {
+        ...claim,
+        pdfFileUrl: extractedData?.filePath ? `/api/v1/admin/claims/${claim.id}/pdf` : null,
+        pdfFileName: extractedData?.fileName || null,
+      };
+    });
+
     // Get unique clerk user IDs
-    const clerkUserIds = [...new Set(claims.map(c => c.clerkUserId))];
+    const clerkUserIds = [...new Set(claimsWithFiles.map(c => c.clerkUserId))];
     
     // Fetch all users in one query
     const users = await prisma.user.findMany({
@@ -1208,7 +1218,7 @@ router.get('/claims', async (req: Request, res: Response) => {
     const userMap = new Map(users.map(u => [u.clerkUserId, u]));
     
     // Merge claims with user data
-    const claimsWithUserData = claims.map(claim => ({
+    const claimsWithUserData = claimsWithFiles.map(claim => ({
       ...claim,
       user: userMap.get(claim.clerkUserId) || null,
     }));
@@ -1277,7 +1287,7 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
       // Extract data from claim
       const extractedData = claim.extractedData as any || {};
 
-      // Create the pass in the database
+      // Create the pass in the database with uploaded PDF
       const pass = await prisma.pass.create({
         data: {
           userId: user.id,
@@ -1288,6 +1298,7 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
           price: extractedData.price || 0,
           purchaseDate: new Date(),
           status: 'Active',
+          pdfUrl: extractedData.filePath || null, // Use uploaded PDF
           qrCodeUrl: extractedData.ticketUrl || null,
           qrCodeData: claim.qrCodeData || claim.bookingId || claimId,
           ticketDetails: {
@@ -1300,6 +1311,7 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
             source: 'admin_claim_approval',
             claimId: claim.id,
             adminNotes: adminNotes,
+            originalFileName: extractedData.fileName,
           },
         },
       });
@@ -1342,6 +1354,69 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
 
   } catch (error: any) {
     logger.error('Process claim error:', error);
+    return sendError(res, error.message, 500);
+  }
+});
+
+/**
+ * Download PDF uploaded by user during claim verification
+ * GET /api/v1/admin/claims/:claimId/pdf
+ */
+router.get('/claims/:claimId/pdf', async (req: Request, res: Response) => {
+  try {
+    if (!(await isAdminAuthorized(req))) {
+      return sendError(res, 'Unauthorized: Admin access required', 403);
+    }
+
+    const { claimId } = req.params;
+
+    // Get the claim
+    const claim = await prisma.pendingPassClaim.findUnique({
+      where: { id: claimId },
+    });
+
+    if (!claim) {
+      return sendError(res, 'Claim not found', 404);
+    }
+
+    const extractedData = claim.extractedData as any;
+    const filePath = extractedData?.filePath;
+
+    if (!filePath) {
+      return sendError(res, 'No PDF file found for this claim', 404);
+    }
+
+    // Construct full file path
+    const path = require('path');
+    const fs = require('fs');
+    const fullFilePath = path.join(__dirname, '../../', filePath);
+
+    // Check if file exists
+    if (!fs.existsSync(fullFilePath)) {
+      return sendError(res, 'PDF file not found on server', 404);
+    }
+
+    // Set response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader(
+      'Content-Disposition',
+      `inline; filename="${extractedData.fileName || 'ticket.pdf'}"`
+    );
+
+    // Stream the PDF file
+    const fileStream = fs.createReadStream(fullFilePath);
+    fileStream.pipe(res);
+
+    fileStream.on('error', (error: any) => {
+      console.error('Error streaming PDF:', error);
+      if (!res.headersSent) {
+        sendError(res, 'Error serving PDF', 500);
+      }
+    });
+    return; // Explicit return after streaming
+
+  } catch (error: any) {
+    logger.error('Download claim PDF error:', error);
     return sendError(res, error.message, 500);
   }
 });
