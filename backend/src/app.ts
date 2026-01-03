@@ -44,16 +44,21 @@ app.use(helmet({
   contentSecurityPolicy: false, // Disable for API
 }));
 
-// CORS
+// CORS - more permissive configuration
 app.use(
   cors({
     origin: config.cors.origin,
     credentials: true,
-    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with', 'accept', 'cache-control'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    optionsSuccessStatus: 200, // Some legacy browsers choke on 204
+    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with', 'accept', 'cache-control', 'origin', 'x-requested-with'],
+    exposedHeaders: ['x-admin-secret', 'authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    optionsSuccessStatus: 200,
+    preflightContinue: false,
   })
 );
+
+// Handle preflight requests explicitly
+app.options('*', cors());
 
 // Body parsers
 app.use(express.json());
