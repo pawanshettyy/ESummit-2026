@@ -1,11 +1,5 @@
 import app from './app';
-import { connectDB } from './config/database';
-import logger from './utils/logger.util';
-
-// Initialize database connection for serverless
-connectDB().catch((error) => {
-  logger.error('Database connection failed:', error);
-});
 
 // Export the Express app for Vercel serverless functions
+// Prisma connects lazily - no need to call connectDB() explicitly
 export default app;

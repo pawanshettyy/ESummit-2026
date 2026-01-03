@@ -18,7 +18,11 @@ const clerkClient = createClerkClient({
 // Configure multer for PDF uploads
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
-    const uploadDir = path.join(__dirname, '../../uploads/passes');
+    // Use /tmp/uploads in serverless/production, otherwise use local uploads
+    const uploadDir =
+      process.env.VERCEL || process.env.NODE_ENV === 'production'
+        ? '/tmp/uploads/passes'
+        : path.join(__dirname, '../../uploads/passes');
     if (!fs.existsSync(uploadDir)) {
       fs.mkdirSync(uploadDir, { recursive: true });
     }

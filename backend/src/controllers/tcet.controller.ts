@@ -1,8 +1,6 @@
 import { Request, Response } from 'express';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../config/database';
 import logger from '../utils/logger.util';
-
-const prisma = new PrismaClient();
 
 /**
  * Assign a unique TCET code to a user
