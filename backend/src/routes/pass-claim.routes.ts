@@ -75,22 +75,40 @@ router.post('/submit', upload.single('ticketFile'), async (req: MulterRequest, r
       }
     }
 
-    // Check for existing pending claim with same booking ID
+    // Check for existing claim with same booking ID (any status)
     if (bookingId) {
-      const existingClaim = await prisma.pendingPassClaim.findFirst({
+      const existingClaim = await prisma.pendingPassClaim.findUnique({
         where: {
-          clerkUserId,
-          bookingId,
-          status: 'pending',
+          clerkUserId_bookingId: {
+            clerkUserId,
+            bookingId,
+          },
         },
       });
 
       if (existingClaim) {
-        sendSuccess(res, 'You already have a pending claim for this booking', {
-          claim: existingClaim,
-          message: 'Please wait while we verify your pass. Check back later for updates.',
-        });
-        return;
+        // If claim is pending, return it
+        if (existingClaim.status === 'pending') {
+          sendSuccess(res, 'You already have a pending claim for this booking', {
+            claim: existingClaim,
+            message: 'Please wait while we verify your pass. Check back later for updates.',
+          });
+          return;
+        }
+        
+        // If claim is verified, user should already have the pass
+        if (existingClaim.status === 'verified') {
+          sendError(res, 'This booking ID has already been verified', 400);
+          return;
+        }
+
+        // If claim is expired or rejected, delete it and allow new submission
+        if (existingClaim.status === 'expired' || existingClaim.status === 'rejected') {
+          await prisma.pendingPassClaim.delete({
+            where: { id: existingClaim.id },
+          });
+          logger.info(`Deleted ${existingClaim.status} claim for bookingId: ${bookingId}`);
+        }
       }
     }
 

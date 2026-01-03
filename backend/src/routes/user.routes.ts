@@ -327,6 +327,24 @@ router.post('/events/register', async (req: Request, res: Response) => {
       return;
     }
 
+    // Check if user is already registered for this event
+    const existingRegistration = await prisma.eventRegistration.findUnique({
+      where: {
+        userId_eventId: {
+          userId: user.id,
+          eventId: event.id,
+        },
+      },
+    });
+
+    if (existingRegistration) {
+      sendError(res, 'ALREADY_REGISTERED', 400, {
+        message: 'You are already registered for this event.',
+        registration: existingRegistration,
+      });
+      return;
+    }
+
     // Check if user has any active passes
     const activePasses = await prisma.pass.findMany({
       where: {
