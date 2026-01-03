@@ -713,7 +713,7 @@ export function UserDashboard({
                           </div>
 
                           <div className="flex gap-2">
-                            {pass.qrCodeUrl ? (
+                            {pass.status === 'Active' && (pass.qrCodeUrl || pass.bookingId || pass.konfhubTicketId) ? (
                               <Button
                                 variant="outline"
                                 className="flex-1"
@@ -726,6 +726,15 @@ export function UserDashboard({
                                   <Ticket className="mr-2 h-4 w-4" />
                                 )}
                                 Download Pass
+                              </Button>
+                            ) : pass.status === 'Active' ? (
+                              <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => window.open('https://konfhub.com', '_blank')}
+                              >
+                                <Ticket className="mr-2 h-4 w-4" />
+                                View on KonfHub
                               </Button>
                             ) : (
                               <Button
