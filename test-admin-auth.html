@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Auth Tester</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 3px solid #007bff;
+            padding-bottom: 10px;
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-left: 4px solid #007bff;
+            border-radius: 4px;
+        }
+        .section h3 {
+            margin-top: 0;
+            color: #007bff;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 5px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .result {
+            margin-top: 15px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            white-space: pre-wrap;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .success {
+            border-left: 4px solid #28a745;
+            background: #d4edda;
+        }
+        .error {
+            border-left: 4px solid #dc3545;
+            background: #f8d7da;
+        }
+        .warning {
+            border-left: 4px solid #ffc107;
+            background: #fff3cd;
+        }
+        .info {
+            border-left: 4px solid #17a2b8;
+            background: #d1ecf1;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Admin Auth Debugger</h1>
+        <p>This tool helps debug admin authentication issues by testing the backend endpoints.</p>
+
+        <div class="section">
+            <h3>Step 1: Get Your Clerk Token</h3>
+            <p>Open your browser's DevTools (F12) → Console tab → Run this command:</p>
+            <div class="result info">
+// Copy this and paste in your browser console on tcetesummit.in:
+await window.Clerk?.session?.getToken()
+            </div>
+            <label for="token">Paste Your Clerk Token Here:</label>
+            <input type="text" id="token" placeholder="eyJhbGc...">
+        </div>
+
+        <div class="section">
+            <h3>Step 2: Test Backend Endpoints</h3>
+            <button onclick="testClerkAuth()">Test Clerk Auth</button>
+            <button onclick="testStatsEndpoint()">Test Stats Endpoint</button>
+            <button onclick="testAllEndpoints()">Test All Endpoints</button>
+            <div id="testResults"></div>
+        </div>
+
+        <div class="section">
+            <h3>Step 3: Interpret Results</h3>
+            <div class="result info">
+<strong>What to look for:</strong>
+
+✅ <strong>SUCCESS:</strong> adminRole is "core", "jc", or "oc"
+❌ <strong>PROBLEM:</strong> adminRole is "NOT SET" or missing
+
+<strong>How to fix:</strong>
+1. Go to Clerk Dashboard → Users
+2. Select your user
+3. Add to Public Metadata:
+   {
+     "adminRole": "core"
+   }
+4. Save and sign out/in on the website
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'https://api.tcetesummit.in/api/v1/admin';
+        
+        function getToken() {
+            const token = document.getElementById('token').value.trim();
+            if (!token) {
+                alert('Please paste your Clerk token first!');
+                return null;
+            }
+            return token;
+        }
+
+        function displayResult(containerId, data, type = 'info') {
+            const container = document.getElementById(containerId);
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `result ${type}`;
+            resultDiv.textContent = JSON.stringify(data, null, 2);
+            container.innerHTML = '';
+            container.appendChild(resultDiv);
+        }
+
+        async function testClerkAuth() {
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/debug-clerk-auth`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (data.success && data.hasRequiredRole) {
+                    displayResult('testResults', data, 'success');
+                    alert('✅ SUCCESS! You have admin access!');
+                } else if (data.success) {
+                    displayResult('testResults', data, 'warning');
+                    alert('⚠️ Token valid but adminRole not set correctly!\n\nFound: ' + data.adminRole + '\n\nNeeded: "core", "jc", or "oc"');
+                } else {
+                    displayResult('testResults', data, 'error');
+                    alert('❌ Failed to authenticate. Check the error details.');
+                }
+            } catch (error) {
+                displayResult('testResults', { error: error.message }, 'error');
+                alert('❌ Network error: ' + error.message);
+            }
+        }
+
+        async function testStatsEndpoint() {
+            const token = getToken();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                
+                if (response.status === 200) {
+                    displayResult('testResults', { 
+                        status: 'SUCCESS',
+                        message: 'Stats endpoint accessible!',
+                        data 
+                    }, 'success');
+                    alert('✅ Stats endpoint works! You have admin access.');
+                } else if (response.status === 403) {
+                    displayResult('testResults', { 
+                        status: 'FORBIDDEN',
+                        message: data.message || 'Access denied',
+                        response: data 
+                    }, 'error');
+                    alert('❌ 403 Forbidden\n\n' + (data.message || 'Check Clerk metadata'));
+                } else {
+                    displayResult('testResults', { 
+                        status: response.status,
+                        data 
+                    }, 'warning');
+                }
+            } catch (error) {
+                displayResult('testResults', { error: error.message }, 'error');
+                alert('❌ Network error: ' + error.message);
+            }
+        }
+
+        async function testAllEndpoints() {
+            const token = getToken();
+            if (!token) return;
+
+            const endpoints = ['stats', 'users', 'passes', 'registrations', 'claims'];
+            const results = {};
+
+            for (const endpoint of endpoints) {
+                try {
+                    const response = await fetch(`${API_BASE}/${endpoint}`, {
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        }
+                    });
+                    
+                    results[endpoint] = {
+                        status: response.status,
+                        ok: response.ok,
+                        statusText: response.statusText
+                    };
+                } catch (error) {
+                    results[endpoint] = {
+                        error: error.message
+                    };
+                }
+            }
+
+            const allSuccess = Object.values(results).every(r => r.status === 200);
+            displayResult('testResults', results, allSuccess ? 'success' : 'warning');
+            
+            if (allSuccess) {
+                alert('✅ All endpoints accessible!');
+            } else {
+                alert('⚠️ Some endpoints returned errors. Check the results.');
+            }
+        }
+    </script>
+</body>
+</html>

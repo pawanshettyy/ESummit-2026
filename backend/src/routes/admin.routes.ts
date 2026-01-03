@@ -119,6 +119,54 @@ router.get('/debug-admin-secret', (req: Request, res: Response) => {
   return res.json({ header, authHeaderPresent, authIsBearer, bodySecretPresent, querySecretPresent, match });
 });
 
+// Debug endpoint to check Clerk user metadata
+router.get('/debug-clerk-auth', async (req: Request, res: Response) => {
+  try {
+    const userId = getClerkUserId(req as any);
+    
+    if (!userId) {
+      return res.json({
+        success: false,
+        message: 'No Clerk user ID found in request',
+        hasAuthHeader: !!req.headers.authorization,
+        authHeader: req.headers.authorization ? 'present (redacted)' : 'missing',
+      });
+    }
+
+    // Import clerk client for metadata check
+    const { createClerkClient } = await import('@clerk/backend');
+    const clerkClient = createClerkClient({
+      secretKey: process.env.CLERK_SECRET_KEY,
+    });
+
+    const user = await clerkClient.users.getUser(userId);
+    const publicMeta = (user as any)?.publicMetadata || (user as any)?.public_metadata || {};
+    const privateMeta = (user as any)?.privateMetadata || (user as any)?.private_metadata || {};
+    
+    return res.json({
+      success: true,
+      userId,
+      email: user.primaryEmailAddress?.emailAddress,
+      publicMetadata: publicMeta,
+      publicMetadataKeys: Object.keys(publicMeta),
+      privateMetadataKeys: Object.keys(privateMeta),
+      adminRole: publicMeta?.adminRole || 'NOT SET',
+      hasRequiredRole: publicMeta?.adminRole && ["core", "jc", "oc"].includes(String(publicMeta.adminRole).toLowerCase()),
+      organizationMemberships: (user as any)?.organizationMemberships?.map((m: any) => ({
+        role: m.role,
+        organization: m.organization?.name,
+      })) || [],
+    });
+  } catch (error: any) {
+    logger.error('Debug Clerk auth error:', error);
+    return res.json({
+      success: false,
+      error: error.message,
+      stack: error.stack,
+    });
+  }
+});
+
 // Use /tmp/uploads in serverless/production, otherwise use local uploads
 const uploadsDir =
   process.env.VERCEL || process.env.NODE_ENV === 'production'
