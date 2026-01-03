@@ -1050,8 +1050,6 @@ router.get('/passes', async (req: Request, res: Response) => {
       logger.warn('Unauthorized admin access attempt to /passes');
       return sendError(res, 'Unauthorized: Admin access required. Please ensure your Clerk account has adminRole set to \"core\", \"jc\", or \"oc\" in public metadata.', 403);
     }
-      return sendError(res, 'Unauthorized', 403);
-    }
 
     const passes = await prisma.pass.findMany({
       select: {
