@@ -394,24 +394,44 @@ router.post('/events/register', async (req: Request, res: Response) => {
 
     // Define event eligibility based on pass type
     const eventEligibility: Record<string, string[]> = {
-      'd1-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd1-ten-minute-million': ['Quantum Pass'],
-      'd1-angel-roundtable': ['Quantum Pass'],
-      'd2-incubator-summit': ['Quantum Pass'],
-      'd1-design-thinking': ['Silicon Pass', 'Quantum Pass'],
-      'd1-finance-marketing': ['Silicon Pass', 'Quantum Pass'],
-      'd2-data-analytics': ['Silicon Pass', 'Quantum Pass'],
-      'd2-ai-workshop': ['Quantum Pass'],
-      'd1-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd2-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd1-panel-discussion': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd1-ipl-auction': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd2-ipl-auction': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd1-ai-buildathon': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd2-ai-buildathon': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd1-biz-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
-      'd2-biz-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Students'],
+      // Pitch Arena
+      'd1-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      
+      // Quantum Pass Exclusive Events
+      'd1-ten-minute-million': ['Quantum Pass', 'TCET Student Pass'],
+      'd1-angel-roundtable': ['Quantum Pass', 'TCET Student Pass'],
+      'd1-mentor-connect': ['Quantum Pass', 'TCET Student Pass'],
+      'd2-investor-meet': ['Quantum Pass', 'TCET Student Pass'],
+      
+      // Competitions
+      'd1-hackathon': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-case-competition': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-innovation-challenge': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      
+      // Workshops & Masterclasses
+      'd1-workshop-mvp': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-workshop-fundraising': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-masterclass-marketing': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-masterclass-product': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      
+      // Exhibitions
+      'd1-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      
+      // Talks & Panels
+      'd1-keynote-session': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-keynote-session': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-panel-discussion': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-panel-discussion': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      
+      // Networking
+      'd1-networking-lunch': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-networking-lunch': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-startup-clinic': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      
+      // Ceremony
+      'd2-closing-ceremony': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
     };
 
     // Check if event requires specific pass eligibility
