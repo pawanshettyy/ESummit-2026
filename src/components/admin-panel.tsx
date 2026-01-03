@@ -228,17 +228,15 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       };
       if (token) {
         headers['Authorization'] = `Bearer ${token}`;
+        logger.debug('Using Clerk token for authentication');
       } else {
-        // TEMPORARY: Fallback to admin-secret if no token
-        headers['x-admin-secret'] = 'esummit2026-admin-import';
+        logger.warn('No Clerk token available - user may not be properly authenticated');
       }
       return headers;
     } catch (error) {
-      console.error('Failed to get auth token:', error);
-      // TEMPORARY: Fallback to admin-secret if token fails
+      logger.error('Failed to get auth token:', error);
       return {
         'Content-Type': 'application/json',
-        'x-admin-secret': 'esummit2026-admin-import',
       };
     }
   };
@@ -289,8 +287,15 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
         headers: await getAuthHeaders() 
       });
       const data = await response.json();
+      if (response.status === 403) {
+        logger.error("Admin access denied. Please ensure your Clerk account has adminRole metadata set.");
+        toast.error("Access denied. Your account does not have admin permissions. Contact an administrator.");
+        return;
+      }
       if (data.success) {
         setStats(data.data);
+      } else {
+        logger.error("Stats fetch failed:", data.message);
       }
     } catch (error) {
       // Log error, do not set mock stats in production
@@ -304,6 +309,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const response = await fetch(`${API_BASE_URL}/admin/users`, { 
         headers: await getAuthHeaders() 
       });
+      if (response.status === 403) {
+        logger.error("Admin access denied for users endpoint");
+        return;
+      }
       const data = await response.json();
       if (data.success) {
         setUsers(data.data.users || []);
@@ -320,6 +329,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const response = await fetch(`${API_BASE_URL}/admin/passes`, { 
         headers: await getAuthHeaders() 
       });
+      if (response.status === 403) {
+        logger.error("Admin access denied for passes endpoint");
+        return;
+      }
       const data = await response.json();
       if (data.success) {
         setPasses(data.data.passes || []);
@@ -336,6 +349,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const response = await fetch(`${API_BASE_URL}/admin/registrations`, { 
         headers: await getAuthHeaders() 
       });
+      if (response.status === 403) {
+        logger.error("Admin access denied for registrations endpoint");
+        return;
+      }
       const data = await response.json();
       if (data.success) {
         setEventRegistrations(data.data.registrations || []);
@@ -352,6 +369,10 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       const response = await fetch(`${API_BASE_URL}/admin/claims`, { 
         headers: await getAuthHeaders() 
       });
+      if (response.status === 403) {
+        logger.error("Admin access denied for claims endpoint");
+        return;
+      }
       const data = await response.json();
       if (data.success) {
         setClaims(data.data.claims || []);

@@ -33,14 +33,26 @@ const isAdminAuthorized = async (req: Request): Promise<boolean> => {
 
   // Check header / authorization / body / query for admin secret first
   const helperSecret = getAdminSecretFromReq(req);
-  if (helperSecret && helperSecret === expectedSecret) return true;
-  if (req.body?.adminSecret && req.body.adminSecret === expectedSecret) return true;
-  if (req.query?.adminSecret && String(req.query.adminSecret) === expectedSecret) return true;
+  if (helperSecret && helperSecret === expectedSecret) {
+    logger.debug('Admin authorized via admin secret');
+    return true;
+  }
+  if (req.body?.adminSecret && req.body.adminSecret === expectedSecret) {
+    logger.debug('Admin authorized via body admin secret');
+    return true;
+  }
+  if (req.query?.adminSecret && String(req.query.adminSecret) === expectedSecret) {
+    logger.debug('Admin authorized via query admin secret');
+    return true;
+  }
 
   // Fallback: check Clerk-authenticated user with proper admin role
   try {
     const userId = getClerkUserId(req as any);
-    if (!userId) return false;
+    if (!userId) {
+      logger.debug('isAdminAuthorized: no Clerk userId found in request');
+      return false;
+    }
 
     // Import clerk client for metadata check
     const { createClerkClient } = await import('@clerk/backend');
@@ -52,8 +64,17 @@ const isAdminAuthorized = async (req: Request): Promise<boolean> => {
     const publicMeta = (user as any)?.publicMetadata || (user as any)?.public_metadata || {};
     const adminRole = publicMeta?.adminRole;
 
+    logger.debug('Checking Clerk admin authorization', {
+      userId,
+      email: user.primaryEmailAddress?.emailAddress,
+      hasPublicMetadata: !!publicMeta,
+      adminRole: adminRole || 'not set',
+      publicMetadataKeys: Object.keys(publicMeta),
+    });
+
     // Check for valid admin roles
     if (adminRole && ["core", "jc", "oc"].includes(String(adminRole).toLowerCase())) {
+      logger.info('Admin authorized via Clerk public metadata', { userId, adminRole });
       return true;
     }
 
@@ -62,13 +83,20 @@ const isAdminAuthorized = async (req: Request): Promise<boolean> => {
     for (const membership of orgMemberships) {
       const role = membership?.role;
       if (role && ["org:admin", "admin"].includes(String(role).toLowerCase())) {
+        logger.info('Admin authorized via Clerk organization role', { userId, orgRole: role });
         return true;
       }
     }
 
+    logger.warn('Admin authorization failed: user does not have required adminRole in Clerk metadata', {
+      userId,
+      email: user.primaryEmailAddress?.emailAddress,
+      adminRole: adminRole || 'not set',
+      publicMetadataKeys: Object.keys(publicMeta),
+    });
     return false;
   } catch (err) {
-    logger.debug('isAdminAuthorized: clerk user fetch failed', { err: String(err) });
+    logger.error('isAdminAuthorized: clerk user fetch failed', { err: String(err) });
     return false;
   }
 };
@@ -550,7 +578,11 @@ router.get('/stats', async (req: Request, res: Response) => {
   
   try {
     if (!(await isAdminAuthorized(req))) {
-      return sendError(res, 'Unauthorized', 403);
+      logger.warn('Unauthorized admin access attempt to /stats', {
+        hasAuthHeader: !!req.headers.authorization,
+        origin: req.headers.origin,
+      });
+      return sendError(res, 'Unauthorized: Admin access required. Please ensure your Clerk account has adminRole set to \"core\", \"jc\", or \"oc\" in public metadata.', 403);
     }
 
     // Get today's date range
@@ -909,7 +941,8 @@ router.get('/users', async (req: Request, res: Response) => {
   
   try {
     if (!(await isAdminAuthorized(req))) {
-      return sendError(res, 'Unauthorized', 403);
+      logger.warn('Unauthorized admin access attempt to /users');
+      return sendError(res, 'Unauthorized: Admin access required. Please ensure your Clerk account has adminRole set to \"core\", \"jc\", or \"oc\" in public metadata.', 403);
     }
 
     const users = await prisma.user.findMany({
@@ -966,6 +999,9 @@ router.get('/passes', async (req: Request, res: Response) => {
   
   try {
     if (!(await isAdminAuthorized(req))) {
+      logger.warn('Unauthorized admin access attempt to /passes');
+      return sendError(res, 'Unauthorized: Admin access required. Please ensure your Clerk account has adminRole set to \"core\", \"jc\", or \"oc\" in public metadata.', 403);
+    }
       return sendError(res, 'Unauthorized', 403);
     }
 
@@ -1026,7 +1062,8 @@ router.get('/registrations', async (req: Request, res: Response) => {
   
   try {
     if (!(await isAdminAuthorized(req))) {
-      return sendError(res, 'Unauthorized', 403);
+      logger.warn('Unauthorized admin access attempt to /registrations');
+      return sendError(res, 'Unauthorized: Admin access required. Please ensure your Clerk account has adminRole set to \"core\", \"jc\", or \"oc\" in public metadata.', 403);
     }
 
     const registrations = await prisma.eventRegistration.findMany({
@@ -1095,11 +1132,9 @@ router.get('/claims', async (req: Request, res: Response) => {
   res.header('Access-Control-Allow-Credentials', 'true');
   
   try {
-    const adminSecret = req.headers['x-admin-secret'] || req.query.adminSecret;
-    const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
-
-    if (adminSecret !== expectedSecret) {
-      return sendError(res, 'Unauthorized', 403);
+    if (!(await isAdminAuthorized(req))) {
+      logger.warn('Unauthorized admin access attempt to /claims');
+      return sendError(res, 'Unauthorized: Admin access required. Please ensure your Clerk account has adminRole set to \"core\", \"jc\", or \"oc\" in public metadata.', 403);
     }
 
     const claims = await prisma.pendingPassClaim.findMany({
