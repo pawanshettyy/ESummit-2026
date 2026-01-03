@@ -423,17 +423,14 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     if (adminNotes === null) return; // User cancelled
 
     try {
-      const form = new URLSearchParams();
-      form.append('action', action);
-      form.append('adminNotes', adminNotes);
-
+      const headers = await getAuthHeaders();
       const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          ...await getAuthHeaders(),
-        },
-        body: form.toString(),
+        headers: headers,
+        body: JSON.stringify({
+          action,
+          adminNotes
+        }),
       });
 
       const data = await response.json();

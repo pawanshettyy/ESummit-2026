@@ -60,9 +60,9 @@ app.use(
 // Handle preflight requests explicitly
 app.options('*', cors());
 
-// Body parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// Body parsers - MUST be before any middleware that reads req.body
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Clerk authentication middleware - run Clerk unless admin-secret is present
 app.use((req, res, next) => {
