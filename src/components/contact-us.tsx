@@ -24,7 +24,7 @@ export function ContactUs() {
       image: "",
       email: "ahana@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
     },
     {
       name: "Ayush Pardeshi",
@@ -32,7 +32,7 @@ export function ContactUs() {
       image: "",
       email: "ayush@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/ayush-pardeshi-8b76b4285/"
     }
   ];
 
@@ -44,7 +44,7 @@ export function ContactUs() {
       image: "",
       email: "hredey@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/hredey-chaand-b10787351/"
     },
     {
       name: "Aman Pandey",
@@ -52,7 +52,7 @@ export function ContactUs() {
       image: "",
       email: "aman@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/aman-pandey-ab3334259/"
     }
   ];
 
@@ -64,7 +64,7 @@ export function ContactUs() {
       image: "",
       email: "pawan@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/pawanshettyy/"
     },
     {
       name: "Raj Mane",
@@ -72,7 +72,7 @@ export function ContactUs() {
       image: "",
       email: "raj@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/raj-mane-268a95371/"
     }
   ];
 
@@ -84,7 +84,7 @@ export function ContactUs() {
       image: "",
       email: "nidhi@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/nidhi-shukla-36151a329/"
     },
     {
       name: "Tanvi Prakash Jabare",
@@ -92,7 +92,7 @@ export function ContactUs() {
       image: "",
       email: "tanvi@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
     }
   ];
 
@@ -104,7 +104,7 @@ export function ContactUs() {
       image: "",
       email: "yash@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
     },
     {
       name: "Niyatee Thakur",
@@ -112,7 +112,7 @@ export function ContactUs() {
       image: "",
       email: "niyatee@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
     },
     {
       name: "Vedant Singh",
@@ -120,7 +120,7 @@ export function ContactUs() {
       image: "",
       email: "vedant@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/vedant-singh-93056b2bb/"
     }
   ];
 
@@ -132,7 +132,7 @@ export function ContactUs() {
       image: "",
       email: "bhummi@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/bhummi-girnara-7ba804290/"
     },
     {
       name: "Sayyam Lohade",
@@ -140,7 +140,7 @@ export function ContactUs() {
       image: "",
       email: "sayyam@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/sayyam-lohade-899140334/"
     }
   ];
 
@@ -152,7 +152,7 @@ export function ContactUs() {
       image: "",
       email: "nikita@example.com",
       whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/nikita-tiwari-73a90330b/"
     },
     {
       name: "Kanchan Tripathi",
