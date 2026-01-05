@@ -3,11 +3,11 @@ import logger from '../utils/logger.util';
 
 /**
  * General API rate limiter
- * 100 requests per 15 minutes per IP
+ * 300 requests per 15 minutes per IP (500 in development)
  */
 export const generalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 100, // Limit each IP to 100 requests per windowMs
+  max: process.env.NODE_ENV === 'production' ? 300 : 500, // Higher limit in development
   message: {
     success: false,
     error: 'Too many requests from this IP, please try again later.',

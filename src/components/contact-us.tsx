@@ -44,7 +44,7 @@ export function ContactUs() {
       position: "Hospitality & PR Head",
       image: "/assets/team/hredey.webp",
       email: "hredey@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+919004724466",
       linkedin: "https://www.linkedin.com/in/hredey-chaand-b10787351/"
     },
     {
@@ -52,7 +52,7 @@ export function ContactUs() {
       position: "Hospitality & PR Head",
       image: "/assets/team/aman.webp",
       email: "aman@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+918108390154",
       linkedin: "https://www.linkedin.com/in/aman-pandey-ab3334259/"
     }
   ];
@@ -64,7 +64,7 @@ export function ContactUs() {
       position: "Web & Technical Head",
       image: "/assets/team/pawan.webp",
       email: "pawan@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+917045146954",
       linkedin: "https://www.linkedin.com/in/pawanshettyy/"
     },
     {

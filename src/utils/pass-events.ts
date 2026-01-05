@@ -78,24 +78,24 @@ export const eventSchedule = {
     {
       id: "d1-ipl-auction",
       time: "11:00 - 13:00",
-      title: "IPL Auction",
+      title: "IPL Auction: The Bid for Brilliance",
       category: "competitions",
       venue: "Competition Arena A",
       speaker: "Business Strategy Experts",
-      description: "Learn about capital allocation and customer acquisition through an interactive auction simulation",
-      duration: "2 hours",
+      description: "Learn about capital allocation and customer acquisition through an interactive auction simulation (Both Days)",
+      duration: "2 days",
       prize: "₹50,000",
       eligibility: "Teams of 3-5 members",
     },
     {
       id: "d1-ai-buildathon-start",
       time: "09:00 - 18:00",
-      title: "AI Buildathon - Day 1",
+      title: "AI Build-A-Thon: The Innovation Challenge",
       category: "competitions",
       venue: "Tech Lab",
       speaker: "AI/ML Experts",
-      description: "Build innovative AI solutions for early-stage startups (Day 1)",
-      duration: "9 hours",
+      description: "Build innovative AI solutions for early-stage startups (Both Days)",
+      duration: "2 days",
       prize: "₹1,50,000",
       eligibility: "Teams of 2-4 members",
     },
@@ -103,7 +103,7 @@ export const eventSchedule = {
     {
       id: "d1-design-thinking",
       time: "10:00 - 12:30",
-      title: "Design Thinking",
+      title: "Design Thinking & Innovation Strategy",
       category: "workshops",
       venue: "Workshop Hall A",
       speaker: "Innovation Expert",
@@ -115,7 +115,7 @@ export const eventSchedule = {
     {
       id: "d1-finance-marketing",
       time: "13:00 - 15:30",
-      title: "Finance & Marketing",
+      title: "Finance & Marketing for Startups",
       category: "workshops",
       venue: "Workshop Hall B",
       speaker: "Finance & Marketing Expert",
@@ -127,18 +127,18 @@ export const eventSchedule = {
     {
       id: "d1-startup-expo",
       time: "09:00 - 18:00",
-      title: "Startup Expo",
+      title: "The Startup Expo",
       category: "networking",
       venue: "Exhibition Hall",
       speaker: null,
-      description: "Showcase your startup and connect with investors, mentors, and fellow entrepreneurs",
-      duration: "9 hours",
+      description: "Showcase your startup and connect with investors, mentors, and fellow entrepreneurs (Both Days)",
+      duration: "2 days",
       eligibility: "All participants",
     },
     {
       id: "d1-panel-discussion",
       time: "15:00 - 17:00",
-      title: "Panel Discussion",
+      title: "The Panel Discussion",
       category: "networking",
       venue: "Main Auditorium",
       speaker: "Panel of Industry Experts",
@@ -163,24 +163,24 @@ export const eventSchedule = {
     {
       id: "d2-pitch-arena",
       time: "10:00 - 13:00",
-      title: "Pitch Arena",
+      title: "Pitch Arena - Idea to Reality",
       category: "pitching",
       venue: "Conference Hall B",
       speaker: "Industry Experts",
-      description: "Platform for first-time founders to pitch their ideas and get shortlisted for the next round",
-      duration: "3 hours",
+      description: "Platform for first-time founders to pitch their ideas and get shortlisted for the next round (Both Days)",
+      duration: "2 days",
       prize: "Shortlisting for Round 2",
       eligibility: "Early stage Startups",
     },
     {
       id: "d2-incubator-summit",
       time: "14:00 - 17:00",
-      title: "Incubator Summit",
+      title: "The Incubator Summit",
       category: "pitching",
       venue: "Conference Hall C",
       speaker: "Incubation Centres",
-      description: "Pitch to leading incubation centers and secure incubation support for your startup",
-      duration: "3 hours",
+      description: "Pitch to leading incubation centers and secure incubation support for your startup (Both Days)",
+      duration: "2 days",
       prize: "Incubation Support",
       eligibility: "Early Stage Startups",
     },
@@ -200,7 +200,7 @@ export const eventSchedule = {
     {
       id: "d2-startup-league",
       time: "10:00 - 14:00",
-      title: "Startup League",
+      title: "Startup League Game: Build Your Empire",
       category: "competitions",
       venue: "Competition Arena B",
       speaker: "Startup Founders",
@@ -213,7 +213,7 @@ export const eventSchedule = {
     {
       id: "d2-data-analytics",
       time: "11:00 - 13:30",
-      title: "Data Analytics & BDM",
+      title: "Data Analytics & Business Development Essentials",
       category: "workshops",
       venue: "Workshop Hall A",
       speaker: "Data Analytics Expert",
@@ -299,12 +299,13 @@ export const eventSchedule = {
 export function getEligibleEvents(passType: string): Event[] {
   const allEvents = [...eventSchedule.day1, ...eventSchedule.day2];
   
+  // Exclude administrative/automatic events that users don't register for
+  const excludedEvents = ["d1-registration", "d1-inaugural", "d2-closing", "d1-networking-arena", "d2-networking-arena"];
+  
   // TCET Student Pass / Pixel Pass events (FREE pass)
   const pixelEvents = [
     "d1-startup-expo", "d1-panel-discussion", "d1-ipl-auction", 
-    "d1-ai-buildathon-start", "d2-ai-buildathon-final", "d2-startup-league",
-    "d2-startup-expo", "d1-networking-arena", "d2-networking-arena",
-    "d1-registration", "d1-inaugural", "d2-closing"
+    "d1-ai-buildathon-start", "d2-startup-league"
   ];
   
   // Silicon Pass events (Pixel + extras)
@@ -324,28 +325,28 @@ export function getEligibleEvents(passType: string): Event[] {
   
   switch (passType) {
     case "pixel": // Pixel Pass - Free entry events
-      return allEvents.filter(e => pixelEvents.includes(e.id));
+      return allEvents.filter(e => pixelEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
     case "tcet_student": // TCET Student Pass - Same as Quantum (free)
     case "tcet student": 
-      return allEvents.filter(e => quantumEvents.includes(e.id));
+      return allEvents.filter(e => quantumEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
     case "silicon": // Silicon Pass - Pixel + workshops + pitch arena
-      return allEvents.filter(e => siliconEvents.includes(e.id));
+      return allEvents.filter(e => siliconEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
     case "quantum": // Quantum Pass - All events
-      return allEvents.filter(e => quantumEvents.includes(e.id));
+      return allEvents.filter(e => quantumEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
     // Legacy pass types (for backward compatibility)
     case "day1": // Gold Pass - Day 1 only
-      return eventSchedule.day1;
+      return eventSchedule.day1.filter(e => !excludedEvents.includes(e.id));
     
     case "day2": // Silver Pass - Day 2 only
-      return eventSchedule.day2;
+      return eventSchedule.day2.filter(e => !excludedEvents.includes(e.id));
     
     case "full": // Platinum Pass - Both days
     case "group": // Group Pass - Both days
-      return allEvents;
+      return allEvents.filter(e => !excludedEvents.includes(e.id));
     
     default:
       return [];
