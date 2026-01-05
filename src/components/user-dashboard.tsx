@@ -209,16 +209,22 @@ export function UserDashboard({
         const data = await response.json();
 
         if (data.success && data.data.passes) {
+          console.log('[Dashboard] Fetched passes:', data.data.passes);
           // Show all Active passes
           const confirmedPasses = data.data.passes.filter((pass: Pass) => {
             return pass.status === 'Active';
           });
+          console.log('[Dashboard] Active passes:', confirmedPasses);
           setMyPasses(confirmedPasses);
           
           // Auto-populate schedule with eligible events based on purchased passes
           if (confirmedPasses.length > 0) {
+            console.log('[Dashboard] Processing passes for schedule:', confirmedPasses);
             const passTypeId = getPassTypeId(confirmedPasses[0].passType);
+            console.log('[Dashboard] Pass Type ID:', passTypeId);
+            
             const eligibleEvents = getFormattedEventsForPass(passTypeId);
+            console.log('[Dashboard] Eligible events from pass-events.ts:', eligibleEvents.length, eligibleEvents);
             
             // Convert to the Event interface format used by the component
             const formattedEvents: Event[] = eligibleEvents.map(event => ({
@@ -232,9 +238,12 @@ export function UserDashboard({
               speaker: event.speaker,
             }));
             
+            console.log('[Dashboard] Formatted events for schedule:', formattedEvents.length);
+            
             // Store eligible events separately
             setEligibleEventsFromPass(formattedEvents);
           } else {
+            console.log('[Dashboard] No confirmed passes, clearing eligible events');
             setEligibleEventsFromPass([]);
           }
         }
@@ -506,20 +515,27 @@ export function UserDashboard({
 
   // Map pass type names to pass identifiers for event eligibility
   const getPassTypeId = (passTypeName: string): string => {
+    // Normalize the pass type name (trim and lowercase for comparison)
+    const normalizedName = passTypeName.trim().toLowerCase();
+    
     const passTypeMap: Record<string, string> = {
       // New pass types
-      "Pixel Pass": "pixel",
-      "Silicon Pass": "silicon",
-      "Quantum Pass": "quantum",
-      "TCET Student Pass": "tcet_student",
+      "pixel pass": "pixel",
+      "silicon pass": "silicon",
+      "quantum pass": "quantum",
+      "tcet student pass": "tcet_student",
+      "tcet pass": "tcet_student",
       // Legacy pass types (for backward compatibility)
-      "Gold Pass": "day1",
-      "Silver Pass": "day2",
-      "Platinum Pass": "full",
-      "Group Pass (5+)": "group",
-      "Group Pass": "group",
+      "gold pass": "day1",
+      "silver pass": "day2",
+      "platinum pass": "full",
+      "group pass (5+)": "group",
+      "group pass": "group",
     };
-    return passTypeMap[passTypeName] || "pixel"; // Default to pixel if unknown
+    
+    const passTypeId = passTypeMap[normalizedName] || "pixel";
+    console.log('[Dashboard] Pass Type Mapping:', { passTypeName, normalizedName, passTypeId });
+    return passTypeId;
   };
 
   // Use the fetched registered event details directly
@@ -569,6 +585,14 @@ export function UserDashboard({
   const handleEventRegistration = async (eventId: string) => {
     if (!user?.id) {
       toast.error('🔒 Please sign in to register for events. Your pass grants you access to exclusive opportunities!');
+      return;
+    }
+
+    // Check if already registered
+    if (registeredEvents.has(eventId)) {
+      toast.error('⚠️ You are already registered for this event!', {
+        description: 'Check "Your Registered Events" section above.',
+      });
       return;
     }
 
@@ -1032,9 +1056,9 @@ export function UserDashboard({
                   <div className="flex items-start gap-3">
                     <CheckCircle2 className="h-5 w-5 text-primary mt-0.5" />
                     <div className="flex-1">
-                      <h4 className="mb-1">Events Included with Your Pass</h4>
+                      <h4 className="mb-1 font-semibold">Events Included with Your Pass</h4>
                       <p className="text-sm text-muted-foreground mb-2">
-                        {eligibleEventsFromPass.length === 0 ? 'Loading your eligible events...' : `You have access to ${eligibleEventsFromPass.length} event${eligibleEventsFromPass.length > 1 ? 's' : ''} with your ${myPasses[0]?.passType}.`}
+                        {eligibleEventsFromPass.length === 0 ? '⏳ Loading your eligible events...' : `🎉 You have access to ${eligibleEventsFromPass.length} event${eligibleEventsFromPass.length > 1 ? 's' : ''} with your ${myPasses[0]?.passType}!`}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {myPasses.map((pass) => (
@@ -1112,7 +1136,7 @@ export function UserDashboard({
                       ? "Register for events to see them in your schedule"
                       : "Purchase a pass to access E-Summit events"}
                   </p>
-                  <Button onClick={() => onNavigate(myPasses.length > 0 ? "schedule" : "booking")}>
+                  <Button onClick={() => onNavigate(myPasses.length > 0 ? "events" : "booking")}>
                     {myPasses.length > 0 ? "Browse Events" : "Book Pass"}
                   </Button>
                 </CardContent>
@@ -1170,7 +1194,7 @@ export function UserDashboard({
                               size="sm"
                               variant="outline"
                               className="w-full"
-                              onClick={() => onNavigate("schedule")}
+                              onClick={() => onNavigate("events")}
                             >
                               View & Register
                             </Button>

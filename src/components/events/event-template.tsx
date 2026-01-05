@@ -1,4 +1,4 @@
-import { useState, type ElementType } from "react";
+import { useState, useEffect, type ElementType } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { toast } from "sonner";
 import { motion } from "motion/react";
@@ -6,9 +6,10 @@ import { Particles } from "../magicui/particles";
 import { GradientText } from "../magicui/gradient-text";
 import { Button } from "../ui/button";
 import { Card, CardContent, CardHeader } from "../ui/card";
-import { Calendar, Clock, MapPin, Mail, Phone, ArrowRight, ArrowLeft, Trophy, Users, Target } from "lucide-react";
+import { Calendar, Clock, MapPin, Mail, Phone, ArrowRight, ArrowLeft, Trophy, Users, Target, CheckCircle2 } from "lucide-react";
 import { EventRegistrationModal } from "../event-registration-modal";
 import { GlassCard } from "../accentricity/glass-card";
+import { API_BASE_URL } from "../../lib/api";
 
 type EventData = {
   title: string;
@@ -59,8 +60,10 @@ export function EventPageTemplate({
   primaryContacts = [],
   seniorContacts = [],
 }: EventPageTemplateProps) {
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isAlreadyRegistered, setIsAlreadyRegistered] = useState(false);
+  const [isCheckingRegistration, setIsCheckingRegistration] = useState(true);
   const [registrationModal, setRegistrationModal] = useState<{
     isOpen: boolean;
     eventId: string;
@@ -70,6 +73,34 @@ export function EventPageTemplate({
     eventId: "",
     eventTitle: "",
   });
+
+  // Check if user is already registered for this event
+  useEffect(() => {
+    const checkRegistrationStatus = async () => {
+      if (!user?.id || !eventId) {
+        setIsCheckingRegistration(false);
+        return;
+      }
+
+      try {
+        const response = await fetch(
+          `${API_BASE_URL}/users/events/registered/${user.id}`
+        );
+        const data = await response.json();
+
+        if (data.success && data.data.registeredEventIds) {
+          const isRegistered = data.data.registeredEventIds.includes(eventId);
+          setIsAlreadyRegistered(isRegistered);
+        }
+      } catch (error) {
+        console.error("Error checking registration status:", error);
+      } finally {
+        setIsCheckingRegistration(false);
+      }
+    };
+
+    checkRegistrationStatus();
+  }, [user?.id, eventId]);
 
   const handleBackToEvents = () => {
     sessionStorage.setItem('navigateTo', 'events');
@@ -82,12 +113,23 @@ export function EventPageTemplate({
       return;
     }
 
+    if (isAlreadyRegistered) {
+      toast.error("⚠️ You are already registered for this event!", {
+        description: "Check your dashboard to view your registered events.",
+      });
+      return;
+    }
+
     // Open registration modal
     setRegistrationModal({
       isOpen: true,
       eventId: eventId,
       eventTitle: event.title,
     });
+  };
+
+  const handleRegistrationSuccess = () => {
+    setIsAlreadyRegistered(true); // Update state after successful registration
   };
 
   const hasDetailsRow = Boolean(event.date || event.time || event.venue);
@@ -170,17 +212,28 @@ export function EventPageTemplate({
                 transition={{ delay: 0.9, duration: 0.5 }}
                 className="pt-6"
               >
-                <Button
-                  size="lg"
-                  onClick={handleRegistration}
-                  disabled={isRegistering}
-                  className="group relative px-10 py-6 text-lg font-bold bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] border-2 border-primary/30 hover:border-primary/50 transition-all duration-500 inline-flex items-center gap-3 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
-                >
-                  <span className="flex items-center gap-3">
-                    {isRegistering ? "Registering..." : "Register Now"}
-                    {!isRegistering && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />}
-                  </span>
-                </Button>
+                {isAlreadyRegistered ? (
+                  <Button
+                    size="lg"
+                    disabled
+                    className="group relative px-10 py-6 text-lg font-bold bg-green-600 text-white rounded-2xl shadow-[0_0_30px_rgba(34,197,94,0.4)] border-2 border-green-500/30 inline-flex items-center gap-3 cursor-not-allowed"
+                  >
+                    <CheckCircle2 className="w-5 h-5" />
+                    <span>Already Registered</span>
+                  </Button>
+                ) : (
+                  <Button
+                    size="lg"
+                    onClick={handleRegistration}
+                    disabled={isRegistering || isCheckingRegistration}
+                    className="group relative px-10 py-6 text-lg font-bold bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] border-2 border-primary/30 hover:border-primary/50 transition-all duration-500 inline-flex items-center gap-3 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100"
+                  >
+                    <span className="flex items-center gap-3">
+                      {isCheckingRegistration ? "Checking..." : isRegistering ? "Registering..." : "Register Now"}
+                      {!isRegistering && !isCheckingRegistration && <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />}
+                    </span>
+                  </Button>
+                )}
               </motion.div>
             </motion.div>
           </div>
@@ -529,6 +582,7 @@ export function EventPageTemplate({
         eventId={registrationModal.eventId}
         eventTitle={registrationModal.eventTitle}
         onSuccess={() => {
+          handleRegistrationSuccess();
           setRegistrationModal({ isOpen: false, eventId: "", eventTitle: "" });
         }}
       />

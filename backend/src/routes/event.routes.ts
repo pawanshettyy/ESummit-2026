@@ -33,14 +33,19 @@ router.get('/:identifier', async (req: Request, res: Response) => {
   try {
     const { identifier } = req.params;
 
-    // Try to find by UUID first, then by eventId
+    // Check if identifier is a valid UUID format
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(identifier);
+
+    // Try to find by UUID or eventId
     const event = await prisma.event.findFirst({
-      where: {
-        OR: [
-          { id: identifier },
-          { eventId: identifier },
-        ],
-      },
+      where: isUUID
+        ? {
+            OR: [
+              { id: identifier },
+              { eventId: identifier },
+            ],
+          }
+        : { eventId: identifier },
       include: {
         registrations: {
           include: {
