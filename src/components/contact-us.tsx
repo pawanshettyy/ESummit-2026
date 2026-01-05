@@ -1,5 +1,6 @@
 import { motion } from "motion/react";
-import { Mail, Linkedin, MessageCircle } from "lucide-react";
+import { Linkedin } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
 import { Card, CardContent } from "./ui/card";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
@@ -21,17 +22,17 @@ export function ContactUs() {
     {
       name: "Ahana Kulkarni",
       position: "Overall Coordinator",
-      image: "",
+      image: "/assets/team/ahana.webp",
       email: "ahana@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+918928352406",
       linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
     },
     {
       name: "Ayush Pardeshi",
       position: "Overall Coordinator",
-      image: "",
+      image: "/assets/team/ayush.webp",
       email: "ayush@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+918766536270",
       linkedin: "https://www.linkedin.com/in/ayush-pardeshi-8b76b4285/"
     }
   ];
@@ -41,7 +42,7 @@ export function ContactUs() {
     {
       name: "Hredey Chaand",
       position: "Hospitality & PR Head",
-      image: "",
+      image: "/assets/team/hredey.webp",
       email: "hredey@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/hredey-chaand-b10787351/"
@@ -49,7 +50,7 @@ export function ContactUs() {
     {
       name: "Aman Pandey",
       position: "Hospitality & PR Head",
-      image: "",
+      image: "/assets/team/aman.webp",
       email: "aman@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/aman-pandey-ab3334259/"
@@ -61,7 +62,7 @@ export function ContactUs() {
     {
       name: "Pawan Shetty",
       position: "Web & Technical Head",
-      image: "",
+      image: "/assets/team/pawan.webp",
       email: "pawan@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/pawanshettyy/"
@@ -69,7 +70,7 @@ export function ContactUs() {
     {
       name: "Raj Mane",
       position: "Web & Technical Head",
-      image: "",
+      image: "/assets/team/rajmane.webp",
       email: "raj@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/raj-mane-268a95371/"
@@ -81,7 +82,7 @@ export function ContactUs() {
     {
       name: "Nidhi Dilipkumar Shukla",
       position: "Speakers, Judges & Guests Head",
-      image: "",
+      image: "/assets/team/nidhishukla.webp",
       email: "nidhi@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/nidhi-shukla-36151a329/"
@@ -89,7 +90,7 @@ export function ContactUs() {
     {
       name: "Tanvi Prakash Jabare",
       position: "Speakers, Judges & Guests Head",
-      image: "",
+      image: "/assets/team/tanvijabare.webp",
       email: "tanvi@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
@@ -101,7 +102,7 @@ export function ContactUs() {
     {
       name: "Yash Yadav",
       position: "Sponsorships & Brands Head",
-      image: "",
+      image: "/assets/team/yash.webp",
       email: "yash@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
@@ -109,7 +110,7 @@ export function ContactUs() {
     {
       name: "Niyatee Thakur",
       position: "Sponsorships & Brands Head",
-      image: "",
+      image: "/assets/team/niyatee.webp",
       email: "niyatee@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
@@ -117,7 +118,7 @@ export function ContactUs() {
     {
       name: "Vedant Singh",
       position: "Sponsorships & Brands Head",
-      image: "",
+      image: "/assets/team/vedant.webp",
       email: "vedant@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/vedant-singh-93056b2bb/"
@@ -129,7 +130,7 @@ export function ContactUs() {
     {
       name: "Bhummi Girnara",
       position: "Operations Head",
-      image: "",
+      image: "/assets/team/bhummi.webp",
       email: "bhummi@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/bhummi-girnara-7ba804290/"
@@ -137,7 +138,7 @@ export function ContactUs() {
     {
       name: "Sayyam Lohade",
       position: "Operations Head",
-      image: "",
+      image: "/assets/team/sayyam.webp",
       email: "sayyam@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/sayyam-lohade-899140334/"
@@ -186,8 +187,10 @@ export function ContactUs() {
           <CardContent className="p-6">
             <div className="flex flex-col items-center text-center">
               <Avatar className="h-24 w-24 mb-4">
-                <AvatarImage src={member.image} alt={member.name} />
-                <AvatarFallback className="text-lg">
+                {member.image ? (
+                  <AvatarImage src={member.image} alt={member.name} className="object-cover" />
+                ) : null}
+                <AvatarFallback className="text-lg bg-primary/10">
                   {member.name.split(" ").map(n => n[0]).join("")}
                 </AvatarFallback>
               </Avatar>
@@ -198,17 +201,9 @@ export function ContactUs() {
                   variant="outline"
                   size="sm"
                   className="flex-1"
-                  onClick={() => window.open(`mailto:${member.email}`, '_blank')}
-                >
-                  <Mail className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
                   onClick={() => window.open(`https://wa.me/${member.whatsapp.replace(/[^0-9]/g, '')}`, '_blank')}
                 >
-                  <MessageCircle className="h-4 w-4" />
+                  <FaWhatsapp className="h-4 w-4" />
                 </Button>
                 <Button
                   variant="outline"
