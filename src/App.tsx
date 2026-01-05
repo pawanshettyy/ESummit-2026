@@ -28,6 +28,7 @@ import { Speakers } from "./components/speakers";
 import { Venue } from "./components/venue";
 import { Sponsors } from "./components/sponsors";
 import { Team } from "./components/team";
+import { ContactUs } from "./components/contact-us";
 import { UserDashboard } from "./components/user-dashboard";
 import { AuthModal } from "./components/auth-modal";
 import { PrivacyPolicy } from "./components/privacy-policy";
@@ -180,6 +181,8 @@ export default function App() {
         return <Sponsors />;
       case "team":
         return <Team />;
+      case "contact":
+        return <ContactUs />;
       case "dashboard":
         return isSignedIn ? (
           <UserDashboard 
