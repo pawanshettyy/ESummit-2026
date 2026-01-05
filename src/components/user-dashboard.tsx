@@ -104,6 +104,7 @@ export function UserDashboard({
   const [downloadingPassId, setDownloadingPassId] = useState<string | null>(null);
   const [registeredEvents, setRegisteredEvents] = useState<Set<string>>(new Set());
   const [registeredEventDetails, setRegisteredEventDetails] = useState<Event[]>([]);
+  const [eligibleEventsFromPass, setEligibleEventsFromPass] = useState<Event[]>([]);
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
   const [isLoadingRegistrations, setIsLoadingRegistrations] = useState(true);
   const [tcetCode, setTcetCode] = useState<string | null>(null);
@@ -231,13 +232,10 @@ export function UserDashboard({
               speaker: event.speaker,
             }));
             
-            // Update registered events with eligible events from pass
-            setRegisteredEventDetails(prevEvents => {
-              // Merge with existing registered events, avoid duplicates
-              const existingIds = new Set(prevEvents.map(e => e.id));
-              const newEvents = formattedEvents.filter(e => !existingIds.has(e.id));
-              return [...prevEvents, ...newEvents];
-            });
+            // Store eligible events separately
+            setEligibleEventsFromPass(formattedEvents);
+          } else {
+            setEligibleEventsFromPass([]);
           }
         }
       } catch (error) {
@@ -1036,7 +1034,7 @@ export function UserDashboard({
                     <div className="flex-1">
                       <h4 className="mb-1">Events Included with Your Pass</h4>
                       <p className="text-sm text-muted-foreground mb-2">
-                        {registeredEventDetails.length === 0 ? 'Your eligible events will appear here once your pass is confirmed.' : `You have access to ${registeredEventDetails.length} event${registeredEventDetails.length > 1 ? 's' : ''} with your ${myPasses[0]?.passType}.`}
+                        {eligibleEventsFromPass.length === 0 ? 'Loading your eligible events...' : `You have access to ${eligibleEventsFromPass.length} event${eligibleEventsFromPass.length > 1 ? 's' : ''} with your ${myPasses[0]?.passType}.`}
                       </p>
                       <div className="flex flex-wrap gap-2">
                         {myPasses.map((pass) => (
@@ -1053,6 +1051,12 @@ export function UserDashboard({
 
             {registeredSchedule.length > 0 ? (
               <>
+                <div className="mb-4">
+                  <h3 className="text-lg font-semibold mb-2">Your Registered Events</h3>
+                  <p className="text-sm text-muted-foreground">
+                    You have registered for {registeredSchedule.length} event{registeredSchedule.length > 1 ? 's' : ''}
+                  </p>
+                </div>
                 {registeredSchedule.map((event) => (
                   <Card key={event.id} className="border-primary/20">
                     <CardContent className="p-6">
@@ -1113,6 +1117,70 @@ export function UserDashboard({
                   </Button>
                 </CardContent>
               </Card>
+            )}
+
+            {/* Show all eligible events from pass */}
+            {myPasses.length > 0 && eligibleEventsFromPass.length > 0 && (
+              <>
+                <div className="mb-4 mt-6">
+                  <h3 className="text-lg font-semibold mb-2">All Events Available with Your Pass</h3>
+                  <p className="text-sm text-muted-foreground">
+                    These are all the events you can attend with your {myPasses[0]?.passType}. Register for events to add them to your schedule.
+                  </p>
+                </div>
+                <div className="grid gap-4 md:grid-cols-2">
+                  {eligibleEventsFromPass.map((event) => {
+                    const isRegistered = registeredEvents.has(event.id);
+                    return (
+                      <Card key={event.id} className={isRegistered ? "border-green-500/30 bg-green-50/30" : "border-muted"}>
+                        <CardContent className="p-4">
+                          <div className="flex items-start justify-between gap-2 mb-2">
+                            <Badge variant="outline" className="shrink-0">
+                              {event.category}
+                            </Badge>
+                            {isRegistered && (
+                              <Badge variant="default" className="bg-green-600 shrink-0">
+                                <CheckCircle2 className="h-3 w-3 mr-1" />
+                                Registered
+                              </Badge>
+                            )}
+                          </div>
+                          <h4 className="font-semibold mb-2 break-words">{event.title}</h4>
+                          {event.speaker && (
+                            <p className="text-sm text-muted-foreground mb-2">
+                              Speaker: {event.speaker}
+                            </p>
+                          )}
+                          <div className="space-y-1 text-sm text-muted-foreground mb-3">
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{event.date}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Calendar className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{event.time}</span>
+                            </div>
+                            <div className="flex items-center gap-1">
+                              <Ticket className="h-3 w-3 shrink-0" />
+                              <span className="truncate">{event.venue}</span>
+                            </div>
+                          </div>
+                          {!isRegistered && (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="w-full"
+                              onClick={() => onNavigate("schedule")}
+                            >
+                              View & Register
+                            </Button>
+                          )}
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </div>
+              </>
             )}
 
             {registeredSchedule.length > 0 && (

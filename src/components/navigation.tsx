@@ -69,6 +69,7 @@ export function Navigation({
     { id: "venue", label: "Venue", icon: MapPin },
     { id: "sponsors", label: "Sponsors", icon: null },
     { id: "team", label: "Team", icon: null },
+    { id: "contact", label: "Contact", icon: null },
   ];
 
   // Add Dashboard to nav items if user is signed in

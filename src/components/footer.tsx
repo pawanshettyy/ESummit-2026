@@ -105,6 +105,14 @@ export function Footer({ onNavigate }: FooterProps) {
                   Book Pass
                 </button>
               </li>
+              <li>
+                <button
+                  onClick={() => onNavigate("contact")}
+                  className="text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  Contact Us
+                </button>
+              </li>
               {isSignedIn && (
                 <li>
                   <button

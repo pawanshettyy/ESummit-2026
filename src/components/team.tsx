@@ -138,13 +138,6 @@ export function Team() {
         branch: "COMP",
         position: "Creative Head",
         department: "Technical"
-      },
-      {
-        name: "Shweta Varma",
-        year: "TE",
-        branch: "E&TC",
-        position: "SMM Head",
-        department: "Technical"
       }
     ]
   };

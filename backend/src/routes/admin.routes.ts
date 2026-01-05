@@ -1002,6 +1002,7 @@ router.get('/users', async (req: Request, res: Response) => {
         college: true,
         createdAt: true,
         bookingVerified: true,
+        is_active: true,
         clerkUserId: true,
         passes: {
           select: {
