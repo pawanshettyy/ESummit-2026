@@ -82,7 +82,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   ];
 
   const stats = [
-    { label: "Events", value: "16+", icon: Trophy },
+    { label: "Events", value: "30+", icon: Trophy },
     { label: "Judges & Speakers", value: "50+", icon: Users },
     { label: "Expected Attendees", value: "2000+", icon: Users },
     { label: "Startup Pitches", value: "50+", icon: Building2 },
@@ -91,19 +91,19 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const highlights = [
     {
       title: "Funding & Investment Events",
-      description: "Connect with VCs and Angel Investors at The Ten Minute Million (TTMM) and Angel Investors Roundtable for real fundraising opportunities. TRL 5+ startups pitch for equity and seed funding.",
+      description: "Connect with VCs and Angel Investors at The Ten Minute Million: Pitch to Win and The Angel Investor's Roundtable for real fundraising opportunities. TRL 5+ startups pitch for equity and seed funding.",
     },
     {
       title: "Incubation & Mentorship",
-      description: "Present at Pitch Arena (idea stage) and Incubator Summit to receive mentorship, incubation offers, and acceleration support from top Mumbai and Pune incubation centers.",
+      description: "Present at Pitch Arena: Idea to Reality (idea stage) and The Incubator Summit: Earn Your Launchpad to receive mentorship, incubation offers, and acceleration support from top Mumbai and Pune incubation centers.",
     },
     {
       title: "Skill-Building Workshops",
-      description: "3-hour hands-on workshops in Design Thinking & Innovation Strategy, Finance & Marketing, and Data Analytics & Business Development for future-ready entrepreneurs.",
+      description: "3-hour hands-on workshops in Design Thinking & Innovation Strategy, Finance & Marketing for Startups, and Data Analytics & Business Development Essentials for future-ready entrepreneurs.",
     },
     {
       title: "Competitions & Networking",
-      description: "Compete in IPL Auction, Startup League, and AI Build-A-Thon. Network at Startup Expo, Internship & Job Fair, Networking Arena, and Startup Youth Conclave with E-Cells from other colleges.",
+      description: "Compete in IPL Auction: The Bid for Brilliance, Startup League Game: Build Your Empire, and AI Contest: The Innovation Challenge. Network at The Startup Expo, The Internship Fair, Networking Arena, and Startup Youth Conclave with E-Cells from other colleges.",
     },
   ];
 
