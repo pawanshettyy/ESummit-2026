@@ -2,6 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ClerkProvider } from "@clerk/clerk-react";
 import * as Sentry from "@sentry/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 import App from "./App.tsx";
 import "./index.css";
 
@@ -34,6 +35,7 @@ const renderApp = () => {
       <StrictMode>
         <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
           <App />
+          <SpeedInsights />
         </ClerkProvider>
       </StrictMode>
     );
@@ -43,6 +45,7 @@ const renderApp = () => {
     createRoot(rootElement).render(
       <StrictMode>
         <App />
+        <SpeedInsights />
       </StrictMode>
     );
   }
