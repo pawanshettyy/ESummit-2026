@@ -2,13 +2,13 @@ import { EventPageTemplate } from "./event-template";
 
 export function NetworkingArenaPage() {
   const event = {
-    title: "Informals",
+    title: "Networking Arena",
     description:
-      "Connect beyond the stage. An informal session for founders to mingle with judges, speakers, and mentors over lunch, turning conversations into valuable connections.",
-    date: "February 2, 2026",
-    time: "5 PM to 5:30 PM",
-    venue: "Multipurpose Hall 2nd Floor and TSAP ground floor",
-    eligibility: "Silicon & Quantum Pass holders",
+      "Open networking session during lunch - connect with entrepreneurs, investors, judges, and fellow participants. An ideal opportunity to build relationships and explore collaborations.",
+    date: "February 2-3, 2026",
+    time: "Lunch Hours",
+    venue: "Multipurpose Hall 2nd Floor & Architecture Ground Floor",
+    eligibility: "All pass holders",
   };
   const primaryContacts = [
     { name: "Yash Khatri", role: "Core Member" },

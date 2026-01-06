@@ -146,6 +146,13 @@ export function Team() {
   const jcTeam = {
     executive: [
       {
+        name: "Yash Mattha",
+        year: "SE",
+        branch: "IT",
+        position: "JC - Executive",
+        department: "Executive"
+      },
+      {
         name: "Varun Maurya",
         year: "SE",
         branch: "AI&ML",
@@ -255,7 +262,6 @@ export function Team() {
   // OC Team - organized by department
   const ocTeam = {
     executive: [
-      { name: "Yash Mattha", year: "SE", branch: "IT", position: "OC - Executive", department: "Executive" },
       { name: "Tushar Gaba", year: "FE", branch: "IoT", position: "OC - Executive", department: "Executive" },
       { name: "Vedant Singh", year: "FE", branch: "IT", position: "OC - Executive", department: "Executive" },
       { name: "Om Paranjape", year: "FE", branch: "AI&DS", position: "OC - Executive", department: "Executive" },

@@ -79,6 +79,15 @@ export default function App() {
     }
   }, []);
 
+  // Redirect to dashboard only on first sign up (not on every login)
+  useEffect(() => {
+    if (isSignedIn && user?.id && currentPage === "auth") {
+      // Only redirect from auth page (after sign up/sign in completion)
+      // But not from home page to preserve normal navigation
+      setCurrentPage("dashboard");
+    }
+  }, [isSignedIn, user?.id, currentPage]);
+
   // Fetch user's pass status
   useEffect(() => {
     if (isSignedIn && user?.id) {
@@ -174,6 +183,8 @@ export default function App() {
         return <AiEarlyStageStartupsPage />;
       case "event-17":
         return <RoadmapToEntrepreneurshipPage />;
+      case "event-18":
+        return <NetworkingArenaPage />;
       case "speakers":
         return <Speakers />;
       case "venue":
