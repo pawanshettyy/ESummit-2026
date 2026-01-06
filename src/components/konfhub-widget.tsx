@@ -105,7 +105,7 @@ export function KonfHubWidget({
         </div>
       )}
       <iframe
-        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=ffffff&fontColor=1e1f24&ticketCl=1e1f24&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=quick&screen=2${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`}
+        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=FFFFFF&fontColor=1e1f24&ticketCl=1e1f24&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=standard${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`}
         id="konfhub-widget"
         title={`Register for ${import.meta.env.VITE_APP_NAME || 'E-Summit 2026'}`}
         width="100%"
