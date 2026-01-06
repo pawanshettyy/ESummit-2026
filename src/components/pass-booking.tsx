@@ -365,8 +365,9 @@ export function PassBooking({
                 </div>
                 <div className="flex-1">
                   <a 
-                    href="/assets/brochure/Final%20brochure%20for%20ESUMMIT.pdf" 
-                    download="E-Summit-2026-Brochure.pdf"
+                    href="https://drive.google.com/file/d/1VcOmVrY3FA-nYpKD613_zlFZZEn7R24V/view?usp=sharing" 
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="block"
                   >
                     <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950 text-center h-full cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
@@ -375,7 +376,7 @@ export function PassBooking({
                         <Download className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                       </div>
                       <AlertDescription className="text-center text-blue-600 dark:text-blue-400">
-                        <p className="text-sm font-bold">Click to download Brochure</p>
+                        <p className="text-sm font-bold">Click to open Brochure</p>
                         <p className="text-xs mt-1">Learn more about E-Summit 2026</p>
                       </AlertDescription>
                     </Alert>
