@@ -322,6 +322,12 @@ export function getEligibleEvents(passType: string): Event[] {
     "d1-ten-minute-million", "d1-angel-roundtable", 
     "d2-incubator-summit", "d2-internship-fair", "d2-ai-workshop"
   ];
+
+  // Exhibitors Pass events (focus on expo and networking)
+  const exhibitorsEvents = [
+    "d1-startup-expo", "d2-internship-fair", "d1-panel-discussion",
+    "d1-networking-arena", "d2-networking-arena"
+  ];
   
   switch (passType) {
     case "pixel": // Pixel Pass - Free entry events
@@ -336,6 +342,10 @@ export function getEligibleEvents(passType: string): Event[] {
     
     case "quantum": // Quantum Pass - All events
       return allEvents.filter(e => quantumEvents.includes(e.id) && !excludedEvents.includes(e.id));
+    
+    case "exhibitors": // Exhibitors Pass - Expo and networking focused
+    case "exhibitors pass":
+      return allEvents.filter(e => exhibitorsEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
     // Legacy pass types (for backward compatibility)
     case "day1": // Gold Pass - Day 1 only
@@ -361,6 +371,8 @@ export function getPassName(passId: string): string {
     pixel: "Pixel Pass",
     silicon: "Silicon Pass",
     quantum: "Quantum Pass",
+    exhibitors: "Exhibitors Pass",
+    "exhibitors pass": "Exhibitors Pass",
     tcet_student: "TCET Student Pass",
     "tcet student": "TCET Student Pass",
     // Legacy pass names for backward compatibility

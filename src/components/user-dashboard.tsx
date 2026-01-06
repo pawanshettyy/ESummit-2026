@@ -107,6 +107,7 @@ export function UserDashboard({
   const [eligibleEventsFromPass, setEligibleEventsFromPass] = useState<Event[]>([]);
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
   const [isLoadingRegistrations, setIsLoadingRegistrations] = useState(true);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [tcetCode, setTcetCode] = useState<string | null>(null);
   const [isAssigningCode, setIsAssigningCode] = useState(false);
   const [showKonfHubWidget, setShowKonfHubWidget] = useState(false);
@@ -421,23 +422,27 @@ export function UserDashboard({
                 const eventData = await eventResponse.json();
                 if (eventData.success && eventData.data && eventData.data.event) {
                   const event = eventData.data.event;
+                  // Parse date safely
+                  const eventDate = new Date(event.date);
+                  const isValidDate = !isNaN(eventDate.getTime());
+                  
                   return {
                     id: event.eventId || event.id,
                     title: event.title,
                     description: event.description || '',
-                    date: new Date(event.date).toLocaleDateString('en-US', {
+                    date: isValidDate ? eventDate.toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric'
-                    }),
-                    time: `${new Date(`1970-01-01T${event.startTime}`).toLocaleTimeString('en-US', {
+                    }) : event.date || 'Date TBA',
+                    time: event.startTime && event.endTime ? `${new Date(`1970-01-01T${event.startTime}`).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
                     })} - ${new Date(`1970-01-01T${event.endTime}`).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
-                    })}`,
+                    })}` : 'Time TBA',
                     venue: event.venue,
                     category: event.category,
                     speaker: event.speakerName || null,
@@ -461,6 +466,22 @@ export function UserDashboard({
     };
 
     fetchRegisteredEvents();
+  }, [user?.id, refreshTrigger]);
+
+  // Refresh events when user navigates to dashboard or when tab becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && user?.id) {
+        // Refresh registered events when user comes back to the page
+        setRefreshTrigger(prev => prev + 1);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
   }, [user?.id]);
 
   // Check if user profile is complete
@@ -523,6 +544,7 @@ export function UserDashboard({
       "pixel pass": "pixel",
       "silicon pass": "silicon",
       "quantum pass": "quantum",
+      "exhibitors pass": "exhibitors",
       "tcet student pass": "tcet_student",
       "tcet pass": "tcet_student",
       // Legacy pass types (for backward compatibility)
@@ -1076,7 +1098,7 @@ export function UserDashboard({
             {registeredSchedule.length > 0 ? (
               <>
                 <div className="mb-4">
-                  <h3 className="text-lg font-semibold mb-2">Your Registered Events</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-foreground">Your Registered Events</h3>
                   <p className="text-sm text-muted-foreground">
                     You have registered for {registeredSchedule.length} event{registeredSchedule.length > 1 ? 's' : ''}
                   </p>
@@ -1147,7 +1169,7 @@ export function UserDashboard({
             {myPasses.length > 0 && eligibleEventsFromPass.length > 0 && (
               <>
                 <div className="mb-4 mt-6">
-                  <h3 className="text-lg font-semibold mb-2">All Events Available with Your Pass</h3>
+                  <h3 className="text-lg font-semibold mb-2 text-foreground">All Events Available with Your Pass</h3>
                   <p className="text-sm text-muted-foreground">
                     These are all the events you can attend with your {myPasses[0]?.passType}. Register for events to add them to your schedule.
                   </p>

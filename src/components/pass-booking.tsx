@@ -132,6 +132,22 @@ export function PassBooking({
       badge: "Best Value",
       description: undefined,
     },
+    {
+      id: "exhibitors",
+      name: "Exhibitors Pass",
+      price: 1299,
+      originalPrice: 1999,
+      features: [
+        "Opportunity to showcase your startup/business/company",
+        "Dedicated booth in Startup Expo",
+        "Participation in Internship Fair",
+        "Partnering with TCET",
+        "Access to networking sessions",
+        "Certificate of participation",
+      ],
+      badge: "Exhibitor",
+      description: "Perfect for startups and companies looking to showcase their products/services",
+    },
   ];
 
   const handlePassSelect = (passId: string) => {
@@ -308,7 +324,7 @@ export function PassBooking({
                   <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20 h-full">
                     <Check className="h-4 w-4 text-green-600" />
                     <AlertDescription className="text-center text-sm text-green-800 dark:text-green-200">
-                      <strong>Early Bird Discount:</strong> Use code <code className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded font-mono text-xs">EARLYBIRDTCET</code> for exclusive pricing!
+                      <strong>Early Bird Discount:</strong> Use code <code className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded font-mono text-sm font-bold">EARLYBIRDTCET</code> for exclusive pricing!
                     </AlertDescription>
                   </Alert>
                 </div>
@@ -317,7 +333,7 @@ export function PassBooking({
           </motion.div>
         </div>
 
-          <div className="mb-8 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {passes.map((pass, index) => (
               <motion.div
                 key={pass.id}
@@ -529,7 +545,7 @@ export function PassBooking({
                 <thead className="border-b bg-muted/50">
                   <tr>
                     <th className="p-4 text-left">Feature</th>
-                    {passes.map((pass) => (
+                    {passes.filter(p => p.id !== "exhibitors").map((pass) => (
                       <th
                         key={pass.id}
                         className="p-4 text-center"
@@ -541,31 +557,29 @@ export function PassBooking({
                 </thead>
                 <tbody>
                   {[
-                    "Startup Expo",
-                    "Panel Discussion",
-                    "IPL Auction",
-                    "AI Build-A-Thon",
-                    "Biz-Arena League",
-                    "Pitch Arena",
-                    "Startup Youth Conclave",
-                    "All 3 Workshops",
-                    "Networking Arena",
-                    "Lunch included",
-                    "The Ten Minute Million",
-                    "Angel Investor Roundtable",
-                    "Incubator Summit",
-                    "Internship Fair",
-                  ].map((feature, idx) => (
-                    <tr key={feature} className="border-b">
-                      <td className="p-4">{feature}</td>
-                      {passes.map((pass, passIdx) => (
+                    { name: "Startup Expo", included: ["pixel", "silicon", "quantum"] },
+                    { name: "Panel Discussion", included: ["pixel", "silicon", "quantum"] },
+                    { name: "IPL Auction", included: ["pixel", "silicon", "quantum"] },
+                    { name: "AI Build-A-Thon", included: ["pixel", "silicon", "quantum"] },
+                    { name: "Biz-Arena League", included: ["pixel", "silicon", "quantum"] },
+                    { name: "Pitch Arena", included: ["silicon", "quantum"] },
+                    { name: "Startup Youth Conclave", included: ["silicon", "quantum"] },
+                    { name: "All 3 Workshops", included: ["silicon", "quantum"] },
+                    { name: "Networking Arena", included: ["silicon", "quantum"] },
+                    { name: "Lunch included", included: ["silicon", "quantum"] },
+                    { name: "The Ten Minute Million", included: ["quantum"] },
+                    { name: "Angel Investor Roundtable", included: ["quantum"] },
+                    { name: "Incubator Summit", included: ["quantum"] },
+                    { name: "Internship Fair", included: ["quantum"] },
+                  ].map((feature) => (
+                    <tr key={feature.name} className="border-b">
+                      <td className="p-4">{feature.name}</td>
+                      {passes.filter(p => p.id !== "exhibitors").map((pass) => (
                         <td
                           key={pass.id}
                           className="p-4 text-center"
                         >
-                          {(passIdx === 0 && idx < 5) ||
-                          (passIdx === 1 && idx < 10) ||
-                          (passIdx === 2 && idx < 14) ? (
+                          {feature.included.includes(pass.id) ? (
                             <Check className="mx-auto h-5 w-5 text-primary" />
                           ) : (
                             <span className="text-muted-foreground">

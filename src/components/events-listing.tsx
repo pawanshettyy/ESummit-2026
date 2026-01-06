@@ -292,6 +292,20 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       icon: Users,
       color: "outline",
     },
+    {
+      id: 18,
+      title: "Networking Arena",
+      category: "networking",
+      description: "Open networking session during lunch - connect with entrepreneurs, investors, judges, and fellow participants. An ideal opportunity to build relationships and explore collaborations.",
+      date: "February 2-3, 2026",
+      time: "Lunch Hours",
+      venue: "Multipurpose Hall 2nd Floor & Architecture Ground Floor",
+      eligibility: "All pass holders",
+      objective: "Facilitate meaningful connections during lunch",
+      outcome: "Build valuable professional relationships",
+      icon: Coffee,
+      color: "outline",
+    },
     // Additional workshops and pre-summit events
     {
       id: 16,
