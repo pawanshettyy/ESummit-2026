@@ -1308,7 +1308,7 @@ export function UserDashboard({
             {/* KonfHub Widget Container */}
             <div className="overflow-y-auto bg-gray-50 dark:bg-gray-950" style={{ height: 'calc(95vh - 160px)' }}>
               <KonfHubWidget
-                eventId="tcet-esummit26"
+                eventId="final-tcet-esummit26"
                 mode="iframe"
                 onSuccess={(data) => {
                   // Pass booking completed successfully
