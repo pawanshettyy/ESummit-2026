@@ -72,7 +72,7 @@ export function ContactUs() {
       position: "Web & Technical Head",
       image: "/assets/team/raj.png",
       email: "raj@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+917715869977",
       linkedin: "https://www.linkedin.com/in/raj-mane-268a95371/"
     }
   ];
@@ -92,7 +92,7 @@ export function ContactUs() {
       position: "Speakers, Judges & Guests Head",
       image: "/assets/team/tanvijabare.png",
       email: "tanvi@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+919619368299",
       linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
     }
   ];
@@ -132,7 +132,7 @@ export function ContactUs() {
       position: "Operations Head",
       image: "/assets/team/bhumi.png",
       email: "bhummi@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+919869832960",
       linkedin: "https://www.linkedin.com/in/bhummi-girnara-7ba804290/"
     },
     {
@@ -140,7 +140,7 @@ export function ContactUs() {
       position: "Operations Head",
       image: "/assets/team/sayyam.png",
       email: "sayyam@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+919373749488",
       linkedin: "https://www.linkedin.com/in/sayyam-lohade-899140334/"
     }
   ];
@@ -161,7 +161,7 @@ export function ContactUs() {
       image: "/assets/team/kanchan.png",
       email: "kanchan@example.com",
       whatsapp: "+917709339449",
-      linkedin: "https://linkedin.com/in/example"
+      linkedin: "https://www.linkedin.com/in/kanchan-tripathi-16b622345?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
     {
       name: "Priyanshi Negi",
@@ -183,53 +183,37 @@ export function ContactUs() {
       className="w-full max-w-xs"
     >
       <GlassCard>
-        <Card className="border-0 bg-transparent h-full overflow-hidden">
-          <CardContent className="p-0 relative group">
-            <div className="relative aspect-[3/4] overflow-hidden">
-              {member.image ? (
-                <img 
-                  src={member.image} 
-                  alt={member.name} 
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <div className="w-full h-full bg-primary/10 flex items-center justify-center">
-                  <div className="text-6xl font-bold text-primary/30">
-                    {member.name.split(" ").map(n => n[0]).join("")}
-                  </div>
-                </div>
+        <Card className="border-0 bg-transparent h-full">
+          <CardContent className="p-6 flex flex-col items-center text-center">
+            <Avatar className="h-32 w-32 mb-4">
+              <AvatarImage src={member.image} alt={member.name} />
+              <AvatarFallback className="text-2xl">
+                {member.name.split(" ").map(n => n[0]).join("")}
+              </AvatarFallback>
+            </Avatar>
+            
+            <h3 className="font-semibold text-lg mb-1">{member.name}</h3>
+            <p className="text-sm text-muted-foreground mb-4">{member.position}</p>
+            
+            <div className="flex gap-2 w-full">
+              <Button
+                variant="secondary"
+                size="sm"
+                className={member.linkedin && !member.linkedin.includes('/in/example') ? "flex-1" : "w-full"}
+                onClick={() => window.open(`https://wa.me/${member.whatsapp.replace(/[^0-9]/g, '')}`, '_blank')}
+              >
+                <FaWhatsapp className="h-4 w-4" />
+              </Button>
+              {member.linkedin && !member.linkedin.includes('/in/example') && (
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="flex-1"
+                  onClick={() => window.open(member.linkedin, '_blank')}
+                >
+                  <Linkedin className="h-4 w-4" />
+                </Button>
               )}
-              
-              {/* Gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
-              
-              {/* Content overlay */}
-              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                <h3 className="font-semibold text-lg mb-1 drop-shadow-lg">{member.name}</h3>
-                <p className="text-sm text-white/90 mb-3 drop-shadow-md">{member.position}</p>
-                
-                {/* Buttons */}
-                <div className="flex gap-2">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    className={member.linkedin && !member.linkedin.includes('/in/example') ? "flex-1 bg-white/90 hover:bg-white text-black" : "w-full bg-white/90 hover:bg-white text-black"}
-                    onClick={() => window.open(`https://wa.me/${member.whatsapp.replace(/[^0-9]/g, '')}`, '_blank')}
-                  >
-                    <FaWhatsapp className="h-4 w-4" />
-                  </Button>
-                  {member.linkedin && !member.linkedin.includes('/in/example') && (
-                    <Button
-                      variant="secondary"
-                      size="sm"
-                      className="flex-1 bg-white/90 hover:bg-white text-black"
-                      onClick={() => window.open(member.linkedin, '_blank')}
-                    >
-                      <Linkedin className="h-4 w-4" />
-                    </Button>
-                  )}
-                </div>
-              </div>
             </div>
           </CardContent>
         </Card>

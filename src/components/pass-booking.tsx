@@ -6,6 +6,8 @@ import {
   Ticket,
   LogIn,
   AlertCircle,
+  Download,
+  FileText,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader } from "./ui/card";
@@ -360,6 +362,25 @@ export function PassBooking({
                       <strong>Pass upgrades available!</strong> You can upgrade your pass at the venue during check-in for additional benefits.
                     </AlertDescription>
                   </Alert>
+                </div>
+                <div className="flex-1">
+                  <a 
+                    href="https://drive.google.com/file/d/1VcOmVrY3FA-nYpKD613_zlFZZEn7R24V/view?usp=sharing" 
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block"
+                  >
+                    <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950 text-center h-full cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
+                      <div className="flex items-center gap-2 justify-center mb-1">
+                        <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                        <Download className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      </div>
+                      <AlertDescription className="text-center text-blue-600 dark:text-blue-400">
+                        <p className="text-sm font-bold">Click to open Brochure</p>
+                        <p className="text-xs mt-1">Learn more about E-Summit 2026</p>
+                      </AlertDescription>
+                    </Alert>
+                  </a>
                 </div>
               </div>
             </div>
