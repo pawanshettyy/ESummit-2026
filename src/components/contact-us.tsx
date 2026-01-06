@@ -22,7 +22,7 @@ export function ContactUs() {
     {
       name: "Ahana Kulkarni",
       position: "Overall Coordinator",
-      image: "/assets/team/ahana.webp",
+      image: "/assets/team/ahana.png",
       email: "ahana@example.com",
       whatsapp: "+918928352406",
       linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
@@ -30,7 +30,7 @@ export function ContactUs() {
     {
       name: "Ayush Pardeshi",
       position: "Overall Coordinator",
-      image: "/assets/team/ayush.webp",
+      image: "/assets/team/ayush.png",
       email: "ayush@example.com",
       whatsapp: "+918766536270",
       linkedin: "https://www.linkedin.com/in/ayush-pardeshi-8b76b4285/"
@@ -42,7 +42,7 @@ export function ContactUs() {
     {
       name: "Hredey Chaand",
       position: "Hospitality & PR Head",
-      image: "/assets/team/hredey.webp",
+      image: "/assets/team/hredey.png",
       email: "hredey@example.com",
       whatsapp: "+919004724466",
       linkedin: "https://www.linkedin.com/in/hredey-chaand-b10787351/"
@@ -50,7 +50,7 @@ export function ContactUs() {
     {
       name: "Aman Pandey",
       position: "Hospitality & PR Head",
-      image: "/assets/team/aman.webp",
+      image: "/assets/team/aman.png",
       email: "aman@example.com",
       whatsapp: "+918108390154",
       linkedin: "https://www.linkedin.com/in/aman-pandey-ab3334259/"
@@ -62,7 +62,7 @@ export function ContactUs() {
     {
       name: "Pawan Shetty",
       position: "Web & Technical Head",
-      image: "/assets/team/pawan.webp",
+      image: "/assets/team/pawan.png",
       email: "pawan@example.com",
       whatsapp: "+917045146954",
       linkedin: "https://www.linkedin.com/in/pawanshettyy/"
@@ -70,7 +70,7 @@ export function ContactUs() {
     {
       name: "Raj Mane",
       position: "Web & Technical Head",
-      image: "/assets/team/rajmane.webp",
+      image: "/assets/team/raj.png",
       email: "raj@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/raj-mane-268a95371/"
@@ -82,15 +82,15 @@ export function ContactUs() {
     {
       name: "Nidhi Dilipkumar Shukla",
       position: "Speakers, Judges & Guests Head",
-      image: "/assets/team/nidhishukla.webp",
+      image: "/assets/team/nidhishukla.png",
       email: "nidhi@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+918169231870",
       linkedin: "https://www.linkedin.com/in/nidhi-shukla-36151a329/"
     },
     {
       name: "Tanvi Prakash Jabare",
       position: "Speakers, Judges & Guests Head",
-      image: "/assets/team/tanvijabare.webp",
+      image: "/assets/team/tanvijabare.png",
       email: "tanvi@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
@@ -102,23 +102,23 @@ export function ContactUs() {
     {
       name: "Yash Yadav",
       position: "Sponsorships & Brands Head",
-      image: "/assets/team/yash.webp",
+      image: "/assets/team/yash.png",
       email: "yash@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+918591134029",
       linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
     },
     {
       name: "Niyatee Thakur",
       position: "Sponsorships & Brands Head",
-      image: "/assets/team/niyatee.webp",
+      image: "/assets/team/niyatee.png",
       email: "niyatee@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+919892682981",
       linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
     },
     {
       name: "Vedant Singh",
       position: "Sponsorships & Brands Head",
-      image: "/assets/team/vedant.webp",
+      image: "/assets/team/vedant.png",
       email: "vedant@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/vedant-singh-93056b2bb/"
@@ -130,7 +130,7 @@ export function ContactUs() {
     {
       name: "Bhummi Girnara",
       position: "Operations Head",
-      image: "/assets/team/bhummi.webp",
+      image: "/assets/team/bhumi.png",
       email: "bhummi@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/bhummi-girnara-7ba804290/"
@@ -138,7 +138,7 @@ export function ContactUs() {
     {
       name: "Sayyam Lohade",
       position: "Operations Head",
-      image: "/assets/team/sayyam.webp",
+      image: "/assets/team/sayyam.png",
       email: "sayyam@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/sayyam-lohade-899140334/"
@@ -150,26 +150,26 @@ export function ContactUs() {
     {
       name: "Nikita Tiwari",
       position: "Design Head",
-      image: "",
+      image: "/assets/team/nikita.png",
       email: "nikita@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+918446156587",
       linkedin: "https://www.linkedin.com/in/nikita-tiwari-73a90330b/"
     },
     {
       name: "Kanchan Tripathi",
       position: "Design Head",
-      image: "",
+      image: "/assets/team/kanchan.png",
       email: "kanchan@example.com",
-      whatsapp: "+911234567890",
+      whatsapp: "+917709339449",
       linkedin: "https://linkedin.com/in/example"
     },
     {
       name: "Priyanshi Negi",
       position: "Design Head",
-      image: "",
+      image: "/assets/team/priyanshi.png",
       email: "priyanshi@example.com",
-      whatsapp: "+911234567890",
-      linkedin: "https://linkedin.com/in/example"
+      whatsapp: "+918669098431",
+      linkedin: ""
     }
   ];
 
@@ -183,36 +183,52 @@ export function ContactUs() {
       className="w-full max-w-xs"
     >
       <GlassCard>
-        <Card className="border-0 bg-transparent h-full">
-          <CardContent className="p-6">
-            <div className="flex flex-col items-center text-center">
-              <Avatar className="h-24 w-24 mb-4">
-                {member.image ? (
-                  <AvatarImage src={member.image} alt={member.name} className="object-cover" />
-                ) : null}
-                <AvatarFallback className="text-lg bg-primary/10">
-                  {member.name.split(" ").map(n => n[0]).join("")}
-                </AvatarFallback>
-              </Avatar>
-              <h3 className="font-semibold text-lg mb-1">{member.name}</h3>
-              <p className="text-sm text-primary mb-4">{member.position}</p>
-              <div className="flex gap-2 w-full">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => window.open(`https://wa.me/${member.whatsapp.replace(/[^0-9]/g, '')}`, '_blank')}
-                >
-                  <FaWhatsapp className="h-4 w-4" />
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1"
-                  onClick={() => window.open(member.linkedin, '_blank')}
-                >
-                  <Linkedin className="h-4 w-4" />
-                </Button>
+        <Card className="border-0 bg-transparent h-full overflow-hidden">
+          <CardContent className="p-0 relative group">
+            <div className="relative aspect-[3/4] overflow-hidden">
+              {member.image ? (
+                <img 
+                  src={member.image} 
+                  alt={member.name} 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-primary/10 flex items-center justify-center">
+                  <div className="text-6xl font-bold text-primary/30">
+                    {member.name.split(" ").map(n => n[0]).join("")}
+                  </div>
+                </div>
+              )}
+              
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent" />
+              
+              {/* Content overlay */}
+              <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+                <h3 className="font-semibold text-lg mb-1 drop-shadow-lg">{member.name}</h3>
+                <p className="text-sm text-white/90 mb-3 drop-shadow-md">{member.position}</p>
+                
+                {/* Buttons */}
+                <div className="flex gap-2">
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    className={member.linkedin && !member.linkedin.includes('/in/example') ? "flex-1 bg-white/90 hover:bg-white text-black" : "w-full bg-white/90 hover:bg-white text-black"}
+                    onClick={() => window.open(`https://wa.me/${member.whatsapp.replace(/[^0-9]/g, '')}`, '_blank')}
+                  >
+                    <FaWhatsapp className="h-4 w-4" />
+                  </Button>
+                  {member.linkedin && !member.linkedin.includes('/in/example') && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      className="flex-1 bg-white/90 hover:bg-white text-black"
+                      onClick={() => window.open(member.linkedin, '_blank')}
+                    >
+                      <Linkedin className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
               </div>
             </div>
           </CardContent>
