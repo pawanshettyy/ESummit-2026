@@ -40,6 +40,9 @@ pnpm-debug.log*
 Thumbs.db
 ehthumbs.db
 
+# Large files - brochures
+public/assets/brochure/*.pdf
+
 # TypeScript
 *.tsbuildinfo
 
