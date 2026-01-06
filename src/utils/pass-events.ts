@@ -302,7 +302,7 @@ export function getEligibleEvents(passType: string): Event[] {
   // Exclude administrative/automatic events that users don't register for
   const excludedEvents = ["d1-registration", "d1-inaugural", "d2-closing", "d1-networking-arena", "d2-networking-arena"];
   
-  // TCET Student Pass / Pixel Pass events (FREE pass)
+  // Thakur Student Pass (TCET/TGBS/TIMSR) / Pixel Pass events (FREE pass)
   const pixelEvents = [
     "d1-startup-expo", "d1-panel-discussion", "d1-ipl-auction", 
     "d1-ai-buildathon-start", "d2-startup-league"
@@ -333,7 +333,7 @@ export function getEligibleEvents(passType: string): Event[] {
     case "pixel": // Pixel Pass - Free entry events
       return allEvents.filter(e => pixelEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
-    case "tcet_student": // TCET Student Pass - Same as Quantum (free)
+    case "tcet_student": // Thakur Student Pass - Same as Quantum (free)
     case "tcet student": 
       return allEvents.filter(e => quantumEvents.includes(e.id) && !excludedEvents.includes(e.id));
     
@@ -373,8 +373,8 @@ export function getPassName(passId: string): string {
     quantum: "Quantum Pass",
     exhibitors: "Exhibitors Pass",
     "exhibitors pass": "Exhibitors Pass",
-    tcet_student: "TCET Student Pass",
-    "tcet student": "TCET Student Pass",
+    tcet_student: "Thakur Student Pass",
+    "tcet student": "Thakur Student Pass",
     // Legacy pass names for backward compatibility
     day1: "Gold Pass",
     day2: "Silver Pass",

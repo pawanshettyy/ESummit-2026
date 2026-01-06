@@ -3,7 +3,8 @@ import prisma from '../config/database';
 import logger from '../utils/logger.util';
 
 /**
- * Assign a unique TCET code to a user
+ * Assign a unique Thakur Student code to a user
+ * ONLY FOR TCET, TGBS, AND TIMSR STUDENTS
  */
 export const assignTcetCode = async (req: Request, res: Response) => {
   try {

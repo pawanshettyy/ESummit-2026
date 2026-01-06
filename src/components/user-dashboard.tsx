@@ -124,15 +124,17 @@ export function UserDashboard({
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  // Check if user is a TCET student based on email domain
+  // Check if user is a Thakur student (TCET, TGBS, TIMSR) based on email domain
   const userName = user?.fullName || userData?.name || "User";
   const userEmail = user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com";
-  const isTCETStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in");
+  const isTCETStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in") || 
+                        userEmail.toLowerCase().endsWith("@tgbs.in") || 
+                        userEmail.toLowerCase().endsWith("@timsr.edu.in");
 
   // Set initial tab to My Passes for all users
   const [activeTab, setActiveTab] = useState("mypasses");
 
-  // Fetch TCET code for TCET students
+  // Fetch TCET code for Thakur students (TCET, TGBS, TIMSR)
   useEffect(() => {
     const fetchTcetCode = async () => {
       if (!isTCETStudent || !user?.id) return;
@@ -154,7 +156,7 @@ export function UserDashboard({
     fetchTcetCode();
   }, [isTCETStudent, user?.id]);
 
-  // Handle TCET pass booking
+  // Handle Thakur Student pass booking
   const handleTcetPassBooking = async () => {
     if (!user?.id) {
       toast.error("🔒 Please sign in to book your pass and unlock exclusive event access!");
@@ -547,6 +549,7 @@ export function UserDashboard({
       "exhibitors pass": "exhibitors",
       "tcet student pass": "tcet_student",
       "tcet pass": "tcet_student",
+      "thakur student pass": "tcet_student",
       // Legacy pass types (for backward compatibility)
       "gold pass": "day1",
       "silver pass": "day2",
@@ -673,7 +676,7 @@ export function UserDashboard({
         <TabsList className="mb-6">
           <TabsTrigger value="mypasses">My Passes</TabsTrigger>
           {isTCETStudent && (
-            <TabsTrigger value="tcet">TCET Student Pass</TabsTrigger>
+            <TabsTrigger value="tcet">Thakur Student Pass</TabsTrigger>
           )}
           <TabsTrigger value="schedule">
             My Schedule
@@ -935,7 +938,7 @@ export function UserDashboard({
           )}
         </TabsContent>
 
-        {/* TCET Student Pass Tab */}
+        {/* Thakur Student Pass Tab */}
         {isTCETStudent && (
           <TabsContent value="tcet">{isLoadingPasses ? (
               <div className="flex items-center justify-center py-12">
@@ -991,15 +994,15 @@ export function UserDashboard({
               </Card>
             ) : (
               <>
-                {/* TCET Students Special Booking */}
+                {/* Thakur Students Special Booking */}
                 <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/10">
                   <CardHeader>
                     <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-bold">🎓 TCET Students Pass</h3>
+                      <h3 className="text-xl font-bold">🎓 Thakur Student Pass</h3>
                       <Badge className="bg-green-600 hover:bg-green-700">FREE</Badge>
                     </div>
                     <p className="text-sm text-muted-foreground mt-2">
-                      Exclusive free pass for TCET students! Book now and enjoy access to select events at E-Summit 2026.
+                      Exclusive free pass for Thakur students! <strong>ONLY FOR TCET, TGBS, AND TIMSR STUDENTS</strong> - Book now and enjoy access to select events at E-Summit 2026.
                     </p>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -1008,7 +1011,7 @@ export function UserDashboard({
                         <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
                         <AlertDescription>
                           <div className="space-y-2">
-                            <p className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-100">Your TCET Access Code:</p>
+                            <p className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-100">Your Thakur Student Access Code:</p>
                             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 border-dashed border-blue-400 dark:border-blue-500">
                               <span className="font-mono text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300 tracking-wider break-all">{tcetCode}</span>
                               <Button
@@ -1024,7 +1027,7 @@ export function UserDashboard({
                                 <span className="text-xs sm:text-sm">Copy</span>
                               </Button>
                             </div>
-                            <p className="text-[10px] sm:text-xs text-blue-700 dark:text-blue-300 font-medium">💡 Save this code! Use it during KonfHub booking to access your TCET student pass</p>
+                            <p className="text-[10px] sm:text-xs text-blue-700 dark:text-blue-300 font-medium">💡 Save this code! Use it during KonfHub booking to access your Thakur Student pass</p>
                           </div>
                         </AlertDescription>
                       </Alert>
@@ -1033,7 +1036,7 @@ export function UserDashboard({
                     <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900">
                       <CheckCircle2 className="h-4 w-4 text-amber-600" />
                       <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
-                        ⚠️ <strong>Verification Required:</strong> You must bring your TCET ID card and a valid government-issued ID to the venue entrance for verification.
+                        ⚠️ <strong>Verification Required:</strong> You must bring your college ID card (TCET/TGBS/TIMSR) and a valid government-issued ID to the venue entrance for verification.
                       </AlertDescription>
                     </Alert>
                     
@@ -1055,7 +1058,7 @@ export function UserDashboard({
                           Processing...
                         </>
                       ) : (
-                        <>Book TCET Students Pass (Free)</>
+                        <>Book Thakur Student Pass (Free)</>
                       )}
                     </Button>
                   </CardContent>
@@ -1267,7 +1270,7 @@ export function UserDashboard({
                   </h3>
                   {tcetCode && (
                     <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border-2 border-dashed border-primary shadow-sm">
-                      <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide mb-1">Your TCET Access Code</p>
+                      <p className="text-[10px] sm:text-xs text-muted-foreground uppercase tracking-wide mb-1">Your Thakur Student Access Code</p>
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                         <span className="font-mono text-2xl sm:text-4xl font-bold text-primary tracking-widest break-all">{tcetCode}</span>
                         <Button
@@ -1276,7 +1279,7 @@ export function UserDashboard({
                           onClick={() => {
                             navigator.clipboard.writeText(tcetCode);
                             toast.success("Code copied!", {
-                              description: "TCET access code copied to clipboard"
+                              description: "Thakur Student access code copied to clipboard"
                             });
                           }}
                           className="w-full sm:w-auto"
@@ -1286,7 +1289,7 @@ export function UserDashboard({
                         </Button>
                       </div>
                       <p className="text-[10px] sm:text-xs text-amber-600 dark:text-amber-400 mt-2 font-medium">
-                        ⚠️ Use this code in the booking form to access your TCET student pass
+                        ⚠️ Use this code in the booking form to access your Thakur Student pass
                       </p>
                     </div>
                   )}
@@ -1310,7 +1313,7 @@ export function UserDashboard({
                 onSuccess={(data) => {
                   // Pass booking completed successfully
                   toast.success("🎉 Booking Successful!", {
-                    description: "Your TCET student pass has been booked. Check your email for confirmation."
+                    description: "Your Thakur Student pass has been booked. Check your email for confirmation."
                   });
                   setShowKonfHubWidget(false);
                 }}
@@ -1368,7 +1371,7 @@ export function UserDashboard({
                     <option value="Pixel Pass">Pixel Pass (₹299)</option>
                     <option value="Silicon Pass">Silicon Pass (₹499)</option>
                     <option value="Quantum Pass">Quantum Pass (₹999)</option>
-                    <option value="TCET Student Pass">TCET Student Pass (Free)</option>
+                    <option value="Thakur Student Pass">Thakur Student Pass (Free - TCET/TGBS/TIMSR Only)</option>
                   </select>
                 </div>
 

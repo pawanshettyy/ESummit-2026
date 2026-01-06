@@ -49,6 +49,21 @@ export function PassBooking({
   const [hasExistingPass, setHasExistingPass] = useState(false);
   const [isCheckingPass, setIsCheckingPass] = useState(false);
 
+  // Check if user is a Thakur student (TCET, TGBS, TIMSR)
+  const userEmail = user?.primaryEmailAddress?.emailAddress || "";
+  const isThakurStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in") || 
+                          userEmail.toLowerCase().endsWith("@tgbs.in") || 
+                          userEmail.toLowerCase().endsWith("@timsr.edu.in");
+
+  // KonfHub ticket ID mapping for each pass
+  const passTicketIds: Record<string, string> = {
+    pixel: "70906",
+    silicon: "70907",
+    quantum: "70908",
+    exhibitors: "70909",
+    tcet_student: "", // Thakur Student Pass - uses standard widget without specific ticket ID
+  };
+
   // Check if user already has a pass
   useEffect(() => {
     const checkExistingPass = async () => {
@@ -149,6 +164,32 @@ export function PassBooking({
       description: "Perfect for startups and companies looking to showcase their products/services",
     },
   ];
+
+  // Add Thakur Student Pass for eligible students
+  const thakurStudentPass = {
+    id: "thakur_student",
+    name: "Thakur Student Pass",
+    price: 0,
+    earlyBirdPrice: 0,
+    originalPrice: 1299,
+    features: [
+      "All Quantum Pass events",
+      "The Ten Minute Million",
+      "The Angel Investor's Roundtable",
+      "Incubator Summit",
+      "Internship Fair",
+      "Premium networking sessions",
+      "Priority access to all events",
+      "Certificate of participation",
+    ],
+    badge: "Thakur Students",
+    description: "Exclusive free pass for TCET, TGBS, and TIMSR students",
+    isThakurPass: true,
+  };
+
+  const displayPasses = isThakurStudent 
+    ? [...passes.filter(p => p.id !== "pixel"), thakurStudentPass] 
+    : passes;
 
   const handlePassSelect = (passId: string) => {
     // Check if user is authenticated
@@ -258,7 +299,7 @@ export function PassBooking({
         >
           <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
             <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
-            <AlertDescription className="text-amber-900 dark:text-amber-100">
+            <AlertDescription className="text-black dark:text-amber-100">
               <strong>You already have a pass!</strong>
               <p className="mt-1 text-sm">
                 Only one pass per user is allowed. Visit your{" "}
@@ -320,21 +361,13 @@ export function PassBooking({
                     </AlertDescription>
                   </Alert>
                 </div>
-                <div className="flex-1">
-                  <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950/20 h-full">
-                    <Check className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-center text-sm text-green-800 dark:text-green-200">
-                      <strong>Early Bird Discount:</strong> Use code <code className="bg-green-100 dark:bg-green-900 px-2 py-1 rounded font-mono text-sm font-bold">EARLYBIRDTCET</code> for exclusive pricing!
-                    </AlertDescription>
-                  </Alert>
-                </div>
               </div>
             </div>
           </motion.div>
         </div>
 
-          <div className="mb-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {passes.map((pass, index) => (
+          <div className="mb-8 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+            {displayPasses.map((pass, index) => (
               <motion.div
                 key={pass.id}
                 initial={{ opacity: 0, y: 30 }}
@@ -433,6 +466,13 @@ export function PassBooking({
                           >
                             Pass Already Purchased
                           </Button>
+                        ) : pass.isThakurPass ? (
+                          <Button
+                            className="w-full"
+                            onClick={() => onNavigate("dashboard")}
+                          >
+                            Get From Dashboard →
+                          </Button>
                         ) : (
                           <Button
                             className="w-full"
@@ -518,6 +558,14 @@ export function PassBooking({
                           >
                             Pass Already Purchased
                           </Button>
+                        ) : pass.isThakurPass ? (
+                          <Button
+                            className="w-full"
+                            variant="outline"
+                            onClick={() => onNavigate("dashboard")}
+                          >
+                            Get From Dashboard →
+                          </Button>
                         ) : (
                           <Button
                             className="w-full"
@@ -545,7 +593,7 @@ export function PassBooking({
                 <thead className="border-b bg-muted/50">
                   <tr>
                     <th className="p-4 text-left">Feature</th>
-                    {passes.filter(p => p.id !== "exhibitors").map((pass) => (
+                    {displayPasses.filter(p => p.id !== "exhibitors").map((pass) => (
                       <th
                         key={pass.id}
                         className="p-4 text-center"
@@ -557,24 +605,24 @@ export function PassBooking({
                 </thead>
                 <tbody>
                   {[
-                    { name: "Startup Expo", included: ["pixel", "silicon", "quantum"] },
-                    { name: "Panel Discussion", included: ["pixel", "silicon", "quantum"] },
-                    { name: "IPL Auction", included: ["pixel", "silicon", "quantum"] },
-                    { name: "AI Build-A-Thon", included: ["pixel", "silicon", "quantum"] },
-                    { name: "Biz-Arena League", included: ["pixel", "silicon", "quantum"] },
-                    { name: "Pitch Arena", included: ["silicon", "quantum"] },
-                    { name: "Startup Youth Conclave", included: ["silicon", "quantum"] },
-                    { name: "All 3 Workshops", included: ["silicon", "quantum"] },
-                    { name: "Networking Arena", included: ["silicon", "quantum"] },
-                    { name: "Lunch included", included: ["silicon", "quantum"] },
-                    { name: "The Ten Minute Million", included: ["quantum"] },
-                    { name: "Angel Investor Roundtable", included: ["quantum"] },
-                    { name: "Incubator Summit", included: ["quantum"] },
-                    { name: "Internship Fair", included: ["quantum"] },
+                    { name: "Startup Expo", included: ["pixel", "silicon", "quantum", "thakur_student"] },
+                    { name: "Panel Discussion", included: ["pixel", "silicon", "quantum", "thakur_student"] },
+                    { name: "IPL Auction", included: ["pixel", "silicon", "quantum", "thakur_student"] },
+                    { name: "AI Build-A-Thon", included: ["pixel", "silicon", "quantum", "thakur_student"] },
+                    { name: "Biz-Arena League", included: ["pixel", "silicon", "quantum", "thakur_student"] },
+                    { name: "Pitch Arena", included: ["silicon", "quantum", "thakur_student"] },
+                    { name: "Startup Youth Conclave", included: ["silicon", "quantum", "thakur_student"] },
+                    { name: "All 3 Workshops", included: ["silicon", "quantum", "thakur_student"] },
+                    { name: "Networking Arena", included: ["silicon", "quantum", "thakur_student"] },
+                    { name: "Lunch included", included: ["silicon", "quantum", "thakur_student"] },
+                    { name: "The Ten Minute Million", included: ["quantum", "thakur_student"] },
+                    { name: "Angel Investor Roundtable", included: ["quantum", "thakur_student"] },
+                    { name: "Incubator Summit", included: ["quantum", "thakur_student"] },
+                    { name: "Internship Fair", included: ["quantum", "thakur_student"] },
                   ].map((feature) => (
                     <tr key={feature.name} className="border-b">
                       <td className="p-4">{feature.name}</td>
-                      {passes.filter(p => p.id !== "exhibitors").map((pass) => (
+                      {displayPasses.filter(p => p.id !== "exhibitors").map((pass) => (
                         <td
                           key={pass.id}
                           className="p-4 text-center"
@@ -648,12 +696,13 @@ export function PassBooking({
           <div className="mt-4">
             <KonfHubWidget
               mode="iframe"
+              ticketId={selectedPass ? passTicketIds[selectedPass] : undefined}
               onSuccess={handleKonfHubSuccess}
               onClose={() => {
                 setShowKonfHubWidget(false);
                 toast.info("Payment cancelled");
               }}
-              className="min-h-[600px]"
+              className="min-h-[500px]"
             />
           </div>
         </DialogContent>

@@ -59,7 +59,9 @@ export function ProfileCompletionModal({
   const { user } = useUser();
   const [loading, setLoading] = useState(false);
   const [userType, setUserType] = useState<UserType>(null);
-  const isTCETStudent = user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@tcetmumbai.in");
+  const isTCETStudent = user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@tcetmumbai.in") ||
+                        user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@tgbs.in") ||
+                        user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@timsr.edu.in");
 
   // Initialize userType based on email domain
   useEffect(() => {
@@ -68,7 +70,7 @@ export function ProfileCompletionModal({
     }
   }, [isTCETStudent]);
 
-  // TCET Student Form
+  // Thakur Student Form (TCET/TGBS/TIMSR)
   const [tcetFormData, setTcetFormData] = useState({
     countryCode: "+91",
     phone: "",
@@ -208,7 +210,7 @@ export function ProfileCompletionModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
-          {/* User Type Selection (only for non-TCET users) */}
+          {/* User Type Selection (only for non-Thakur students) */}
           {!isTCETStudent && !userType && (
             <div className="space-y-3 sm:space-y-4">
               <Label className="text-sm sm:text-base">I am registering as:</Label>

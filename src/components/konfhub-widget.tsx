@@ -4,6 +4,7 @@ interface KonfHubWidgetProps {
   eventId?: string;
   buttonId?: string;
   mode?: 'button' | 'iframe';
+  ticketId?: string;
   onSuccess?: (data: any) => void;
   onClose?: () => void;
   className?: string;
@@ -14,9 +15,10 @@ interface KonfHubWidgetProps {
  * Integrates KonfHub's ticketing widget for seamless pass purchases
  */
 export function KonfHubWidget({
-  eventId = import.meta.env.VITE_KONFHUB_EVENT_ID || 'tcet-esummit26',
+  eventId = import.meta.env.VITE_KONFHUB_EVENT_ID || 'final-tcet-esummit26',
   buttonId = import.meta.env.VITE_KONFHUB_BUTTON_ID || 'btn_a2352136e92a',
   mode = 'iframe',
+  ticketId,
   onSuccess,
   onClose,
   className = '',
@@ -103,12 +105,12 @@ export function KonfHubWidget({
         </div>
       )}
       <iframe
-        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=FFFFFF&fontColor=000000&ticketCl=000000&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=standard`}
+        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=ffffff&fontColor=1e1f24&ticketCl=1e1f24&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=quick&screen=2${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`}
         id="konfhub-widget"
         title={`Register for ${import.meta.env.VITE_APP_NAME || 'E-Summit 2026'}`}
         width="100%"
-        height="600"
-        style={{ border: 'none', minHeight: '600px' }}
+        height="500"
+        style={{ border: 'none', minHeight: '500px' }}
         onLoad={() => setIsLoading(false)}
         className="rounded-lg"
       />

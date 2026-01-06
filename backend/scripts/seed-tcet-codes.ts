@@ -3,11 +3,12 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 /**
- * Seed TCET student codes (100000 to 102499)
+ * Seed Thakur Student codes (100000 to 102499)
+ * ONLY FOR TCET, TGBS, AND TIMSR STUDENTS
  * Total: 2500 codes
  */
 async function seedTcetCodes() {
-  console.log('🌱 Seeding TCET codes...');
+  console.log('🌱 Seeding Thakur Student codes (TCET/TGBS/TIMSR)...');
 
   const codes: string[] = [];
   
@@ -46,14 +47,14 @@ async function seedTcetCodes() {
     console.log(`✅ Inserted ${inserted}/${codes.length} codes`);
   }
 
-  console.log('🎉 TCET codes seeded successfully!');
+  console.log('🎉 Thakur Student codes seeded successfully!');
   console.log(`📊 Total codes available: ${codes.length}`);
 }
 
 // Run the seed function
 seedTcetCodes()
   .catch((error) => {
-    console.error('❌ Error seeding TCET codes:', error);
+    console.error('❌ Error seeding Thakur Student codes:', error);
     process.exit(1);
   })
   .finally(async () => {

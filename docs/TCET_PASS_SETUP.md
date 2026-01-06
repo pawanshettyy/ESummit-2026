@@ -1,18 +1,24 @@
-# TCET Student Pass Setup Guide
+# Thakur Student Pass Setup Guide
 
-This guide explains how to set up the TCET student pass feature with unique code assignment.
+This guide explains how to set up the Thakur Student pass feature with unique code assignment.
 
 ## Overview
 
-The TCET Student Pass feature allows students with `@tcetmumbai.in` email addresses to:
+The Thakur Student Pass feature allows students with Thakur institution email addresses to:
 - Access a special free pass booking section in their dashboard
+- **ONLY FOR TCET, TGBS, AND TIMSR STUDENTS**
 - Receive a unique 6-digit code (from 100000 to 102499)
 - Book their pass through KonfHub with their assigned code
 - **Receive Quantum Pass benefits** including access to all premium events, networking sessions, and priority access
 
+### Eligible Email Domains:
+- `@tcetmumbai.in` - Thakur College of Engineering and Technology
+- `@tgbs.in` - Thakur Global Business School
+- `@timsr.edu.in` - Thakur Institute of Management Studies and Research
+
 ## Pass Benefits
 
-TCET students receive **Quantum Pass** level access, which includes:
+Thakur students receive **Quantum Pass** level access, which includes:
 
 - All Silicon Pass events
 - The Ten Minute Million
@@ -38,7 +44,7 @@ This will:
 - Create the `tcet_codes` table in your database
 - Generate the Prisma Client with the new TcetCode model
 
-### 2. Seed TCET Codes
+### 2. Seed Thakur Student Codes
 
 Populate the database with 2,500 unique codes (100000-102499):
 
@@ -82,29 +88,29 @@ This will insert all codes into the database. Each code:
 ### Modified Files:
 
 1. **`src/components/user-dashboard.tsx`**
-   - Added email domain check for TCET students
-   - Conditional rendering of TCET Student Pass tab
+   - Added email domain check for Thakur students (TCET/TGBS/TIMSR)
+   - Conditional rendering of Thakur Student Pass tab
    - Code assignment logic
    - KonfHub widget integration
    - Toast notifications for user feedback
 
 ## How It Works
 
-### For TCET Students (@tcetmumbai.in):
+### For Thakur Students (@tcetmumbai.in, @tgbs.in, @timsr.edu.in):
 
-1. **Login**: Student signs up/logs in with their TCET email
-2. **Dashboard Access**: They see the "TCET Student Pass" tab
+1. **Login**: Student signs up/logs in with their Thakur institution email
+2. **Dashboard Access**: They see the "Thakur Student Pass" tab
 3. **Code Assignment**:
-   - When they click "Book TCET Students Pass (Free)", a unique code is assigned
+   - When they click "Book Thakur Student Pass (Free)", a unique code is assigned
    - If they already have a code, it's retrieved and displayed
 4. **Booking**:
    - KonfHub widget opens in a modal
    - Their unique code is displayed prominently
    - They complete the booking on KonfHub using this code
 
-### For Non-TCET Students:
+### For Non-Thakur Students:
 
-- The TCET Student Pass tab is hidden
+- The Thakur Student Pass tab is hidden
 - They only see the "My Schedule" tab
 - No code assignment occurs
 
@@ -144,20 +150,20 @@ Response: {
 
 ## Testing
 
-### 1. Test with TCET Email
+### 1. Test with Thakur Institution Email
 
-Create a Clerk account with an email ending in `@tcetmumbai.in`:
+Create a Clerk account with an email ending in `@tcetmumbai.in`, `@tgbs.in`, or `@timsr.edu.in`:
 - Go to dashboard
-- Verify "TCET Student Pass" tab appears
-- Click "Book TCET Students Pass (Free)"
+- Verify "Thakur Student Pass" tab appears
+- Click "Book Thakur Student Pass (Free)"
 - Verify code is assigned and displayed
 - Verify KonfHub widget opens
 
-### 2. Test with Non-TCET Email
+### 2. Test with Non-Thakur Email
 
 Create a Clerk account with any other email:
 - Go to dashboard
-- Verify "TCET Student Pass" tab does NOT appear
+- Verify "Thakur Student Pass" tab does NOT appear
 - Only "My Schedule" tab is visible
 
 ### 3. Test Code Assignment
