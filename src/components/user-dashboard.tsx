@@ -1265,14 +1265,14 @@ export function UserDashboard({
             <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-purple-500/10 p-3 sm:p-6 border-b-2 border-primary/20">
               <div className="flex items-start justify-between gap-2 sm:gap-4">
                 <div className="flex-1 min-w-0">
-                  <h3 className="text-lg sm:text-2xl font-bold mb-2 flex items-center gap-2 !text-gray-900 dark:!text-gray-100">
+                  <h3 className="text-lg sm:text-2xl font-bold mb-2 flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
                     🎓 <span className="truncate">Book TCET Student Pass</span>
                   </h3>
                   {tcetCode && (
                     <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border-2 border-dashed border-primary shadow-sm">
-                      <p className="text-[10px] sm:text-xs !text-gray-900 dark:!text-gray-100 uppercase tracking-wide mb-1 font-semibold">Your Thakur Student Access Code</p>
+                      <p className="text-[10px] sm:text-xs uppercase tracking-wide mb-1 font-semibold" style={{ color: 'var(--foreground)' }}>Your Thakur Student Access Code</p>
                       <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                        <span className="font-mono text-2xl sm:text-4xl font-bold text-black dark:text-white tracking-widest break-all">{tcetCode}</span>
+                        <span className="font-mono text-2xl sm:text-4xl font-bold tracking-widest break-all" style={{ color: 'var(--foreground)' }}>{tcetCode}</span>
                         <Button
                           size="sm"
                           variant="outline"
@@ -1285,10 +1285,10 @@ export function UserDashboard({
                           className="w-full sm:w-auto"
                         >
                           <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="text-xs sm:text-sm !text-gray-900 dark:!text-gray-100 font-medium">Copy</span>
+                          <span className="text-xs sm:text-sm font-medium" style={{ color: 'var(--foreground)' }}>Copy</span>
                         </Button>
                       </div>
-                      <p className="text-[10px] sm:text-xs !text-gray-900 dark:!text-gray-100 mt-2 font-semibold">
+                      <p className="text-[10px] sm:text-xs mt-2 font-semibold" style={{ color: 'var(--foreground)' }}>
                         ⚠️ Use this code in the booking form to access your Thakur Student pass
                       </p>
                     </div>
