@@ -365,7 +365,7 @@ export function PassBooking({
                 </div>
                 <div className="flex-1">
                   <a 
-                    href="https://drive.google.com/file/d/1xOTiWdNWOWacccn6nrG1R3KZoyUThzzA/view?usp=sharing" 
+                    href="https://drive.google.com/file/d/1ORodqG9xSgSKKYi-nwIP4xxhXCvHEXRc/view?usp=sharing" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"

@@ -21,7 +21,7 @@ export function ContactUs() {
   const overallCoordinators: TeamMember[] = [
     {
       name: "Ahana Kulkarni",
-      position: "Overall Coordinator",
+      position: "Chief Technology Officer",
       image: "/assets/team/ahana.png",
       email: "ahana@example.com",
       whatsapp: "+918928352406",
@@ -29,7 +29,7 @@ export function ContactUs() {
     },
     {
       name: "Ayush Pardeshi",
-      position: "Overall Coordinator",
+      position: "Chief Executive Officer",
       image: "/assets/team/ayush.png",
       email: "ayush@example.com",
       whatsapp: "+918766536270",
@@ -41,7 +41,7 @@ export function ContactUs() {
   const hospitalityTeam: TeamMember[] = [
     {
       name: "Hredey Chaand",
-      position: "Hospitality & PR Head",
+      position: "Chief Marketing Officer",
       image: "/assets/team/hredey.png",
       email: "hredey@example.com",
       whatsapp: "+919004724466",
@@ -49,7 +49,7 @@ export function ContactUs() {
     },
     {
       name: "Aman Pandey",
-      position: "Hospitality & PR Head",
+      position: "General Advisor",
       image: "/assets/team/aman.png",
       email: "aman@example.com",
       whatsapp: "+918108390154",
@@ -61,7 +61,7 @@ export function ContactUs() {
   const technicalTeam: TeamMember[] = [
     {
       name: "Pawan Shetty",
-      position: "Web & Technical Head",
+      position: "Technical Lead",
       image: "/assets/team/pawan.png",
       email: "pawan@example.com",
       whatsapp: "+917045146954",
@@ -69,7 +69,7 @@ export function ContactUs() {
     },
     {
       name: "Raj Mane",
-      position: "Web & Technical Head",
+      position: "Technical Lead",
       image: "/assets/team/raj.png",
       email: "raj@example.com",
       whatsapp: "+917715869977",
@@ -81,7 +81,7 @@ export function ContactUs() {
   const speakersTeam: TeamMember[] = [
     {
       name: "Nidhi Dilipkumar Shukla",
-      position: "Speakers, Judges & Guests Head",
+      position: "Event Manager",
       image: "/assets/team/nidhishukla.png",
       email: "nidhi@example.com",
       whatsapp: "+918169231870",
@@ -89,35 +89,15 @@ export function ContactUs() {
     },
     {
       name: "Tanvi Prakash Jabare",
-      position: "Speakers, Judges & Guests Head",
+      position: "Publication Head",
       image: "/assets/team/tanvijabare.png",
       email: "tanvi@example.com",
       whatsapp: "+919619368299",
       linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
-    }
-  ];
-
-  // Sponsorships and Brands
-  const sponsorshipTeam: TeamMember[] = [
-    {
-      name: "Yash Yadav",
-      position: "Sponsorships & Brands Head",
-      image: "/assets/team/yash.png",
-      email: "yash@example.com",
-      whatsapp: "+918591134029",
-      linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
-    },
-    {
-      name: "Niyatee Thakur",
-      position: "Sponsorships & Brands Head",
-      image: "/assets/team/niyatee.png",
-      email: "niyatee@example.com",
-      whatsapp: "+919892682981",
-      linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
     },
     {
       name: "Vedant Singh",
-      position: "Sponsorships & Brands Head",
+      position: "OC - Executive",
       image: "/assets/team/vedant.png",
       email: "vedant@example.com",
       whatsapp: "+911234567890",
@@ -125,11 +105,39 @@ export function ContactUs() {
     }
   ];
 
+  // Sponsorships and Brands
+  const sponsorshipTeam: TeamMember[] = [
+    {
+      name: "Yash Yadav",
+      position: "Sponsorship Head",
+      image: "/assets/team/yash.png",
+      email: "yash@example.com",
+      whatsapp: "+918591134029",
+      linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
+    },
+    {
+      name: "Niyatee Thakur",
+      position: "OC - Marketing",
+      image: "/assets/team/niyatee.png",
+      email: "niyatee@example.com",
+      whatsapp: "+919892682981",
+      linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
+    },
+    {
+      name: "Rudransh Atul Puthan",
+      position: "JC - Operations",
+      image: "/assets/team/rudransh.png",
+      email: "rudransh@example.com",
+      whatsapp: "+918698555596",
+      linkedin: "https://www.linkedin.com/in/rudransh-puthan-b5a1b9307/"
+    }
+  ];
+
   // Operations
   const operationsTeam: TeamMember[] = [
     {
       name: "Bhummi Girnara",
-      position: "Operations Head",
+      position: "Chief Operating Officer",
       image: "/assets/team/bhumi.png",
       email: "bhummi@example.com",
       whatsapp: "+919869832960",
@@ -137,7 +145,7 @@ export function ContactUs() {
     },
     {
       name: "Sayyam Lohade",
-      position: "Operations Head",
+      position: "Secretary",
       image: "/assets/team/sayyam.png",
       email: "sayyam@example.com",
       whatsapp: "+919373749488",
@@ -149,7 +157,7 @@ export function ContactUs() {
   const designTeam: TeamMember[] = [
     {
       name: "Nikita Tiwari",
-      position: "Design Head",
+      position: "Creative Head",
       image: "/assets/team/nikita.png",
       email: "nikita@example.com",
       whatsapp: "+918446156587",
@@ -157,7 +165,7 @@ export function ContactUs() {
     },
     {
       name: "Kanchan Tripathi",
-      position: "Design Head",
+      position: "JC - Operations",
       image: "/assets/team/kanchan.png?v=2",
       email: "kanchan@example.com",
       whatsapp: "+917709339449",
@@ -165,7 +173,7 @@ export function ContactUs() {
     },
     {
       name: "Priyanshi Negi",
-      position: "Design Head",
+      position: "JC - Technical",
       image: "/assets/team/priyanshi.png",
       email: "priyanshi@example.com",
       whatsapp: "+918669098431",
@@ -273,7 +281,7 @@ export function ContactUs() {
       <div className="mb-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center text-foreground">Speakers, Judges & Guests</h2>
         <p className="text-foreground text-center mb-6">For any Speaker, Judge, or Guest related Queries</p>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 max-w-4xl mx-auto place-items-center">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto place-items-center">
           {speakersTeam.map(renderTeamMember)}
         </div>
       </div>
