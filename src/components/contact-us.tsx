@@ -158,7 +158,7 @@ export function ContactUs() {
     {
       name: "Kanchan Tripathi",
       position: "Design Head",
-      image: "/assets/team/kanchan.png",
+      image: "/assets/team/kanchan.png?v=2",
       email: "kanchan@example.com",
       whatsapp: "+917709339449",
       linkedin: "https://www.linkedin.com/in/kanchan-tripathi-16b622345?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
