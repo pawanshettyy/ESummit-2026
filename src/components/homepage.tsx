@@ -193,7 +193,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mx-auto mt-12 grid max-w-2xl grid-cols-4 gap-2 sm:gap-4"
+            className="mx-auto mt-8 sm:mt-12 grid max-w-2xl grid-cols-4 gap-2 sm:gap-3 md:gap-4 px-4"
           >
             {Object.entries(countdown).map(
               ([unit, value], index) => (
@@ -267,12 +267,12 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* Key Highlights */}
       <section className="border-b py-16 bg-gradient-to-br from-background via-background to-primary/5">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
+          <div className="mb-12 text-center px-4">
             <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
               Summit Benefits
             </Badge>
-            <h2 className="mb-4">Why Attend E-Summit 2026?</h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold">Why Attend E-Summit 2026?</h2>
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
               Unlock unprecedented opportunities for growth, learning, and collaboration 
               at India's most comprehensive student entrepreneurship summit.
             </p>
@@ -313,14 +313,14 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* First Edition Special */}
       <section className="border-b py-16 bg-gradient-to-br from-primary/5 via-background to-background relative overflow-hidden">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
+          <div className="mb-12 text-center px-4">
             <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
               Inaugural Edition 2026
             </Badge>
-            <h2 className="mb-4">
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold">
               Why This Inaugural Edition is Special
             </h2>
-            <p className="text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
               Join us in establishing the cornerstone of TCET's entrepreneurial legacy. 
               This pioneering edition marks the beginning of an enduring tradition of innovation, 
               leadership, and transformative business excellence.
@@ -399,13 +399,13 @@ export function HomePage({ onNavigate }: HomePageProps) {
         <Particles className="absolute inset-0 opacity-30" quantity={50} ease={60} />
         
         <div className="container relative z-10 mx-auto px-4">
-          <div className="mb-12 text-center">
+          <div className="mb-12 text-center px-4">
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="mb-4"
+              className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold"
             >
               Featured Speakers
             </motion.h2>
@@ -414,7 +414,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-muted-foreground"
+              className="text-sm sm:text-base text-muted-foreground"
             >
               Learn from the best in the industry
             </motion.p>

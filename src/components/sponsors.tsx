@@ -17,19 +17,19 @@ export function Sponsors() {
             transition={{ duration: 0.6 }}
             className="text-center mb-16"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6 bg-gradient-to-br from-foreground to-foreground/60 bg-clip-text text-transparent px-4">
               Our Sponsors
             </h1>
             
             <AuroraText
               size="lg"
               colors={["#dc2626", "#ef4444", "#f87171", "#fca5a5", "#fecaca"]}
-              className="mb-8"
+              className="mb-8 px-4"
             >
               Will be announced soon
             </AuroraText>
             
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto px-4">
               We're finalizing partnerships with industry-leading organizations
             </p>
           </motion.div>

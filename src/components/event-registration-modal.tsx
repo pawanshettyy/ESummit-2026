@@ -61,6 +61,7 @@ export function EventRegistrationModal({
 
   // Ten Minute Deal Form
   const [tenMinuteMillionForm, setTenMinuteMillionForm] = useState({
+    attendeeType: "", // participant, audience
     startupName: "",
     cin: "",
     dpiitCertified: "",
@@ -191,21 +192,29 @@ export function EventRegistrationModal({
     if (!user?.id) return;
 
     // Validate required fields
-    if (!tenMinuteMillionForm.startupName.trim()) {
-      toast.error("📝 Please enter your startup name.");
+    if (!tenMinuteMillionForm.attendeeType) {
+      toast.error("Please select whether you're participating as a pitcher or audience");
       return;
     }
-    if (!tenMinuteMillionForm.problemStatement.trim()) {
-      toast.error("Problem statement is required");
-      return;
-    }
-    if (!tenMinuteMillionForm.solution.trim()) {
-      toast.error("Solution is required");
-      return;
-    }
-    if (!tenMinuteMillionForm.usp.trim()) {
-      toast.error("Unique selling proposition is required");
-      return;
+    
+    // Only validate pitch-related fields if not registering as audience
+    if (tenMinuteMillionForm.attendeeType !== 'audience') {
+      if (!tenMinuteMillionForm.startupName.trim()) {
+        toast.error("📝 Please enter your startup name.");
+        return;
+      }
+      if (!tenMinuteMillionForm.problemStatement.trim()) {
+        toast.error("Problem statement is required");
+        return;
+      }
+      if (!tenMinuteMillionForm.solution.trim()) {
+        toast.error("Solution is required");
+        return;
+      }
+      if (!tenMinuteMillionForm.usp.trim()) {
+        toast.error("Unique selling proposition is required");
+        return;
+      }
     }
 
     setLoading(true);
@@ -258,17 +267,21 @@ export function EventRegistrationModal({
       toast.error("Attendee type is required");
       return;
     }
-    if (!angelRoundtableForm.problemStatement.trim()) {
-      toast.error("Problem statement is required");
-      return;
-    }
-    if (!angelRoundtableForm.solution.trim()) {
-      toast.error("Solution is required");
-      return;
-    }
-    if (!angelRoundtableForm.usp.trim()) {
-      toast.error("Unique selling proposition is required");
-      return;
+    
+    // Only validate pitch-related fields if not registering as audience
+    if (angelRoundtableForm.attendeeType !== 'audience') {
+      if (!angelRoundtableForm.problemStatement.trim()) {
+        toast.error("Problem statement is required");
+        return;
+      }
+      if (!angelRoundtableForm.solution.trim()) {
+        toast.error("Solution is required");
+        return;
+      }
+      if (!angelRoundtableForm.usp.trim()) {
+        toast.error("Unique selling proposition is required");
+        return;
+      }
     }
 
     setLoading(true);
@@ -321,9 +334,13 @@ export function EventRegistrationModal({
       toast.error("Attendee type is required");
       return;
     }
-    if (!pitchArenaForm.ideaBrief.trim()) {
-      toast.error("Idea brief is required");
-      return;
+    
+    // Only validate pitch-related fields if not registering as audience
+    if (pitchArenaForm.attendeeType !== 'audience') {
+      if (!pitchArenaForm.ideaBrief.trim()) {
+        toast.error("Idea brief is required");
+        return;
+      }
     }
 
     setLoading(true);
@@ -412,117 +429,140 @@ export function EventRegistrationModal({
 
   const renderTenMinuteMillionForm = () => (
     <form onSubmit={handleTenMinuteMillionSubmit} className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <Label htmlFor="startupName">Name of Startup *</Label>
-          <Input
-            id="startupName"
-            value={tenMinuteMillionForm.startupName}
-            onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, startupName: e.target.value }))}
-            required
-          />
-        </div>
-        <div>
-          <Label htmlFor="cin">CIN (if registered)</Label>
-          <Input
-            id="cin"
-            value={tenMinuteMillionForm.cin}
-            onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, cin: e.target.value }))}
-          />
-        </div>
-      </div>
-
       <div>
-        <Label>DPIIT Certified *</Label>
+        <Label>Register as *</Label>
         <RadioGroup
-          value={tenMinuteMillionForm.dpiitCertified}
-          onValueChange={(value) => setTenMinuteMillionForm(prev => ({ ...prev, dpiitCertified: value }))}
-          className="flex gap-4 mt-2"
+          value={tenMinuteMillionForm.attendeeType}
+          onValueChange={(value) => setTenMinuteMillionForm(prev => ({ ...prev, attendeeType: value }))}
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2"
         >
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="yes" id="dpiit-yes" />
-            <Label htmlFor="dpiit-yes">Yes</Label>
+            <RadioGroupItem value="participant" id="ten-participant" />
+            <Label htmlFor="ten-participant" className="cursor-pointer">Participant (Pitcher)</Label>
           </div>
           <div className="flex items-center space-x-2">
-            <RadioGroupItem value="no" id="dpiit-no" />
-            <Label htmlFor="dpiit-no">No</Label>
+            <RadioGroupItem value="audience" id="ten-audience" />
+            <Label htmlFor="ten-audience" className="cursor-pointer">Audience</Label>
           </div>
         </RadioGroup>
       </div>
 
-      <div>
-        <Label htmlFor="startupStage">Stage of Startup *</Label>
-        <Select
-          value={tenMinuteMillionForm.startupStage}
-          onValueChange={(value) => setTenMinuteMillionForm(prev => ({ ...prev, startupStage: value }))}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select startup stage" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ideation">Ideation</SelectItem>
-            <SelectItem value="pre-revenue">Pre-revenue</SelectItem>
-            <SelectItem value="revenue">Revenue</SelectItem>
-            <SelectItem value="growth">Growth</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Only show pitch-related fields if not registering as audience */}
+      {tenMinuteMillionForm.attendeeType !== 'audience' && (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <Label htmlFor="startupName">Name of Startup *</Label>
+              <Input
+                id="startupName"
+                value={tenMinuteMillionForm.startupName}
+                onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, startupName: e.target.value }))}
+                required
+              />
+            </div>
+            <div>
+              <Label htmlFor="cin">CIN (if registered)</Label>
+              <Input
+                id="cin"
+                value={tenMinuteMillionForm.cin}
+                onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, cin: e.target.value }))}
+              />
+            </div>
+          </div>
 
-      <div>
-        <Label htmlFor="problemStatement">Problem Statement *</Label>
-        <Textarea
-          id="problemStatement"
-          value={tenMinuteMillionForm.problemStatement}
-          onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, problemStatement: e.target.value }))}
-          placeholder="Describe the problem your startup is solving"
-          required
-        />
-      </div>
+          <div>
+            <Label>DPIIT Certified *</Label>
+            <RadioGroup
+              value={tenMinuteMillionForm.dpiitCertified}
+              onValueChange={(value) => setTenMinuteMillionForm(prev => ({ ...prev, dpiitCertified: value }))}
+              className="flex gap-4 mt-2"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="yes" id="dpiit-yes" />
+                <Label htmlFor="dpiit-yes">Yes</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="no" id="dpiit-no" />
+                <Label htmlFor="dpiit-no">No</Label>
+              </div>
+            </RadioGroup>
+          </div>
 
-      <div>
-        <Label htmlFor="solution">Solution *</Label>
-        <Textarea
-          id="solution"
-          value={tenMinuteMillionForm.solution}
-          onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, solution: e.target.value }))}
-          placeholder="Describe your solution"
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="startupStage">Stage of Startup *</Label>
+            <Select
+              value={tenMinuteMillionForm.startupStage}
+              onValueChange={(value) => setTenMinuteMillionForm(prev => ({ ...prev, startupStage: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select startup stage" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ideation">Ideation</SelectItem>
+                <SelectItem value="pre-revenue">Pre-revenue</SelectItem>
+                <SelectItem value="revenue">Revenue</SelectItem>
+                <SelectItem value="growth">Growth</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div>
-        <Label htmlFor="usp">USP (Unique Selling Proposition) *</Label>
-        <Textarea
-          id="usp"
-          value={tenMinuteMillionForm.usp}
-          onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, usp: e.target.value }))}
-          placeholder="What makes your solution unique?"
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="problemStatement">Problem Statement *</Label>
+            <Textarea
+              id="problemStatement"
+              value={tenMinuteMillionForm.problemStatement}
+              onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, problemStatement: e.target.value }))}
+              placeholder="Describe the problem your startup is solving"
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="demoLink">Demo/Product Link (if available)</Label>
-        <Input
-          id="demoLink"
-          type="url"
-          value={tenMinuteMillionForm.demoLink}
-          onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, demoLink: e.target.value }))}
-          placeholder="https://..."
-        />
-      </div>
+          <div>
+            <Label htmlFor="solution">Solution *</Label>
+            <Textarea
+              id="solution"
+              value={tenMinuteMillionForm.solution}
+              onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, solution: e.target.value }))}
+              placeholder="Describe your solution"
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="pitchDeckLink">Pitch Deck Link *</Label>
-        <Input
-          id="pitchDeckLink"
-          type="url"
-          value={tenMinuteMillionForm.pitchDeckLink}
-          onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, pitchDeckLink: e.target.value }))}
-          placeholder="https://..."
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="usp">USP (Unique Selling Proposition) *</Label>
+            <Textarea
+              id="usp"
+              value={tenMinuteMillionForm.usp}
+              onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, usp: e.target.value }))}
+              placeholder="What makes your solution unique?"
+              required
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="demoLink">Demo/Product Link (if available)</Label>
+            <Input
+              id="demoLink"
+              type="url"
+              value={tenMinuteMillionForm.demoLink}
+              onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, demoLink: e.target.value }))}
+              placeholder="https://..."
+            />
+          </div>
+
+          <div>
+            <Label htmlFor="pitchDeckLink">Pitch Deck Link *</Label>
+            <Input
+              id="pitchDeckLink"
+              type="url"
+              value={tenMinuteMillionForm.pitchDeckLink}
+              onChange={(e) => setTenMinuteMillionForm(prev => ({ ...prev, pitchDeckLink: e.target.value }))}
+              placeholder="https://..."
+              required
+            />
+          </div>
+        </>
+      )}
 
       <div className="flex gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose} className="flex-1">
@@ -543,96 +583,105 @@ export function EventRegistrationModal({
         <RadioGroup
           value={angelRoundtableForm.attendeeType}
           onValueChange={(value) => setAngelRoundtableForm(prev => ({ ...prev, attendeeType: value }))}
-          className="flex gap-4 mt-2"
+          className="flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:gap-4 mt-2"
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="student" id="student" />
-            <Label htmlFor="student">Student</Label>
+            <Label htmlFor="student" className="cursor-pointer">Student</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="entrepreneur" id="entrepreneur" />
-            <Label htmlFor="entrepreneur">Entrepreneur</Label>
+            <Label htmlFor="entrepreneur" className="cursor-pointer">Entrepreneur</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="company" id="company" />
-            <Label htmlFor="company">Company</Label>
+            <Label htmlFor="company" className="cursor-pointer">Company</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="audience" id="audience" />
+            <Label htmlFor="audience" className="cursor-pointer">Audience</Label>
           </div>
         </RadioGroup>
       </div>
 
-      <div>
-        <Label htmlFor="startupStage">Stage of Startup *</Label>
-        <Select
-          value={angelRoundtableForm.startupStage}
-          onValueChange={(value) => setAngelRoundtableForm(prev => ({ ...prev, startupStage: value }))}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Select startup stage" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="ideation">Ideation</SelectItem>
-            <SelectItem value="pre-revenue">Pre-revenue</SelectItem>
-            <SelectItem value="revenue">Revenue</SelectItem>
-            <SelectItem value="growth">Growth</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Only show pitch-related fields if not registering as audience */}
+      {angelRoundtableForm.attendeeType !== 'audience' && (
+        <>
+          <div>
+            <Label htmlFor="startupStage">Stage of Startup *</Label>
+            <Select
+              value={angelRoundtableForm.startupStage}
+              onValueChange={(value) => setAngelRoundtableForm(prev => ({ ...prev, startupStage: value }))}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select startup stage" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="ideation">Ideation</SelectItem>
+                <SelectItem value="pre-revenue">Pre-revenue</SelectItem>
+                <SelectItem value="revenue">Revenue</SelectItem>
+                <SelectItem value="growth">Growth</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
-      <div>
-        <Label htmlFor="problemStatement">Problem Statement *</Label>
-        <Textarea
-          id="problemStatement"
-          value={angelRoundtableForm.problemStatement}
-          onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, problemStatement: e.target.value }))}
-          placeholder="Describe the problem your startup is solving"
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="problemStatement">Problem Statement *</Label>
+            <Textarea
+              id="problemStatement"
+              value={angelRoundtableForm.problemStatement}
+              onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, problemStatement: e.target.value }))}
+              placeholder="Describe the problem your startup is solving"
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="solution">Solution *</Label>
-        <Textarea
-          id="solution"
-          value={angelRoundtableForm.solution}
-          onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, solution: e.target.value }))}
-          placeholder="Describe your solution"
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="solution">Solution *</Label>
+            <Textarea
+              id="solution"
+              value={angelRoundtableForm.solution}
+              onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, solution: e.target.value }))}
+              placeholder="Describe your solution"
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="usp">USP (Unique Selling Proposition) *</Label>
-        <Textarea
-          id="usp"
-          value={angelRoundtableForm.usp}
-          onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, usp: e.target.value }))}
-          placeholder="What makes your solution unique?"
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="usp">USP (Unique Selling Proposition) *</Label>
+            <Textarea
+              id="usp"
+              value={angelRoundtableForm.usp}
+              onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, usp: e.target.value }))}
+              placeholder="What makes your solution unique?"
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="demoLink">Demo/Product Link (if available)</Label>
-        <Input
-          id="demoLink"
-          type="url"
-          value={angelRoundtableForm.demoLink}
-          onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, demoLink: e.target.value }))}
-          placeholder="https://..."
-        />
-      </div>
+          <div>
+            <Label htmlFor="demoLink">Demo/Product Link (if available)</Label>
+            <Input
+              id="demoLink"
+              type="url"
+              value={angelRoundtableForm.demoLink}
+              onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, demoLink: e.target.value }))}
+              placeholder="https://..."
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="pitchDeckLink">Pitch Deck Link *</Label>
-        <Input
-          id="pitchDeckLink"
-          type="url"
-          value={angelRoundtableForm.pitchDeckLink}
-          onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, pitchDeckLink: e.target.value }))}
-          placeholder="https://..."
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="pitchDeckLink">Pitch Deck Link *</Label>
+            <Input
+              id="pitchDeckLink"
+              type="url"
+              value={angelRoundtableForm.pitchDeckLink}
+              onChange={(e) => setAngelRoundtableForm(prev => ({ ...prev, pitchDeckLink: e.target.value }))}
+              placeholder="https://..."
+              required
+            />
+          </div>
+        </>
+      )}
 
       <div className="flex gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose} className="flex-1">
@@ -653,53 +702,62 @@ export function EventRegistrationModal({
         <RadioGroup
           value={pitchArenaForm.attendeeType}
           onValueChange={(value) => setPitchArenaForm(prev => ({ ...prev, attendeeType: value }))}
-          className="flex gap-4 mt-2"
+          className="flex flex-col sm:flex-row gap-3 sm:gap-4 mt-2"
         >
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="student" id="student" />
-            <Label htmlFor="student">Student</Label>
+            <Label htmlFor="student" className="cursor-pointer">Student</Label>
           </div>
           <div className="flex items-center space-x-2">
             <RadioGroupItem value="startup" id="startup" />
-            <Label htmlFor="startup">Startup</Label>
+            <Label htmlFor="startup" className="cursor-pointer">Startup</Label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <RadioGroupItem value="audience" id="audience" />
+            <Label htmlFor="audience" className="cursor-pointer">Audience</Label>
           </div>
         </RadioGroup>
       </div>
 
-      <div>
-        <Label htmlFor="ideaBrief">Brief about Idea *</Label>
-        <Textarea
-          id="ideaBrief"
-          value={pitchArenaForm.ideaBrief}
-          onChange={(e) => setPitchArenaForm(prev => ({ ...prev, ideaBrief: e.target.value }))}
-          placeholder="Describe your idea briefly"
-          required
-        />
-      </div>
+      {/* Only show pitch-related fields if not registering as audience */}
+      {pitchArenaForm.attendeeType !== 'audience' && (
+        <>
+          <div>
+            <Label htmlFor="ideaBrief">Brief about Idea *</Label>
+            <Textarea
+              id="ideaBrief"
+              value={pitchArenaForm.ideaBrief}
+              onChange={(e) => setPitchArenaForm(prev => ({ ...prev, ideaBrief: e.target.value }))}
+              placeholder="Describe your idea briefly"
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="documentLink">Document Link *</Label>
-        <Input
-          id="documentLink"
-          type="url"
-          value={pitchArenaForm.documentLink}
-          onChange={(e) => setPitchArenaForm(prev => ({ ...prev, documentLink: e.target.value }))}
-          placeholder="https://..."
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="documentLink">Document Link *</Label>
+            <Input
+              id="documentLink"
+              type="url"
+              value={pitchArenaForm.documentLink}
+              onChange={(e) => setPitchArenaForm(prev => ({ ...prev, documentLink: e.target.value }))}
+              placeholder="https://..."
+              required
+            />
+          </div>
 
-      <div>
-        <Label htmlFor="pitchDeckLink">Pitch Deck Link *</Label>
-        <Input
-          id="pitchDeckLink"
-          type="url"
-          value={pitchArenaForm.pitchDeckLink}
-          onChange={(e) => setPitchArenaForm(prev => ({ ...prev, pitchDeckLink: e.target.value }))}
-          placeholder="https://..."
-          required
-        />
-      </div>
+          <div>
+            <Label htmlFor="pitchDeckLink">Pitch Deck Link *</Label>
+            <Input
+              id="pitchDeckLink"
+              type="url"
+              value={pitchArenaForm.pitchDeckLink}
+              onChange={(e) => setPitchArenaForm(prev => ({ ...prev, pitchDeckLink: e.target.value }))}
+              placeholder="https://..."
+              required
+            />
+          </div>
+        </>
+      )}
 
       <div className="flex gap-2 pt-4">
         <Button type="button" variant="outline" onClick={onClose} className="flex-1">

@@ -230,7 +230,7 @@ export function Venue() {
         transition={{ duration: 0.6, delay: 0.2 }}
       >
         <HoverGlow>
-          <Card className="mb-12 overflow-hidden max-w-full">
+          <Card className="mb-8 sm:mb-12 overflow-hidden max-w-full">
             <div className="relative w-full h-64 sm:h-80 md:h-96 lg:h-[500px] overflow-hidden">
               <img
                 src={tcetSrc}

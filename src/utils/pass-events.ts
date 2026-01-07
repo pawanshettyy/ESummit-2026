@@ -305,7 +305,10 @@ export function getEligibleEvents(passType: string): Event[] {
   // Thakur Student Pass (TCET/TGBS/TIMSR) / Pixel Pass events (FREE pass)
   const pixelEvents = [
     "d1-startup-expo", "d1-panel-discussion", "d1-ipl-auction", 
-    "d1-ai-buildathon-start", "d2-startup-league"
+    "d1-ai-buildathon-start", "d2-startup-league",
+    // Pitching events - accessible as audience for pixel pass holders
+    "d1-ten-minute-million", "d1-angel-roundtable", 
+    "d2-pitch-arena", "d2-incubator-summit"
   ];
   
   // Silicon Pass events (Pixel + extras)

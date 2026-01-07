@@ -457,7 +457,7 @@ const EventSchedule = () => {
               </SelectContent>
             </Select>
             <Select value={selectedVenue} onValueChange={setSelectedVenue}>
-              <SelectTrigger className="w-full md:w-[180px]">
+              <SelectTrigger className="w-full sm:w-[180px]">
                 <SelectValue placeholder="Venue" />
               </SelectTrigger>
               <SelectContent>
@@ -488,10 +488,10 @@ const EventSchedule = () => {
       </Card>
 
       <Tabs defaultValue="preEvent" className="w-full">
-        <TabsList className="grid w-full max-w-2xl grid-cols-3">
-          <TabsTrigger value="preEvent">Pre Event</TabsTrigger>
-          <TabsTrigger value="day1">Day 1 - Feb 2</TabsTrigger>
-          <TabsTrigger value="day2">Day 2 - Feb 3</TabsTrigger>
+        <TabsList className="grid w-full max-w-2xl grid-cols-3 text-xs sm:text-sm">
+          <TabsTrigger value="preEvent" className="px-2 sm:px-4">Pre Event</TabsTrigger>
+          <TabsTrigger value="day1" className="px-2 sm:px-4">Day 1 - Feb 2</TabsTrigger>
+          <TabsTrigger value="day2" className="px-2 sm:px-4">Day 2 - Feb 3</TabsTrigger>
         </TabsList>
 
         <TabsContent value="preEvent" className="mt-6">

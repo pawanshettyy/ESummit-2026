@@ -190,7 +190,7 @@ export function PassBooking({
   };
 
   const displayPasses = isThakurStudent 
-    ? [...passes.filter(p => p.id !== "pixel"), thakurStudentPass] 
+    ? [passes.find(p => p.id === "exhibitors")!, thakurStudentPass] 
     : passes;
 
   const handlePassSelect = (passId: string) => {
@@ -335,7 +335,7 @@ export function PassBooking({
             transition={{ duration: 0.6 }}
           >
             <motion.h1
-              className="mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-5xl font-extrabold text-transparent md:text-6xl"
+              className="mb-4 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-3xl font-extrabold text-transparent sm:text-4xl md:text-5xl lg:text-6xl"
               animate={{
                 backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
               }}
@@ -350,7 +350,7 @@ export function PassBooking({
             >
               Choose Your Pass
             </motion.h1>
-            <p className="mx-auto mb-6 max-w-2xl text-lg text-muted-foreground">
+            <p className="mx-auto mb-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-4">
               Select the perfect pass for your E-Summit experience and unlock exclusive access to premium events
             </p>
             <div className="mx-auto mb-6 max-w-4xl">
@@ -365,7 +365,7 @@ export function PassBooking({
                 </div>
                 <div className="flex-1">
                   <a 
-                    href="https://drive.google.com/file/d/1VcOmVrY3FA-nYpKD613_zlFZZEn7R24V/view?usp=sharing" 
+                    href="https://drive.google.com/file/d/1xOTiWdNWOWacccn6nrG1R3KZoyUThzzA/view?usp=sharing" 
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block"
@@ -387,7 +387,7 @@ export function PassBooking({
           </motion.div>
         </div>
 
-          <div className="mb-8 grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+          <div className={`mb-8 grid gap-4 grid-cols-1 md:grid-cols-2 ${isThakurStudent ? 'lg:grid-cols-2 max-w-4xl mx-auto' : 'lg:grid-cols-4'}`}>
             {displayPasses.map((pass, index) => (
               <motion.div
                 key={pass.id}
@@ -614,7 +614,7 @@ export function PassBooking({
                 <thead className="border-b bg-muted/50">
                   <tr>
                     <th className="p-4 text-left">Feature</th>
-                    {displayPasses.filter(p => p.id !== "exhibitors").map((pass) => (
+                    {[...passes.filter(p => p.id !== "exhibitors"), ...(isThakurStudent ? [thakurStudentPass] : [])].map((pass) => (
                       <th
                         key={pass.id}
                         className="p-4 text-center"
@@ -643,7 +643,7 @@ export function PassBooking({
                   ].map((feature) => (
                     <tr key={feature.name} className="border-b">
                       <td className="p-4">{feature.name}</td>
-                      {displayPasses.filter(p => p.id !== "exhibitors").map((pass) => (
+                      {[...passes.filter(p => p.id !== "exhibitors"), ...(isThakurStudent ? [thakurStudentPass] : [])].map((pass) => (
                         <td
                           key={pass.id}
                           className="p-4 text-center"
