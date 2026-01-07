@@ -1368,9 +1368,9 @@ export function UserDashboard({
                     onChange={(e) => setClaimFormData(prev => ({ ...prev, passType: e.target.value }))}
                     style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%236b7280'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E")`, backgroundRepeat: 'no-repeat', backgroundPosition: 'right 0.75rem center', backgroundSize: '1rem' }}
                   >
-                    <option value="Pixel Pass">Pixel Pass (₹299)</option>
-                    <option value="Silicon Pass">Silicon Pass (₹499)</option>
-                    <option value="Quantum Pass">Quantum Pass (₹999)</option>
+                    <option value="Pixel Pass">Pixel Pass</option>
+                    <option value="Silicon Pass">Silicon Pass</option>
+                    <option value="Quantum Pass">Quantum Pass</option>
                     <option value="Thakur Student Pass">Thakur Student Pass (Free - TCET/TGBS/TIMSR Only)</option>
                   </select>
                 </div>
