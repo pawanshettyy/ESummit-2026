@@ -214,7 +214,7 @@ export function Venue() {
           transition={{ duration: 0.6 }}
           className="relative z-10"
         >
-          <h1 className="mb-4 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
+          <h1 className="mb-4 text-5xl md:text-6xl font-bold bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
             Venue Information
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base">
