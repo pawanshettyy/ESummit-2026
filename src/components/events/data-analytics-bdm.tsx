@@ -11,7 +11,6 @@ export function DataAnalyticsBdmPage() {
     eligibility: "Silicon & Quantum Pass holders",
   };
   const primaryContacts = [
-    { name: "Anushka Yadav", role: "Core Member" },
     { name: "Varun Maurya", role: "Junior Core Member" },
     { name: "Shubham Prajapati", role: "OC Member" },
     { name: "Ayush Tyagi", role: "OC Member" },

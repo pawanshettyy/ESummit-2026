@@ -20,20 +20,20 @@ export function ContactUs() {
   // Overall Coordinators
   const overallCoordinators: TeamMember[] = [
     {
-      name: "Ahana Kulkarni",
-      position: "Chief Technology Officer",
-      image: "/assets/team/ahana.png",
-      email: "ahana@example.com",
-      whatsapp: "+918928352406",
-      linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
-    },
-    {
       name: "Ayush Pardeshi",
       position: "Chief Executive Officer",
       image: "/assets/team/ayush.png",
       email: "ayush@example.com",
       whatsapp: "+918766536270",
       linkedin: "https://www.linkedin.com/in/ayush-pardeshi-8b76b4285/"
+    },
+    {
+      name: "Ahana Kulkarni",
+      position: "Chief Technology Officer",
+      image: "/assets/team/ahana.png",
+      email: "ahana@example.com",
+      whatsapp: "+918928352406",
+      linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
     }
   ];
 

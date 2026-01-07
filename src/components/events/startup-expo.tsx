@@ -11,7 +11,6 @@ export function StartupExpoPage() {
     eligibility: "All pass holders",
   };
   const primaryContacts = [
-    { name: "Anushka Yadav", role: "Core Member" },
     { name: "Krish Choudhary", role: "Junior Core Member" },
     { name: "Sankarshan Dwivedi", role: "OC Member" },
     { name: "Aayush Mishra", role: "OC Member" },

@@ -69,13 +69,6 @@ export function Team() {
         branch: "COMP",
         position: "Chairperson",
         department: "Executive"
-      },
-      {
-        name: "Anushka Yadav",
-        year: "TE",
-        branch: "COMP",
-        position: "Vice-Chairperson",
-        department: "Executive"
       }
     ],
     marketing: [
