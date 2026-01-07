@@ -53,7 +53,7 @@ export const eventSchedule = {
     {
       id: "d1-ten-minute-million",
       time: "10:00 - 13:00",
-      title: "The Ten Minute Million",
+      title: "The Ten Minute Deal",
       category: "pitching",
       venue: "Main Auditorium",
       speaker: "Venture Capitalists",

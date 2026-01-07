@@ -21,7 +21,7 @@ The Thakur Student Pass feature allows students with Thakur institution email ad
 Thakur students receive **Quantum Pass** level access, which includes:
 
 - All Silicon Pass events
-- The Ten Minute Million
+- The Ten Minute Deal
 - The Angel Investor's Roundtable
 - Incubator Summit
 - Internship Fair

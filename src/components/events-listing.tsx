@@ -34,7 +34,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
     // PITCHING EVENTS
     {
       id: 1,
-      title: "The Ten Minute Million",
+      title: "The Ten Minute Deal",
       category: "pitching",
       description: "A high-energy pitching event where founders get just 10 minutes to present their startup to investors and industry leaders, aiming to secure funding, partnerships, and validation on the spot.",
       date: "February 2-3, 2026",

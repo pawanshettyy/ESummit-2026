@@ -91,7 +91,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
   const highlights = [
     {
       title: "Funding & Investment Events",
-      description: "Connect with VCs and Angel Investors at The Ten Minute Million: Pitch to Win and The Angel Investor's Roundtable for real fundraising opportunities. TRL 5+ startups pitch for equity and seed funding.",
+      description: "Connect with VCs and Angel Investors at The Ten Minute Deal: Pitch to Win and The Angel Investor's Roundtable for real fundraising opportunities. TRL 5+ startups pitch for equity and seed funding.",
     },
     {
       title: "Incubation & Mentorship",

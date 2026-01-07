@@ -15,7 +15,7 @@ export function Venue() {
     {
       name: "SH-1 (Seminar Hall 1)",
       capacity: "Main Hall",
-      events: ["The Ten Minute Million: Pitch to Win (Day 1 & 2)"],
+      events: ["The Ten Minute Deal: Pitch to Win (Day 1 & 2)"],
       features: ["Premium audio-visual setup", "VC panel seating", "Pitch stage"],
       floor: "Seminar Hall",
     },

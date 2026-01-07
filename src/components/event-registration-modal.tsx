@@ -59,7 +59,7 @@ export function EventRegistrationModal({
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [registrationType, setRegistrationType] = useState<string>("");
 
-  // Ten Minute Million Form
+  // Ten Minute Deal Form
   const [tenMinuteMillionForm, setTenMinuteMillionForm] = useState({
     startupName: "",
     cin: "",
@@ -229,7 +229,7 @@ export function EventRegistrationModal({
       const data = await response.json();
 
       if (data.success) {
-        toast.success("Successfully registered for The Ten Minute Million!");
+        toast.success("Successfully registered for The Ten Minute Deal!");
         onSuccess();
         onClose();
       } else {

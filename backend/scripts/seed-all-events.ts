@@ -39,7 +39,7 @@ const events = [
   },
   {
     eventId: 'd1-ten-minute-million',
-    title: 'Ten Minute Million',
+    title: 'Ten Minute Deal',
     description: 'Exclusive investor pitch session. Get 10 minutes to convince investors to fund your startup.',
     category: 'Investor Pitch',
     date: new Date('2026-02-02T00:00:00Z'),

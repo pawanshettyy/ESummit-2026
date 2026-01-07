@@ -3,7 +3,7 @@ import { EventPageTemplate } from "./event-template";
 
 export function TenMinuteMillionPage() {
   const eventData = {
-    title: "The Ten Minute Million",
+    title: "The Ten Minute Deal",
     tagline: "Pitch Your Vision, Secure Your Future",
     description: "A high-energy pitching event where founders get just 10 minutes to present their startup to investors and industry leaders, aiming to secure funding, partnerships, and validation on the spot.",
     date: "February 2-3, 2026",

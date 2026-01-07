@@ -138,7 +138,7 @@ export function PassBooking({
       originalPrice: 1299,
       features: [
         "All Silicon Pass events",
-        "The Ten Minute Million",
+        "The Ten Minute Deal",
         "The Angel Investor's Roundtable",
         "Incubator Summit",
         "Internship Fair",
@@ -176,7 +176,7 @@ export function PassBooking({
     originalPrice: 1299,
     features: [
       "All Quantum Pass events",
-      "The Ten Minute Million",
+      "The Ten Minute Deal",
       "The Angel Investor's Roundtable",
       "Incubator Summit",
       "Internship Fair",
@@ -636,7 +636,7 @@ export function PassBooking({
                     { name: "All 3 Workshops", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "Networking Arena", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "Lunch included", included: ["silicon", "quantum", "thakur_student"] },
-                    { name: "The Ten Minute Million", included: ["quantum", "thakur_student"] },
+                    { name: "The Ten Minute Deal", included: ["quantum", "thakur_student"] },
                     { name: "Angel Investor Roundtable", included: ["quantum", "thakur_student"] },
                     { name: "Incubator Summit", included: ["quantum", "thakur_student"] },
                     { name: "Internship Fair", included: ["quantum", "thakur_student"] },

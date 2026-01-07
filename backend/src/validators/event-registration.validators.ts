@@ -5,7 +5,7 @@ const baseRegistrationSchema = z.object({
   registrationType: z.enum(['ten_minute_million', 'angel_roundtable', 'pitch_arena']),
 });
 
-// Ten Minute Million form validation
+// Ten Minute Deal form validation
 export const tenMinuteMillionSchema = baseRegistrationSchema.extend({
   registrationType: z.literal('ten_minute_million'),
   startupName: z.string().min(1, 'Startup name is required').max(255),

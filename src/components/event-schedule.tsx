@@ -78,7 +78,7 @@ const EventSchedule = () => {
       {
         id: "d1-ten-minute-million",
         time: "10:00 - 17:00",
-        title: "The Ten Minute Million: Pitch to Win",
+        title: "The Ten Minute Deal: Pitch to Win",
         category: "pitching",
         venue: "SH-1",
         speaker: "5 Venture Capitalists",
@@ -243,7 +243,7 @@ const EventSchedule = () => {
       {
         id: "d2-ten-minute-million",
         time: "10:00 - 17:00",
-        title: "The Ten Minute Million: Pitch to Win (Day 2)",
+        title: "The Ten Minute Deal: Pitch to Win (Day 2)",
         category: "pitching",
         venue: "SH-1",
         speaker: "5 Venture Capitalists",

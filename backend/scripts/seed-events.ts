@@ -43,7 +43,7 @@ const events = [
   },
   {
     eventId: 'd1-ten-minute-million',
-    title: 'The Ten Minute Million: Pitch to Win',
+    title: 'The Ten Minute Deal: Pitch to Win',
     description: 'A high-energy pitching event where founders get just 10 minutes to present their startup to investors and industry leaders, aiming to secure funding, partnerships, and validation on the spot.',
     category: 'pitching',
     date: new Date('2026-02-02'),
@@ -228,7 +228,7 @@ const events = [
   },
   {
     eventId: 'd2-ten-minute-million',
-    title: 'The Ten Minute Million: Pitch to Win (Day 2)',
+    title: 'The Ten Minute Deal: Pitch to Win (Day 2)',
     description: 'A high-energy pitching event where founders get just 10 minutes to present their startup to investors and industry leaders, aiming to secure funding, partnerships, and validation on the spot.',
     category: 'pitching',
     date: new Date('2026-02-03'),
