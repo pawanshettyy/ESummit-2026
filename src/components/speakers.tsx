@@ -1,4 +1,7 @@
 import { motion } from "motion/react";
+import { Linkedin } from "lucide-react";
+import { FaWhatsapp } from "react-icons/fa";
+import { Button } from "./ui/button";
 import { AuroraText } from "./magicui/aurora-text";
 import { Particles } from "./magicui/particles";
 import { GlassCard } from "./accentricity/glass-card";
@@ -41,18 +44,80 @@ export function Speakers() {
           >
             <GlassCard className="p-8 md:p-12">              
               <div className="text-center">
-                <p className="text-sm text-muted-foreground mb-3">
+                <p className="text-xl font-semibold mb-6" style={{ color: 'var(--foreground)' }}>
                   Want to be a speaker at E-Summit 2026?
                 </p>
-                <a 
-                  href="mailto:edictcet@gmail.com" 
-                  className="inline-flex items-center gap-2 text-primary font-medium hover:underline underline-offset-4 transition-all"
-                >
-                  edictcet@gmail.com
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                  </svg>
-                </a>
+                <p className="text-sm mb-8" style={{ color: 'var(--foreground)' }}>
+                  Contact our Speakers Team:
+                </p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  <div className="space-y-3">
+                    <p className="font-medium" style={{ color: 'var(--foreground)' }}>Nidhi Shukla</p>
+                    <p className="text-sm" style={{ color: 'var(--foreground)' }}>Event Manager</p>
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => window.open('https://wa.me/918169231870', '_blank')}
+                      >
+                        <FaWhatsapp className="h-4 w-4 mr-2" />
+                        WhatsApp
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => window.open('https://www.linkedin.com/in/nidhi-shukla-36151a329/', '_blank')}
+                      >
+                        <Linkedin className="h-4 w-4 mr-2" />
+                        LinkedIn
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="font-medium" style={{ color: 'var(--foreground)' }}>Tanvi Jabare</p>
+                    <p className="text-sm" style={{ color: 'var(--foreground)' }}>Publication Head</p>
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => window.open('https://wa.me/919619368299', '_blank')}
+                      >
+                        <FaWhatsapp className="h-4 w-4 mr-2" />
+                        WhatsApp
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => window.open('https://www.linkedin.com/in/tanvi-jabare-b310a0347/', '_blank')}
+                      >
+                        <Linkedin className="h-4 w-4 mr-2" />
+                        LinkedIn
+                      </Button>
+                    </div>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="font-medium" style={{ color: 'var(--foreground)' }}>Vedant Singh</p>
+                    <p className="text-sm" style={{ color: 'var(--foreground)' }}>OC - Executive</p>
+                    <div className="flex gap-2 justify-center">
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => window.open('https://wa.me/911234567890', '_blank')}
+                      >
+                        <FaWhatsapp className="h-4 w-4 mr-2" />
+                        WhatsApp
+                      </Button>
+                      <Button
+                        variant="secondary"
+                        size="sm"
+                        onClick={() => window.open('https://www.linkedin.com/in/vedant-singh-93056b2bb/', '_blank')}
+                      >
+                        <Linkedin className="h-4 w-4 mr-2" />
+                        LinkedIn
+                      </Button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </GlassCard>
           </motion.div>
