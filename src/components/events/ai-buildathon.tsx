@@ -14,7 +14,6 @@ export function AiBuildathonPage() {
 
   const primaryContacts = [
     { name: "Bhummi Girnara", role: "Core Member" },
-    { name: "Subrat Rout", role: "Junior Core Member" },
     { name: "Nishil Dhanuka", role: "OC Member" },
     { name: "Ayush Chandel", role: "OC Member" },
     { name: "Shravani Salunke", role: "OC Member" },
