@@ -149,11 +149,11 @@ export function HomePage({ onNavigate }: HomePageProps) {
 
             <WordReveal
               text="The Beginning of Legacy"
-              className="mb-4 text-xl text-muted-foreground"
+              className="mb-4 text-xl text-foreground"
             />
 
             <TextReveal>
-              <p className="mb-8 text-muted-foreground">
+              <p className="mb-8 text-foreground">
                 Thakur College of Engineering and Technology announces its inaugural E-Summit 2026, 
                 celebrating 25 years of excellence. In collaboration with TIMSR & TGBS, organized by TCET's AXIOS EDIC. 
                 A two-day celebration uniting visionaries, investors, startup founders, and students to ignite 
@@ -211,7 +211,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       <div className="mb-1 sm:mb-2 text-2xl sm:text-3xl text-primary">
                         {value}
                       </div>
-                      <div className="text-xs sm:text-sm text-muted-foreground capitalize">
+                      <div className="text-xs sm:text-sm text-foreground capitalize">
                         {unit}
                       </div>
                     </CardContent>
@@ -253,7 +253,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <div className="mb-1 text-3xl text-primary">
                       {stat.value}
                     </div>
-                    <div className="text-sm text-muted-foreground">
+                    <div className="text-sm text-foreground">
                       {stat.label}
                     </div>
                   </CardContent>
@@ -271,8 +271,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
               Summit Benefits
             </Badge>
-            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold">Why Attend E-Summit 2026?</h2>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">Why Attend E-Summit 2026?</h2>
+            <p className="text-sm sm:text-base text-foreground max-w-2xl mx-auto">
               Unlock unprecedented opportunities for growth, learning, and collaboration 
               at India's most comprehensive student entrepreneurship summit.
             </p>
@@ -299,7 +299,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                         {highlight.title}
                       </h3>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className="text-sm text-foreground leading-relaxed">
                       {highlight.description}
                     </p>
                   </CardContent>
@@ -317,10 +317,10 @@ export function HomePage({ onNavigate }: HomePageProps) {
             <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
               Inaugural Edition 2026
             </Badge>
-            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold">
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">
               Why This Inaugural Edition is Special
             </h2>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-2xl mx-auto">
+            <p className="text-sm sm:text-base text-foreground max-w-2xl mx-auto">
               Join us in establishing the cornerstone of TCET's entrepreneurial legacy. 
               This pioneering edition marks the beginning of an enduring tradition of innovation, 
               leadership, and transformative business excellence.
@@ -340,7 +340,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <Building2 className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="mb-3 text-xl font-semibold">Foundational Legacy</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-foreground leading-relaxed">
                     Become a pioneering participant in TCET's landmark entrepreneurship initiative. 
                     Your presence helps establish a prestigious tradition that will inspire future 
                     generations of innovators and business leaders.
@@ -361,7 +361,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <Trophy className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="mb-3 text-xl font-semibold">Innovative Framework</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-foreground leading-relaxed">
                     Experience cutting-edge formats, curated workshops, and bespoke networking 
                     opportunities meticulously designed to foster entrepreneurial excellence and 
                     strategic collaboration among industry stakeholders.
@@ -382,7 +382,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                     <Users className="h-6 w-6 text-primary" />
                   </div>
                   <h3 className="mb-3 text-xl font-semibold">Elite Networking</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
+                  <p className="text-sm text-foreground leading-relaxed">
                     Gain privileged access to exclusive inaugural edition benefits, including 
                     direct engagement with industry pioneers, venture capitalists, and thought 
                     leaders shaping the future of entrepreneurship.
@@ -405,7 +405,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6 }}
-              className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold"
+              className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground"
             >
               Featured Speakers
             </motion.h2>
@@ -414,7 +414,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-sm sm:text-base text-muted-foreground"
+              className="text-sm sm:text-base text-foreground"
             >
               Learn from the best in the industry
             </motion.p>
@@ -436,7 +436,7 @@ export function HomePage({ onNavigate }: HomePageProps) {
                       Speakers Announcement Coming Soon
                     </span>
                   </div>
-                  <p className="text-muted-foreground max-w-md">
+                  <p className="text-foreground max-w-md">
                     We're finalizing our incredible lineup of industry leaders, successful entrepreneurs, 
                     and investors. Stay tuned for the official announcement!
                   </p>
@@ -589,8 +589,8 @@ export function HomePage({ onNavigate }: HomePageProps) {
       {/* CTA Section */}
       <section className="border-t bg-gradient-to-br from-primary/5 via-background to-background py-16">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-4">Ready to Join E-Summit 2026?</h2>
-          <p className="mb-8 text-muted-foreground">
+          <h2 className="mb-4 text-foreground">Ready to Join E-Summit 2026?</h2>
+          <p className="mb-8 text-foreground">
             Secure your spot at India's premier entrepreneurship
             event
           </p>
