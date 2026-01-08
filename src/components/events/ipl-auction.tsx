@@ -17,7 +17,6 @@ export function IplAuctionPage() {
     { name: "Pawan Shetty", role: "Junior Core Member" },
     { name: "Sakshi Yadav", role: "Junior Core Member" },
     { name: "Prachi Kumari", role: "OC Member" },
-    { name: "Aditya Pandey", role: "OC Member" },
     { name: "Sitanshu Shetty", role: "OC Member" },
   ];
 

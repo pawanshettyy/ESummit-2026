@@ -12,7 +12,6 @@ export function DataAnalyticsBdmPage() {
   };
   const primaryContacts = [
     { name: "Varun Maurya", role: "Junior Core Member" },
-    { name: "Shubham Prajapati", role: "OC Member" },
     { name: "Ayush Tyagi", role: "OC Member" },
     { name: "SHLOK YADAV", role: "OC Member" },
     { name: "Arpit Gawande", role: "OC Member" },

@@ -278,7 +278,6 @@ export function Team() {
     ],
     operations: [
       { name: "Aayush Mishra", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
-      { name: "Aditya Pandey", year: "SE", branch: "AI&ML", position: "OC - Operations", department: "Operations" },
       { name: "Dhanush Shetty", year: "FE", branch: "AI&DS", position: "OC - Operations", department: "Operations" },
       { name: "Roshni Joshi", year: "FE", branch: "E&TC", position: "OC - Operations", department: "Operations" },
       { name: "Anugrah Yadav", year: "FE", branch: "COMP", position: "OC - Operations", department: "Operations" },
@@ -304,7 +303,6 @@ export function Team() {
       { name: "Chinmay Rajesh Mhatre", year: "FE", branch: "AI&DS", position: "OC - Technical", department: "Technical" },
       { name: "Prakash Mandal", year: "SE", branch: "AI&ML", position: "OC - Technical", department: "Technical" },
       { name: "Ayush Singh Chandel", year: "SE", branch: "B.VOC", position: "OC - Technical", department: "Technical" },
-      { name: "Shubham Prajapati", year: "SE", branch: "AI&ML", position: "OC - Technical", department: "Technical" },
       { name: "Ayush Tyagi", year: "FE", branch: "CSE", position: "OC - Technical", department: "Technical" },
       { name: "Bhavika Vasule", year: "SE", branch: "COMP", position: "OC - Technical", department: "Technical" }
     ]
