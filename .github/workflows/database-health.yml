@@ -33,7 +33,7 @@ jobs:
           DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
 
       - name: Upload backup to Azure Storage
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
         with:
           inlineScript: |
             az storage blob upload \
@@ -87,7 +87,7 @@ jobs:
 
     steps:
       - name: Setup Azure CLI
-        uses: azure/CLI@v1
+        uses: azure/CLI@v2
 
       - name: Clean old backups
         run: |
