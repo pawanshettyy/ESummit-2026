@@ -21,14 +21,14 @@ export function ContactUs() {
     {
       name: "Ayush Pardeshi",
       position: "Chief Executive Officer",
-      image: "/assets/team/ayush.png",
+      image: "/assets/team/ayush.png?v=2",
       whatsapp: "+918766536270",
       linkedin: "https://www.linkedin.com/in/ayush-pardeshi-8b76b4285/"
     },
     {
       name: "Ahana Kulkarni",
       position: "Chief Technology Officer",
-      image: "/assets/team/ahana.png",
+      image: "/assets/team/ahana.png?v=2",
       whatsapp: "+918928352406",
       linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
     }
@@ -39,14 +39,14 @@ export function ContactUs() {
     {
       name: "Hredey Chaand",
       position: "Chief Marketing Officer",
-      image: "/assets/team/hredey.png",
+      image: "/assets/team/hredey.png?v=2",
       whatsapp: "+919004724466",
       linkedin: "https://www.linkedin.com/in/hredey-chaand-b10787351/"
     },
     {
       name: "Aman Pandey",
       position: "General Advisor",
-      image: "/assets/team/aman.png",
+      image: "/assets/team/aman.png?v=2",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/aman-pandey/"
     }
@@ -57,14 +57,14 @@ export function ContactUs() {
     {
       name: "Pawan Shetty",
       position: "Technical Lead",
-      image: "/assets/team/pawan.png",
+      image: "/assets/team/pawan.png?v=2",
       whatsapp: "+917045146954",
       linkedin: "https://www.linkedin.com/in/pawanshettyy/"
     },
     {
       name: "Raj Mane",
       position: "Technical Lead",
-      image: "/assets/team/raj.png",
+      image: "/assets/team/raj.png?v=2",
       whatsapp: "+917715869977",
       linkedin: "https://www.linkedin.com/in/raj-mane-268a95371/"
     }
@@ -75,21 +75,21 @@ export function ContactUs() {
     {
       name: "Nidhi Dilipkumar Shukla",
       position: "Event Manager",
-      image: "/assets/team/nidhi.png",
+      image: "/assets/team/nidhi.png?v=2",
       whatsapp: "+918169231870",
       linkedin: "https://www.linkedin.com/in/nidhi-shukla-36151a329/"
     },
     {
       name: "Tanvi Prakash Jabare",
       position: "Publication Head",
-      image: "/assets/team/tanvi.png",
+      image: "/assets/team/tanvi.png?v=2",
       whatsapp: "+919619368299",
       linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
     },
     {
       name: "Vedant Singh",
       position: "OC - Executive",
-      image: "/assets/team/vedant.png",
+      image: "/assets/team/vedant.png?v=2",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/vedant-singh-93056b2bb/"
     }
@@ -100,21 +100,21 @@ export function ContactUs() {
     {
       name: "Yash Yadav",
       position: "Sponsorship Head",
-      image: "/assets/team/yash.png",
+      image: "/assets/team/yash.png?v=2",
       whatsapp: "+918591134029",
       linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
     },
     {
       name: "Diya Tailor",
       position: "JC - Marketing",
-      image: "/assets/team/diya.png",
+      image: "/assets/team/diya.png?v=2",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/diya-tailor/"
     },
     {
       name: "Niyatee Thakur",
       position: "OC - Marketing",
-      image: "/assets/team/niyatee.png",
+      image: "/assets/team/niyatee.png?v=2",
       whatsapp: "+919892682981",
       linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
     }
@@ -125,21 +125,21 @@ export function ContactUs() {
     {
       name: "Bhummi Girnara",
       position: "Chief Operating Officer",
-      image: "/assets/team/bhumi.png",
+      image: "/assets/team/bhumi.png?v=2",
       whatsapp: "+919869832960",
       linkedin: "https://www.linkedin.com/in/bhummi-girnara-7ba804290/"
     },
     {
       name: "Sayyam Lohade",
       position: "Secretary",
-      image: "/assets/team/sayyam.png",
+      image: "/assets/team/sayyam.png?v=2",
       whatsapp: "+919373749488",
       linkedin: "https://www.linkedin.com/in/sayyam-lohade-899140334/"
     },
     {
       name: "Rudransh Atul Puthan",
       position: "JC - Operations",
-      image: "/assets/team/rudransh.png",
+      image: "/assets/team/rudransh.png?v=2",
       whatsapp: "+918698555596",
       linkedin: "https://www.linkedin.com/in/rudransh-puthan-b5a1b9307/"
     }
@@ -150,7 +150,7 @@ export function ContactUs() {
     {
       name: "Nikita Tiwari",
       position: "Creative Head",
-      image: "/assets/team/nikita.png",
+      image: "/assets/team/nikita.png?v=2",
       whatsapp: "+918446156587",
       linkedin: "https://www.linkedin.com/in/nikita-tiwari-73a90330b/"
     },
@@ -164,7 +164,7 @@ export function ContactUs() {
     {
       name: "Priyanshi Negi",
       position: "JC - Technical",
-      image: "/assets/team/priyanshi.png",
+      image: "/assets/team/priyanshi.png?v=2",
       whatsapp: "+918669098431",
       linkedin: ""
     }

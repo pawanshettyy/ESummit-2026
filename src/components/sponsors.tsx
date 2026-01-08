@@ -138,21 +138,21 @@ export function Sponsors() {
               {
                 name: "Yash Yadav",
                 role: "Sponsorship Head",
-                image: "/assets/team/yash.png",
+                image: "/assets/team/yash.png?v=2",
                 whatsapp: "918591134029",
                 linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
               },
               {
                 name: "Niyatee Thakur",
                 role: "OC - Marketing",
-                image: "/assets/team/niyatee.png",
+                image: "/assets/team/niyatee.png?v=2",
                 whatsapp: "919892682981",
                 linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
               },
               {
                 name: "Rudransh Atul Puthan",
                 role: "JC - Operations",
-                image: "/assets/team/rudransh.png",
+                image: "/assets/team/rudransh.png?v=2",
                 whatsapp: "918698555596",
                 linkedin: "https://www.linkedin.com/in/rudransh-puthan-b5a1b9307/"
               }
