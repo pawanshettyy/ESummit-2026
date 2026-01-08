@@ -62,7 +62,7 @@ jobs:
           npx vite-bundle-analyzer dist/assets/*.js -o bundle-analysis.html
 
       - name: Upload bundle analysis
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: bundle-analysis
           path: bundle-analysis.html
@@ -87,7 +87,7 @@ jobs:
           artillery quick --count 10 --num 5 ${{ secrets.STAGING_API_URL }}/api/v1/health
 
       - name: Upload test results
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: artillery-report
           path: artillery-report.json
