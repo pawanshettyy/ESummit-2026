@@ -139,7 +139,7 @@ export function Team() {
   const jcTeam = {
     executive: [
       {
-        name: "Yash Mattha",
+        name: "Yash Matta",
         year: "SE",
         branch: "IT",
         position: "JC - Executive",

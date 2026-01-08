@@ -70,7 +70,7 @@ export function Sponsors() {
                 </AuroraText>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto justify-items-center">
+              <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
                 {category.sponsors.map((sponsor, sponsorIndex) => (
                   <motion.a
                     key={sponsor.name}
