@@ -63,7 +63,7 @@ export function PassBooking({
     silicon: "70907",
     quantum: "70908",
     exhibitors: "70909",
-    tcet_student: "", // Thakur Student Pass - uses standard widget without specific ticket ID
+    tcet_student: "70910", // Thakur Student Pass ticket ID
   };
 
   // Check if user already has a pass
@@ -492,9 +492,9 @@ export function PassBooking({
                         ) : pass.isThakurPass ? (
                           <Button
                             className="w-full"
-                            onClick={() => onNavigate("dashboard")}
+                            onClick={() => handlePassSelect(pass.id)}
                           >
-                            Get From Dashboard →
+                            Get Pass
                           </Button>
                         ) : (
                           <Button
@@ -585,9 +585,9 @@ export function PassBooking({
                           <Button
                             className="w-full"
                             variant="outline"
-                            onClick={() => onNavigate("dashboard")}
+                            onClick={() => handlePassSelect(pass.id)}
                           >
-                            Get From Dashboard →
+                            Get Pass
                           </Button>
                         ) : (
                           <Button
@@ -720,6 +720,10 @@ export function PassBooking({
             <KonfHubWidget
               mode="iframe"
               ticketId={selectedPass ? passTicketIds[selectedPass] : undefined}
+              widgetType={selectedPass === 'thakur_student' ? 'quick' : 'standard'}
+              screen={selectedPass === 'thakur_student' ? 2 : undefined}
+              fontColor={selectedPass === 'thakur_student' ? '000000' : '1e1f24'}
+              ticketColor={selectedPass === 'thakur_student' ? '000000' : '1e1f24'}
               onSuccess={handleKonfHubSuccess}
               onClose={() => {
                 setShowKonfHubWidget(false);
