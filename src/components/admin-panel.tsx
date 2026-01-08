@@ -77,6 +77,7 @@ interface PassData {
   price: number | null;
   createdAt: string;
   purchaseDate?: string;
+  pdfUrl?: string | null;
   ticketDetails?: {
     attendeeName?: string;
     email?: string;
@@ -1392,8 +1393,18 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                                       )}
                                       
                                       {/* Links */}
-                                      {(pass.ticketDetails?.ticketUrl || pass.ticketDetails?.invoiceUrl) && (
+                                      {(pass.pdfUrl || pass.ticketDetails?.ticketUrl || pass.ticketDetails?.invoiceUrl) && (
                                         <div className="col-span-full flex gap-2 pt-2 border-t">
+                                          {pass.pdfUrl && (
+                                            <a 
+                                              href={pass.pdfUrl} 
+                                              target="_blank" 
+                                              rel="noopener noreferrer"
+                                              className="text-xs text-primary hover:underline flex items-center gap-1"
+                                            >
+                                              <Eye className="h-3 w-3" /> View Pass PDF
+                                            </a>
+                                          )}
                                           {pass.ticketDetails?.ticketUrl && (
                                             <a 
                                               href={pass.ticketDetails.ticketUrl} 

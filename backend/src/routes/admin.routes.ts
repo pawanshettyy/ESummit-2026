@@ -1054,6 +1054,7 @@ router.get('/passes', async (req: Request, res: Response) => {
         price: true,
         createdAt: true,
         purchaseDate: true,
+        pdfUrl: true,
         ticketDetails: true,
         user: {
           select: {
@@ -1184,7 +1185,7 @@ router.get('/claims', async (req: Request, res: Response) => {
       const extractedData = claim.extractedData as any;
       return {
         ...claim,
-        pdfFileUrl: extractedData?.filePath ? `/api/v1/admin/claims/${claim.id}/pdf` : null,
+        pdfFileUrl: extractedData?.fileUrl || null,
         pdfFileName: extractedData?.fileName || null,
       };
     });
