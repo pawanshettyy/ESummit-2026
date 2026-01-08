@@ -67,7 +67,6 @@ jobs:
         run: npm test -- --watchAll=false --passWithNoTests
         env:
           CI: true
-          DATABASE_URL: ${{ secrets.TEST_DATABASE_URL }}
           JWT_SECRET: test-jwt-secret-for-ci
           JWT_REFRESH_SECRET: test-refresh-secret-for-ci
 

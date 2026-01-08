@@ -55,7 +55,7 @@ jobs:
         run: npm run build
         env:
           VITE_API_BASE_URL: ${{ secrets.PROD_API_URL }}
-          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.PROD_CLERK_PUBLISHABLE_KEY }}
+          VITE_CLERK_PUBLISHABLE_KEY: ${{ secrets.CLERK_PUBLISHABLE_KEY }}
 
       - name: Deploy to Vercel Production
         run: |
@@ -93,8 +93,6 @@ jobs:
 
       - name: Run database migrations
         run: npm run prisma:migrate
-        env:
-          DATABASE_URL: ${{ secrets.PROD_DATABASE_URL }}
 
       - name: Build backend
         run: npm run build

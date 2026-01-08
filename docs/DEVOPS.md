@@ -132,16 +132,14 @@ Configure these in GitHub repository settings:
 - `VERCEL_PROJECT_ID_BACKEND`: Backend project ID
 
 ### Database
-- `PRODUCTION_DATABASE_URL`: Production database connection
-- `STAGING_DATABASE_URL`: Staging database connection
+- **Hardcoded in backend**: `DATABASE_URL` is set in `backend/.env` file
 
-### Azure Storage (for backups)
-- `AZURE_STORAGE_ACCOUNT`: Storage account name
-- `AZURE_STORAGE_KEY`: Storage account key
+### Authentication
+- `CLERK_PUBLISHABLE_KEY`: Clerk authentication key (same for all environments)
 
 ### API URLs
-- `PRODUCTION_API_URL`: Production API base URL (update for custom domain)
-- `STAGING_API_URL`: Staging API base URL (update for custom domain)
+- `PROD_API_URL`: Production API base URL (e.g., `https://api.tcetesummit.in/`)
+- `STAGING_API_URL`: Staging API base URL (e.g., `https://stagingapi.tcetesummit.in/`)
 
 ## Branch Strategy
 
@@ -179,12 +177,14 @@ Configure these in GitHub repository settings:
 
 ## Custom Domain Deployment
 
-If deploying to a custom domain instead of Vercel:
+Your application is deployed on a custom domain from a forked repository. Set up the following GitHub secrets in your forked repository:
 
-1. Update `PRODUCTION_API_URL` and `STAGING_API_URL` secrets with your custom domain URLs
-2. Ensure your custom domain points to Vercel or your deployment platform
-3. Update CORS settings in your backend if needed
-4. Test all workflows after updating the secrets
+1. `PROD_API_URL`: Your production API URL (e.g., `https://api.tcetesummit.in/`)
+2. `STAGING_API_URL`: Your staging API URL
+3. Ensure your custom domain points to Vercel or your deployment platform
+4. Update CORS settings in your backend if needed
+
+**Storage**: Using Vercel Blob Storage (built-in, no external storage needed)
 
 ## Maintenance
 

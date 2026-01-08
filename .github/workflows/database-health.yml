@@ -29,19 +29,6 @@ jobs:
         run: |
           cd backend
           npm run db:backup
-        env:
-          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
-
-      - name: Upload backup to Azure Storage
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            az storage blob upload \
-              --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
-              --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
-              --container-name backups \
-              --name backup-$(date +%Y%m%d-%H%M%S).sql \
-              --file ./backend/backup.sql
 
   health-check:
     runs-on: ubuntu-latest
@@ -64,41 +51,13 @@ jobs:
         run: |
           cd backend
           npm run db:health
-        env:
-          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
 
       - name: Check database migrations
         run: |
           cd backend
           npx prisma migrate status
-        env:
-          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
 
       - name: Monitor database performance
         run: |
           cd backend
           npm run db:monitor
-        env:
-          DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
-
-  cleanup:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Setup Azure CLI
-        uses: azure/CLI@v1
-
-      - name: Clean old backups
-        run: |
-          # Keep only last 7 days of backups
-          az storage blob list \
-            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
-            --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
-            --container-name backups \
-            --query "[?properties.creationTime < '`date -d '7 days ago' +%Y-%m-%dT%H:%MZ`'].name" \
-            -o tsv | xargs -I {} az storage blob delete \
-            --account-name ${{ secrets.AZURE_STORAGE_ACCOUNT }} \
-            --account-key ${{ secrets.AZURE_STORAGE_KEY }} \
-            --container-name backups \
-            --name {}
