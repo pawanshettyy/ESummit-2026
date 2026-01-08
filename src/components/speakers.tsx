@@ -5,6 +5,7 @@ import { Button } from "./ui/button";
 import { AuroraText } from "./magicui/aurora-text";
 import { Particles } from "./magicui/particles";
 import { GlassCard } from "./accentricity/glass-card";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 
 export function Speakers() {
   return (
@@ -52,6 +53,10 @@ export function Speakers() {
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                   <div className="space-y-3">
+                    <Avatar className="h-32 w-32 mb-4 mx-auto">
+                      <AvatarImage src="/assets/team/nidhi.png?v=2" alt="Nidhi Shukla" />
+                      <AvatarFallback>NS</AvatarFallback>
+                    </Avatar>
                     <p className="font-medium" style={{ color: 'var(--foreground)' }}>Nidhi Shukla</p>
                     <p className="text-sm" style={{ color: 'var(--foreground)' }}>Event Manager</p>
                     <div className="flex gap-2 justify-center">
@@ -74,6 +79,10 @@ export function Speakers() {
                     </div>
                   </div>
                   <div className="space-y-3">
+                    <Avatar className="h-32 w-32 mb-4 mx-auto">
+                      <AvatarImage src="/assets/team/tanvi.png?v=2" alt="Tanvi Jabare" />
+                      <AvatarFallback>TJ</AvatarFallback>
+                    </Avatar>
                     <p className="font-medium" style={{ color: 'var(--foreground)' }}>Tanvi Jabare</p>
                     <p className="text-sm" style={{ color: 'var(--foreground)' }}>Publication Head</p>
                     <div className="flex gap-2 justify-center">
@@ -96,6 +105,10 @@ export function Speakers() {
                     </div>
                   </div>
                   <div className="space-y-3">
+                    <Avatar className="h-32 w-32 mb-4 mx-auto">
+                      <AvatarImage src="/assets/team/vedant.png?v=2" alt="Vedant Singh" />
+                      <AvatarFallback>VS</AvatarFallback>
+                    </Avatar>
                     <p className="font-medium" style={{ color: 'var(--foreground)' }}>Vedant Singh</p>
                     <p className="text-sm" style={{ color: 'var(--foreground)' }}>OC - Executive</p>
                     <div className="flex gap-2 justify-center">
