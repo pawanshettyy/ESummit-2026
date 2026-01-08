@@ -353,35 +353,37 @@ export function PassBooking({
             <p className="mx-auto mb-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-4">
               Select the perfect pass for your E-Summit experience and unlock exclusive access to premium events
             </p>
-            <div className="mx-auto mb-6 max-w-4xl">
-              <div className="flex flex-col md:flex-row gap-4">
-                <div className="flex-1">
-                  <Alert className="border-primary/20 bg-primary/5 text-center h-full">
-                    <Info className="mx-auto h-4 w-4 text-primary" />
-                    <AlertDescription className="text-center text-sm text-primary/80">
-                      <strong>Pass upgrades available!</strong> You can upgrade your pass at the venue during check-in for additional benefits.
+            <div className="mx-auto mb-6 max-w-6xl">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Alert className="border-primary/20 bg-primary/5 text-center">
+                  <Info className="mx-auto h-4 w-4 text-primary" />
+                  <AlertDescription className="text-center text-sm text-primary/80">
+                    <strong>Pass upgrades available!</strong> You can upgrade your pass at the venue during check-in for additional benefits.
+                  </AlertDescription>
+                </Alert>
+                <Alert className="border-orange-200 bg-orange-50 dark:border-orange-800 dark:bg-orange-950 text-center">
+                  <AlertCircle className="mx-auto h-4 w-4 text-orange-600 dark:text-orange-400" />
+                  <AlertDescription className="text-center text-orange-600 dark:text-orange-400">
+                    <strong>Thakur Students:</strong> Please use your institution email ID for login and pass booking.
+                  </AlertDescription>
+                </Alert>
+                <a
+                  href="https://drive.google.com/file/d/1ORodqG9xSgSKKYi-nwIP4xxhXCvHEXRc/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block"
+                >
+                  <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950 text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
+                    <div className="flex items-center gap-2 justify-center mb-1">
+                      <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                      <Download className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <AlertDescription className="text-center text-blue-600 dark:text-blue-400">
+                      <p className="text-sm font-bold">Click to open Brochure</p>
+                      <p className="text-xs mt-1">Learn more about E-Summit 2026</p>
                     </AlertDescription>
                   </Alert>
-                </div>
-                <div className="flex-1">
-                  <a 
-                    href="https://drive.google.com/file/d/1ORodqG9xSgSKKYi-nwIP4xxhXCvHEXRc/view?usp=sharing" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950 text-center h-full cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
-                      <div className="flex items-center gap-2 justify-center mb-1">
-                        <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        <Download className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <AlertDescription className="text-center text-blue-600 dark:text-blue-400">
-                        <p className="text-sm font-bold">Click to open Brochure</p>
-                        <p className="text-xs mt-1">Learn more about E-Summit 2026</p>
-                      </AlertDescription>
-                    </Alert>
-                  </a>
-                </div>
+                </a>
               </div>
             </div>
           </motion.div>
