@@ -64,20 +64,3 @@ jobs:
           else
             curl -f ${{ secrets.STAGING_API_URL }}/api/v1/health
           fi
-
-      - name: Notify rollback completion
-        run: |
-          curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
-            -H 'Content-type: application/json' \
-            -d "{
-              \"text\": \"🔄 Rollback Completed: E-Summit 2026 ${{ github.event.inputs.environment }} rolled back to version ${{ steps.deployment-history.outputs.rollback_version }}\",
-              \"blocks\": [
-                {
-                  \"type\": \"section\",
-                  \"text\": {
-                    \"type\": \"mrkdwn\",
-                    \"text\": \"*Rollback Completed*\nE-Summit 2026 ${{ github.event.inputs.environment }} has been rolled back to version ${{ steps.deployment-history.outputs.rollback_version }}\"
-                  }
-                }
-              ]
-            }"

@@ -139,12 +139,9 @@ Configure these in GitHub repository settings:
 - `AZURE_STORAGE_ACCOUNT`: Storage account name
 - `AZURE_STORAGE_KEY`: Storage account key
 
-### Notifications
-- `SLACK_WEBHOOK_URL`: Slack webhook for alerts
-
 ### API URLs
-- `PRODUCTION_API_URL`: Production API base URL
-- `STAGING_API_URL`: Staging API base URL
+- `PRODUCTION_API_URL`: Production API base URL (update for custom domain)
+- `STAGING_API_URL`: Staging API base URL (update for custom domain)
 
 ## Branch Strategy
 
@@ -167,11 +164,10 @@ Configure these in GitHub repository settings:
 
 ## Alerts
 
-- Slack notifications for:
-  - Deployment failures
-  - Security vulnerabilities
-  - Performance regressions
-  - Database issues
+- Monitor workflow failures in GitHub Actions
+- Check performance regressions in Lighthouse reports
+- Review security scan results weekly
+- Database health monitored via automated checks
 
 ## Rollback Procedure
 
@@ -180,6 +176,15 @@ Configure these in GitHub repository settings:
 3. Click "Run workflow"
 4. Monitor the rollback progress
 5. Verify application health
+
+## Custom Domain Deployment
+
+If deploying to a custom domain instead of Vercel:
+
+1. Update `PRODUCTION_API_URL` and `STAGING_API_URL` secrets with your custom domain URLs
+2. Ensure your custom domain points to Vercel or your deployment platform
+3. Update CORS settings in your backend if needed
+4. Test all workflows after updating the secrets
 
 ## Maintenance
 

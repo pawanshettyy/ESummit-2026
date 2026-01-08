@@ -61,26 +61,3 @@ jobs:
         with:
           name: monitoring-report
           path: monitoring-report.md
-
-  notify:
-    runs-on: ubuntu-latest
-    needs: generate-report
-    if: failure()
-
-    steps:
-      - name: Send failure notification
-        run: |
-          curl -X POST ${{ secrets.SLACK_WEBHOOK_URL }} \
-            -H 'Content-type: application/json' \
-            -d '{
-              "text": "🚨 Monitoring Alert: E-Summit 2026 monitoring workflow failed",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*Monitoring Alert*\nE-Summit 2026 monitoring workflow has failed. Please check the workflow logs for details."
-                  }
-                }
-              ]
-            }'
