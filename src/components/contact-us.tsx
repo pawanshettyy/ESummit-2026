@@ -11,7 +11,6 @@ interface TeamMember {
   name: string;
   position: string;
   image?: string;
-  email: string;
   whatsapp: string;
   linkedin: string;
 }
@@ -23,7 +22,6 @@ export function ContactUs() {
       name: "Ayush Pardeshi",
       position: "Chief Executive Officer",
       image: "/assets/team/ayush.png",
-      email: "ayush@example.com",
       whatsapp: "+918766536270",
       linkedin: "https://www.linkedin.com/in/ayush-pardeshi-8b76b4285/"
     },
@@ -31,7 +29,6 @@ export function ContactUs() {
       name: "Ahana Kulkarni",
       position: "Chief Technology Officer",
       image: "/assets/team/ahana.png",
-      email: "ahana@example.com",
       whatsapp: "+918928352406",
       linkedin: "https://www.linkedin.com/in/ahana-kulkarni-753939272/"
     }
@@ -43,7 +40,6 @@ export function ContactUs() {
       name: "Hredey Chaand",
       position: "Chief Marketing Officer",
       image: "/assets/team/hredey.png",
-      email: "hredey@example.com",
       whatsapp: "+919004724466",
       linkedin: "https://www.linkedin.com/in/hredey-chaand-b10787351/"
     },
@@ -51,9 +47,8 @@ export function ContactUs() {
       name: "Aman Pandey",
       position: "General Advisor",
       image: "/assets/team/aman.png",
-      email: "aman@example.com",
-      whatsapp: "+918108390154",
-      linkedin: "https://www.linkedin.com/in/aman-pandey-ab3334259/"
+      whatsapp: "+911234567890",
+      linkedin: "https://www.linkedin.com/in/aman-pandey/"
     }
   ];
 
@@ -63,7 +58,6 @@ export function ContactUs() {
       name: "Pawan Shetty",
       position: "Technical Lead",
       image: "/assets/team/pawan.png",
-      email: "pawan@example.com",
       whatsapp: "+917045146954",
       linkedin: "https://www.linkedin.com/in/pawanshettyy/"
     },
@@ -71,7 +65,6 @@ export function ContactUs() {
       name: "Raj Mane",
       position: "Technical Lead",
       image: "/assets/team/raj.png",
-      email: "raj@example.com",
       whatsapp: "+917715869977",
       linkedin: "https://www.linkedin.com/in/raj-mane-268a95371/"
     }
@@ -82,16 +75,14 @@ export function ContactUs() {
     {
       name: "Nidhi Dilipkumar Shukla",
       position: "Event Manager",
-      image: "/assets/team/nidhishukla.png",
-      email: "nidhi@example.com",
+      image: "/assets/team/nidhi.png",
       whatsapp: "+918169231870",
       linkedin: "https://www.linkedin.com/in/nidhi-shukla-36151a329/"
     },
     {
       name: "Tanvi Prakash Jabare",
       position: "Publication Head",
-      image: "/assets/team/tanvijabare.png",
-      email: "tanvi@example.com",
+      image: "/assets/team/tanvi.png",
       whatsapp: "+919619368299",
       linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
     },
@@ -99,7 +90,6 @@ export function ContactUs() {
       name: "Vedant Singh",
       position: "OC - Executive",
       image: "/assets/team/vedant.png",
-      email: "vedant@example.com",
       whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/vedant-singh-93056b2bb/"
     }
@@ -111,25 +101,22 @@ export function ContactUs() {
       name: "Yash Yadav",
       position: "Sponsorship Head",
       image: "/assets/team/yash.png",
-      email: "yash@example.com",
       whatsapp: "+918591134029",
       linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
+    },
+    {
+      name: "Diya Tailor",
+      position: "JC - Marketing",
+      image: "/assets/team/diya.png",
+      whatsapp: "+911234567890",
+      linkedin: "https://www.linkedin.com/in/diya-tailor/"
     },
     {
       name: "Niyatee Thakur",
       position: "OC - Marketing",
       image: "/assets/team/niyatee.png",
-      email: "niyatee@example.com",
       whatsapp: "+919892682981",
       linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
-    },
-    {
-      name: "Rudransh Atul Puthan",
-      position: "JC - Operations",
-      image: "/assets/team/rudransh.png",
-      email: "rudransh@example.com",
-      whatsapp: "+918698555596",
-      linkedin: "https://www.linkedin.com/in/rudransh-puthan-b5a1b9307/"
     }
   ];
 
@@ -139,7 +126,6 @@ export function ContactUs() {
       name: "Bhummi Girnara",
       position: "Chief Operating Officer",
       image: "/assets/team/bhumi.png",
-      email: "bhummi@example.com",
       whatsapp: "+919869832960",
       linkedin: "https://www.linkedin.com/in/bhummi-girnara-7ba804290/"
     },
@@ -147,9 +133,15 @@ export function ContactUs() {
       name: "Sayyam Lohade",
       position: "Secretary",
       image: "/assets/team/sayyam.png",
-      email: "sayyam@example.com",
       whatsapp: "+919373749488",
       linkedin: "https://www.linkedin.com/in/sayyam-lohade-899140334/"
+    },
+    {
+      name: "Rudransh Atul Puthan",
+      position: "JC - Operations",
+      image: "/assets/team/rudransh.png",
+      whatsapp: "+918698555596",
+      linkedin: "https://www.linkedin.com/in/rudransh-puthan-b5a1b9307/"
     }
   ];
 
@@ -159,7 +151,6 @@ export function ContactUs() {
       name: "Nikita Tiwari",
       position: "Creative Head",
       image: "/assets/team/nikita.png",
-      email: "nikita@example.com",
       whatsapp: "+918446156587",
       linkedin: "https://www.linkedin.com/in/nikita-tiwari-73a90330b/"
     },
@@ -167,7 +158,6 @@ export function ContactUs() {
       name: "Kanchan Tripathi",
       position: "JC - Operations",
       image: "/assets/team/kanchan.png?v=2",
-      email: "kanchan@example.com",
       whatsapp: "+917709339449",
       linkedin: "https://www.linkedin.com/in/kanchan-tripathi-16b622345?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
     },
@@ -175,7 +165,6 @@ export function ContactUs() {
       name: "Priyanshi Negi",
       position: "JC - Technical",
       image: "/assets/team/priyanshi.png",
-      email: "priyanshi@example.com",
       whatsapp: "+918669098431",
       linkedin: ""
     }
@@ -299,7 +288,7 @@ export function ContactUs() {
       <div className="mb-12">
         <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center text-foreground">Operations</h2>
         <p className="text-foreground text-center mb-6">For any Operations related Queries</p>
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 max-w-4xl mx-auto place-items-center">
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto place-items-center">
           {operationsTeam.map(renderTeamMember)}
         </div>
       </div>
