@@ -14,7 +14,7 @@ export function PanelDiscussionPage() {
     { name: "Nidhi Shukla", role: "Core Member" },
     { name: "Mehwish Siddiqui", role: "Junior Core Member" },
     { name: "Om Paranjape", role: "OC Member" },
-    { name: "Prakash Mandal", role: "OC Member" },
+    // Removed Prakash Mandal
     { name: "Sachin Kumawat", role: "OC Member" },
     { name: "Siddharth Sangwan", role: "OC Member" },
   ];

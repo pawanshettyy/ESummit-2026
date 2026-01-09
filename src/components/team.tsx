@@ -297,11 +297,11 @@ export function Team() {
       { name: "Sakshi Yadav", year: "FE", branch: "CSE", position: "OC - Technical (SMM)", department: "Technical" },
       { name: "Aryan Anil Singh", year: "FE", branch: "COMP", position: "OC - Technical (SMM)", department: "Technical" },
       { name: "Pratik Verma", year: "SE", branch: "COMP", position: "OC - Technical (SMM)", department: "Technical" },
-      { name: "Sneha Chauhan", year: "FE", branch: "E&TC", position: "OC - Technical", department: "Technical" },
+      // Removed Sneha Chauhan
       { name: "Nikhil Shukla", year: "SE", branch: "IT", position: "OC - Technical", department: "Technical" },
       { name: "Saloni Suthar", year: "FE", branch: "BCA", position: "OC - Technical", department: "Technical" },
       { name: "Chinmay Rajesh Mhatre", year: "FE", branch: "AI&DS", position: "OC - Technical", department: "Technical" },
-      { name: "Prakash Mandal", year: "SE", branch: "AI&ML", position: "OC - Technical", department: "Technical" },
+      // Removed Prakash Mandal
       { name: "Ayush Singh Chandel", year: "SE", branch: "B.VOC", position: "OC - Technical", department: "Technical" },
       { name: "Ayush Tyagi", year: "FE", branch: "CSE", position: "OC - Technical", department: "Technical" },
       { name: "Bhavika Vasule", year: "SE", branch: "COMP", position: "OC - Technical", department: "Technical" }

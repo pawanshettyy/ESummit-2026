@@ -16,7 +16,7 @@ export function DesignThinkingPage() {
     { name: "Mitesh Purohit", role: "OC Member" },
     { name: "Archit Kumar", role: "OC Member" },
     { name: "Shivang Shukla", role: "OC Member" },
-    { name: "Sneha Chauhan", role: "OC Member" },
+    // Removed Sneha Chauhan
   ];
 
   return <EventPageTemplate event={event} eventId="d1-design-thinking" panelTitle="Speakers" primaryContacts={primaryContacts} />;
