@@ -26,6 +26,17 @@ const isOriginAllowed = (origin: string | undefined): boolean => {
 // Handler that returns a simple response first to test
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
+    // Check if DATABASE_URL is set
+    if (!process.env.DATABASE_URL) {
+      console.error('DATABASE_URL environment variable is not set');
+      return res.status(500).json({
+        success: false,
+        error: 'Configuration Error',
+        message: 'Database configuration is missing',
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     // Get the origin from the request
     const origin = req.headers.origin as string | undefined;
     

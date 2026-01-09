@@ -444,3 +444,22 @@ export function getFormattedEventsForPass(passType: string) {
     return formatEventWithDate(event, day);
   });
 }
+
+/**
+ * Get combined formatted events for multiple pass types
+ */
+export function getFormattedEventsForPasses(passTypes: string[]) {
+  const allEligibleEvents = new Set<Event>();
+  
+  // Collect unique events from all pass types
+  passTypes.forEach(passType => {
+    const eligibleEvents = getEligibleEvents(passType);
+    eligibleEvents.forEach(event => allEligibleEvents.add(event));
+  });
+  
+  // Convert to array and format
+  return Array.from(allEligibleEvents).map((event) => {
+    const day = event.id.startsWith("d1") ? 1 : 2;
+    return formatEventWithDate(event, day);
+  });
+}

@@ -1,0 +1,63 @@
+name: Database Health Check
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+jobs:
+  backup:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Run database backup
+        run: |
+          cd backend
+          npm run db:backup
+
+  health-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: |
+          cd backend
+          npm ci
+
+      - name: Check database connectivity
+        run: |
+          cd backend
+          npm run db:health
+
+      - name: Check database migrations
+        run: |
+          cd backend
+          npx prisma migrate status
+
+      - name: Monitor database performance
+        run: |
+          cd backend
+          npm run db:monitor
