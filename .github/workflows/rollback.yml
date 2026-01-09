@@ -1,66 +1,14 @@
-name: Rollback Deployment
+name: CD Disabled - Rollback
 
 on:
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to rollback'
-        required: true
-        default: 'staging'
-        type: choice
-        options:
-          - staging
-          - production
-      version:
-        description: 'Version to rollback to (leave empty for previous deployment)'
-        required: false
-        type: string
 
 jobs:
-  rollback:
+  cd-disabled-rollback:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-
-      - name: Get deployment history
-        id: deployment-history
+      - name: CD disabled
         run: |
-          if [ "${{ github.event.inputs.version }}" == "" ]; then
-            # Get previous successful deployment
-            DEPLOYMENT_ID=$(gh run list --workflow deploy-${{ github.event.inputs.environment }}.yml --limit 2 --json conclusion,number --jq '.[] | select(.conclusion == "success") | .number' | head -2 | tail -1)
-          else
-            DEPLOYMENT_ID=${{ github.event.inputs.version }}
-          fi
-
-          echo "rollback_version=$DEPLOYMENT_ID" >> $GITHUB_OUTPUT
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Deploy rollback version
-        run: |
-          echo "Rolling back ${{ github.event.inputs.environment }} to version ${{ steps.deployment-history.outputs.rollback_version }}"
-
-          # Trigger deployment with specific version
-          gh workflow run deploy-${{ github.event.inputs.environment }}.yml \
-            --ref ${{ steps.deployment-history.outputs.rollback_version }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Verify rollback
-        run: |
-          # Wait for deployment to complete
-          sleep 120
-
-          # Health check
-          if [ "${{ github.event.inputs.environment }}" == "production" ]; then
-            curl -f ${{ secrets.PRODUCTION_API_URL }}/api/v1/health
-          else
-            curl -f ${{ secrets.STAGING_API_URL }}/api/v1/health
-          fi
+          echo "Rollback workflow disabled because continuous deployment configuration was removed."
+          echo "If you need rollback capabilities, restore the previous workflow." 
