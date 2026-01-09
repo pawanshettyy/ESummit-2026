@@ -3,7 +3,7 @@ import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import multer, { FileFilterCallback } from 'multer';
-import { put } from '@vercel/blob';
+import { put, del } from '@vercel/blob';
 
 /**
  * Pass Claim Routes
