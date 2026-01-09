@@ -68,6 +68,19 @@ declare global {
     interface NextFunction {
       (err?: any): void;
     }
+
+    // Minimal Multer namespace to satisfy references to Express.Multer.File
+    namespace Multer {
+      interface File {
+        fieldname?: string;
+        originalname?: string;
+        encoding?: string;
+        mimetype?: string;
+        buffer?: Buffer;
+        size?: number;
+        [key: string]: any;
+      }
+    }
   }
 }
 
