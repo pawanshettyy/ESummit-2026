@@ -14,7 +14,7 @@
             "@radix-ui/react-dialog": "^1.1.6",
             "@radix-ui/react-dropdown-menu": "^2.1.6",
             "@radix-ui/react-hover-card": "^1.1.6",
-            "@radix-ui/react-label": "^2.1.2",
+            "@radix-ui/react-label": "^2.1.8",
             "@radix-ui/react-menubar": "^1.1.6",
             "@radix-ui/react-navigation-menu": "^1.2.5",
             "@radix-ui/react-popover": "^1.1.6",
@@ -53,15 +53,34 @@
             "vaul": "^1.1.2"
       },
       "devDependencies": {
+            "@playwright/test": "^1.40.0",
+            "@testing-library/jest-dom": "^6.1.0",
+            "@testing-library/react": "^14.0.0",
+            "@testing-library/user-event": "^14.5.0",
             "@types/node": "^20.10.0",
             "@types/react": "^18.2.21",
             "@types/react-dom": "^18.2.7",
             "@vitejs/plugin-react-swc": "^3.10.2",
+            "@vitest/ui": "^1.0.0",
+            "eslint": "^8.55.0",
+            "jsdom": "^23.0.0",
+            "lighthouse": "^11.0.0",
             "typescript": "^5.9.3",
-            "vite": "^6.3.6"
+            "vite": "^6.3.6",
+            "vitest": "^1.0.0"
       },
       "scripts": {
             "dev": "vite",
-            "build": "vite build"
+            "build": "vite build",
+            "test": "vitest",
+            "test:ui": "vitest --ui",
+            "test:run": "vitest run",
+            "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+            "lint:fix": "eslint . --ext ts,tsx --fix",
+            "preview": "vite preview",
+            "type-check": "tsc --noEmit",
+            "lighthouse": "lhci autorun",
+            "playwright": "playwright test",
+            "playwright:ui": "playwright test --ui"
       }
 }
