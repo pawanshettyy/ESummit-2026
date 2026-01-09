@@ -2,6 +2,7 @@ import app from './app';
 import config from './config';
 import { connectDB, disconnectDB } from './config/database';
 import logger from './utils/logger.util';
+import { ScheduledTasksService } from './services/scheduled-tasks.service';
 
 const PORT = config.port;
 
@@ -10,6 +11,9 @@ const startServer = async () => {
   try {
     // Connect to database
     await connectDB();
+
+    // Initialize scheduled tasks
+    ScheduledTasksService.getInstance();
 
     // Start listening
     const server = app.listen(PORT, () => {
