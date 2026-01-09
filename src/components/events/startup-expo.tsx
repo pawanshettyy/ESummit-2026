@@ -8,6 +8,7 @@ export function StartupExpoPage() {
     date: "February 2, 2026",
     time: "1:00 PM – 5:00 PM",
     venue: "Lobby Area",
+    prize: { first: "₹5,000", second: "₹3,000", total: "₹8,000" },
     eligibility: "All pass holders",
   };
   const primaryContacts = [
