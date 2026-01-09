@@ -14,8 +14,6 @@
     "prisma:seed": "ts-node prisma/seed.ts",
     "prepare-production": "ts-node scripts/prepare-production.ts",
     "seed-tcet": "ts-node scripts/seed-tcet-codes.ts",
-    "test": "jest",
-    "test:watch": "jest --watch",
     "lint": "echo \"Skipping lint in this environment (configure ESLint locally)\"",
     "format": "prettier --write \"src/**/*.ts\""
   },
