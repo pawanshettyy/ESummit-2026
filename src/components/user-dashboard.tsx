@@ -470,6 +470,7 @@ export function UserDashboard({
       "pixel pass": "pixel",
       "silicon pass": "silicon",
       "quantum pass": "quantum",
+      "thakur student pass": "thakur",
       "exhibitors pass": "exhibitors",
       // Legacy pass types (for backward compatibility)
       "gold pass": "day1",
@@ -1089,7 +1090,8 @@ export function UserDashboard({
                   >
                     <option value="Pixel Pass">Pixel Pass</option>
                     <option value="Silicon Pass">Silicon Pass</option>
-                    <option value="Quantum Pass">Quantum Pass</option>
+                      <option value="Quantum Pass">Quantum Pass</option>
+                      <option value="Thakur Student Pass">Thakur Student Pass</option>
                   </select>
                 </div>
 
