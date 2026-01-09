@@ -1,0 +1,93 @@
+name: Performance Monitoring
+
+on:
+  schedule:
+    # Run daily at 2 AM UTC
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Serve and test
+        run: |
+          npm install -g serve
+          serve -s dist -p 3000 &
+          sleep 5
+
+      - name: Run Lighthouse
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: http://localhost:3000
+          configPath: .lighthouserc.json
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+
+  bundle-analysis:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build and analyze bundle
+        run: |
+          npm run build
+          npx vite-bundle-analyzer dist/assets/*.js -o bundle-analysis.html
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v6
+        with:
+          name: bundle-analysis
+          path: bundle-analysis.html
+
+  api-performance:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install Artillery
+        run: npm install -g artillery
+
+      - name: Run API load test
+        run: |
+          artillery quick --count 10 --num 5 ${{ secrets.STAGING_API_URL }}/api/v1/health
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v6
+        with:
+          name: artillery-report
+          path: artillery-report.json
