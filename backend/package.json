@@ -31,7 +31,7 @@
   "dependencies": {
     "@clerk/backend": "^2.25.1",
     "@clerk/express": "^1.7.55",
-    "@prisma/client": "^6.19.0",
+    "@prisma/client": "^7.2.0",
     "@sentry/node": "^10.29.0",
     "@sentry/profiling-node": "^10.29.0",
     "@types/bcrypt": "^5.0.2",
