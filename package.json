@@ -53,15 +53,42 @@
             "vaul": "^1.1.2"
       },
       "devDependencies": {
+            "@playwright/test": "^1.40.0",
+            "@testing-library/jest-dom": "^6.1.0",
+            "@testing-library/react": "^14.0.0",
+            "@testing-library/user-event": "^14.5.0",
+            "@types/bcrypt": "^5.0.2",
+            "@types/cors": "^2.8.17",
+            "@types/express": "^5.0.0",
+            "@types/jsonwebtoken": "^9.0.7",
+            "@types/morgan": "^1.9.9",
+            "@types/multer": "^2.0.0",
             "@types/node": "^20.10.0",
+            "@types/pdfkit": "^0.17.3",
             "@types/react": "^18.2.21",
             "@types/react-dom": "^18.2.7",
+            "@vercel/node": "^2.3.0",
             "@vitejs/plugin-react-swc": "^3.10.2",
+            "@vitest/ui": "^1.0.0",
+            "eslint": "^8.55.0",
+            "jsdom": "^23.0.0",
+            "lighthouse": "^11.0.0",
             "typescript": "^5.9.3",
-            "vite": "^6.3.6"
+            "vite": "^6.3.6",
+            "vitest": "^4.0.16"
       },
       "scripts": {
             "dev": "vite",
-            "build": "vite build"
+            "build": "vite build",
+            "test": "vitest",
+            "test:ui": "vitest --ui",
+            "test:run": "vitest run",
+            "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
+            "lint:fix": "eslint . --ext ts,tsx --fix",
+            "preview": "vite preview",
+            "type-check": "tsc --noEmit",
+            "lighthouse": "lhci autorun",
+            "playwright": "playwright test",
+            "playwright:ui": "playwright test --ui"
       }
 }
