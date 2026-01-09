@@ -105,7 +105,7 @@ export function ContactUs() {
       linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
     },
     {
-      name: "Diya Tailor",
+      name: "Dia Tailor",
       position: "JC - Marketing",
       image: "/assets/team/diya.png?v=2",
       whatsapp: "+911234567890",
