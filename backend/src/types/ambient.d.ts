@@ -82,6 +82,13 @@ declare global {
       }
     }
   }
+
+  // Define MulterRequest interface used in routes
+  interface MulterRequest extends Express.Request {
+    file?: Express.Multer.File;
+    files?: { [fieldname: string]: Express.Multer.File[] } | Express.Multer.File[];
+    body: any;
+  }
 }
 
 export {};

@@ -190,9 +190,9 @@ const upload = multer({
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
     ];
     const allowedExtensions = ['.csv', '.xlsx', '.xls'];
-    const ext = path.extname(file.originalname).toLowerCase();
+    const ext = path.extname(file.originalname || '').toLowerCase();
     
-    if (allowedTypes.includes(file.mimetype) || allowedExtensions.includes(ext)) {
+    if (allowedTypes.includes(file.mimetype || '') || allowedExtensions.includes(ext)) {
       cb(null, true);
     } else {
       cb(new Error('Only CSV and Excel files are allowed'));
