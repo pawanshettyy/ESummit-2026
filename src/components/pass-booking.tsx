@@ -63,7 +63,7 @@ export function PassBooking({
     silicon: "70907",
     quantum: "70908",
     exhibitors: "70909",
-    tcet_student: "", // Thakur Student Pass - uses standard widget without specific ticket ID
+    tcet_student: "70910", // Thakur Student Pass
   };
 
   // Check if user already has a pass
@@ -487,19 +487,12 @@ export function PassBooking({
                           >
                             Pass Already Purchased
                           </Button>
-                        ) : pass.isThakurPass ? (
-                          <Button
-                            className="w-full"
-                            onClick={() => onNavigate("dashboard")}
-                          >
-                            Get From Dashboard →
-                          </Button>
                         ) : (
                           <Button
                             className="w-full"
                             onClick={() => handlePassSelect(pass.id)}
                           >
-                            Select This Pass
+                            {pass.isThakurPass ? "Get Passes" : "Select This Pass"}
                           </Button>
                         )}
                       </CardContent>
@@ -579,21 +572,13 @@ export function PassBooking({
                           >
                             Pass Already Purchased
                           </Button>
-                        ) : pass.isThakurPass ? (
-                          <Button
-                            className="w-full"
-                            variant="outline"
-                            onClick={() => onNavigate("dashboard")}
-                          >
-                            Get From Dashboard →
-                          </Button>
                         ) : (
                           <Button
                             className="w-full"
                             variant="outline"
                             onClick={() => handlePassSelect(pass.id)}
                           >
-                            Select This Pass
+                            {pass.isThakurPass ? "Get Passes" : "Select This Pass"}
                           </Button>
                         )}
                       </CardContent>
