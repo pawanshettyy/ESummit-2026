@@ -432,10 +432,10 @@ export function UserDashboard({
                       month: 'long',
                       day: 'numeric'
                     }) : event.date || 'Date TBA',
-                    time: event.startTime && event.endTime ? `${new Date(`1970-01-01T${event.startTime}`).toLocaleTimeString('en-US', {
+                    time: event.startTime && event.endTime ? `${new Date(event.startTime).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
-                    })} - ${new Date(`1970-01-01T${event.endTime}`).toLocaleTimeString('en-US', {
+                    })} - ${new Date(event.endTime).toLocaleTimeString('en-US', {
                       hour: '2-digit',
                       minute: '2-digit'
                     })}` : 'Time TBA',
