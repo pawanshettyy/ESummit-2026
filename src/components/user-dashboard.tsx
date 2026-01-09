@@ -150,9 +150,9 @@ export function UserDashboard({
           
           // Auto-populate schedule with eligible events based on purchased passes
           if (confirmedPasses.length > 0) {
-            const passTypeId = getPassTypeId(confirmedPasses[0].passType);
+            const passTypes = confirmedPasses.map(pass => getPassTypeId(pass.passType));
             
-            const eligibleEvents = getFormattedEventsForPass(passTypeId);
+            const eligibleEvents = getFormattedEventsForPasses(passTypes);
             
             // Convert to the Event interface format used by the component
             const formattedEvents: Event[] = eligibleEvents.map(event => ({
