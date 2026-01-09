@@ -183,7 +183,7 @@ const upload = multer({
   limits: {
     fileSize: 50 * 1024 * 1024, // 50MB max for larger exports
   },
-  fileFilter: (_req, file, cb) => {
+  fileFilter: (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
     const allowedTypes = [
       'text/csv',
       'application/vnd.ms-excel',
@@ -226,6 +226,10 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
     });
 
     let records: any[];
+
+    if (!filePath) {
+      return sendError(res, 'File path not available', 500);
+    }
 
     if (fileExt === '.csv') {
       const fileContent = fs.readFileSync(filePath, 'utf-8');
