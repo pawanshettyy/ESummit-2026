@@ -1,6 +1,7 @@
 import { SignIn, SignUp } from "@clerk/clerk-react";
 import { Card, CardContent, CardHeader } from "./ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
+import { useState, useRef, useEffect } from "react";
 
 interface AuthModalProps {
   onNavigate: (page: string) => void;
@@ -8,8 +9,43 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ onNavigate }: AuthModalProps) {
+  const [activeTab, setActiveTab] = useState<"login" | "signup">("login");
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handler = (e: Event) => {
+      const target = e.target as HTMLElement | null;
+      if (!target) return;
+      const anchor = target.closest('a') as HTMLAnchorElement | null;
+      if (!anchor) return;
+
+      const href = anchor.getAttribute('href') || '';
+      const text = (anchor.textContent || '').toLowerCase();
+
+      if (href.includes('#signup') || text.includes('sign up') || text.includes("don't have an account")) {
+        e.preventDefault();
+        e.stopPropagation();
+        setActiveTab('signup');
+        return;
+      }
+
+      if (href.includes('#login') || text.includes('sign in') || text.includes('already have an account')) {
+        e.preventDefault();
+        e.stopPropagation();
+        setActiveTab('login');
+        return;
+      }
+    };
+
+    el.addEventListener('click', handler, true);
+    return () => el.removeEventListener('click', handler, true);
+  }, []);
+
   return (
-    <div className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-4 sm:py-8">
+    <div ref={containerRef} className="container mx-auto flex min-h-[calc(100vh-4rem)] items-center justify-center px-4 py-4 sm:py-8">
       <Card className="w-full max-w-md overflow-hidden">
         <CardHeader className="px-4 sm:px-6">
           <div className="text-center">
@@ -20,7 +56,7 @@ export function AuthModal({ onNavigate }: AuthModalProps) {
           </div>
         </CardHeader>
         <CardContent className="px-2 sm:px-6 pb-4 sm:pb-6">
-          <Tabs defaultValue="login" className="w-full">
+          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "signup")} className="w-full">
             <TabsList className="mb-4 sm:mb-6 grid w-full grid-cols-2">
               <TabsTrigger value="login" className="text-sm sm:text-base">Login</TabsTrigger>
               <TabsTrigger value="signup" className="text-sm sm:text-base">Sign Up</TabsTrigger>
@@ -28,9 +64,8 @@ export function AuthModal({ onNavigate }: AuthModalProps) {
 
             <TabsContent value="login" className="mt-0">
               <div className="w-full overflow-x-hidden">
-                <SignIn 
+                <SignIn
                   routing="virtual"
-                  signUpUrl="#signup"
                   appearance={{
                     elements: {
                       rootBox: "w-full mx-auto",
@@ -57,9 +92,8 @@ export function AuthModal({ onNavigate }: AuthModalProps) {
 
             <TabsContent value="signup" className="mt-0">
               <div className="w-full overflow-x-hidden">
-                <SignUp 
+                <SignUp
                   routing="virtual"
-                  signInUrl="#login"
                   appearance={{
                     elements: {
                       rootBox: "w-full mx-auto",

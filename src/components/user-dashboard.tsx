@@ -182,7 +182,7 @@ export function UserDashboard({
     };
 
     fetchPasses();
-  }, [user?.id]);
+  }, [user?.id, refreshTrigger]);
 
   // Fetch pending pass claims
   useEffect(() => {
@@ -470,7 +470,9 @@ export function UserDashboard({
       "pixel pass": "pixel",
       "silicon pass": "silicon",
       "quantum pass": "quantum",
-      "thakur student pass": "thakur",
+      "thakur student pass": "tcet_student",
+      "thakur student": "tcet_student",
+      "tcet student": "tcet_student",
       "exhibitors pass": "exhibitors",
       // Legacy pass types (for backward compatibility)
       "gold pass": "day1",
