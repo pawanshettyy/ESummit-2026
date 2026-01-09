@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/clerk-react";
 import { Analytics } from "@vercel/analytics/react";
 import { Navigation } from "./components/navigation";
@@ -47,6 +47,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [isDark, setIsDark] = useState(false);
   const [userHasPass, setUserHasPass] = useState(false);
+  const wasSignedIn = useRef(isSignedIn);
 
   // Check if we're on an event detail page
   useEffect(() => {
@@ -87,6 +88,14 @@ export default function App() {
       setCurrentPage("dashboard");
     }
   }, [isSignedIn, user?.id, currentPage]);
+
+  // Redirect to dashboard when user signs in
+  useEffect(() => {
+    if (isSignedIn && !wasSignedIn.current) {
+      setCurrentPage("dashboard");
+    }
+    wasSignedIn.current = isSignedIn;
+  }, [isSignedIn]);
 
   // Fetch user's pass status
   useEffect(() => {

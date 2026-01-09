@@ -29,7 +29,7 @@ export function AuthModal({ onNavigate }: AuthModalProps) {
             <TabsContent value="login" className="mt-0">
               <div className="w-full overflow-x-hidden">
                 <SignIn 
-                  routing="hash"
+                  routing="virtual"
                   signUpUrl="#signup"
                   appearance={{
                     elements: {
@@ -58,7 +58,7 @@ export function AuthModal({ onNavigate }: AuthModalProps) {
             <TabsContent value="signup" className="mt-0">
               <div className="w-full overflow-x-hidden">
                 <SignUp 
-                  routing="hash"
+                  routing="virtual"
                   signInUrl="#login"
                   appearance={{
                     elements: {
