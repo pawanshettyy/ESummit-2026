@@ -8,6 +8,7 @@ import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import { konfhubService, KONFHUB_TICKET_IDS, KONFHUB_CUSTOM_FORM_IDS } from '../services/konfhub.service';
 import { getClerkUserId } from '../middleware/clerk.middleware';
+import { ScheduledTasksService } from '../services/scheduled-tasks.service';
 
 const router = Router();
 
@@ -1485,6 +1486,26 @@ router.post('/cleanup-files', async (req: Request, res: Response) => {
   } catch (error: any) {
     logger.error('File cleanup error:', error);
     return sendError(res, error.message || 'Cleanup failed', 500);
+  }
+});
+
+/**
+ * POST /api/v1/admin/trigger-pdf-deletion
+ * Manually trigger the deletion of expired pass PDFs (for testing/admin purposes)
+ */
+router.post('/trigger-pdf-deletion', async (req: Request, res: Response) => {
+  try {
+    if (!(await isAdminAuthorized(req))) {
+      return sendError(res, 'Unauthorized', 403);
+    }
+
+    const scheduledTasks = ScheduledTasksService.getInstance();
+    await scheduledTasks.triggerPDFDeletion();
+
+    return sendSuccess(res, 'PDF deletion task triggered successfully');
+  } catch (error: any) {
+    logger.error('Trigger PDF deletion error:', error);
+    return sendError(res, error.message || 'Failed to trigger PDF deletion', 500);
   }
 });
 
