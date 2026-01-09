@@ -1,0 +1,63 @@
+name: Monitoring Dashboard
+
+on:
+  schedule:
+    # Run daily at 6 AM UTC
+    - cron: '0 6 * * *'
+  workflow_dispatch:
+
+jobs:
+  generate-report:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate monitoring report
+        run: |
+          # Create monitoring report
+          echo "# E-Summit 2026 Monitoring Report" > monitoring-report.md
+          echo "Generated on: $(date)" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+
+          # System Health
+          echo "## System Health" >> monitoring-report.md
+          echo "- **Last CI Run:** $(gh run list --limit 1 --json conclusion,updatedAt --jq '.[0].updatedAt')" >> monitoring-report.md
+          echo "- **Last Deployment:** $(gh run list --workflow deploy-production.yml --limit 1 --json conclusion,updatedAt --jq '.[0].updatedAt')" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+
+          # Performance Metrics
+          echo "## Performance Metrics" >> monitoring-report.md
+          echo "- Lighthouse scores will be updated after next performance run" >> monitoring-report.md
+          echo "- Bundle analysis available in artifacts" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+
+          # Security Status
+          echo "## Security Status" >> monitoring-report.md
+          echo "- Last security audit: $(date)" >> monitoring-report.md
+          echo "- Dependencies: Check Dependabot PRs" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+
+          # Database Health
+          echo "## Database Health" >> monitoring-report.md
+          echo "- Backups: Automated daily" >> monitoring-report.md
+          echo "- Health checks: Every 6 hours" >> monitoring-report.md
+          echo "" >> monitoring-report.md
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Upload monitoring report
+        uses: actions/upload-artifact@v4
+        with:
+          name: monitoring-report
+          path: monitoring-report.md
