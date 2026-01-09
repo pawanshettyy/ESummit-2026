@@ -72,9 +72,9 @@ export class PDFService {
         });
 
         const chunks: Buffer[] = [];
-        doc.on('data', (chunk) => chunks.push(chunk));
+        doc.on('data', (chunk: Buffer) => chunks.push(chunk));
         doc.on('end', () => resolve(Buffer.concat(chunks)));
-        doc.on('error', reject);
+        doc.on('error', (err: Error) => reject(err));
 
         // Simple header
         doc.rect(0, 0, doc.page.width, 120).fill(this.colors.primaryRed);
@@ -143,9 +143,9 @@ export class PDFService {
         });
 
         const chunks: Buffer[] = [];
-        doc.on('data', (chunk) => chunks.push(chunk));
+        doc.on('data', (chunk: Buffer) => chunks.push(chunk));
         doc.on('end', () => resolve(Buffer.concat(chunks)));
-        doc.on('error', reject);
+        doc.on('error', (err: Error) => reject(err));
 
         // Header
         doc.fontSize(28)
