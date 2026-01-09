@@ -3,7 +3,7 @@ import prisma from '../config/database';
 import { sendSuccess, sendError } from '../utils/response.util';
 import logger from '../utils/logger.util';
 import multer, { FileFilterCallback } from 'multer';
-import { put, del } from '@vercel/blob';
+import { put } from '@vercel/blob';
 
 /**
  * Pass Claim Routes
@@ -29,7 +29,7 @@ const upload = multer({
     fileSize: 10 * 1024 * 1024, // 10MB max
   },
   fileFilter: (_req: Request, file: Express.Multer.File, cb: FileFilterCallback) => {
-    if (file.mimetype === 'application/pdf' || file.mimetype.startsWith('image/')) {
+    if ((file.mimetype || '').startsWith('application/pdf') || (file.mimetype || '').startsWith('image/')) {
       cb(null, true);
     } else {
       cb(new Error('Only PDF and image files are allowed'));
@@ -40,11 +40,6 @@ const upload = multer({
 // 32 hours in milliseconds
 const CLAIM_EXPIRY_HOURS = 32;
 const CLAIM_EXPIRY_MS = CLAIM_EXPIRY_HOURS * 60 * 60 * 1000;
-
-// Extend Request type to include file from multer
-interface MulterRequest extends Request {
-  file?: Express.Multer.File;
-}
 
 /**
  * Submit a pass claim with manual details
@@ -137,16 +132,21 @@ router.post('/submit', upload.single('ticketFile'), async (req: MulterRequest, r
     // Calculate expiry time (32 hours from now)
     const expiresAt = new Date(Date.now() + CLAIM_EXPIRY_MS);
 
+    if (!req.file) {
+      sendError(res, 'No file uploaded', 400);
+      return;
+    }
+
     // Upload file to Vercel Blob storage
     const path = require('path');
-    const fileExtension = path.extname(req.file.originalname);
+    const fileExtension = path.extname(req.file.originalname || '');
     const uniqueFilename = `pass-claims/${clerkUserId}-${Date.now()}${fileExtension}`;
     
     let fileUrl: string;
     try {
-      const blob = await put(uniqueFilename, req.file.buffer, {
+      const blob = await put(uniqueFilename, req.file.buffer!, {
         access: 'public',
-        contentType: req.file.mimetype,
+        contentType: req.file.mimetype || 'application/octet-stream',
       });
       fileUrl = blob.url;
       logger.info(`Ticket file uploaded to Vercel Blob: ${fileUrl}`);
@@ -158,9 +158,9 @@ router.post('/submit', upload.single('ticketFile'), async (req: MulterRequest, r
 
     // Store file info and URL
     const extractedData: any = {
-      fileName: req.file.originalname,
-      fileSize: req.file.size,
-      mimeType: req.file.mimetype,
+      fileName: req.file.originalname || '',
+      fileSize: req.file.size || 0,
+      mimeType: req.file.mimetype || '',
       uploadedAt: new Date().toISOString(),
       fileUrl: fileUrl,
       blobPath: uniqueFilename,

@@ -17,7 +17,7 @@ const clerkClient = createClerkClient({
 
 // Configure multer for PDF uploads
 const storage = multer.diskStorage({
-  destination: (_req, _file, cb) => {
+  destination: (_req: Request, _file: Express.Multer.File, cb: (error: Error | null, destination: string) => void) => {
     // Use /tmp/uploads in serverless/production, otherwise use local uploads
     const uploadDir =
       process.env.VERCEL || process.env.NODE_ENV === 'production'
@@ -28,7 +28,7 @@ const storage = multer.diskStorage({
     }
     cb(null, uploadDir);
   },
-  filename: (req, _file, cb) => {
+  filename: (req: Request, _file: Express.Multer.File, cb: (error: Error | null, filename: string) => void) => {
     // Generate filename: ESUMMIT-2026-{passId}.pdf
     const passId = req.body.passId || `UNKNOWN-${Date.now()}`;
     cb(null, `ESUMMIT-2026-${passId}.pdf`);
@@ -37,8 +37,8 @@ const storage = multer.diskStorage({
 
 const upload = multer({
   storage,
-  fileFilter: (_req, file, cb) => {
-    if (file.mimetype === 'application/pdf') {
+  fileFilter: (_req: Request, file: Express.Multer.File, cb: multer.FileFilterCallback) => {
+    if ((file.mimetype || '') === 'application/pdf') {
       cb(null, true);
     } else {
       cb(new Error('Only PDF files are allowed'));

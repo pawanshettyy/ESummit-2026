@@ -150,9 +150,9 @@ export function UserDashboard({
           
           // Auto-populate schedule with eligible events based on purchased passes
           if (confirmedPasses.length > 0) {
-            const passTypeId = getPassTypeId(confirmedPasses[0].passType);
+            const passTypes = confirmedPasses.map(pass => getPassTypeId(pass.passType));
             
-            const eligibleEvents = getFormattedEventsForPass(passTypeId);
+            const eligibleEvents = getFormattedEventsForPasses(passTypes);
             
             // Convert to the Event interface format used by the component
             const formattedEvents: Event[] = eligibleEvents.map(event => ({
@@ -182,7 +182,7 @@ export function UserDashboard({
     };
 
     fetchPasses();
-  }, [user?.id]);
+  }, [user?.id, refreshTrigger]);
 
   // Fetch pending pass claims
   useEffect(() => {
@@ -470,7 +470,9 @@ export function UserDashboard({
       "pixel pass": "pixel",
       "silicon pass": "silicon",
       "quantum pass": "quantum",
-      "thakur student pass": "thakur",
+      "thakur student pass": "tcet_student",
+      "thakur student": "tcet_student",
+      "tcet student": "tcet_student",
       "exhibitors pass": "exhibitors",
       // Legacy pass types (for backward compatibility)
       "gold pass": "day1",
