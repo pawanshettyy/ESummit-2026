@@ -22,7 +22,7 @@ if (SENTRY_DSN) {
 }
 
 // Now import Express and other modules
-import express, { Application } from 'express';
+import express, { Application, Request, Response, NextFunction } from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -77,9 +77,9 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Clerk authentication middleware - run Clerk unless admin-secret is present
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   try {
-    const xAdminSecret = (req.headers['x-admin-secret'] as string) || '';
+    const xAdminSecret = (req.headers['x-admin-secret'] as any) || '';
     const expectedAdminSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
 
     // If admin secret is present in x-admin-secret, skip Clerk
@@ -88,7 +88,7 @@ app.use((req, res, next) => {
     }
 
     // Otherwise, run Clerk middleware
-    return clerkAuth(req, res, next);
+    return clerkAuth(req as any, res as any, next);
   } catch (e) {
     return next();
   }
@@ -108,7 +108,7 @@ app.use('/api/', generalLimiter);
 app.use('/api/v1', routes);
 
 // Root route
-app.get('/', (_req, res) => {
+app.get('/', (_req: Request, res: Response) => {
   res.json({
     success: true,
     message: '🚀 Welcome to E-Summit 2026 API',
@@ -118,8 +118,8 @@ app.get('/', (_req, res) => {
 });
 
 // Favicon route (prevent 404 errors from Vercel)
-app.get('/favicon.ico', (_req, res) => res.status(204).end());
-app.get('/favicon.png', (_req, res) => res.status(204).end());
+app.get('/favicon.ico', (_req: Request, res: Response) => res.status(204).end());
+app.get('/favicon.png', (_req: Request, res: Response) => res.status(204).end());
 
 // 404 handler
 app.use(notFound);
