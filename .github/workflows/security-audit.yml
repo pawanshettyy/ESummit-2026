@@ -1,0 +1,94 @@
+name: Security Audit
+
+on:
+  schedule:
+    # Run weekly on Mondays
+    - cron: '0 9 * * 1'
+  workflow_dispatch:
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Audit frontend dependencies
+        run: |
+          npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Audit backend dependencies
+        run: |
+          cd backend
+          npm audit --audit-level=moderate
+        continue-on-error: true
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          scan-type: 'fs'
+          scan-ref: '.'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
+
+  dependency-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check for outdated packages
+        run: |
+          npm outdated || true
+          echo "Outdated packages check completed"
+
+      - name: Check backend dependencies
+        run: |
+          cd backend
+          npm outdated || true
+          echo "Backend outdated packages check completed"
+
+  license-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Check licenses
+        run: npx license-checker --production --csv > licenses.csv
+
+      - name: Upload license report
+        uses: actions/upload-artifact@v6
+        with:
+          name: license-report
+          path: licenses.csv
