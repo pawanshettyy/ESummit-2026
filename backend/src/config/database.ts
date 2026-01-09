@@ -1,8 +1,8 @@
 import { PrismaClient } from '@prisma/client';
 import logger from '../utils/logger.util';
 
-// PrismaClient is attached to the `global` object in development to prevent
-// exhausting your database connection limit.
+// PrismaClient is attached to the `global` object to prevent
+// exhausting your database connection limit in both development and production
 const globalForPrisma = global as unknown as { prisma: PrismaClient };
 
 export const prisma =
@@ -11,7 +11,7 @@ export const prisma =
     log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
   });
 
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+globalForPrisma.prisma = prisma;
 
 // Test database connection
 export const connectDB = async () => {
