@@ -108,9 +108,6 @@ export function UserDashboard({
   const [registeringEventId, setRegisteringEventId] = useState<string | null>(null);
   const [isLoadingRegistrations, setIsLoadingRegistrations] = useState(true);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
-  const [tcetCode, setTcetCode] = useState<string | null>(null);
-  const [isAssigningCode, setIsAssigningCode] = useState(false);
-  const [showKonfHubWidget, setShowKonfHubWidget] = useState(false);
   
   // Pass claim states
   const [showPassClaimModal, setShowPassClaimModal] = useState(false);
@@ -124,78 +121,11 @@ export function UserDashboard({
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  // Check if user is a Thakur student (TCET, TGBS, TIMSR) based on email domain
   const userName = user?.fullName || userData?.name || "User";
   const userEmail = user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com";
-  const isTCETStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in") || 
-                        userEmail.toLowerCase().endsWith("@tgbs.in") || 
-                        userEmail.toLowerCase().endsWith("@timsr.edu.in");
 
   // Set initial tab to My Passes for all users
   const [activeTab, setActiveTab] = useState("mypasses");
-
-  // Fetch TCET code for Thakur students (TCET, TGBS, TIMSR)
-  useEffect(() => {
-    const fetchTcetCode = async () => {
-      if (!isTCETStudent || !user?.id) return;
-
-      try {
-        const response = await fetch(
-          `${API_BASE_URL}/tcet/code/${user.id}`
-        );
-        const data = await response.json();
-
-        if (data.success && data.data.code) {
-          setTcetCode(data.data.code);
-        }
-      } catch (error) {
-        // Error handled by toast notification
-      }
-    };
-
-    fetchTcetCode();
-  }, [isTCETStudent, user?.id]);
-
-  // Handle Thakur Student pass booking
-  const handleTcetPassBooking = async () => {
-    if (!user?.id) {
-      toast.error("🔒 Please sign in to book your pass and unlock exclusive event access!");
-      return;
-    }
-
-    setIsAssigningCode(true);
-
-    try {
-      // Assign a code if not already assigned
-      if (!tcetCode) {
-        const response = await fetch(
-          `${API_BASE_URL}/tcet/assign/${user.id}`,
-          { method: 'POST' }
-        );
-        const data = await response.json();
-
-        if (!data.success) {
-          toast.error(data.error || "❌ Unable to apply this code. Please verify the code and try again.");
-          setIsAssigningCode(false);
-          return;
-        }
-
-        setTcetCode(data.data.code);
-        toast.success(`Your unique code: ${data.data.code}`, {
-          description: "Please use this code when booking on KonfHub",
-          duration: 10000,
-        });
-      }
-
-      // Open KonfHub widget
-      setShowKonfHubWidget(true);
-    } catch (error) {
-      // Error already handled by toast notification
-      toast.error("⚠️ Something went wrong. Please refresh the page and try again.");
-    } finally {
-      setIsAssigningCode(false);
-    }
-  };
 
   // Fetch user passes from database
   useEffect(() => {
@@ -540,10 +470,8 @@ export function UserDashboard({
       "pixel pass": "pixel",
       "silicon pass": "silicon",
       "quantum pass": "quantum",
+      "thakur student pass": "thakur",
       "exhibitors pass": "exhibitors",
-      "tcet student pass": "tcet_student",
-      "tcet pass": "tcet_student",
-      "thakur student pass": "tcet_student",
       // Legacy pass types (for backward compatibility)
       "gold pass": "day1",
       "silver pass": "day2",
@@ -668,9 +596,6 @@ export function UserDashboard({
       >
         <TabsList className="mb-6">
           <TabsTrigger value="mypasses">My Passes</TabsTrigger>
-          {isTCETStudent && (
-            <TabsTrigger value="tcet">Thakur Student Pass</TabsTrigger>
-          )}
           <TabsTrigger value="schedule">
             My Schedule
           </TabsTrigger>
@@ -931,136 +856,6 @@ export function UserDashboard({
           )}
         </TabsContent>
 
-        {/* Thakur Student Pass Tab */}
-        {isTCETStudent && (
-          <TabsContent value="tcet">{isLoadingPasses ? (
-              <div className="flex items-center justify-center py-12">
-                <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                <span className="ml-2 text-muted-foreground">Loading...</span>
-              </div>
-            ) : myPasses.length > 0 ? (
-              // User already has a pass - show confirmation
-              <Card className="border-2 border-green-500/30 bg-gradient-to-br from-green-50/50 via-transparent to-green-100/30 dark:from-green-950/20 dark:to-green-900/10">
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold flex items-center gap-2">
-                      <CheckCircle2 className="h-6 w-6 text-green-600" />
-                      You Already Have a Pass!
-                    </h3>
-                    <Badge className="bg-green-600 hover:bg-green-700">Active</Badge>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <Alert className="bg-green-50 border-green-200 dark:bg-green-950/20 dark:border-green-800">
-                    <CheckCircle2 className="h-4 w-4 text-green-600" />
-                    <AlertDescription className="text-sm text-green-800 dark:text-green-200">
-                      You have already booked a <strong>{myPasses[0].passType}</strong>. 
-                      Only one pass per user is allowed. Check the "My Passes" tab to view your pass details.
-                    </AlertDescription>
-                  </Alert>
-                  
-                  <div className="flex flex-col sm:flex-row gap-3">
-                    <Button 
-                      variant="outline" 
-                      className="flex-1"
-                      onClick={() => setActiveTab("mypasses")}
-                    >
-                      <Ticket className="mr-2 h-4 w-4" />
-                      View My Pass
-                    </Button>
-                    {myPasses[0].qrCodeUrl && (
-                      <Button 
-                        className="flex-1"
-                        onClick={() => downloadPassPDF(myPasses[0].passId)}
-                        disabled={downloadingPassId === myPasses[0].passId}
-                      >
-                        {downloadingPassId === myPasses[0].passId ? (
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        ) : (
-                          <Download className="mr-2 h-4 w-4" />
-                        )}
-                        Download Pass PDF
-                      </Button>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ) : (
-              <>
-                {/* Thakur Students Special Booking */}
-                <Card className="border-2 border-primary/20 bg-gradient-to-br from-primary/5 via-transparent to-primary/10">
-                  <CardHeader>
-                    <div className="flex items-center justify-between">
-                      <h3 className="text-xl font-bold">🎓 Thakur Student Pass</h3>
-                      <Badge className="bg-green-600 hover:bg-green-700">FREE</Badge>
-                    </div>
-                    <p className="text-sm text-muted-foreground mt-2">
-                      Exclusive free pass for Thakur students! <strong>ONLY FOR TCET, TGBS, AND TIMSR STUDENTS</strong> - Book now and enjoy access to select events at E-Summit 2026.
-                    </p>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    {tcetCode && (
-                      <Alert className="bg-gradient-to-r from-blue-50 to-indigo-50 border-2 border-blue-400 dark:from-blue-950/30 dark:to-indigo-950/30 dark:border-blue-600 shadow-md">
-                        <CheckCircle2 className="h-4 w-4 sm:h-5 sm:w-5 text-blue-600 dark:text-blue-400" />
-                        <AlertDescription>
-                          <div className="space-y-2">
-                            <p className="text-xs sm:text-sm font-semibold text-blue-900 dark:text-blue-100">Your Thakur Student Access Code:</p>
-                            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 p-2 sm:p-3 bg-white dark:bg-gray-900 rounded-lg border-2 border-dashed border-blue-400 dark:border-blue-500">
-                              <span className="font-mono text-2xl sm:text-3xl font-bold text-blue-700 dark:text-blue-300 tracking-wider break-all">{tcetCode}</span>
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                onClick={() => {
-                                  navigator.clipboard.writeText(tcetCode);
-                                  toast.success("Code copied to clipboard!");
-                                }}
-                                className="sm:ml-auto w-full sm:w-auto"
-                              >
-                                <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                                <span className="text-xs sm:text-sm">Copy</span>
-                              </Button>
-                            </div>
-                            <p className="text-[10px] sm:text-xs text-blue-700 dark:text-blue-300 font-medium">💡 Save this code! Use it during KonfHub booking to access your Thakur Student pass</p>
-                          </div>
-                        </AlertDescription>
-                      </Alert>
-                    )}
-                    
-                    <Alert className="bg-amber-50 border-amber-200 dark:bg-amber-950/20 dark:border-amber-900">
-                      <CheckCircle2 className="h-4 w-4 text-amber-600" />
-                      <AlertDescription className="text-xs text-amber-800 dark:text-amber-200">
-                        ⚠️ <strong>Verification Required:</strong> You must bring your college ID card (TCET/TGBS/TIMSR) and a valid government-issued ID to the venue entrance for verification.
-                      </AlertDescription>
-                    </Alert>
-                    
-                    <div className="space-y-2 text-sm">
-                      <p className="font-semibold">Includes:</p>
-                      <ul className="space-y-1 ml-4">
-                        <li className="flex items-center gap-2"><CheckCircle2 className="h-3 w-3 text-primary" /> All Quantum Pass events</li>
-                      </ul>
-                    </div>
-
-                    <Button 
-                      className="w-full" 
-                      onClick={handleTcetPassBooking}
-                      disabled={isAssigningCode}
-                    >
-                      {isAssigningCode ? (
-                        <>
-                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Processing...
-                        </>
-                      ) : (
-                        <>Book Thakur Student Pass (Free)</>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </TabsContent>
-        )}
-
         <TabsContent value="schedule">{isLoadingPasses || isLoadingRegistrations ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-8 w-8 animate-spin text-primary" />
@@ -1250,74 +1045,6 @@ export function UserDashboard({
         onComplete={handleProfileComplete}
       />
 
-      {/* KonfHub Widget Modal for TCET Pass Booking */}
-      {showKonfHubWidget && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm p-2 sm:p-4">
-          <div className="relative w-full max-w-5xl max-h-[95vh] bg-white dark:bg-gray-900 rounded-xl overflow-hidden shadow-2xl border-2 border-primary/20">
-            {/* Header with TCET Code Highlight */}
-            <div className="bg-gradient-to-r from-primary/10 via-primary/5 to-purple-500/10 p-3 sm:p-6 border-b-2 border-primary/20">
-              <div className="flex items-start justify-between gap-2 sm:gap-4">
-                <div className="flex-1 min-w-0">
-                  <h3 className="text-lg sm:text-2xl font-bold mb-2 flex items-center gap-2" style={{ color: 'var(--foreground)' }}>
-                    🎓 <span className="truncate">Book TCET Student Pass</span>
-                  </h3>
-                  {tcetCode && (
-                    <div className="bg-white dark:bg-gray-800 rounded-lg p-3 sm:p-4 border-2 border-dashed border-primary shadow-sm">
-                      <p className="text-[10px] sm:text-xs uppercase tracking-wide mb-1 font-semibold" style={{ color: 'var(--foreground)' }}>Your Thakur Student Access Code</p>
-                      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                        <span className="font-mono text-2xl sm:text-4xl font-bold tracking-widest break-all" style={{ color: 'var(--foreground)' }}>{tcetCode}</span>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => {
-                            navigator.clipboard.writeText(tcetCode);
-                            toast.success("Code copied!", {
-                              description: "Thakur Student access code copied to clipboard"
-                            });
-                          }}
-                          className="w-full sm:w-auto"
-                        >
-                          <Copy className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
-                          <span className="text-xs sm:text-sm font-medium" style={{ color: 'var(--foreground)' }}>Copy</span>
-                        </Button>
-                      </div>
-                      <p className="text-[10px] sm:text-xs mt-2 font-semibold" style={{ color: 'var(--foreground)' }}>
-                        ⚠️ Use this code in the booking form to access your Thakur Student pass
-                      </p>
-                    </div>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setShowKonfHubWidget(false)}
-                  className="rounded-full hover:bg-destructive/10 hover:text-destructive shrink-0"
-                >
-                  <X className="h-4 w-4 sm:h-5 sm:w-5" />
-                </Button>
-              </div>
-            </div>
-            
-            {/* KonfHub Widget Container */}
-            <div className="overflow-y-auto bg-gray-50 dark:bg-gray-950" style={{ height: 'calc(95vh - 160px)' }}>
-              <KonfHubWidget
-                eventId="final-tcet-esummit26"
-                mode="iframe"
-                onSuccess={(data) => {
-                  // Pass booking completed successfully
-                  toast.success("🎉 Booking Successful!", {
-                    description: "Your Thakur Student pass has been booked. Check your email for confirmation."
-                  });
-                  setShowKonfHubWidget(false);
-                }}
-                onClose={() => setShowKonfHubWidget(false)}
-                className="w-full h-full min-h-[500px] sm:min-h-[600px]"
-              />
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Pass Claim Modal */}
       {showPassClaimModal && (
         <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center bg-black/70 backdrop-blur-sm p-0 sm:p-4">
@@ -1363,8 +1090,8 @@ export function UserDashboard({
                   >
                     <option value="Pixel Pass">Pixel Pass</option>
                     <option value="Silicon Pass">Silicon Pass</option>
-                    <option value="Quantum Pass">Quantum Pass</option>
-                    <option value="Thakur Student Pass">Thakur Student Pass (Free - TCET/TGBS/TIMSR Only)</option>
+                      <option value="Quantum Pass">Quantum Pass</option>
+                      <option value="Thakur Student Pass">Thakur Student Pass</option>
                   </select>
                 </div>
 
