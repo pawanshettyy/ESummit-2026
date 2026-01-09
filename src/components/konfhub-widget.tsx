@@ -5,6 +5,10 @@ interface KonfHubWidgetProps {
   buttonId?: string;
   mode?: 'button' | 'iframe';
   ticketId?: string;
+  widgetType?: 'standard' | 'quick';
+  screen?: number;
+  fontColor?: string;
+  ticketColor?: string;
   onSuccess?: (data: any) => void;
   onClose?: () => void;
   className?: string;
@@ -19,6 +23,10 @@ export function KonfHubWidget({
   buttonId = import.meta.env.VITE_KONFHUB_BUTTON_ID || 'btn_a2352136e92a',
   mode = 'iframe',
   ticketId,
+  widgetType = 'standard',
+  screen,
+  fontColor = '1e1f24',
+  ticketColor = '1e1f24',
   onSuccess,
   onClose,
   className = '',
@@ -105,7 +113,7 @@ export function KonfHubWidget({
         </div>
       )}
       <iframe
-        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=FFFFFF&fontColor=1e1f24&ticketCl=1e1f24&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=standard${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`}
+        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=FFFFFF&fontColor=${fontColor}&ticketCl=${ticketColor}&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=${widgetType}${screen ? `&screen=${screen}` : ''}${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`}
         id="konfhub-widget"
         title={`Register for ${import.meta.env.VITE_APP_NAME || 'E-Summit 2026'}`}
         width="100%"
