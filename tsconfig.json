@@ -21,8 +21,7 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "typeRoots": ["../node_modules/@types", "./node_modules/@types"]
+    "noFallthroughCasesInSwitch": true
   },
   "include": ["src/**/*", "api/**/*"],
   "exclude": ["node_modules", "dist", "**/*.test.ts"]
