@@ -47,6 +47,7 @@ export default function App() {
   const [currentPage, setCurrentPage] = useState("home");
   const [isDark, setIsDark] = useState(false);
   const [userHasPass, setUserHasPass] = useState(false);
+  const [userPasses, setUserPasses] = useState<any[]>([]);
 
   // Check if we're on an event detail page
   useEffect(() => {
@@ -95,6 +96,7 @@ export default function App() {
         .then(res => res.json())
         .then(data => {
           if (data.success && data.data?.passes) {
+            setUserPasses(data.data.passes);
             setUserHasPass(data.data.passes.length > 0);
           }
         })
@@ -130,7 +132,10 @@ export default function App() {
   const renderPage = () => {
     switch (currentPage) {
       case "home":
-        return <HomePage onNavigate={handleNavigate} />;
+        return <HomePage 
+          onNavigate={handleNavigate} 
+          user={userPasses.length > 0 ? { passes: userPasses } : undefined}
+        />;
       case "booking":
         return (
           <PassBooking 
@@ -219,7 +224,10 @@ export default function App() {
       case "admin":
         return <AdminPanel onNavigate={handleNavigate} />;
       default:
-        return <HomePage onNavigate={handleNavigate} />;
+        return <HomePage 
+          onNavigate={handleNavigate} 
+          user={userPasses.length > 0 ? { passes: userPasses } : undefined}
+        />;
     }
   };
 

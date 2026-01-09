@@ -23,9 +23,16 @@ import { Logo } from "./ui/logo";
 
 interface HomePageProps {
   onNavigate: (page: string) => void;
+  user?: {
+    passes?: Array<{
+      id: string;
+      passType: string;
+      status: string;
+    }>;
+  };
 }
 
-export function HomePage({ onNavigate }: HomePageProps) {
+export function HomePage({ onNavigate, user }: HomePageProps) {
   const [countdown, setCountdown] = useState({
     days: 0,
     hours: 0,
@@ -535,13 +542,16 @@ export function HomePage({ onNavigate }: HomePageProps) {
       </section>
       */}
 
-      {/* COMMENTED NEWS SECTION - Old static news
-      <section className="py-16">
+      {/* News and Updates Section */}
+      <section className="border-b py-16 bg-gradient-to-br from-background via-background to-secondary/5">
         <div className="container mx-auto px-4">
-          <div className="mb-12 text-center">
-            <h2 className="mb-4">Latest Updates</h2>
-            <p className="text-muted-foreground">
-              Stay updated with E-Summit news
+          <div className="mb-12 text-center px-4">
+            <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
+              Latest Updates
+            </Badge>
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">News & Updates</h2>
+            <p className="text-sm sm:text-base text-foreground max-w-2xl mx-auto">
+              Stay informed with the latest announcements, updates, and exciting developments for E-Summit 2026.
             </p>
           </div>
 
@@ -549,69 +559,88 @@ export function HomePage({ onNavigate }: HomePageProps) {
             {[
               {
                 title: "FREE Pixel Pass Available",
-                date: "Jan 15, 2026",
+                date: "Jan 07, 2026",
                 content:
                   "Access 5 exciting events absolutely FREE! Limited seats available for the inaugural edition.",
+                icon: Trophy,
               },
               {
                 title: "New Pitching Events",
-                date: "Jan 20, 2026",
+                date: "Jan 08, 2026",
                 content:
-                  "Pitch to VCs and Angel Investors at exclusive events. Secure seed funding for your startup!",
+                  "Pitch to VCs and Angel Investors at exclusive events. Secure seed funding for your startup & Don't forget to check out the events page for registration!",
+                icon: Building2,
               },
               {
                 title: "Prize Pool Updated",
-                date: "Jan 25, 2026",
+                date: "Jan 09, 2026",
                 content:
-                  "Total prize money exceeds ₹5 Lakhs with additional funding opportunities from investors!",
+                  "Total prize money exceeds ₹1.5 Lakhs with additional funding opportunities from investors!",
+                icon: Users,
               },
-            ].map((news) => (
-              <Card
+            ].map((news, index) => (
+              <motion.div
                 key={news.title}
-                className="transition-shadow hover:shadow-lg"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: 0.5,
+                  delay: index * 0.1,
+                }}
               >
-                <CardContent className="p-6">
-                  <div className="mb-2 text-xs text-muted-foreground">
-                    {news.date}
-                  </div>
-                  <h3 className="mb-2">{news.title}</h3>
-                  <p className="text-sm text-muted-foreground">
-                    {news.content}
-                  </p>
-                </CardContent>
-              </Card>
+                <Card className="h-full transition-all hover:shadow-lg hover:-translate-y-1 group border-border/50 hover:border-primary/30">
+                  <CardContent className="p-6">
+                    <div className="flex items-center gap-3 mb-3">
+                      <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                        <news.icon className="h-5 w-5 text-primary" />
+                      </div>
+                      <div className="text-xs text-muted-foreground font-medium">
+                        {news.date}
+                      </div>
+                    </div>
+                    <h3 className="mb-3 text-lg font-semibold text-foreground group-hover:text-primary transition-colors">
+                      {news.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">
+                      {news.content}
+                    </p>
+                  </CardContent>
+                </Card>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
-      */}
 
       {/* CTA Section */}
-      <section className="border-t bg-gradient-to-br from-primary/5 via-background to-background py-16">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="mb-4 text-foreground">Ready to Join E-Summit 2026?</h2>
-          <p className="mb-8 text-foreground">
-            Secure your spot at India's premier entrepreneurship
-            event
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Button
-              size="lg"
-              onClick={() => onNavigate("booking")}
-            >
-              Book Your Pass Now
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => onNavigate("schedule")}
-            >
-              View Schedule
-            </Button>
+      {(!user?.passes || user.passes.length === 0) && (
+        <section className="border-t bg-gradient-to-br from-primary/5 via-background to-background py-16">
+          <div className="container mx-auto px-4 text-center">
+            <h2 className="mb-4 text-foreground">Ready to Join E-Summit 2026?</h2>
+            <p className="mb-8 text-foreground">
+              Secure your spot at India's premier entrepreneurship
+              event
+            </p>
+            <div className="flex flex-wrap justify-center gap-4">
+              <Button
+                size="lg"
+                onClick={() => onNavigate("booking")}
+              >
+                Book Your Pass Now
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Button>
+              <Button
+                size="lg"
+                variant="outline"
+                onClick={() => onNavigate("schedule")}
+              >
+                View Schedule
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
     </div>
   );
 }
