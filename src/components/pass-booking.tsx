@@ -112,7 +112,7 @@ export function PassBooking({
         "Certificate of participation",
       ],
       badge: "Free",
-      description: undefined,
+      description: "Free for the first 120 passes",
     },
     {
       id: "silicon",
