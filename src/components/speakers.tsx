@@ -45,7 +45,7 @@ export function Speakers() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8 max-w-full overflow-x-hidden">
+    <div className="container mx-auto px-4 py-8 max-w-full">
           <div className="relative mb-12">
             <RippleBackground />
             <motion.div
