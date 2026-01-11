@@ -38,12 +38,17 @@ type Contact = {
   email?: string;
 };
 
-type PanelMember = {
+type Judge = {
   name: string;
-  title?: string;
-  company?: string;
+  role?: string;
   image?: string;
-  bio?: string;
+  linkedin?: string;
+};
+
+type Sponsor = {
+  name: string;
+  logo: string;
+  website?: string;
 };
 
 interface EventPageTemplateProps {
@@ -53,6 +58,9 @@ interface EventPageTemplateProps {
   panelTitle?: string;
   panelSubtitle?: string;
   panelMembers?: PanelMember[]; // kept for future use
+  judges?: Judge[];
+  sponsors?: Sponsor[];
+  sponsorTitle?: string;
   primaryContacts?: Contact[];
   seniorContacts?: Contact[];
 }
@@ -64,6 +72,9 @@ export function EventPageTemplate({
   panelTitle = "Speakers / Judges",
   panelSubtitle,
   panelMembers,
+  judges,
+  sponsors,
+  sponsorTitle = "Event Sponsors",
   primaryContacts = [],
   seniorContacts = [],
 }: EventPageTemplateProps) {
@@ -378,17 +389,63 @@ export function EventPageTemplate({
                 {panelSubtitle && <p className="text-foreground/70 text-sm sm:text-base pt-2">{panelSubtitle}</p>}
               </CardHeader>
               <CardContent>
-                <motion.div 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="text-center py-12"
-                >
-                  <div className="inline-flex items-center gap-3 px-6 py-4 rounded-full bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20">
-                    <Users className="h-5 w-5 text-primary" />
-                    <span className="text-foreground/80 font-medium">Will be announced soon</span>
+                {judges && judges.length > 0 ? (
+                  <div className="grid gap-4 sm:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-center">
+                    {judges.map((judge, index) => (
+                      <motion.div
+                        key={judge.name}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        whileHover={{ y: -5 }}
+                        className="group"
+                      >
+                        <Card className="overflow-hidden border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 h-full">
+                          <div className="relative h-48">
+                            <img
+                              src={judge.image}
+                              alt={judge.name}
+                              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                            <div className="absolute bottom-4 left-4 right-4 text-white">
+                              <h3 className="font-semibold text-lg mb-1">{judge.name}</h3>
+                              <p className="text-sm text-white/90">{judge.role}</p>
+                            </div>
+                          </div>
+                          <CardContent className="p-4">
+                            {judge.linkedin && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="w-full"
+                                onClick={() => window.open(judge.linkedin, '_blank')}
+                              >
+                                <svg className="h-4 w-4 mr-2" fill="currentColor" viewBox="0 0 24 24">
+                                  <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                                </svg>
+                                LinkedIn
+                              </Button>
+                            )}
+                          </CardContent>
+                        </Card>
+                      </motion.div>
+                    ))}
                   </div>
-                </motion.div>
+                ) : (
+                  <motion.div 
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                    className="text-center py-12"
+                  >
+                    <div className="inline-flex items-center gap-3 px-6 py-4 rounded-full bg-gradient-to-r from-primary/10 to-purple-500/10 border border-primary/20">
+                      <Users className="h-5 w-5 text-primary" />
+                      <span className="text-foreground/80 font-medium">Will be announced soon</span>
+                    </div>
+                  </motion.div>
+                )}
             {/**
              * The panel members grid is intentionally commented out per instruction.
              * Do not delete this code. Uncomment when panel details are ready.
@@ -416,6 +473,68 @@ export function EventPageTemplate({
         </Card>
           </GlassCard>
         </motion.div>
+
+        {/* Event Sponsors */}
+        {sponsors && sponsors.length > 0 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.25 }}
+            className="mb-8 sm:mb-10 md:mb-12"
+          >
+            <GlassCard>
+              <Card className="border-0 bg-transparent">
+                <CardHeader className="space-y-2">
+                  <h2 className="text-2xl sm:text-3xl font-bold text-foreground">{sponsorTitle}</h2>
+                  <div className="h-1 w-20 bg-gradient-to-r from-primary to-purple-500 rounded-full"></div>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-6 sm:gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 place-items-center">
+                    {sponsors.map((sponsor, index) => (
+                      <motion.div
+                        key={sponsor.name}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                        whileHover={{ scale: 1.05 }}
+                        className="group"
+                      >
+                        {sponsor.website ? (
+                          <a
+                            href={sponsor.website}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="block"
+                          >
+                            <div className="p-6 rounded-xl border-2 border-primary/20 hover:border-primary/40 transition-all duration-300 bg-gradient-to-br from-background via-primary/5 to-purple-500/5 hover:shadow-lg text-center">
+                              <img
+                                src={sponsor.logo}
+                                alt={sponsor.name}
+                                className="h-16 sm:h-20 w-auto object-contain mx-auto mb-3 group-hover:scale-105 transition-transform duration-300"
+                              />
+                              <h4 className="text-sm sm:text-base font-semibold text-foreground group-hover:text-primary transition-colors">{sponsor.name}</h4>
+                            </div>
+                          </a>
+                        ) : (
+                          <div className="p-6 rounded-xl border-2 border-primary/20 bg-gradient-to-br from-background via-primary/5 to-purple-500/5 text-center">
+                            <img
+                              src={sponsor.logo}
+                              alt={sponsor.name}
+                              className="h-16 sm:h-20 w-auto object-contain mx-auto mb-3"
+                            />
+                            <h4 className="text-sm sm:text-base font-semibold text-foreground">{sponsor.name}</h4>
+                          </div>
+                        )}
+                      </motion.div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </GlassCard>
+          </motion.div>
+        )}
 
         {/* Venue */}
         {(event.venue || event.date || event.time) && (

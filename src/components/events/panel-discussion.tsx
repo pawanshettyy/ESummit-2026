@@ -20,5 +20,14 @@ export function PanelDiscussionPage() {
     { name: "Siddharth Sangwan", role: "OC Member" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d2-panel-discussion" panelTitle="Speakers & Judges" primaryContacts={primaryContacts} />;
+  const judges = [
+    {
+      name: "Devang Raja",
+      role: "Founder, Venture Wolf",
+      image: "/assets/panel/devang_raja.png",
+      linkedin: "https://www.linkedin.com/in/devangraja2001/"
+    }
+  ];
+
+  return <EventPageTemplate event={event} eventId="d2-panel-discussion" panelTitle="Speakers & Judges" judges={judges} primaryContacts={primaryContacts} />;
 }
