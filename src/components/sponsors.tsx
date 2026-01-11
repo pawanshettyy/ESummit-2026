@@ -38,6 +38,17 @@ export function Sponsors() {
           website: "https://www.redbull.com/"
         }
       ]
+    },
+    {
+      title: "Investors",
+      sponsors: [
+        {
+          name: "Venture Wolf - The Ten Minute Deal",
+          logo: "/assets/panel/eventSponsor/venturewolf.png",
+          tier: "INVESTOR",
+          website: "https://www.venturewolf.in/"
+        }
+      ]
     }
   ];
 

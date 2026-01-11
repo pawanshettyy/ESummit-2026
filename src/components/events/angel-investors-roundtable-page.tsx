@@ -8,7 +8,6 @@ export function AngelInvestorsRoundtablePage() {
     date: "February 2, 2026",
     time: "9:30 AM – 1:30 PM",
     venue: "Seminar Hall",
-    prize: { first: "₹25,000", second: "₹15,000", third: "₹10,000", total: "₹50,000" },
     eligibility: "Quantum Pass required",
   };
 

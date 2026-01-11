@@ -9,7 +9,6 @@ export function TenMinuteMillionPage() {
     date: "February 2-3, 2026",
     time: "10:00 AM – 5:00 PM (Both days)",
     venue: "SH-1",
-    prize: { first: "₹50,000", second: "₹30,000", third: undefined, total: "₹80,000" },
     eligibility: "Quantum Pass required",
   };
 
@@ -47,6 +46,23 @@ export function TenMinuteMillionPage() {
     }
   ];
 
+  const judges = [
+    {
+      name: "Devang Raja",
+      role: "Founder, Venture Wolf",
+      image: "/assets/panel/devang_raja.png",
+      linkedin: "https://www.linkedin.com/in/devangraja2001/"
+    }
+  ];
+
+  const sponsors = [
+    {
+      name: "Venture Wolf",
+      logo: "/assets/panel/eventSponsor/venturewolf.png",
+      website: "https://www.venturewolf.in/"
+    }
+  ];
+
   return (
     <EventPageTemplate
       event={eventData}
@@ -54,6 +70,9 @@ export function TenMinuteMillionPage() {
       perks={perks}
       panelTitle="Meet the VCs"
       panelSubtitle="Pitch to leading Venture Capitalists"
+      judges={judges}
+      sponsors={sponsors}
+      sponsorTitle="Investors"
       primaryContacts={primaryContacts}
       seniorContacts={seniorContacts}
     />
