@@ -27,6 +27,17 @@ export function Sponsors() {
           website: "https://99pancakes.in/"
         }
       ]
+    },
+    {
+      title: "Drinks Partner",
+      sponsors: [
+        {
+          name: "Red Bull",
+          logo: "/assets/sponsors/redbull-logo-svgrepo-com.svg",
+          tier: "DRINKS PARTNER",
+          website: "https://www.redbull.com/"
+        }
+      ]
     }
   ];
 
@@ -100,12 +111,6 @@ export function Sponsors() {
                         <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
                           {sponsor.name}
                         </h3>
-                        <Badge 
-                          variant="secondary" 
-                          className="text-xs font-medium px-3 py-1 bg-primary/10 text-primary hover:bg-primary/20"
-                        >
-                          {sponsor.tier}
-                        </Badge>
                       </CardContent>
                     </Card>
                   </motion.a>

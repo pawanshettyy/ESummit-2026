@@ -242,13 +242,13 @@ export function Venue() {
 
               {/* Mobile-optimized text overlay */}
               <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 md:p-8">
-                <div className="text-white max-w-full">
-                  <h2 className="mb-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold drop-shadow-lg break-words">
+                <div className="text-black max-w-full">
+                  <h2 className="mb-2 text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold break-words">
                     Thakur College of Engineering and Technology
                   </h2>
                   <div className="flex items-center gap-2 text-sm sm:text-base md:text-lg">
-                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0 drop-shadow-md" />
-                    <span className="drop-shadow-md break-words">Thakur Village, Kandivali East, Mumbai</span>
+                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 flex-shrink-0" />
+                    <span className="break-words">Thakur Village, Kandivali East, Mumbai</span>
                   </div>
                 </div>
               </div>
