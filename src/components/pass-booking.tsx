@@ -112,7 +112,7 @@ export function PassBooking({
         "Certificate of participation",
       ],
       badge: "Early Bird",
-      description: "Use coupon EARLYBIRD100 for ₹199 (first 150 passes only)",
+      description: "Use coupon EARLYBIRD100 for ₹199 (first 50 passes only)",
     },
     {
       id: "silicon",
@@ -368,7 +368,7 @@ export function PassBooking({
                     <Ticket className="mx-auto h-4 w-4 text-green-600 dark:text-green-400" />
                     <AlertDescription className="text-center text-green-600 dark:text-green-400">
                       <p className="text-sm font-bold">Early Bird Coupon</p>
-                      <p className="text-xs mt-1">Use EARLYBIRD100 for ₹199 (first 150 passes only) - Pixel Pass only</p>
+                      <p className="text-xs mt-1">Use EARLYBIRD100 for ₹199 (first 50 passes only) - Pixel Pass only</p>
                     </AlertDescription>
                   </Alert>
                 </div>
