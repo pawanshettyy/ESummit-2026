@@ -558,10 +558,10 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
-                title: "FREE Pixel Pass Available",
-                date: "Jan 07, 2026",
+                title: "Early Bird Passes Available",
+                date: "Jan 12, 2026",
                 content:
-                  "Access 5 exciting events absolutely FREE for the first 120 passes! Limited seats available for the inaugural edition.",
+                  "Secure discounted passes for the first 120 registrations! Early bird pricing available for a limited time - don't miss out on the inaugural edition.",
                 icon: Trophy,
               },
               {
