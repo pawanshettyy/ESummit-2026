@@ -31,6 +31,7 @@ import routes from './routes';
 import { errorHandler, notFound } from './middleware/error.middleware';
 import { generalLimiter } from './middleware/rateLimit.middleware';
 import { clerkAuth } from './middleware/clerk.middleware';
+import { analyticsMiddleware } from './middleware/analytics.middleware';
 
 
 const app: Application = express();
@@ -75,6 +76,9 @@ app.options('*', cors());
 // Body parsers - MUST be before any middleware that reads req.body
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
+
+// Vercel Web Analytics middleware - tracks response times and performance metrics
+app.use(analyticsMiddleware);
 
 // Clerk authentication middleware - run Clerk unless admin-secret is present
 app.use((req, res, next) => {
