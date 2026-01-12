@@ -8,6 +8,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { RippleBackground } from "./accentricity/ripple-background";
 import { AuroraText } from "./magicui/aurora-text";
 
+interface TeamMember {
+  name: string;
+  position: string;
+  image: string;
+  whatsapp: string;
+  linkedin: string;
+}
+
 export function Sponsors() {
   // Sponsor Categories
   const sponsorCategories = [
@@ -49,6 +57,30 @@ export function Sponsors() {
           website: "https://www.venturewolf.in/"
         }
       ]
+    }
+  ];
+
+  const sponsorshipTeam: TeamMember[] = [
+    {
+      name: "Yash Yadav",
+      position: "Sponsorship Head",
+      image: "/assets/team/yash.png?v=2",
+      whatsapp: "+918591134029",
+      linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
+    },
+    {
+      name: "Dia Tailor",
+      position: "JC - Marketing",
+      image: "/assets/team/diya.png?v=2",
+      whatsapp: "+911234567890",
+      linkedin: "https://www.linkedin.com/in/diya-tailor/"
+    },
+    {
+      name: "Niyatee Thakur",
+      position: "OC - Marketing",
+      image: "/assets/team/niyatee.png?v=2",
+      whatsapp: "+919892682981",
+      linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
     }
   ];
 
@@ -150,29 +182,7 @@ export function Sponsors() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              {
-                name: "Yash Yadav",
-                role: "Sponsorship Head",
-                image: "/assets/team/yash.png?v=2",
-                whatsapp: "918591134029",
-                linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
-              },
-              {
-                name: "Niyatee Thakur",
-                role: "OC - Marketing",
-                image: "/assets/team/niyatee.png?v=2",
-                whatsapp: "919892682981",
-                linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
-              },
-              {
-                name: "Rudransh Atul Puthan",
-                role: "JC - Operations",
-                image: "/assets/team/rudransh.png?v=2",
-                whatsapp: "918698555596",
-                linkedin: "https://www.linkedin.com/in/rudransh-puthan-b5a1b9307/"
-              }
-            ].map((contact, index) => (
+            {sponsorshipTeam.map((contact, index) => (
               <motion.div
                 key={contact.name}
                 initial={{ opacity: 0, y: 30 }}
@@ -192,7 +202,7 @@ export function Sponsors() {
                     <div>
                       <h4 className="text-xl font-bold mb-2">{contact.name}</h4>
                       <p className="text-sm text-muted-foreground font-medium mb-4">
-                        {contact.role}
+                        {contact.position}
                       </p>
                       <p className="text-sm text-muted-foreground mb-1">Contact</p>
                     </div>
