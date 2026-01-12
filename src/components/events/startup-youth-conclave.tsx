@@ -7,7 +7,7 @@ export function StartupYouthConclavePage() {
       "Connect with Top E-Cells! Network with entrepreneurship cells from other colleges, share best practices, and build collaborations that go beyond your campus.",
     date: "February 3, 2026",
     time: "11:00 AM to 1:00 PM (Post Lunch)",
-    venue: "Seminar Hall 2nd floor TSAP",
+    venue: "Seminar Hall, 2nd floor, TSAP / Internal General Reading Room",
     eligibility: "Silicon & Quantum Pass holders",
   };
   const primaryContacts = [

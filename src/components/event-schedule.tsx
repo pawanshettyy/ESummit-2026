@@ -176,7 +176,7 @@ const EventSchedule = () => {
         time: "10:00 - 17:00",
         title: "Data Analytics & Business Development Essentials Workshop",
         category: "workshops",
-        venue: "Lab 526 & 527",
+        venue: "Lab 526 / 527 / 528 / 529",
         speaker: "Data Scientist",
         description: "Make Smarter Decisions with Data. Learn to analyze market trends, track key metrics, and use data-driven insights to fuel your business growth and strategy.",
         duration: "7 hours (3 Hour Sessions)",
@@ -257,7 +257,7 @@ const EventSchedule = () => {
         time: "09:30 - 13:30",
         title: "The Angel Investor's Roundtable: Capital Meets Innovation",
         category: "pitching",
-        venue: "Seminar Hall",
+        venue: "General Reading Room (4th floor) / Seminar hall, 2nd floor, TSAP",
         speaker: "5 Angel Investors",
         description: "An exclusive gathering where capital meets innovation. This roundtable brings together angel investors to vet and co-invest in the most promising early-stage companies, featuring founders selected from our Pitch Arena.",
         duration: "4 hours",
@@ -337,7 +337,7 @@ const EventSchedule = () => {
         time: "10:00 - 17:00",
         title: "Data Analytics & Business Development Essentials Workshop (Day 2)",
         category: "workshops",
-        venue: "Lab 526 & 527",
+        venue: "Lab 526 / 527 / 528 / 529",
         speaker: "Data Scientist",
         description: "Make Smarter Decisions with Data. Learn to analyze market trends, track key metrics, and use data-driven insights to fuel your business growth and strategy.",
         duration: "7 hours (3 Hour Sessions)",
@@ -382,7 +382,7 @@ const EventSchedule = () => {
         time: "11:00 - 13:00",
         title: "Startup Youth Conclave: Connect with Top E-Cells",
         category: "networking",
-        venue: "Seminar Hall 2nd floor TSAP",
+        venue: "Seminar Hall, 2nd floor, TSAP / Internal General Reading Room",
         speaker: "E-Cell Representatives",
         description: "Connect with Top E-Cells! Network with entrepreneurship cells from other colleges, share best practices, and build collaborations that go beyond your campus.",
         duration: "2 hours",
@@ -474,13 +474,14 @@ const EventSchedule = () => {
                 <SelectItem value="301, TIMSR">301, TIMSR</SelectItem>
                 <SelectItem value="Lab 522 & 523">Lab 522 & 523</SelectItem>
                 <SelectItem value="Lab 524 & 525">Lab 524 & 525</SelectItem>
-                <SelectItem value="Lab 526 & 527">Lab 526 & 527</SelectItem>
+                <SelectItem value="Lab 526 / 527 / 528 / 529">Lab 526 / 527 / 528 / 529</SelectItem>
                 <SelectItem value="Lobby Area">Lobby Area</SelectItem>
                 <SelectItem value="Convocation Hall">Convocation Hall</SelectItem>
-                <SelectItem value="Multipurpose Hall 2nd Floor & Architecture Ground Floor">Multipurpose Hall 2nd Floor</SelectItem>
-                <SelectItem value="Multipurpose Hall 2nd Floor and TSAP ground floor">TSAP ground floor</SelectItem>
-                <SelectItem value="Seminar Hall">Seminar Hall</SelectItem>
-                <SelectItem value="Seminar Hall 2nd floor TSAP">Seminar Hall 2nd floor TSAP</SelectItem>
+                <SelectItem value="Multipurpose Hall 2nd Floor and Multipurpose Hall Ground Floor">Multipurpose Hall 2nd Floor and Ground Floor</SelectItem>
+                <SelectItem value="General Reading Room (4th floor) / Seminar hall, 2nd floor, TSAP">General Reading Room / Seminar hall TSAP</SelectItem>
+                <SelectItem value="Seminar Hall, 2nd floor, TSAP / Internal General Reading Room">Seminar Hall TSAP / Internal Reading Room</SelectItem>
+                <SelectItem value="Auditorium (D-1)">Auditorium (D-1)</SelectItem>
+                <SelectItem value="Auditorium (D-2)">Auditorium (D-2)</SelectItem>
               </SelectContent>
             </Select>
           </div>

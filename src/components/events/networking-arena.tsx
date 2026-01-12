@@ -7,7 +7,7 @@ export function NetworkingArenaPage() {
       "Open networking session during lunch - connect with entrepreneurs, investors, judges, and fellow participants. An ideal opportunity to build relationships and explore collaborations.",
     date: "February 2-3, 2026",
     time: "Lunch Hours",
-    venue: "Multipurpose Hall 2nd Floor & Architecture Ground Floor",
+    venue: "Multipurpose Hall 2nd Floor and Multipurpose Hall Ground Floor",
     eligibility: "All pass holders",
   };
   const primaryContacts = [

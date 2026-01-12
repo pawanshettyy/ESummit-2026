@@ -7,7 +7,7 @@ export function PanelDiscussionPage() {
       "Get the Final Insights. Hear from our expert judges and speakers in a final panel discussion, followed by the closing ceremony to celebrate the day's winners and achievements.",
     date: "February 3, 2026",
     time: "2:00 PM to 5:00 PM (Post Lunch)",
-    venue: "Auditorium",
+    venue: "Auditorium (D-2)",
     eligibility: "All pass holders",
     prize: undefined, // No prize for panel discussion
   };
