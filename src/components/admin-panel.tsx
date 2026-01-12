@@ -803,14 +803,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                       {stats?.totalPasses || 0}
                     </span>
                   </div>
-                  <div className="mt-2 flex gap-2 text-xs">
-                    <span className="text-green-600">
-                      ✓ {stats?.verifiedPasses || 0} verified
-                    </span>
-                    <span className="text-amber-600">
-                      ○ {stats?.unverifiedPasses || 0} pending
-                    </span>
-                  </div>
                 </CardContent>
               </Card>
 

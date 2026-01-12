@@ -121,4 +121,7 @@ node_modules/.vite
 # Misc OS
 Desktop.ini
 
+# Passes directory (contains uploaded Excel files)
+passes/
+
 # End of file

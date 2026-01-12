@@ -256,6 +256,7 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
       updated: 0,
       skipped: 0,
       errors: [] as any[],
+      processedUsers: [] as { email: string; whatsappNumber?: string; matchType: string; passesCreated: number; passesUpdated: number }[],
     };
 
     const importBatchId = `import_${Date.now()}`;
@@ -284,11 +285,13 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
       const rowNum = i + 2; // Account for header row
       
       try {
-        const email = getField(record, 'Email Address', 'Email', 'email', 'email_address')?.toLowerCase();
+        const email = getField(record, 'email id', 'Email ID', 'email', 'Email Address')?.toLowerCase()?.trim();
+        const whatsappNumber = getField(record, 'whatsapp number', 'WhatsApp Number', 'whatsapp_number')?.trim();
         
-        if (!email) {
+        // Require at least email OR whatsapp number
+        if (!email && !whatsappNumber) {
           results.skipped++;
-          logger.debug(`Row ${rowNum}: Skipped - no email`);
+          logger.debug(`Row ${rowNum}: Skipped - no email or whatsapp number`);
           continue;
         }
 
@@ -301,30 +304,53 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           continue;
         }
 
-        // Find or create user
-        let user = await prisma.user.findUnique({ where: { email } });
+        // Find user by email first, then by whatsapp number
+        let user = null;
+        let matchType = '';
 
-        const name = getField(record, 'Name', 'name', 'Full Name', 'full_name') || email.split('@')[0];
-        const college = getField(record, 'College', 'college', 'Institution');
-        const phone = getField(record, 'Phone Number', 'Phone', 'phone', 'phone_number');
+        if (email) {
+          user = await prisma.user.findUnique({ where: { email } });
+          if (user) {
+            matchType = 'email';
+          }
+        }
+
+        // If not found by email, try whatsapp number
+        if (!user && whatsappNumber) {
+          // Clean whatsapp number (remove spaces, dashes, etc.)
+          const cleanWhatsapp = whatsappNumber.replace(/[\s\-\(\)]/g, '');
+          user = await prisma.user.findFirst({ 
+            where: { 
+              phone: {
+                contains: cleanWhatsapp
+              }
+            } 
+          });
+          if (user) {
+            matchType = 'whatsapp';
+          }
+        }
+
+        const name = getField(record, 'name', 'Name', 'Full Name', 'full_name') || (email ? email.split('@')[0] : `User_${i}`);
 
         if (!user) {
-          user = await prisma.user.create({
-            data: {
-              email,
-              fullName: name,
-              clerkUserId: `imported_${importBatchId}_${i}`, // Placeholder until they sign in with Clerk
-              ...(college && { college }),
-              ...(phone && { phone }),
-            },
+          // Skip row if user doesn't exist - don't create new users
+          results.skipped++;
+          results.errors.push({
+            row: rowNum,
+            email: email || 'N/A',
+            whatsappNumber: whatsappNumber || 'N/A',
+            reason: 'User not found - neither email nor WhatsApp number matches existing user'
           });
-          logger.debug(`Row ${rowNum}: Created new user for ${email}`);
+          logger.debug(`Row ${rowNum}: Skipped - user not found for ${email || whatsappNumber}`);
+          continue;
+        } else {
+          logger.debug(`Row ${rowNum}: Matched existing user by ${matchType}: ${user.email}`);
         }
 
         // Extract pass data from KonfHub export
-        const bookingId = getField(record, 'Booking Id', 'Booking ID', 'booking_id');
-        const ticketName = getField(record, 'Ticket Name', 'Ticket name', 'ticket_name');
-        const paymentId = getField(record, 'Payment ID', 'Payment Id', 'payment_id');
+        const bookingId = getField(record, 'booking id', 'Booking ID', 'booking_id');
+        const ticketName = getField(record, 'ticketname', 'Ticket Name', 'ticket_name');
         
         // Parse monetary values (handle currency symbols and commas)
         const parseAmount = (val: string) => {
@@ -332,18 +358,12 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           return parseFloat(val.replace(/[^0-9.-]/g, '') || '0');
         };
 
-        const amountPaid = parseAmount(getField(record, 'Amount Paid', 'Amount paid', 'amount_paid'));
-        const ticketPrice = parseAmount(getField(record, 'Ticket Price', 'Ticket price', 'ticket_price'));
-        // Parse additional amounts for ticketDetails storage
-        const balanceAmountStr = getField(record, 'Balance Amount', 'Balance amount', 'balance_amount');
-        const refundAmountStr = getField(record, 'Refund Amount', 'Refund amount', 'refund_amount');
-        const taxAmountStr = getField(record, 'Tax Amount', 'Tax amount', 'tax_amount');
-        const processingFeeStr = getField(record, 'Processing Fee', 'Processing fee', 'processing_fee');
-        const discountAmountStr = getField(record, 'Discount Amount', 'Discount amount', 'discount_amount');
+        const amountPaid = parseAmount(getField(record, 'amount paid', 'Amount Paid', 'amount_paid'));
+        const ticketPrice = parseAmount(getField(record, 'ticket price', 'Ticket Price', 'ticket_price'));
 
         // Parse registration date (handle format: DD-MM-YYYY HH:MM:SS)
         let purchaseDate = new Date();
-        const registeredAt = getField(record, 'Registered At', 'Registered at', 'registered_at');
+        const registeredAt = getField(record, 'registered at', 'Registered At', 'registered_at');
         if (registeredAt) {
           try {
             // Handle DD-MM-YYYY HH:MM:SS format
@@ -374,96 +394,32 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           ? await prisma.pass.findFirst({ where: { bookingId } })
           : null;
 
-        // Build comprehensive ticket details from all KonfHub fields
+        // Build ticket details with user's specific fields
         const ticketDetails = {
-          // Attendee Details
-          attendeeName: name,
-          email: getField(record, 'Email Address', 'Email'),
-          country: getField(record, 'Country', 'country'),
-          attendeeCategory: getField(record, 'Attendee Category', 'Attendee category'),
-          accessCategory: getField(record, 'Access Category', 'Access category'),
-          countryCode: getField(record, 'Country Code', 'Country code'),
-          dialCode: getField(record, 'Dial Code', 'Dial code'),
-          phone,
-          college,
-          teamName: getField(record, 'Team Name', 'Team name'),
-          
-          // WhatsApp Details
-          whatsappNumber: getField(record, 'WhatsApp Number', 'Whatsapp Number'),
-          waCountryCode: getField(record, 'Wa Country Code', 'WA country code'),
-          waDialCode: getField(record, 'Wa Dial Code', 'WA dial code'),
-          whatsappConsent: getField(record, 'Whatsapp Consent', 'Whatsapp consent'),
-          
-          // Registration Details
-          couponCode: getField(record, 'Coupon Code', 'Coupon code'),
-          paymentId,
+          name,
+          email: email || '',
           ticketName,
           registeredAt,
-          registrationStatus: getField(record, 'Registration Status', 'Registration status'),
           bookingId,
           ticketPrice: ticketPrice.toString(),
           amountPaid: amountPaid.toString(),
-          balanceAmount: balanceAmountStr,
-          refundAmount: refundAmountStr,
-          refundType: getField(record, 'Refund Type', 'Refund type'),
-          taxAmount: taxAmountStr,
-          processingFee: processingFeeStr,
-          discountAmount: discountAmountStr,
-          codeTrackingId: getField(record, 'Code Tracking ID', 'Code tracking ID'),
-          ticketUrl: getField(record, 'Ticket URL', 'Ticket Url'),
-          invoiceUrl: getField(record, 'Invoice URL', 'Invoice Url'),
-          invoiceNumber: getField(record, 'Invoice Number'),
-          
-          // Payment Details
-          paymentMethod: getField(record, 'Payment Method'),
-          pgPercentage: getField(record, 'PG Percentage'),
-          
-          // Group/Waitlist Details
-          groupDiscountCode: getField(record, 'Group Discount Code'),
-          groupDiscount: getField(record, 'Group Discount'),
-          waitlistApprovalStatus: getField(record, 'Waitlist/Approval Status'),
-          
-          // UTM Details
-          utmSource: getField(record, 'UTM Source', 'UTM source'),
-          utmMedium: getField(record, 'UTM Medium', 'UTM medium'),
-          utmCampaign: getField(record, 'UTM Campaign', 'UTM campaign'),
-          referredBy: getField(record, 'Referred By'),
-          
-          // Buyer/GST Details
-          buyerName: getField(record, 'Buyer Name', 'Buyer name'),
-          buyerEmail: getField(record, 'Buyer Email', 'Buyer email'),
-          
-          // QR Code (base64 if included)
-          qrCode: getField(record, 'QR Code', 'QR code'),
-          
-          // Import metadata
+          whatsappNumber,
           importedAt: new Date().toISOString(),
           importBatchId,
-          importedFrom: 'konfhub_export',
+          importedFrom: 'excel_import',
+          matchType, // Track how the user was matched
         };
-
-        // Determine pass status based on registration status
-        let status = 'Pending';
-        const regStatusLower = registrationStatus?.toLowerCase();
-        if (regStatusLower === 'confirmed' || regStatusLower === 'success') {
-          status = 'Active';
-        } else if (regStatusLower === 'cancel' || regStatusLower === 'cancelled') {
-          status = 'Cancelled';
-        }
 
         const passData = {
           userId: user.id,
           passType: ticketName || 'General Pass',
           passId: bookingId || `PASS-${importBatchId}-${i}`,
           bookingId: bookingId || null,
-          konfhubTicketId: paymentId || bookingId || null,
-          konfhubOrderId: paymentId || null,
           price: amountPaid || ticketPrice,
           purchaseDate,
           ticketDetails,
-          qrCodeUrl: ticketDetails.ticketUrl || null,
-          qrCodeData: bookingId || paymentId || null,
-          status,
+          qrCodeData: bookingId || null,
+          status: 'Active', // Assume active for imported passes
         };
 
         if (existingPass) {
@@ -474,7 +430,6 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
               purchaseDate: passData.purchaseDate,
               ticketDetails: passData.ticketDetails,
               status: passData.status,
-              qrCodeUrl: passData.qrCodeUrl,
             },
           });
           results.updated++;
@@ -485,12 +440,29 @@ router.post('/import-passes', upload.single('file'), async (req: Request, res: R
           logger.debug(`Row ${rowNum}: Created pass for ${email}`);
         }
 
+        // Track processed user
+        const existingUserIndex = results.processedUsers.findIndex(u => u.email === user.email);
+        if (existingUserIndex >= 0) {
+          // Update existing user stats
+          results.processedUsers[existingUserIndex].passesCreated += existingPass ? 0 : 1;
+          results.processedUsers[existingUserIndex].passesUpdated += existingPass ? 1 : 0;
+        } else {
+          // Add new processed user
+          results.processedUsers.push({
+            email: user.email,
+            whatsappNumber: user.phone || undefined,
+            matchType,
+            passesCreated: existingPass ? 0 : 1,
+            passesUpdated: existingPass ? 1 : 0,
+          });
+        }
+
       } catch (error: any) {
         logger.error(`Error processing row ${rowNum}:`, error);
         results.errors.push({
           row: rowNum,
-          email: record['Email Address'],
-          bookingId: record['Booking ID'],
+          email: record['email id'] || record['Email ID'],
+          bookingId: record['booking id'] || record['Booking ID'],
           error: error.message,
         });
       }
@@ -687,8 +659,15 @@ router.get('/stats', async (req: Request, res: Response) => {
 
     // Build pass type breakdown object
     const passTypeBreakdown: Record<string, number> = {};
+    
+    // Helper function to normalize pass type names to title case
+    const toTitleCase = (str: string): string => {
+      return str.toLowerCase().replace(/\b\w/g, l => l.toUpperCase());
+    };
+    
     passesByType.forEach(p => {
-      passTypeBreakdown[p.passType] = p._count;
+      const normalizedType = toTitleCase(p.passType);
+      passTypeBreakdown[normalizedType] = (passTypeBreakdown[normalizedType] || 0) + p._count;
     });
 
     return sendSuccess(res, 'Stats fetched', {
