@@ -66,36 +66,6 @@ export function PassBooking({
     tcet_student: "70910", // Thakur Student Pass
   };
 
-  // Check if user already has a pass
-  useEffect(() => {
-    const checkExistingPass = async () => {
-      if (!user?.id) return;
-
-      setIsCheckingPass(true);
-      try {
-        const passResponse = await fetch(
-          `${API_BASE_URL}/passes/user/${user.id}`
-        );
-        const passData = await passResponse.json();
-
-        if (passData.success && passData.data.passes && passData.data.passes.length > 0) {
-          setHasExistingPass(true);
-          toast.info("You already have a pass", {
-            description: "Check your dashboard to view your pass.",
-          });
-        }
-      } catch (error) {
-        console.error("Error checking existing pass:", error);
-      } finally {
-        setIsCheckingPass(false);
-      }
-    };
-
-    if (user?.id) {
-      checkExistingPass();
-    }
-  }, [user]);
-
   const passes = [
     {
       id: "pixel",
@@ -109,6 +79,7 @@ export function PassBooking({
         "IPL Auction",
         "AI Build-A-Thon",
         "Biz-Arena League",
+        "All 3 Workshops",
         "Certificate of participation",
       ],
       badge: "Early Bird",
@@ -353,8 +324,8 @@ export function PassBooking({
             <p className="mx-auto mb-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-4">
               Select the perfect pass for your E-Summit experience and unlock exclusive access to premium events
             </p>
-            <div className="mx-auto mb-6 max-w-4xl">
-              <div className="flex flex-col md:flex-row gap-4">
+            <div className="mx-auto mb-6 max-w-6xl">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div className="flex-1">
                   <Alert className="border-primary/20 bg-primary/5 text-center h-full">
                     <Info className="mx-auto h-4 w-4 text-primary" />
@@ -390,6 +361,17 @@ export function PassBooking({
                       </AlertDescription>
                     </Alert>
                   </a>
+                </div>
+                <div className="flex-1">
+                  <Alert className="border-orange-200 bg-gradient-to-r from-orange-50 to-red-50 dark:border-orange-800 dark:from-orange-950 dark:to-red-950 text-center h-full">
+                    <AlertCircle className="mx-auto h-4 w-4 text-orange-600 dark:text-orange-400" />
+                    <AlertDescription className="text-center text-orange-700 dark:text-orange-300">
+                      <p className="text-sm font-bold">⚠️ Important Notice</p>
+                      <p className="text-xs mt-1 font-medium">
+                        After pass purchase, please head to your dashboard to add your pass for verification
+                      </p>
+                    </AlertDescription>
+                  </Alert>
                 </div>
               </div>
             </div>
@@ -628,7 +610,7 @@ export function PassBooking({
                     { name: "Biz-Arena League", included: ["pixel", "silicon", "quantum", "thakur_student"] },
                     { name: "Pitch Arena", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "Startup Youth Conclave", included: ["silicon", "quantum", "thakur_student"] },
-                    { name: "All 3 Workshops", included: ["silicon", "quantum", "thakur_student"] },
+                    { name: "All 3 Workshops", included: ["pixel", "silicon", "quantum", "thakur_student"] },
                     { name: "Networking Arena", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "Lunch included", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "The Ten Minute Deal", included: ["quantum", "thakur_student"] },
