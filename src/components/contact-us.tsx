@@ -250,7 +250,7 @@ export function ContactUs() {
 
       {/* Hospitality & PR */}
       <div className="mb-12">
-        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center text-foreground">Hospitality & PR</h2>
+        <h2 className="text-2xl md:text-3xl font-bold mb-2 text-center text-foreground">Marketing & Hospitality</h2>
         <p className="text-foreground text-center mb-6">For any Hospitality related Queries</p>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-2 max-w-4xl mx-auto place-items-center">
           {hospitalityTeam.map(renderTeamMember)}
