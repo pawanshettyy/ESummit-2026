@@ -57,6 +57,17 @@ export function Sponsors() {
           website: "https://www.venturewolf.in/"
         }
       ]
+    },
+    {
+      title: "Support Sponsor",
+      sponsors: [
+        {
+          name: "Hire Helmet",
+          logo: "/assets/sponsors/HireHelmet.png",
+          tier: "SUPPORT SPONSOR",
+          website: "#"
+        }
+      ]
     }
   ];
 
