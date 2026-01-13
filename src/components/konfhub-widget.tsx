@@ -26,6 +26,9 @@ export function KonfHubWidget({
   const widgetRef = useRef<HTMLDivElement>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [retryCount, setRetryCount] = useState(0);
+  const maxRetries = 3;
 
   useEffect(() => {
     // Detect mobile devices
@@ -40,20 +43,34 @@ export function KonfHubWidget({
 
   useEffect(() => {
     if (mode === 'button') {
-      // Throttle script loading to prevent rate limiting
+      let currentRetryCount = 0;
+      const baseDelay = isMobile ? 2000 : 500;
+
       const loadScript = () => {
         const script = document.createElement('script');
         script.src = 'https://widget.konfhub.com/widget.js';
         script.setAttribute('button_id', buttonId);
         script.async = true;
-        
+
         script.onload = () => {
           setIsLoading(false);
+          setHasError(false);
+          setRetryCount(0); // Reset retry count on success
         };
 
         script.onerror = () => {
-          console.error('Failed to load KonfHub widget script');
-          setIsLoading(false);
+          console.error(`Failed to load KonfHub widget script (attempt ${currentRetryCount + 1})`);
+          currentRetryCount++;
+          setRetryCount(currentRetryCount);
+
+          if (currentRetryCount < maxRetries) {
+            // Exponential backoff: 2^retryCount * baseDelay
+            const delay = Math.pow(2, currentRetryCount) * baseDelay;
+            setTimeout(loadScript, delay);
+          } else {
+            setIsLoading(false);
+            setHasError(true);
+          }
         };
 
         if (widgetRef.current) {
@@ -61,8 +78,8 @@ export function KonfHubWidget({
         }
       };
 
-      // Delay loading and only load once
-      const timeoutId = setTimeout(loadScript, isMobile ? 2000 : 500);
+      // Initial delay before first attempt
+      const timeoutId = setTimeout(loadScript, baseDelay);
 
       return () => {
         clearTimeout(timeoutId);
@@ -76,14 +93,15 @@ export function KonfHubWidget({
         }
       };
     } else {
-      // Iframe mode - delay loading on mobile
+      // Iframe mode - use timeout to assume successful load
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
-      }, isMobile ? 1000 : 0);
+        setHasError(false);
+      }, isMobile ? 3000 : 2000); // Give more time on mobile
       
       return () => clearTimeout(timeoutId);
     }
-  }, [mode, buttonId, isMobile]);
+  }, [mode, buttonId, isMobile, maxRetries]);
 
   // Listen for messages from KonfHub widget
   useEffect(() => {
@@ -111,12 +129,63 @@ export function KonfHubWidget({
     };
   }, [onSuccess, onClose]);
 
+  // Disable KonfHub widget on mobile to prevent loops and errors
+  if (isMobile) {
+    return (
+      <div className={`flex items-center justify-center p-8 bg-muted/50 rounded-lg ${className}`}>
+        <div className="text-center max-w-md">
+          <div className="text-4xl mb-4">📱</div>
+          <h3 className="font-semibold mb-2">Desktop Booking Required</h3>
+          <p className="text-sm text-muted-foreground mb-4">
+            For the best booking experience, please use a desktop or laptop computer.
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Mobile booking will be available soon with improved compatibility.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   if (mode === 'button') {
+    if (hasError && retryCount >= maxRetries) {
+      // Show fallback UI after max retries
+      return (
+        <div className={`flex items-center justify-center p-8 bg-muted/50 rounded-lg ${className}`}>
+          <div className="text-center max-w-md">
+            <div className="text-4xl mb-4">🎫</div>
+            <h3 className="font-semibold mb-2">Pass Booking Temporarily Unavailable</h3>
+            <p className="text-sm text-muted-foreground mb-4">
+              We're experiencing technical difficulties with our booking system.
+            </p>
+            <p className="text-xs text-muted-foreground mb-4">
+              Please try again later or contact support if the issue persists.
+            </p>
+            <button
+              onClick={() => {
+                setHasError(false);
+                setRetryCount(0);
+                setIsLoading(true);
+              }}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 text-sm"
+            >
+              Try Again
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     return (
       <div ref={widgetRef} className={className}>
         {isLoading && (
           <div className="flex items-center justify-center p-4">
-            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+            <div className="text-center">
+              <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-2"></div>
+              <p className="text-sm text-muted-foreground">
+                {retryCount > 0 ? `Retrying... (${retryCount}/${maxRetries})` : 'Loading booking system...'}
+              </p>
+            </div>
           </div>
         )}
       </div>
@@ -124,29 +193,17 @@ export function KonfHubWidget({
   }
 
   // Iframe mode
-  if (isMobile) {
-    // Disable KonfHub widget on mobile to prevent rate limiting
-    return (
-      <div className={`flex items-center justify-center p-8 bg-muted/50 rounded-lg ${className}`}>
-        <div className="text-center">
-          <div className="text-2xl mb-2">🎫</div>
-          <h3 className="font-semibold mb-2">Pass Booking</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            Please visit this page on a desktop device to purchase passes.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Mobile booking is temporarily disabled to ensure a smooth experience.
-          </p>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className={`relative ${className}`}>
       {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-background/80">
-          <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <div className="absolute inset-0 flex items-center justify-center bg-background/80 z-10">
+          <div className="text-center">
+            <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent mx-auto mb-2"></div>
+            <p className="text-sm text-muted-foreground">
+              {retryCount > 0 ? `Retrying... (${retryCount}/${maxRetries})` : 'Loading booking system...'}
+            </p>
+          </div>
         </div>
       )}
       <iframe
@@ -161,13 +218,9 @@ export function KonfHubWidget({
           maxHeight: isMobile ? '70vh' : '80vh',
           display: isLoading ? 'none' : 'block'
         }}
-        onLoad={() => setIsLoading(false)}
-        onError={() => {
-          console.error('KonfHub iframe failed to load');
-          setIsLoading(false);
-        }}
         className="rounded-lg"
         loading="lazy"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
       />
     </div>
   );

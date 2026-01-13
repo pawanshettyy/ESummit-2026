@@ -61,6 +61,11 @@ console.warn = function(...args) {
   if (args.some(arg => typeof arg === 'string' && arg.includes('preload but not used'))) {
     return;
   }
+
+  // Suppress KonfHub monitoring errors
+  if (args.some(arg => typeof arg === 'string' && arg.includes('konfhub.com/monitoring'))) {
+    return;
+  }
   
   // Call original console.warn
   originalConsoleWarn.apply(console, args);
@@ -91,6 +96,15 @@ window.addEventListener('unhandledrejection', (event) => {
         event.reason.message.includes('blocked')) {
       event.preventDefault();
       console.warn('Request blocked by client (likely ad blocker):', event.reason.message);
+      return false;
+    }
+  }
+
+  // Suppress KonfHub monitoring rejections
+  if (event.reason && typeof event.reason === 'object' && event.reason.message) {
+    if (event.reason.message.includes('konfhub.com/monitoring') ||
+        event.reason.message.includes('429')) {
+      event.preventDefault();
       return false;
     }
   }
