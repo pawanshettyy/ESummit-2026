@@ -109,8 +109,8 @@ export function KonfHubWidget({
         id="konfhub-widget"
         title={`Register for ${import.meta.env.VITE_APP_NAME || 'E-Summit 2026'}`}
         width="100%"
-        height="500"
-        style={{ border: 'none', minHeight: '500px' }}
+        height="600"
+        style={{ border: 'none', minHeight: '600px', maxHeight: '80vh' }}
         onLoad={() => setIsLoading(false)}
         className="rounded-lg"
       />

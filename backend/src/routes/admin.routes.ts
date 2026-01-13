@@ -1286,34 +1286,92 @@ router.post('/claims/:claimId/action', async (req: Request, res: Response) => {
       // Extract data from claim
       const extractedData = claim.extractedData as any || {};
 
-      // Create the pass in the database with uploaded PDF
-      const pass = await prisma.pass.create({
-        data: {
-          userId: user.id,
-          passId: claim.bookingId || `CLAIM-${Date.now()}`,
-          passType: claim.passType,
-          bookingId: claim.bookingId,
-          konfhubOrderId: claim.konfhubOrderId,
-          price: extractedData.price || 0,
-          purchaseDate: new Date(),
-          status: 'Active',
-          pdfUrl: extractedData.fileUrl || extractedData.filePath || null, // Use Vercel Blob URL or legacy path
-          qrCodeUrl: extractedData.ticketUrl || null,
-          qrCodeData: claim.qrCodeData || claim.bookingId || claimId,
-          ticketDetails: {
-            attendeeName: claim.fullName || extractedData.attendeeName || user.fullName,
-            email: claim.email,
-            phone: user.phone,
-            college: user.college,
-            registrationStatus: 'Confirmed',
-            registeredAt: new Date().toISOString(),
-            source: 'admin_claim_approval',
-            claimId: claim.id,
-            adminNotes: adminNotes,
-            originalFileName: extractedData.fileName,
+      // Check if a pass already exists for this booking/order
+      let existingPass = null;
+      if (claim.bookingId) {
+        existingPass = await prisma.pass.findFirst({
+          where: { bookingId: claim.bookingId },
+        });
+      }
+      if (!existingPass && claim.konfhubOrderId) {
+        existingPass = await prisma.pass.findFirst({
+          where: { konfhubOrderId: claim.konfhubOrderId },
+        });
+      }
+
+      let pass;
+      if (existingPass) {
+        // Pass already exists - update ownership to this user
+        pass = await prisma.pass.update({
+          where: { id: existingPass.id },
+          data: {
+            userId: user.id,
+            status: 'Active',
+            pdfUrl: extractedData.fileUrl || extractedData.filePath || existingPass.pdfUrl,
+            qrCodeUrl: extractedData.ticketUrl || existingPass.qrCodeUrl,
+            ticketDetails: {
+              ...(existingPass.ticketDetails as object || {}),
+              attendeeName: claim.fullName || extractedData.attendeeName || user.fullName,
+              email: claim.email,
+              phone: user.phone,
+              college: user.college,
+              registrationStatus: 'Confirmed',
+              registeredAt: new Date().toISOString(),
+              source: 'admin_claim_approval',
+              claimId: claim.id,
+              adminNotes: adminNotes,
+              originalFileName: extractedData.fileName,
+            },
           },
-        },
-      });
+        });
+        logger.info('Updated existing pass ownership for claim approval', { claimId, passId: pass.id, userId: user.id });
+      } else {
+        // Create new pass - ensure passId is unique
+        let uniquePassId = claim.bookingId || claim.konfhubOrderId;
+        
+        // Check if the proposed passId already exists
+        if (uniquePassId) {
+          const existingPassWithId = await prisma.pass.findUnique({
+            where: { passId: uniquePassId },
+          });
+          if (existingPassWithId) {
+            // Generate a new unique ID
+            uniquePassId = `CLAIM-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+          }
+        } else {
+          // No booking/order ID, generate one
+          uniquePassId = `CLAIM-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        pass = await prisma.pass.create({
+          data: {
+            userId: user.id,
+            passId: uniquePassId,
+            passType: claim.passType,
+            bookingId: claim.bookingId,
+            konfhubOrderId: claim.konfhubOrderId,
+            price: extractedData.price || 0,
+            purchaseDate: new Date(),
+            status: 'Active',
+            pdfUrl: extractedData.fileUrl || extractedData.filePath || null,
+            qrCodeUrl: extractedData.ticketUrl || null,
+            qrCodeData: claim.qrCodeData || claim.bookingId || uniquePassId,
+            ticketDetails: {
+              attendeeName: claim.fullName || extractedData.attendeeName || user.fullName,
+              email: claim.email,
+              phone: user.phone,
+              college: user.college,
+              registrationStatus: 'Confirmed',
+              registeredAt: new Date().toISOString(),
+              source: 'admin_claim_approval',
+              claimId: claim.id,
+              adminNotes: adminNotes,
+              originalFileName: extractedData.fileName,
+            },
+          },
+        });
+        logger.info('Created new pass for claim approval', { claimId, passId: pass.id, userId: user.id });
+      }
 
       // Update claim status
       await prisma.pendingPassClaim.update({

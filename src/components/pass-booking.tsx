@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo, memo } from "react";
 import { useUser } from "@clerk/clerk-react";
 import {
   Check,
@@ -37,7 +37,7 @@ interface PassBookingProps {
   onRequestAuth: () => void;
 }
 
-export function PassBooking({
+export const PassBooking = memo(function PassBooking({
   isAuthenticated,
   userData,
   onNavigate,
@@ -160,11 +160,14 @@ export function PassBooking({
     isThakurPass: true,
   };
 
-  const displayPasses = isThakurStudent 
-    ? [passes.find(p => p.id === "exhibitors")!, thakurStudentPass] 
-    : passes;
+  const displayPasses = useMemo(() => 
+    isThakurStudent 
+      ? [passes.find(p => p.id === "exhibitors")!, thakurStudentPass] 
+      : passes,
+    [isThakurStudent]
+  );
 
-  const handlePassSelect = (passId: string) => {
+  const handlePassSelect = useCallback((passId: string) => {
     // Check if user is authenticated
     if (!isAuthenticated) {
       setSelectedPass(passId);
@@ -183,9 +186,9 @@ export function PassBooking({
     // Set selected pass and open KonfHub widget directly
     setSelectedPass(passId);
     setShowKonfHubWidget(true);
-  };
+  }, [isAuthenticated, hasExistingPass]);
 
-  const handleKonfHubSuccess = async (data: any) => {
+  const handleKonfHubSuccess = useCallback(async (data: any) => {
     // KonfHub purchase completed successfully
     setIsProcessingPayment(true);
     
@@ -259,7 +262,7 @@ export function PassBooking({
       );
       setIsProcessingPayment(false);
     }
-  };
+  }, [user?.id, selectedPass, passes, onNavigate]);
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -707,4 +710,4 @@ export function PassBooking({
       </Dialog>
     </div>
   );
-}
+});

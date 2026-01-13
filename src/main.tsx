@@ -7,18 +7,22 @@ import App from "./App.tsx";
 import "./index.css";
 
 // Initialize Sentry
-Sentry.init({
-  dsn: import.meta.env.VITE_SENTRY_DSN,
-  integrations: [
-    Sentry.browserTracingIntegration(),
-    Sentry.replayIntegration(),
-  ],
-  tracesSampleRate: 1.0,
-  replaysSessionSampleRate: 0.1,
-  replaysOnErrorSampleRate: 1.0,
-  sendDefaultPii: true,
-  environment: import.meta.env.MODE,
-});
+try {
+  Sentry.init({
+    dsn: import.meta.env.VITE_SENTRY_DSN,
+    integrations: [
+      Sentry.browserTracingIntegration(),
+      Sentry.replayIntegration(),
+    ],
+    tracesSampleRate: 1.0,
+    replaysSessionSampleRate: 0.1,
+    replaysOnErrorSampleRate: 1.0,
+    sendDefaultPii: true,
+    environment: import.meta.env.MODE,
+  });
+} catch (error) {
+  console.warn('Sentry initialization failed, likely due to ad blocker:', error);
+}
 
 // Load Clerk key
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
