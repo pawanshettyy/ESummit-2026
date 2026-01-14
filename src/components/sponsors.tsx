@@ -20,7 +20,29 @@ export function Sponsors() {
   // Sponsor Categories
   const sponsorCategories = [
     {
-      title: "Food Sponsors",
+      title: "Co-powered by",
+      sponsors: [
+        {
+          name: "Venture Loop",
+          logo: "/assets/sponsors/ventureloop.png",
+          tier: "CO-POWERED BY",
+          website: "#"
+        }
+      ]
+    },
+    {
+      title: "Support Sponsor",
+      sponsors: [
+        {
+          name: "Hire Helmet",
+          logo: "/assets/sponsors/HireHelmet.png",
+          tier: "SUPPORT SPONSOR",
+          website: "#"
+        }
+      ]
+    },
+    {
+      title: "Food Partner",
       sponsors: [
         {
           name: "Mad Over Donuts",
@@ -33,6 +55,12 @@ export function Sponsors() {
           logo: "/assets/sponsors/99pancakes.png",
           tier: "FOOD PARTNER",
           website: "https://99pancakes.in/"
+        },
+        {
+          name: "Nissin Cup Noodles",
+          logo: "/assets/sponsors/nissin.png",
+          tier: "FOOD PARTNER",
+          website: "https://www.indonissin.in/pages/cup-noodles"
         }
       ]
     },
@@ -55,17 +83,6 @@ export function Sponsors() {
           logo: "/assets/panel/eventSponsor/venturewolf.png",
           tier: "INVESTOR",
           website: "https://www.venturewolf.in/"
-        }
-      ]
-    },
-    {
-      title: "Support Sponsor",
-      sponsors: [
-        {
-          name: "Hire Helmet",
-          logo: "/assets/sponsors/HireHelmet.png",
-          tier: "SUPPORT SPONSOR",
-          website: "#"
         }
       ]
     }
