@@ -52,6 +52,12 @@ export function TenMinuteMillionPage() {
       role: "Founder, Venture Wolf",
       image: "/assets/panel/devang_raja.png",
       linkedin: "https://www.linkedin.com/in/devangraja2001/"
+    },
+    {
+      name: "Nikhil Jadhav",
+      role: "VC, Ten Minute Deal",
+      image: "/assets/panel/nikhil_jadhav.jpg",
+      linkedin: "https://www.linkedin.com/in/nikhil-jadhav-a42758b2/?originalSubdomain=in"
     }
   ];
 

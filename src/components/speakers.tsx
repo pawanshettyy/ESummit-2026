@@ -42,6 +42,30 @@ export function Speakers() {
       },
       image: "/assets/panel/devang_raja.png",
     },
+    {
+      name: "Nikhil Jadhav",
+      title: "VC, Ten Minute Deal",
+      bio: "Nikhil Jadhav is the Founder of Robomax India Robotics, a leading robotics company established in 2018. With over 7 years of experience in startup leadership and robotics innovation, he specializes in early-stage startup investments and brings deep expertise in identifying promising ventures. As a former Robotics Trainer, he combines technical knowledge with entrepreneurial vision to guide startups through their growth journey at E-Summit 2026.",
+      expertise: ["Start-up Leadership", "Robotics", "Programmable Logic Controller (PLC)", "Startup Investing", "Investment Strategy"],
+      achievements: [
+        "Founder of Robomax India Robotics (2018-Present)",
+        "Robotics Trainer at Holy Angel (2018-2020)",
+        "Panelist at The Ten Minute Deal",
+        "7+ years in startup leadership and robotics",
+      ],
+      session: [
+        {
+          title: "The Ten Minute Deal",
+          date: "February 2, 2026",
+          time: "10:00 AM – 5:00 PM",
+          venue: "SH-1",
+        },
+      ],
+      social: {
+        linkedin: "https://www.linkedin.com/in/nikhil-jadhav-a42758b2/?originalSubdomain=in",
+      },
+      image: "/assets/panel/nikhil_jadhav.jpg",
+    },
   ];
 
   return (
@@ -63,9 +87,8 @@ export function Speakers() {
             </motion.div>
           </div>
 
-      <div className="flex justify-center">
-        <div className="max-w-md w-full">
-          {speakers.map((speaker, index) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-7xl mx-auto justify-items-center">
+        {speakers.map((speaker, index) => (
             <motion.div
               key={speaker.name}
               initial={{ opacity: 0, y: 30 }}
@@ -163,7 +186,6 @@ export function Speakers() {
               </Card>
             </motion.div>
           ))}
-        </div>
       </div>
 
       {/* Contact Section */}
