@@ -687,24 +687,26 @@ export const PassBooking = memo(function PassBooking({
 
       {/* KonfHub Widget Dialog */}
       <Dialog open={showKonfHubWidget} onOpenChange={setShowKonfHubWidget}>
-        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>Complete Your Purchase</DialogTitle>
-            <DialogDescription>
-              Complete your payment securely through KonfHub
-            </DialogDescription>
-          </DialogHeader>
-          <div className="mt-4">
-            <KonfHubWidget
-              mode="iframe"
-              ticketId={selectedPass ? passTicketIds[selectedPass] : undefined}
-              onSuccess={handleKonfHubSuccess}
-              onClose={() => {
-                setShowKonfHubWidget(false);
-                toast.info("Payment cancelled");
-              }}
-              className="min-h-[500px]"
-            />
+        <DialogContent className="w-full h-screen sm:h-auto sm:max-w-6xl sm:max-h-[90vh] p-0 overflow-hidden">
+          <div className="flex flex-col h-full">
+            <DialogHeader className="px-4 py-3">
+              <DialogTitle>Complete Your Purchase</DialogTitle>
+              <DialogDescription>
+                Complete your payment securely through KonfHub
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex-1 h-full">
+              <KonfHubWidget
+                mode="iframe"
+                ticketId={selectedPass ? passTicketIds[selectedPass] : undefined}
+                onSuccess={handleKonfHubSuccess}
+                onClose={() => {
+                  setShowKonfHubWidget(false);
+                  toast.info("Payment cancelled");
+                }}
+                className="w-full h-full"
+              />
+            </div>
           </div>
         </DialogContent>
       </Dialog>

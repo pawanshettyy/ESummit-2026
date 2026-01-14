@@ -129,23 +129,8 @@ export function KonfHubWidget({
     };
   }, [onSuccess, onClose]);
 
-  // Disable KonfHub widget on mobile to prevent loops and errors
-  if (isMobile) {
-    return (
-      <div className={`flex items-center justify-center p-8 bg-muted/50 rounded-lg ${className}`}>
-        <div className="text-center max-w-md">
-          <div className="text-4xl mb-4">📱</div>
-          <h3 className="font-semibold mb-2">Desktop Booking Required</h3>
-          <p className="text-sm text-muted-foreground mb-4">
-            For the best booking experience, please use a desktop or laptop computer.
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Mobile booking will be available soon with improved compatibility.
-          </p>
-        </div>
-      </div>
-    );
-  }
+  // Allow KonfHub widget on mobile — improve robustness with load handlers and retries
+  // (Previously disabled mobile to avoid loops; re-enable with safer behavior)
 
   if (mode === 'button') {
     if (hasError && retryCount >= maxRetries) {
@@ -192,7 +177,43 @@ export function KonfHubWidget({
     );
   }
 
-  // Iframe mode
+  // Iframe mode with load/retry handling
+  const iframeSrc = `https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=FFFFFF&fontColor=1e1f24&ticketCl=1e1f24&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=standard${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`;
+
+  const handleIframeLoad = () => {
+    setIsLoading(false);
+    setHasError(false);
+    setRetryCount(0);
+  };
+
+  // simple iframe retry when widget fails to load (network issues / KonfHub rate limits)
+  useEffect(() => {
+    if (!isLoading || retryCount >= maxRetries) return;
+
+    const timer = setTimeout(() => {
+      // if still loading after reasonable time, increment retry and attempt soft reload
+      setRetryCount((c) => {
+        const next = c + 1;
+        if (next <= maxRetries) {
+          const iframe = document.getElementById('konfhub-widget') as HTMLIFrameElement | null;
+          if (iframe) {
+            // soft reload
+            iframe.src = iframeSrc + `&reload=${Date.now()}`;
+          }
+        }
+        if (next >= maxRetries) {
+          setHasError(true);
+          setIsLoading(false);
+        }
+        return next;
+      });
+    }, isMobile ? 5000 : 3000);
+
+    return () => clearTimeout(timer);
+  }, [isLoading, retryCount, maxRetries, isMobile, iframeSrc]);
+
+  // compute mobile-friendly iframe height so KonfHub content fills the dialog
+  const mobileIframeHeight = 'calc(100vh - 140px)'; // leave space for dialog header/controls
 
   return (
     <div className={`relative ${className}`}>
@@ -207,21 +228,53 @@ export function KonfHubWidget({
         </div>
       )}
       <iframe
-        src={`https://konfhub.com/widget/${eventId}?desc=false&secondaryBg=F7F7F7&ticketBg=F7F7F7&borderCl=F7F7F7&bg=FFFFFF&fontColor=1e1f24&ticketCl=1e1f24&btnColor=d0021b&fontFamily=Hind&borderRadius=10&widget_type=standard${ticketId ? `&tickets=${ticketId}&ticketId=${ticketId}%7C1` : ''}`}
+        src={iframeSrc}
         id="konfhub-widget"
         title={`Register for ${import.meta.env.VITE_APP_NAME || 'E-Summit 2026'}`}
         width="100%"
-        height={isMobile ? "500" : "600"}
-        style={{ 
-          border: 'none', 
-          minHeight: isMobile ? '500px' : '600px', 
-          maxHeight: isMobile ? '70vh' : '80vh',
-          display: isLoading ? 'none' : 'block'
+        height={isMobile ? mobileIframeHeight : undefined}
+        style={{
+          border: 'none',
+          minHeight: isMobile ? mobileIframeHeight : '60vh',
+          height: isMobile ? mobileIframeHeight : '80vh',
+          maxHeight: isMobile ? `calc(100vh - 80px)` : '90vh',
+          display: 'block'
         }}
-        className="rounded-lg"
-        loading="lazy"
-        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-top-navigation"
+        className="rounded-lg w-full h-full"
+        loading="eager"
+        allow="fullscreen; payment; clipboard-write; encrypted-media; geolocation; microphone; camera"
+        allowFullScreen
+        onLoad={handleIframeLoad}
+        sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
       />
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center z-20 p-6">
+          <div className="bg-muted/80 p-6 rounded-lg text-center max-w-md">
+            <div className="text-xl font-semibold mb-2">Booking Unavailable</div>
+            <div className="text-sm text-muted-foreground mb-4">We couldn't load the booking widget. Please try again or use a desktop.</div>
+            <div className="flex gap-2 justify-center">
+              <button
+                onClick={() => {
+                  setRetryCount(0);
+                  setHasError(false);
+                  setIsLoading(true);
+                  const iframe = document.getElementById('konfhub-widget') as HTMLIFrameElement | null;
+                  if (iframe) iframe.src = iframeSrc + `&reload=${Date.now()}`;
+                }}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-md"
+              >
+                Retry
+              </button>
+              <button
+                onClick={() => onClose?.()}
+                className="px-4 py-2 border rounded-md"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -7,17 +7,12 @@ import App from "./App.tsx";
 import { ErrorBoundary } from "./components/error-boundary.tsx";
 import "./index.css";
 
-// Initialize Sentry
-let sentryInitialized = false;
-try {
-  // Test if Sentry can make requests - use a simple HEAD request
-  fetch('https://o4510487277142016.ingest.de.sentry.io/api/4510493281747024/envelope/?sentry_version=7&sentry_key=f76345a28765c19bf814840320254294&sentry_client=sentry.javascript.react%2F10.29.0', {
-    method: 'HEAD',
-    mode: 'no-cors', // This should prevent CORS issues
-  }).then(() => {
-    // If fetch succeeds, initialize Sentry
+// Initialize Sentry only in production with a configured DSN
+const SENTRY_DSN = import.meta.env.VITE_SENTRY_DSN;
+if (SENTRY_DSN && import.meta.env.MODE === 'production') {
+  try {
     Sentry.init({
-      dsn: import.meta.env.VITE_SENTRY_DSN,
+      dsn: SENTRY_DSN,
       integrations: [
         Sentry.browserTracingIntegration(),
         Sentry.replayIntegration(),
@@ -28,18 +23,12 @@ try {
       sendDefaultPii: true,
       environment: import.meta.env.MODE,
     });
-    sentryInitialized = true;
-  }).catch(() => {
-    console.warn('Sentry blocked by ad blocker or network issues, completely disabling Sentry');
-    // Disable Sentry globally
-    window.Sentry = null;
-    window.__SENTRY__ = null;
-  });
-} catch (error) {
-  console.warn('Sentry initialization failed, disabling Sentry:', error);
-  // Disable Sentry globally
-  window.Sentry = null;
-  window.__SENTRY__ = null;
+    console.info('Sentry initialized');
+  } catch (err) {
+    console.warn('Sentry initialization error:', err);
+  }
+} else {
+  console.info('Sentry disabled in non-production or missing DSN');
 }
 
 // Load Clerk key
@@ -71,6 +60,21 @@ console.warn = function(...args) {
   originalConsoleWarn.apply(console, args);
 };
 
+// In development, filter noisy console.error messages (konfhub monitoring 429, invalid preload href)
+if (import.meta.env.MODE !== 'production') {
+  const originalConsoleError = console.error;
+  console.error = function(...args: any[]) {
+    try {
+      const hasKonfhub = args.some(a => typeof a === 'string' && a.includes('konfhub.com/monitoring'));
+      const hasPreloadInvalid = args.some(a => typeof a === 'string' && a.includes("invalid `href`"));
+      if (hasKonfhub || hasPreloadInvalid) return;
+    } catch (e) {
+      // nothing
+    }
+    originalConsoleError.apply(console, args);
+  };
+}
+
 window.addEventListener('error', (event) => {
   // Suppress moment.js warnings
   if (event.message && event.message.includes('moment construction falls back to js Date')) {
@@ -78,12 +82,7 @@ window.addEventListener('error', (event) => {
     return false;
   }
   
-  // Suppress React hydration errors in production
-  if (event.message && (event.message.includes('Minified React error #418') || event.message.includes('Minified React error #422'))) {
-    console.warn('React hydration error suppressed:', event.message);
-    event.preventDefault();
-    return false;
-  }
+  // Do not suppress React errors here — surface them in development for debugging
   
   // Log other errors but don't prevent them
   console.error('Global error:', event.error);
@@ -109,15 +108,7 @@ window.addEventListener('unhandledrejection', (event) => {
     }
   }
   
-  // Suppress React errors
-  if (event.reason && typeof event.reason === 'object' && event.reason.message) {
-    if (event.reason.message.includes('Minified React error #418') || 
-        event.reason.message.includes('Minified React error #422')) {
-      event.preventDefault();
-      console.warn('React error suppressed:', event.reason.message);
-      return false;
-    }
-  }
+  // Allow React errors to surface so developers see full stack in dev.
   
   console.error('Unhandled promise rejection:', event.reason);
 });
