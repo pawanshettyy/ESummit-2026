@@ -178,6 +178,7 @@ router.post('/complete-profile', async (req: Request, res: Response) => {
       college,
       yearOfStudy,
       rollNumber,
+      branch,
     } = req.body;
 
     // Validate required fields
@@ -188,6 +189,12 @@ router.post('/complete-profile', async (req: Request, res: Response) => {
 
     if (!phone || !college || !yearOfStudy) {
       sendError(res, 'phone, college, and yearOfStudy are required', 400);
+      return;
+    }
+
+    // For TCET students, branch is also required
+    if (college === 'Thakur College of Engineering and Technology' && !branch) {
+      sendError(res, 'branch is required for TCET students', 400);
       return;
     }
 
@@ -205,6 +212,7 @@ router.post('/complete-profile', async (req: Request, res: Response) => {
           college,
           yearOfStudy,
           rollNumber: rollNumber || null,
+          branch: branch || null,
           // Also update other fields in case they changed
           email,
           fullName: fullName || null,
@@ -229,6 +237,7 @@ router.post('/complete-profile', async (req: Request, res: Response) => {
           college,
           yearOfStudy,
           rollNumber: rollNumber || null,
+          branch: branch || null,
         },
       });
 

@@ -63,7 +63,8 @@ export function ProfileCompletionModal({
   const [userType, setUserType] = useState<UserType>(null);
   const isTCETStudent = user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@tcetmumbai.in") ||
                         user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@tgbs.in") ||
-                        user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@timsr.edu.in");
+                        user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@timsr.edu.in") ||
+                        user?.primaryEmailAddress?.emailAddress?.toLowerCase().endsWith("@thakureducation.org");
 
   // Initialize userType based on email domain
   useEffect(() => {
@@ -72,7 +73,7 @@ export function ProfileCompletionModal({
     }
   }, [isTCETStudent]);
 
-  // Thakur Student Form (TCET/TGBS/TIMSR)
+  // Thakur Student Form (TCET/TGBS/TIMSR/Thakur Education)
   const [tcetFormData, setTcetFormData] = useState({
     countryCode: "+91",
     phone: "",

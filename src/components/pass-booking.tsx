@@ -51,11 +51,12 @@ export const PassBooking = memo(function PassBooking({
   const [hasExistingPass, setHasExistingPass] = useState(false);
   const [isCheckingPass, setIsCheckingPass] = useState(false);
 
-  // Check if user is a Thakur student (TCET, TGBS, TIMSR)
+  // Check if user is a Thakur student (TCET, TGBS, TIMSR, Thakur Education)
   const userEmail = user?.primaryEmailAddress?.emailAddress || "";
   const isThakurStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in") || 
                           userEmail.toLowerCase().endsWith("@tgbs.in") || 
-                          userEmail.toLowerCase().endsWith("@timsr.edu.in");
+                          userEmail.toLowerCase().endsWith("@timsr.edu.in") ||
+                          userEmail.toLowerCase().endsWith("@thakureducation.org");
 
   // KonfHub ticket ID mapping for each pass
   const passTicketIds: Record<string, string> = {

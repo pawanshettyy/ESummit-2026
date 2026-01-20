@@ -124,17 +124,18 @@ export function UserDashboard({
   });
   const [uploadedFile, setUploadedFile] = useState<File | null>(null);
 
-  // Check if user is a Thakur student (TCET, TGBS, TIMSR) based on email domain
+  // Check if user is a Thakur student (TCET, TGBS, TIMSR, Thakur Education) based on email domain
   const userName = user?.fullName || userData?.name || "User";
   const userEmail = user?.primaryEmailAddress?.emailAddress || userData?.email || "user@example.com";
   const isTCETStudent = userEmail.toLowerCase().endsWith("@tcetmumbai.in") || 
                         userEmail.toLowerCase().endsWith("@tgbs.in") || 
-                        userEmail.toLowerCase().endsWith("@timsr.edu.in");
+                        userEmail.toLowerCase().endsWith("@timsr.edu.in") ||
+                        userEmail.toLowerCase().endsWith("@thakureducation.org");
 
   // Set initial tab to My Passes for all users
   const [activeTab, setActiveTab] = useState("mypasses");
 
-  // Fetch TCET code for Thakur students (TCET, TGBS, TIMSR)
+  // Fetch TCET code for Thakur students (TCET, TGBS, TIMSR, Thakur Education)
   useEffect(() => {
     const fetchTcetCode = async () => {
       if (!isTCETStudent || !user?.id) return;
@@ -1226,7 +1227,7 @@ export function UserDashboard({
                     <option value="Pixel Pass">Pixel Pass</option>
                     <option value="Silicon Pass">Silicon Pass</option>
                     <option value="Quantum Pass">Quantum Pass</option>
-                    <option value="Thakur Student Pass">Thakur Student Pass (Free - TCET/TGBS/TIMSR Only)</option>
+                    <option value="Thakur Student Pass">Thakur Student Pass (Free - TCET/TGBS/TIMSR/Thakur Education Only)</option>
                   </select>
                 </div>
 
