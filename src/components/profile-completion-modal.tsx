@@ -133,8 +133,8 @@ export function ProfileCompletionModal({
 
     // Validate and prepare data based on user type
     if (userType === "tcet-student") {
-      if (!tcetFormData.phone || !tcetFormData.branch || !tcetFormData.yearOfStudy) {
-        toast.error("📝 Please complete all required fields: phone, branch, and year of study.");
+      if (!tcetFormData.phone || !tcetFormData.branch || !tcetFormData.yearOfStudy || !tcetFormData.rollNumber) {
+        toast.error("📝 Please complete all required fields: phone, branch, year of study, and roll number.");
         return;
       }
       dataToSubmit = { 
@@ -338,12 +338,13 @@ export function ProfileCompletionModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="rollNumber">Roll Number (Optional)</Label>
+                <Label htmlFor="rollNumber">Roll Number <span className="text-destructive">*</span></Label>
                 <Input
                   id="rollNumber"
                   placeholder="Your roll number"
                   value={tcetFormData.rollNumber}
                   onChange={(e) => setTcetFormData({ ...tcetFormData, rollNumber: e.target.value })}
+                  required
                 />
               </div>
             </div>

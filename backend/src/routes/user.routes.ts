@@ -192,9 +192,9 @@ router.post('/complete-profile', async (req: Request, res: Response) => {
       return;
     }
 
-    // For TCET students, branch is also required
-    if (college === 'Thakur College of Engineering and Technology' && !branch) {
-      sendError(res, 'branch is required for TCET students', 400);
+    // For TCET students, branch and rollNumber are also required
+    if (college === 'Thakur College of Engineering and Technology' && (!branch || !rollNumber)) {
+      sendError(res, 'branch and rollNumber are required for TCET students', 400);
       return;
     }
 
@@ -304,6 +304,8 @@ router.get('/check-profile/:clerkUserId', async (req: Request, res: Response) =>
         phone: true,
         college: true,
         yearOfStudy: true,
+        branch: true,
+        rollNumber: true,
       },
     });
 
@@ -313,7 +315,12 @@ router.get('/check-profile/:clerkUserId', async (req: Request, res: Response) =>
     }
 
     // Check if all required fields are filled
-    const isComplete = !!(user.phone && user.college && user.yearOfStudy);
+    let isComplete = !!(user.phone && user.college && user.yearOfStudy);
+
+    // For Thakur students, also check branch and rollNumber
+    if (user.college === 'Thakur College of Engineering and Technology') {
+      isComplete = isComplete && !!(user.branch && user.rollNumber);
+    }
 
     sendSuccess(res, 'Profile check completed', { isComplete, exists: true });
   } catch (error: any) {
