@@ -143,3 +143,45 @@ const renderApp = () => {
 
 // Execute render
 renderApp();
+
+// Enable global lazy-loading for images and picture elements
+function enableGlobalImageLazyLoading() {
+  if (typeof window === 'undefined' || !('MutationObserver' in window)) return;
+  try {
+    const setLazy = (img: HTMLImageElement) => {
+      try {
+        if (!img.hasAttribute('loading')) img.setAttribute('loading', 'lazy');
+      } catch (e) {
+        // ignore
+      }
+    };
+
+    // Apply to existing images
+    document.querySelectorAll('img').forEach((el) => setLazy(el as HTMLImageElement));
+    // Apply to images inside <picture>
+    document.querySelectorAll('picture').forEach((p) => p.querySelectorAll('img').forEach((i) => setLazy(i as HTMLImageElement)));
+
+    // Observe future DOM additions
+    const mo = new MutationObserver((mutations) => {
+      for (const m of mutations) {
+        m.addedNodes.forEach((node) => {
+          try {
+            if (node instanceof HTMLImageElement) setLazy(node);
+            else if (node instanceof HTMLElement) {
+              node.querySelectorAll && node.querySelectorAll('img').forEach((i) => setLazy(i as HTMLImageElement));
+            }
+          } catch (e) {
+            // ignore per-node errors
+          }
+        });
+      }
+    });
+
+    mo.observe(document.documentElement || document.body, { childList: true, subtree: true });
+  } catch (err) {
+    // Do not break app if lazyload setup fails
+    console.warn('Global image lazyload setup failed:', err);
+  }
+}
+
+enableGlobalImageLazyLoading();
