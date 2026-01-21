@@ -168,8 +168,8 @@ export function EventRegistrationModal({
       });
 
       setAngelRoundtableForm({
-        registrationType: userProfile?.user_type === "entrepreneur" ? "entrepreneur" :
-                         userProfile?.user_type === "company" ? "company" : "student",
+        attendeeType: userProfile?.user_type === "entrepreneur" ? "entrepreneur" :
+                       userProfile?.user_type === "company" ? "company" : "student",
         startupStage: userProfile?.startup_stage || "",
         problemStatement: "",
         solution: "",
