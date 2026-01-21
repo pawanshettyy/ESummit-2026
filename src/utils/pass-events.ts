@@ -222,17 +222,6 @@ export const eventSchedule = {
       eligibility: "All participants (Limited seats: 50)",
       prerequisite: "Laptop required",
     },
-    {
-      id: "d2-ai-workshop",
-      time: "14:00 - 16:30",
-      title: "AI for Early Stage Startups",
-      category: "workshops",
-      venue: "Workshop Hall B",
-      speaker: "AI/ML Expert",
-      description: "Explore how AI can be leveraged in early-stage startups to accelerate growth",
-      duration: "2.5 hours",
-      eligibility: "All participants (Limited seats: 50)",
-    },
     // Networking - Day 2
     {
       id: "d2-startup-expo",

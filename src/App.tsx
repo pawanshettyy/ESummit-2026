@@ -16,7 +16,6 @@ import {
   DesignThinkingPage,
   FinanceMarketingPage,
   DataAnalyticsBdmPage,
-  AiEarlyStageStartupsPage,
   StartupExpoPage,
   PanelDiscussionPage,
   NetworkingArenaPage,
@@ -184,8 +183,6 @@ export default function App() {
         return <InternshipFairPage />;
       case "event-15":
         return <StartupYouthConclavePage />;
-      case "event-16":
-        return <AiEarlyStageStartupsPage />;
       case "event-17":
         return <RoadmapToEntrepreneurshipPage />;
       case "event-18":

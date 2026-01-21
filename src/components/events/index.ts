@@ -8,7 +8,6 @@ export { StartupLeaguePage } from './startup-league';
 export { DesignThinkingPage } from './design-thinking';
 export { FinanceMarketingPage } from './finance-marketing';
 export { DataAnalyticsBdmPage } from './data-analytics-bdm';
-export { AiEarlyStageStartupsPage } from './ai-early-stage-startups';
 export { StartupExpoPage } from './startup-expo';
 export { PanelDiscussionPage } from './panel-discussion';
 export { NetworkingArenaPage } from './networking-arena';
