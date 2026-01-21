@@ -1,5 +1,4 @@
 export { TenMinuteMillionPage } from './ten-minute-million';
-export { AngelInvestorsRoundtablePage } from './angel-investors-roundtable';
 export { PitchArenaPage } from './pitch-arena-page';
 export { IncubatorSummitPage } from './incubator-summit';
 export { IplAuctionPage } from './ipl-auction';

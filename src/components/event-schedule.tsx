@@ -253,17 +253,6 @@ const EventSchedule = () => {
         prerequisite: "Pitch deck required (PDF, max 15 slides)",
       },
       {
-        id: "d2-angel-roundtable",
-        time: "09:30 - 13:30",
-        title: "The Angel Investor's Roundtable: Capital Meets Innovation",
-        category: "pitching",
-        venue: "General Reading Room (4th floor) / Seminar hall, 2nd floor, TSAP",
-        speaker: "5 Angel Investors",
-        description: "An exclusive gathering where capital meets innovation. This roundtable brings together angel investors to vet and co-invest in the most promising early-stage companies, featuring founders selected from our Pitch Arena.",
-        duration: "4 hours",
-        eligibility: "Early stage startups with MVP",
-      },
-      {
         id: "d2-incubator-summit",
         time: "10:00 - 13:00",
         title: "The Incubator Summit: Earn Your Launchpad (Day 2)",

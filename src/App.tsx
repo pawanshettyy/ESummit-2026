@@ -22,7 +22,6 @@ import {
   InternshipFairPage,
   StartupYouthConclavePage,
 } from "./components/events";
-import { AngelInvestorsRoundtablePage } from "./components/events/angel-investors-roundtable-page";
 import { RoadmapToEntrepreneurshipPage } from "./components/events/roadmap-to-entrepreneurship";
 import { Speakers } from "./components/speakers";
 import { Venue } from "./components/venue";
@@ -155,8 +154,6 @@ export default function App() {
         return <EventsListing onNavigate={handleNavigate} />;
       case "event-1":
         return <TenMinuteMillionPage />;
-      case "event-2":
-        return <AngelInvestorsRoundtablePage />;
       case "event-3":
         return <PitchArenaPage />;
       case "event-4":
@@ -172,21 +169,19 @@ export default function App() {
       case "event-9":
         return <FinanceMarketingPage />;
       case "event-10":
-        return <DataAnalyticsBdmPage />;
-      case "event-11":
         return <StartupExpoPage />;
-      case "event-12":
+      case "event-11":
         return <PanelDiscussionPage />;
+      case "event-12":
+        return <NetworkingArenaPage />;
       case "event-13":
-        return <NetworkingArenaPage />;
-      case "event-14":
         return <InternshipFairPage />;
-      case "event-15":
+      case "event-14":
         return <StartupYouthConclavePage />;
-      case "event-17":
-        return <RoadmapToEntrepreneurshipPage />;
-      case "event-18":
+      case "event-15":
         return <NetworkingArenaPage />;
+      case "event-16":
+        return <RoadmapToEntrepreneurshipPage />;
       case "speakers":
         return <Speakers />;
       case "venue":

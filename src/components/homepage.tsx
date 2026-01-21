@@ -80,7 +80,7 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
   ];
 
   const stats = [
-    { label: "Events", value: "18+", icon: Trophy },
+    { label: "Events", value: "16+", icon: Trophy },
     { label: "Judges & Speakers", value: "30+", icon: Users },
     { label: "Expected Attendees", value: "1000+", icon: Users },
     { label: "Startup Pitches", value: "50+", icon: Building2 },
@@ -89,7 +89,7 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
   const highlights = [
     {
       title: "Funding & Investment Events",
-      description: "Connect with VCs and Angel Investors at The Ten Minute Deal: Pitch to Win and The Angel Investor's Roundtable for real fundraising opportunities. TRL 5+ startups pitch for equity and seed funding.",
+      description: "Connect with VCs at The Ten Minute Deal: Pitch to Win for real fundraising opportunities. TRL 5+ startups pitch for equity and seed funding.",
     },
     {
       title: "Incubation & Mentorship",

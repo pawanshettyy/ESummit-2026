@@ -20,13 +20,6 @@ export function Venue() {
       floor: "Seminar Hall",
     },
     {
-      name: "General Reading Room (4th floor) / Seminar hall, 2nd floor, TSAP",
-      capacity: "Reading Room & Seminar Hall",
-      events: ["The Angel Investor's Roundtable: Capital Meets Innovation (Day 2)"],
-      features: ["Boardroom setup", "Presentation screens", "Networking space"],
-      floor: "4th Floor & 2nd Floor TSAP",
-    },
-    {
       name: "SH 3 (Seminar Hall 3)",
       capacity: "Seminar Hall",
       events: ["AI Contest: The Innovation Challenge (Day 1 & 2)"],

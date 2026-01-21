@@ -111,7 +111,6 @@ export const PassBooking = memo(function PassBooking({
       features: [
         "All Silicon Pass events",
         "The Ten Minute Deal",
-        "The Angel Investor's Roundtable",
         "Incubator Summit",
         "Internship Fair",
         "Premium networking sessions",
@@ -149,7 +148,6 @@ export const PassBooking = memo(function PassBooking({
     features: [
       "All Quantum Pass events",
       "The Ten Minute Deal",
-      "The Angel Investor's Roundtable",
       "Incubator Summit",
       "Internship Fair",
       "Premium networking sessions",
@@ -618,7 +616,6 @@ export const PassBooking = memo(function PassBooking({
                     { name: "Networking Arena", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "Lunch included", included: ["silicon", "quantum", "thakur_student"] },
                     { name: "The Ten Minute Deal", included: ["quantum", "thakur_student"] },
-                    { name: "Angel Investor Roundtable", included: ["quantum", "thakur_student"] },
                     { name: "Incubator Summit", included: ["quantum", "thakur_student"] },
                     { name: "Internship Fair", included: ["quantum", "thakur_student"] },
                   ].map((feature) => (

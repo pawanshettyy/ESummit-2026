@@ -53,25 +53,6 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
     },
     {
       id: 2,
-      title: "The Angel Investor's Roundtable",
-      category: "pitching",
-      description: "An exclusive gathering where capital meets innovation. This roundtable brings together angel investors to vet and co-invest in the most promising early-stage companies, featuring founders selected from our Pitch Arena.",
-      date: "February 2, 2026",
-      time: "9:30 AM – 1:30 PM",
-      venue: "General Reading Room (4th floor) / Seminar hall, 2nd floor, TSAP",
-      prize: "Pre-Seed Funding",
-      eligibility: "Quantum Pass required",
-      objective: "Receive Investment",
-      outcome: "Receive Pre-Seed Funding",
-      rules: ["Pitch to panel of angel investors", "15-minute presentation + Q&A", "MVP demonstration required"],
-      judges: ["5 Angel Investors"],
-      prerequisites: "Early-stage startup with MVP",
-      registrationDeadline: "January 25, 2026",
-      icon: Lightbulb,
-      color: "primary",
-    },
-    {
-      id: 3,
       title: "Pitch Arena - Idea to Reality",
       category: "pitching",
       description: "Step into the arena! Founders pitch to top-tier mentors for real-time feedback and expert guidance to launch their ideas.",
@@ -90,7 +71,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "primary",
     },
     {
-      id: 4,
+      id: 3,
       title: "The Incubator Summit",
       category: "pitching",
       description: "Where ideas earn their launchpad. Founders pitch to evaluators from five top incubation centers, competing for a spot and seed support to accelerate their venture.",
@@ -111,7 +92,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
 
     // COMPETITIONS
     {
-      id: 5,
+      id: 4,
       title: "IPL Auction: The Bid for Brilliance",
       category: "competitions",
       description: "Master the art of the deal. In this high-energy bidding game, build your dream team with a limited budget. Test your strategic thinking and financial savvy to outbid rivals and create a winning roster.",
@@ -130,7 +111,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "primary",
     },
     {
-      id: 6,
+      id: 5,
       title: "AI Contest: The Innovation Challenge",
       category: "competitions",
       description: "Push the boundaries of AI. Tackle a real-world problem by designing and presenting an innovative, AI-driven solution. Showcase your technical skills and creativity to win the challenge.",
@@ -149,7 +130,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "secondary",
     },
     {
-      id: 7,
+      id: 6,
       title: "Biz Arena League: Build Your Empire",
       category: "competitions",
       description: "Step into the founder's seat. Run a virtual startup in this fast-paced simulation. Make critical decisions on product, marketing, and funding to outmaneuver competitors and dominate the market.",
@@ -170,7 +151,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
 
     // WORKSHOPS
     {
-      id: 8,
+      id: 7,
       title: "Design Thinking & Innovation Strategy Workshop",
       category: "workshops",
       description: "Unlock Your Creative Potential. Master the tools to solve complex problems and generate groundbreaking ideas. This hands-on workshop will equip you with a powerful framework for innovation.",
@@ -186,7 +167,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "muted",
     },
     {
-      id: 9,
+      id: 8,
       title: "Finance & Marketing for Startups Workshop",
       category: "workshops",
       description: "Build a Solid Foundation for Your Venture. Get essential, practical knowledge on managing your startup's finances and crafting marketing strategies that actually convert.",
@@ -202,7 +183,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "muted",
     },
     {
-      id: 10,
+      id: 9,
       title: "Data Analytics & Business Development Essentials Workshop",
       category: "workshops",
       description: "Make Smarter Decisions with Data. Learn to analyze market trends, track key metrics, and use data-driven insights to fuel your business growth and strategy.",
@@ -221,7 +202,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
 
     // NETWORKING EVENTS
     {
-      id: 11,
+      id: 10,
       title: "The Startup Expo",
       category: "networking",
       description: "Display Your First Prototype! Showcase your early-stage idea and prototype to the entire college community in our main lobby. A perfect chance to get your first users and feedback.",
@@ -235,7 +216,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "outline",
     },
     {
-      id: 12,
+      id: 11,
       title: "The Panel Discussion",
       category: "networking",
       description: "Get the Final Insights. Hear from our expert judges and speakers in a final panel discussion, followed by the closing ceremony to celebrate the day's winners and achievements.",
@@ -250,7 +231,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "outline",
     },
     {
-      id: 13,
+      id: 12,
       title: "Informals",
       category: "networking",
       description: "Connect beyond the stage. An informal session for founders to mingle with judges, speakers, and mentors over lunch, turning conversations into valuable connections.",
@@ -264,7 +245,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "outline",
     },
     {
-      id: 14,
+      id: 13,
       title: "The Internship Fair",
       category: "networking",
       description: "Build your founding team. Startups present their vision to recruit talented interns and full-time members, connecting ambitious talent with groundbreaking ideas.",
@@ -278,7 +259,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "outline",
     },
     {
-      id: 15,
+      id: 14,
       title: "The Startup Youth Conclave",
       category: "networking",
       description: "Connect with Top E-Cells! Network with entrepreneurship cells from other colleges, share best practices, and build collaborations that go beyond your campus.",
@@ -293,7 +274,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       color: "outline",
     },
     {
-      id: 18,
+      id: 15,
       title: "Networking Arena",
       category: "networking",
       description: "Open networking session during lunch - connect with entrepreneurs, investors, judges, and fellow participants. An ideal opportunity to build relationships and explore collaborations.",
@@ -308,7 +289,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
     },
     // Additional workshops and pre-summit events
     {
-      id: 17,
+      id: 16,
       title: "Roadmap to Entrepreneurship (Pre E-summit Workshop)",
       category: "workshops",
       description: "Turn Ideas into Impact. One-hour hands-on workshop on Business Model Canvas with practical startup frameworks and mentor guidance.",
