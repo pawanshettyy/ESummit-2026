@@ -9,7 +9,7 @@ export function TenMinuteMillionPage() {
     date: "February 2-3, 2026",
     time: "10:00 AM – 5:00 PM (Both days)",
     venue: "SH-1 (Seminar Hall 1)",
-    eligibility: "Quantum Pass required",
+    eligibility: "Quantum Pass or Thakur Student Pass required",
   };
 
   const perks = [

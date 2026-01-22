@@ -41,7 +41,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
       time: "10:00 AM – 5:00 PM (Both days)",
       venue: "SH-1",
       prize: "Seed Funding",
-      eligibility: "Quantum Pass required",
+      eligibility: "Quantum Pass or Thakur Student Pass required",
       objective: "Fundraising",
       outcome: "Receive Seed Funding",
       rules: ["10-minute pitch presentation", "Live Q&A with VCs", "Pitch deck required"],

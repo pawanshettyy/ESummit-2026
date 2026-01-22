@@ -201,6 +201,25 @@ export function EventRegistrationModal({
 
     setLoading(true);
     try {
+      // Prepare form data based on attendee type
+      const formData: any = {
+        registrationType: "ten_minute_million",
+        attendeeType: tenMinuteMillionForm.attendeeType,
+      };
+
+      // Only include pitcher fields if registering as participant
+      if (tenMinuteMillionForm.attendeeType === 'participant') {
+        formData.startupName = tenMinuteMillionForm.startupName;
+        formData.cin = tenMinuteMillionForm.cin;
+        formData.dpiitCertified = tenMinuteMillionForm.dpiitCertified;
+        formData.startupStage = tenMinuteMillionForm.startupStage;
+        formData.problemStatement = tenMinuteMillionForm.problemStatement;
+        formData.solution = tenMinuteMillionForm.solution;
+        formData.usp = tenMinuteMillionForm.usp;
+        formData.demoLink = tenMinuteMillionForm.demoLink;
+        formData.pitchDeckLink = tenMinuteMillionForm.pitchDeckLink;
+      }
+
       const response = await fetch(`${API_BASE_URL}/users/events/register`, {
         method: "POST",
         headers: {
@@ -210,10 +229,7 @@ export function EventRegistrationModal({
           clerkUserId: user.id,
           eventId,
           ...(userProfile?.bookingId && { bookingId: userProfile.bookingId }),
-          formData: {
-            registrationType: "ten_minute_million",
-            ...tenMinuteMillionForm,
-          },
+          formData,
         }),
       });
 
