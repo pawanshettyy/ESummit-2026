@@ -225,7 +225,7 @@ export function Team() {
         name: "Listen Choudhary",
         year: "SE",
         branch: "COMP",
-        position: "JC - Technical (SMM) - Please call me at 9PM, ill be having dinner now what to do madharc-",
+        position: "Please call me at 9PM, ill be having dinner now what to do madharc-",
         department: "Technical"
       },
       {
@@ -661,8 +661,8 @@ export function Team() {
                   >
                     <Card className="h-full">
                       <CardContent className="p-4">
-                        <h4 className="mb-1 text-sm font-semibold line-clamp-2">{member.name}</h4>
-                        <p className="mb-2 text-xs text-primary line-clamp-1">{member.position}</p>
+                        <h4 className="mb-1 text-sm font-semibold text-nowrap">{member.name}</h4>
+                        <p className="mb-2 text-xs text-primary">{member.position}</p>
                         <div className="flex gap-1 flex-wrap">
                           <Badge variant="secondary" className="text-xs">{member.branch}</Badge>
                           <Badge variant="outline" className="text-xs">{member.year}</Badge>
