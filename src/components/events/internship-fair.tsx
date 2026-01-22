@@ -8,7 +8,7 @@ export function InternshipFairPage() {
     date: "February 2-3, 2026",
     time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM – 1:00 PM",
     venue: "Convocation Hall",
-    eligibility: "Quantum Pass holders",
+    eligibility: "Quantum & Thakur Student Pass holders",
   };
   const primaryContacts = [
     { name: "Tanvi Jabare", role: "Core Member", phone: "9324065445" },

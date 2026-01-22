@@ -8,7 +8,7 @@ export function DataAnalyticsBdmPage() {
     date: "February 2-3, 2026",
     time: "10:00 - 17:00 (3 Hours Sessions)",
     venue: "Lab 526 / 527 / 528 / 529",
-    eligibility: "Silicon & Quantum Pass holders",
+    eligibility: "Silicon, Quantum & Thakur Student Pass holders",
   };
   const primaryContacts = [
     { name: "Varun Maurya", role: "Junior Core Member", phone: "8104751559" },

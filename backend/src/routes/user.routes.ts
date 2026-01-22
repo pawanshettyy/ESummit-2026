@@ -434,8 +434,8 @@ router.post('/events/register', async (req: Request, res: Response) => {
     // Define event eligibility based on pass type
     const eventEligibility: Record<string, string[]> = {
       // Pitch Arena
-      'd1-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
-      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass', 'Thakur Student Pass'],
+      'd2-pitch-arena': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass', 'Thakur Student Pass'],
       
       // Quantum Pass Exclusive Events
       'd1-ten-minute-million': ['Quantum Pass', 'TCET Student Pass', 'Thakur Student Pass'],
@@ -443,6 +443,8 @@ router.post('/events/register', async (req: Request, res: Response) => {
       'd1-mentor-connect': ['Quantum Pass', 'TCET Student Pass'],
       'd2-investor-meet': ['Quantum Pass', 'TCET Student Pass'],
       'd1-informals': ['Quantum Pass'], // Quantum Pass only for Informals
+      'd1-internship-fair': ['Quantum Pass', 'Thakur Student Pass'],
+      'd1-incubator-summit': ['Quantum Pass', 'Thakur Student Pass'],
       
       // Competitions
       'd1-hackathon': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
@@ -454,6 +456,9 @@ router.post('/events/register', async (req: Request, res: Response) => {
       'd2-workshop-fundraising': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
       'd1-masterclass-marketing': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
       'd2-masterclass-product': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd1-finance-marketing': ['Silicon Pass', 'Quantum Pass', 'Thakur Student Pass'],
+      'd1-design-thinking': ['Silicon Pass', 'Quantum Pass', 'Thakur Student Pass'],
+      'd1-data-analytics': ['Silicon Pass', 'Quantum Pass', 'Thakur Student Pass'],
       
       // Exhibitions
       'd1-startup-expo': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
@@ -469,6 +474,7 @@ router.post('/events/register', async (req: Request, res: Response) => {
       'd1-networking-lunch': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
       'd2-networking-lunch': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
       'd1-startup-clinic': ['Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],
+      'd2-startup-youth-conclave': ['Silicon Pass', 'Quantum Pass', 'Thakur Student Pass'],
       
       // Ceremony
       'd2-closing-ceremony': ['Pixel Pass', 'Silicon Pass', 'Quantum Pass', 'TCET Student Pass'],

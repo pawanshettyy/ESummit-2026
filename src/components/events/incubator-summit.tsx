@@ -9,7 +9,7 @@ export function IncubatorSummitPage() {
     time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM – 1:00 PM",
     venue: "SSC TIMSR",
     prize: "Incubation Support",
-    eligibility: "Quantum Pass required",
+    eligibility: "Quantum & Thakur Student Pass required",
   };
   const primaryContacts = [
     { name: "Bhummi Girnara", role: "Core Member", phone: "9869832960" },

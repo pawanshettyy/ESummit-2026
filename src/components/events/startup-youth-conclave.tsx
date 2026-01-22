@@ -8,7 +8,7 @@ export function StartupYouthConclavePage() {
     date: "February 3, 2026",
     time: "11:00 AM to 1:00 PM (Post Lunch)",
     venue: "Seminar Hall, 2nd floor, TSAP / Internal General Reading Room",
-    eligibility: "Silicon & Quantum Pass holders",
+    eligibility: "Silicon, Quantum & Thakur Student Pass holders",
   };
   const primaryContacts = [
     { name: "Krish Jain", role: "Core Member", phone: "9324065445" },

@@ -8,7 +8,7 @@ export function DesignThinkingPage() {
     date: "February 2-3, 2026",
     time: "10:00 - 17:00 (3 Hours Sessions)",
     venue: "Lab 522 / 523",
-    eligibility: "Silicon & Quantum Pass holders",
+    eligibility: "Silicon, Quantum & Thakur Student Pass holders",
   };
   const primaryContacts = [
     { name: "Nikita Tiwari", role: "Core Member", phone: "8446156587" },

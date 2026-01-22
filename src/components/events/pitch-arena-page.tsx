@@ -10,7 +10,7 @@ export function PitchArenaPage() {
     time: "10:00 AM – 5:00 PM",
     venue: "SH 3 (Seminar Hall 3)",
     prize: { first: "₹10,000", second: "₹5,000", third: "₹3,000", total: "₹18,000" },
-    eligibility: "Silicon & Quantum Pass required",
+    eligibility: "Silicon, Quantum & Thakur Student Pass required",
   };
 
   const perks = [

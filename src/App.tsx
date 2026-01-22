@@ -154,20 +154,22 @@ export default function App() {
         return <EventsListing onNavigate={handleNavigate} />;
       case "event-1":
         return <TenMinuteMillionPage />;
-      case "event-3":
+      case "event-2":
         return <PitchArenaPage />;
-      case "event-4":
+      case "event-3":
         return <IncubatorSummitPage />;
-      case "event-5":
+      case "event-4":
         return <IplAuctionPage />;
-      case "event-6":
+      case "event-5":
         return <AiBuildathonPage />;
-      case "event-7":
+      case "event-6":
         return <StartupLeaguePage />;
-      case "event-8":
+      case "event-7":
         return <DesignThinkingPage />;
-      case "event-9":
+      case "event-8":
         return <FinanceMarketingPage />;
+      case "event-9":
+        return <DataAnalyticsBdmPage />;
       case "event-10":
         return <StartupExpoPage />;
       case "event-11":
@@ -182,6 +184,35 @@ export default function App() {
         return <NetworkingArenaPage />;
       case "event-16":
         return <RoadmapToEntrepreneurshipPage />;
+      // Handle d1- and d2- prefixed event IDs
+      case "event-d1-ten-minute-million":
+        return <TenMinuteMillionPage />;
+      case "event-d1-pitch-arena":
+        return <PitchArenaPage />;
+      case "event-d1-incubator-summit":
+        return <IncubatorSummitPage />;
+      case "event-d1-ipl-auction":
+        return <IplAuctionPage />;
+      case "event-d1-ai-buildathon-start":
+        return <AiBuildathonPage />;
+      case "event-d1-biz-arena":
+        return <StartupLeaguePage />;
+      case "event-d1-design-thinking":
+        return <DesignThinkingPage />;
+      case "event-d1-finance-marketing":
+        return <FinanceMarketingPage />;
+      case "event-d1-data-analytics":
+        return <DataAnalyticsBdmPage />;
+      case "event-d1-startup-expo":
+        return <StartupExpoPage />;
+      case "event-d1-networking-arena":
+        return <NetworkingArenaPage />;
+      case "event-d1-internship-fair":
+        return <InternshipFairPage />;
+      case "event-d2-pitch-arena":
+        return <PitchArenaPage />;
+      case "event-d2-incubator-summit":
+        return <IncubatorSummitPage />;
       case "speakers":
         return <Speakers />;
       case "venue":
