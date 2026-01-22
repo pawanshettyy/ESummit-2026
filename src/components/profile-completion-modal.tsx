@@ -143,8 +143,8 @@ export function ProfileCompletionModal({
         phone: `${tcetFormData.countryCode}${tcetFormData.phone}`
       };
     } else if (userType === "company") {
-      if (!companyFormData.phone || !companyFormData.companyName || !companyFormData.industry) {
-        toast.error("📝 Please complete all required fields: phone, company name, and industry.");
+      if (!companyFormData.phone || !companyFormData.companyName || !companyFormData.industry || !companyFormData.cin) {
+        toast.error("📝 Please complete all required fields: phone, company name, industry, and CIN.");
         return;
       }
       dataToSubmit = { 
@@ -405,12 +405,13 @@ export function ProfileCompletionModal({
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="cin">CIN (Optional)</Label>
+                  <Label htmlFor="cin">CIN <span className="text-destructive">*</span></Label>
                   <Input
                     id="cin"
                     placeholder="L12345MH2020PTC123456"
                     value={companyFormData.cin}
                     onChange={(e) => setCompanyFormData({ ...companyFormData, cin: e.target.value })}
+                    required
                   />
                 </div>
 
