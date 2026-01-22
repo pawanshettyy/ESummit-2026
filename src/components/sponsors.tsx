@@ -57,17 +57,6 @@ export function Sponsors() {
           website: "https://www.indonissin.in/pages/cup-noodles"
         }
       ]
-    },
-    {
-      title: "Drinks Partner",
-      sponsors: [
-        {
-          name: "Red Bull",
-          logo: "/assets/sponsors/redbull-logo-svgrepo-com.svg",
-          tier: "DRINKS PARTNER",
-          website: "https://www.redbull.com/"
-        }
-      ]
     }
   ];
 
