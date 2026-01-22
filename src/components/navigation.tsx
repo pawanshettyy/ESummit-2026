@@ -66,7 +66,7 @@ export function Navigation({
     { id: "home", label: "Home", icon: null },
     { id: "events", label: "Events", icon: Trophy },
     { id: "schedule", label: "Schedule", icon: Calendar },
-    { id: "speakers", label: "Speakers", icon: Users },
+    { id: "speakers", label: "Guests", icon: Users },
     { id: "venue", label: "Venue", icon: MapPin },
     { id: "sponsors", label: "Sponsors", icon: null },
     { id: "team", label: "Team", icon: null },

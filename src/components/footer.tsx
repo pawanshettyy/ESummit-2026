@@ -135,7 +135,7 @@ export function Footer({ onNavigate }: FooterProps) {
                   onClick={() => onNavigate("speakers")}
                   className="text-muted-foreground transition-colors hover:text-foreground"
                 >
-                  Speakers
+                  Guests
                 </button>
               </li>
               <li>
