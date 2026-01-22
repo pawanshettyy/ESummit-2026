@@ -51,12 +51,6 @@ export function Sponsors() {
           website: "https://madoverdonuts.com/"
         },
         {
-          name: "99Pancakes",
-          logo: "/assets/sponsors/99pancakes.png",
-          tier: "FOOD PARTNER",
-          website: "https://99pancakes.in/"
-        },
-        {
           name: "Nissin Cup Noodles",
           logo: "/assets/sponsors/nissin.png",
           tier: "FOOD PARTNER",
@@ -72,17 +66,6 @@ export function Sponsors() {
           logo: "/assets/sponsors/redbull-logo-svgrepo-com.svg",
           tier: "DRINKS PARTNER",
           website: "https://www.redbull.com/"
-        }
-      ]
-    },
-    {
-      title: "Investors",
-      sponsors: [
-        {
-          name: "Venture Wolf - The Ten Minute Deal",
-          logo: "/assets/panel/eventSponsor/venturewolf.png",
-          tier: "INVESTOR",
-          website: "https://www.venturewolf.in/"
         }
       ]
     }
