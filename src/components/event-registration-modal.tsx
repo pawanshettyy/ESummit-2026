@@ -76,6 +76,7 @@ export function EventRegistrationModal({
   // Pitch Arena Form
   const [pitchArenaForm, setPitchArenaForm] = useState({
     attendeeType: "student", // Default to student, will be updated based on user profile
+    startupName: "",
     ideaBrief: "",
     documentLink: "",
     pitchDeckLink: "",
@@ -158,6 +159,7 @@ export function EventRegistrationModal({
 
       setPitchArenaForm({
         attendeeType: userProfile?.user_type === "student" ? "student" : "startup",
+        startupName: userProfile?.startup_name || "",
         ideaBrief: "",
         documentLink: "",
         pitchDeckLink: "",
@@ -268,6 +270,10 @@ export function EventRegistrationModal({
     
     // Only validate pitch-related fields if not registering as audience
     if (pitchArenaForm.attendeeType !== 'audience') {
+      if (pitchArenaForm.attendeeType === 'startup' && !pitchArenaForm.startupName.trim()) {
+        toast.error("Startup name is required");
+        return;
+      }
       if (!pitchArenaForm.ideaBrief.trim()) {
         toast.error("Idea brief is required");
         return;
@@ -539,6 +545,19 @@ export function EventRegistrationModal({
           </div>
         </RadioGroup>
       </div>
+
+      {/* Show startup name field if registering as startup */}
+      {pitchArenaForm.attendeeType === 'startup' && (
+        <div>
+          <Label htmlFor="startupName">Name of Startup *</Label>
+          <Input
+            id="startupName"
+            value={pitchArenaForm.startupName}
+            onChange={(e) => setPitchArenaForm(prev => ({ ...prev, startupName: e.target.value }))}
+            required
+          />
+        </div>
+      )}
 
       {/* Only show pitch-related fields if not registering as audience */}
       {pitchArenaForm.attendeeType !== 'audience' && (
