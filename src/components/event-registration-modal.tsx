@@ -77,6 +77,7 @@ export function EventRegistrationModal({
   const [pitchArenaForm, setPitchArenaForm] = useState({
     attendeeType: "student", // Default to student, will be updated based on user profile
     startupName: "",
+    studentName: "",
     ideaBrief: "",
     documentLink: "",
     pitchDeckLink: "",
@@ -160,6 +161,7 @@ export function EventRegistrationModal({
       setPitchArenaForm({
         attendeeType: userProfile?.user_type === "student" ? "student" : "startup",
         startupName: userProfile?.startup_name || "",
+        studentName: userProfile?.fullName || "",
         ideaBrief: "",
         documentLink: "",
         pitchDeckLink: "",
@@ -272,6 +274,10 @@ export function EventRegistrationModal({
     if (pitchArenaForm.attendeeType !== 'audience') {
       if (pitchArenaForm.attendeeType === 'startup' && !pitchArenaForm.startupName.trim()) {
         toast.error("Startup name is required");
+        return;
+      }
+      if (pitchArenaForm.attendeeType === 'student' && !pitchArenaForm.studentName.trim()) {
+        toast.error("Student name is required");
         return;
       }
       if (!pitchArenaForm.ideaBrief.trim()) {
@@ -545,6 +551,19 @@ export function EventRegistrationModal({
           </div>
         </RadioGroup>
       </div>
+
+      {/* Show student name field if registering as student */}
+      {pitchArenaForm.attendeeType === 'student' && (
+        <div>
+          <Label htmlFor="studentName">Name of Student *</Label>
+          <Input
+            id="studentName"
+            value={pitchArenaForm.studentName}
+            onChange={(e) => setPitchArenaForm(prev => ({ ...prev, studentName: e.target.value }))}
+            required
+          />
+        </div>
+      )}
 
       {/* Show startup name field if registering as startup */}
       {pitchArenaForm.attendeeType === 'startup' && (

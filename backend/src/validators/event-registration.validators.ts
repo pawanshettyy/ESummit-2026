@@ -37,6 +37,7 @@ export const pitchArenaSchema = baseRegistrationSchema.extend({
   registrationType: z.literal('pitch_arena'),
   attendeeType: z.enum(['student', 'startup', 'audience']),
   startupName: z.string().min(1, 'Startup name is required').max(255).optional(),
+  studentName: z.string().min(1, 'Student name is required').max(255).optional(),
   ideaBrief: z.string().optional(),
   documentLink: z.string().optional(),
   pitchDeckLink: z.string().optional(),

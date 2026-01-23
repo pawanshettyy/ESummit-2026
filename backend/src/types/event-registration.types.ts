@@ -28,6 +28,7 @@ export interface PitchArenaForm {
   registrationType: 'pitch_arena';
   attendeeType: 'student' | 'startup' | 'audience';
   startupName?: string;
+  studentName?: string;
   ideaBrief?: string;
   documentLink?: string;
   pitchDeckLink?: string;
