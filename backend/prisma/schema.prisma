@@ -163,6 +163,598 @@ model EventRegistration {
   @@map("event_registrations")
 }
 
+/// Ten Minute Million Event Participants
+model TenMinuteMillionParticipant {
+  id                     String   @id @default(uuid()) @db.Uuid
+  userId                 String   @map("user_id") @db.Uuid
+  eventId                String   @map("event_id") @db.Uuid
+  passId                 String?  @map("pass_id") @db.Uuid
+  registrationDate       DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status                 String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName               String?  @map("full_name") @db.VarChar(255)
+  email                  String   @map("email") @db.VarChar(255)
+  phone                  String?  @map("phone") @db.VarChar(20)
+  college                String?  @map("college") @db.VarChar(255)
+  userType               String?  @map("user_type") @db.VarChar(50)
+  userStartupName        String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage       String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName            String?  @map("company_name") @db.VarChar(255)
+  designation            String?  @map("designation") @db.VarChar(100)
+  // Event Specific Data
+  attendeeType           String   @map("attendee_type") @db.VarChar(20)
+  startupName            String?  @map("startup_name") @db.VarChar(255)
+  udhyamRegistrationNumber String  @map("udhyam_registration_number") @db.VarChar(255)
+  dpiitCertified         String?  @map("dpiit_certified") @db.VarChar(20)
+  startupStage           String?  @map("startup_stage") @db.VarChar(50)
+  problemStatement       String?  @map("problem_statement") @db.Text
+  solution               String?  @map("solution") @db.Text
+  usp                    String?  @map("usp") @db.Text
+  demoLink               String?  @map("demo_link") @db.Text
+  pitchDeckLink          String?  @map("pitch_deck_link") @db.Text
+  createdAt              DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt              DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("ten_minute_million_participants")
+}
+
+/// Ten Minute Million Event Audience
+model TenMinuteMillionAudience {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("ten_minute_million_audience")
+}
+
+/// Angel Roundtable Event Participants
+model AngelRoundtableParticipant {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  // Event Specific Data
+  attendeeType     String   @map("attendee_type") @db.VarChar(20)
+  startupStage     String?  @map("startup_stage") @db.VarChar(50)
+  problemStatement String?  @map("problem_statement") @db.Text
+  solution         String?  @map("solution") @db.Text
+  usp              String?  @map("usp") @db.Text
+  demoLink         String?  @map("demo_link") @db.Text
+  pitchDeckLink    String?  @map("pitch_deck_link") @db.Text
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("angel_roundtable_participants")
+}
+
+/// Angel Roundtable Event Audience
+model AngelRoundtableAudience {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("angel_roundtable_audience")
+}
+
+/// Pitch Arena Event Participants
+model PitchArenaParticipant {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  // Event Specific Data
+  attendeeType     String   @map("attendee_type") @db.VarChar(20)
+  startupName      String?  @map("startup_name") @db.VarChar(255)
+  studentName      String?  @map("student_name") @db.VarChar(255)
+  ideaBrief        String?  @map("idea_brief") @db.Text
+  documentLink     String?  @map("document_link") @db.Text
+  pitchDeckLink    String?  @map("pitch_deck_link") @db.Text
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("pitch_arena_participants")
+}
+
+/// Pitch Arena Event Audience
+model PitchArenaAudience {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("pitch_arena_audience")
+}
+
+/// Simple Event Registrations
+model SimpleEventRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("simple_event_registrations")
+}
+
+/// IPL Auction Event Registrations
+model IPLAuctionRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("ipl_auction_registrations")
+}
+
+/// AI Buildathon Start Event Registrations
+model AIBuildathonStartRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("ai_buildathon_start_registrations")
+}
+
+/// Design Thinking Workshop Registrations
+model DesignThinkingWorkshopRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("design_thinking_workshop_registrations")
+}
+
+/// Finance Marketing Workshop Registrations
+model FinanceMarketingWorkshopRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("finance_marketing_workshop_registrations")
+}
+
+/// Startup Expo Registrations (unified for both days)
+model StartupExpoRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("startup_expo_registrations")
+}
+
+/// Panel Discussion Registrations
+model PanelDiscussionRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("panel_discussion_registrations")
+}
+
+/// Networking Arena Registrations (unified for both days)
+model NetworkingArenaRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("networking_arena_registrations")
+}
+
+/// Incubator Summit Registrations
+model IncubatorSummitRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("incubator_summit_registrations")
+}
+
+/// AI Buildathon Final Registrations
+model AIBuildathonFinalRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("ai_buildathon_final_registrations")
+}
+
+/// Startup League Registrations
+model StartupLeagueRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("startup_league_registrations")
+}
+
+/// Data Analytics Workshop Registrations
+model DataAnalyticsWorkshopRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("data_analytics_workshop_registrations")
+}
+
+/// (Merged into `StartupExpoRegistration` above)
+
+/// (Merged into `NetworkingArenaRegistration` above)
+
+/// Internship Fair Registrations
+model InternshipFairRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("internship_fair_registrations")
+}
+
+/// Youth Conclave Registrations
+model YouthConclaveRegistration {
+  id               String   @id @default(uuid()) @db.Uuid
+  userId           String   @map("user_id") @db.Uuid
+  eventId          String   @map("event_id") @db.Uuid
+  passId           String?  @map("pass_id") @db.Uuid
+  registrationDate DateTime @default(now()) @map("registration_date") @db.Timestamptz(6)
+  status           String   @default("registered") @db.VarChar(50)
+  // User Profile Data
+  fullName         String?  @map("full_name") @db.VarChar(255)
+  email            String   @map("email") @db.VarChar(255)
+  phone            String?  @map("phone") @db.VarChar(20)
+  college          String?  @map("college") @db.VarChar(255)
+  userType         String?  @map("user_type") @db.VarChar(50)
+  userStartupName  String?  @map("user_startup_name") @db.VarChar(255)
+  userStartupStage String?  @map("user_startup_stage") @db.VarChar(100)
+  companyName      String?  @map("company_name") @db.VarChar(255)
+  designation      String?  @map("designation") @db.VarChar(100)
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+
+  @@unique([userId, eventId])
+  @@index([userId])
+  @@index([eventId])
+  @@index([status])
+  @@map("youth_conclave_registrations")
+}
+
+/// (Closing ceremony registrations removed - not stored separately)
+
 /// Check-in records for events and venue entry
 model CheckIn {
   id          String   @id @default(uuid()) @db.Uuid

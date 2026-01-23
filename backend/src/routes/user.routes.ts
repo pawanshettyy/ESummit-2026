@@ -544,8 +544,194 @@ router.post('/events/register', async (req: Request, res: Response) => {
       passType: userPassType,
     });
 
-    // Create event registration
-    const registration = await prisma.eventRegistration.create({
+    // Create event registration in the appropriate table based on event type
+    let registration;
+    const baseRegistrationData = {
+      userId: user.id,
+      eventId: event.id,
+      passId: passId,
+      status: 'registered',
+      // User profile data
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      college: user.college,
+      // cast to any to handle possible naming differences between DB and Prisma client types
+      userType: (user as any).user_type ?? (user as any).userType ?? null,
+      userStartupName: (user as any).startup_name ?? (user as any).startupName ?? null,
+      userStartupStage: (user as any).startup_stage ?? (user as any).startupStage ?? null,
+      companyName: (user as any).company_name ?? (user as any).companyName ?? null,
+      designation: (user as any).designation ?? null,
+    };
+
+    if (!validatedFormData) {
+      // Simple registration - route to specific event table based on eventId
+      switch (eventId) {
+        case 'd1-ipl-auction':
+          registration = await prisma.iPLAuctionRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd1-ai-buildathon-start':
+          registration = await prisma.aIBuildathonStartRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd1-design-thinking':
+          registration = await prisma.designThinkingWorkshopRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd1-finance-marketing':
+          registration = await prisma.financeMarketingWorkshopRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd1-startup-expo':
+          registration = await prisma.startupExpoRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd1-panel-discussion':
+          registration = await prisma.panelDiscussionRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd1-networking-arena':
+          registration = await prisma.networkingArenaRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-incubator-summit':
+          registration = await prisma.incubatorSummitRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-ai-buildathon-final':
+          registration = await prisma.aIBuildathonFinalRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-startup-league':
+          registration = await prisma.startupLeagueRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-data-analytics':
+          registration = await prisma.dataAnalyticsWorkshopRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-startup-expo':
+          registration = await prisma.startupExpoRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-networking-arena':
+          registration = await prisma.networkingArenaRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-internship-fair':
+          registration = await prisma.internshipFairRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-youth-conclave':
+          registration = await prisma.youthConclaveRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        case 'd2-closing':
+          // Closing ceremony registrations are not stored in a dedicated table.
+          // Fall back to generic simple event registration.
+          registration = await prisma.simpleEventRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+        default:
+          // Fallback to generic simple registration for any unmapped events
+          registration = await prisma.simpleEventRegistration.create({
+            data: baseRegistrationData,
+          });
+          break;
+      }
+    } else {
+      // Complex registration based on type
+      switch (validatedFormData.registrationType) {
+        case 'ten_minute_million':
+          if (validatedFormData.attendeeType === 'audience') {
+            registration = await prisma.tenMinuteMillionAudience.create({
+              data: baseRegistrationData,
+            });
+          } else {
+            registration = await prisma.tenMinuteMillionParticipant.create({
+              data: {
+                ...baseRegistrationData,
+                attendeeType: validatedFormData.attendeeType,
+                startupName: validatedFormData.startupName,
+                udhyamRegistrationNumber: validatedFormData.udhyamRegistrationNumber,
+                dpiitCertified: validatedFormData.dpiitCertified,
+                startupStage: validatedFormData.startupStage,
+                problemStatement: validatedFormData.problemStatement,
+                solution: validatedFormData.solution,
+                usp: validatedFormData.usp,
+                demoLink: validatedFormData.demoLink,
+                pitchDeckLink: validatedFormData.pitchDeckLink,
+              },
+            });
+          }
+          break;
+
+        case 'angel_roundtable':
+          if (validatedFormData.attendeeType === 'audience') {
+            registration = await prisma.angelRoundtableAudience.create({
+              data: baseRegistrationData,
+            });
+          } else {
+            registration = await prisma.angelRoundtableParticipant.create({
+              data: {
+                ...baseRegistrationData,
+                attendeeType: validatedFormData.attendeeType,
+                startupStage: validatedFormData.startupStage,
+                problemStatement: validatedFormData.problemStatement,
+                solution: validatedFormData.solution,
+                usp: validatedFormData.usp,
+                demoLink: validatedFormData.demoLink,
+                pitchDeckLink: validatedFormData.pitchDeckLink,
+              },
+            });
+          }
+          break;
+
+        case 'pitch_arena':
+          if (validatedFormData.attendeeType === 'audience') {
+            registration = await prisma.pitchArenaAudience.create({
+              data: baseRegistrationData,
+            });
+          } else {
+            registration = await prisma.pitchArenaParticipant.create({
+              data: {
+                ...baseRegistrationData,
+                attendeeType: validatedFormData.attendeeType,
+                startupName: validatedFormData.startupName,
+                studentName: validatedFormData.studentName,
+                ideaBrief: validatedFormData.ideaBrief,
+                documentLink: validatedFormData.documentLink,
+                pitchDeckLink: validatedFormData.pitchDeckLink,
+              },
+            });
+          }
+          break;
+
+        default:
+          throw new Error(`Unknown registration type: ${validatedFormData.registrationType}`);
+      }
+    }
+
+    // Also create a record in the old table for backward compatibility (optional)
+    // This ensures existing queries still work
+    await prisma.eventRegistration.create({
       data: {
         userId: user.id,
         eventId: event.id,
