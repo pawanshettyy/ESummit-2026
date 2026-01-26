@@ -21,7 +21,6 @@ import {
   Home,
   X,
   FileCheck,
-  CheckCircle,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "./ui/card";
@@ -398,36 +397,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     } catch (err) {
       logger.error('Error checking Clerk admin status:', err);
       toast.error('Failed to verify Clerk admin status');
-    }
-  };
-
-  // Handle claim approval/rejection
-  const handleClaimAction = async (claimId: string, action: 'approve' | 'reject') => {
-    const adminNotes = prompt(`Enter admin notes for ${action}ing this claim:`);
-    if (adminNotes === null) return; // User cancelled
-
-    try {
-      const headers = await getAuthHeaders();
-      const response = await fetch(`${API_BASE_URL}/admin/claims/${claimId}/action`, {
-        method: 'POST',
-        headers: headers,
-        body: JSON.stringify({
-          action,
-          adminNotes
-        }),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        toast.success(`Claim ${action}d successfully`);
-        fetchDashboardData(); // Refresh dashboard data
-      } else {
-        toast.error(data.error || `Failed to ${action} claim`);
-      }
-    } catch (error) {
-      logger.error(`Error ${action}ing claim:`, error);
-      toast.error(`Failed to ${action} claim`);
     }
   };
 
@@ -1459,35 +1428,12 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                                 </div>
                               </div>
 
-                              {/* Action Buttons */}
-                              {claim.status === 'pending' && (
-                                <div className="flex flex-col sm:flex-row gap-2 pt-4 border-t">
-                                  <Button
-                                    size="sm"
-                                    onClick={() => handleClaimAction(claim.id, 'approve')}
-                                    className="flex-1 min-w-0"
-                                  >
-                                    <CheckCircle className="h-4 w-4 mr-2 flex-shrink-0" />
-                                    <span className="truncate">Approve</span>
-                                  </Button>
-                                  <Button
-                                    variant="destructive"
-                                    size="sm"
-                                    onClick={() => handleClaimAction(claim.id, 'reject')}
-                                    className="flex-1 min-w-0"
-                                  >
-                                    <XCircle className="h-4 w-4 mr-2 flex-shrink-0" />
-                                    <span className="truncate">Reject</span>
-                                  </Button>
-                                </div>
-                              )}
-                              {claim.status !== 'pending' && (
-                                <div className="pt-4 border-t">
-                                  <p className="text-sm text-muted-foreground">
-                                    This claim has been {claim.status}. {claim.processedAt && `Processed on ${formatDate(claim.processedAt)}`}
-                                  </p>
-                                </div>
-                              )}
+                              {/* Status Information */}
+                              <div className="pt-4 border-t">
+                                <p className="text-sm text-muted-foreground">
+                                  This claim is {claim.status}. {claim.verifiedAt && `Verified on ${formatDate(claim.verifiedAt)}`}
+                                </p>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>

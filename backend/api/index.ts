@@ -30,6 +30,12 @@ const isOriginAllowed = (origin: string | undefined): boolean => {
     return true;
   }
 
+  // Allow the primary production domain (accept www and non-www)
+  const defaultAllowedDomain = 'tcetesummit.in';
+  if (originHost === defaultAllowedDomain || originHost.endsWith(`.${defaultAllowedDomain}`)) {
+    return true;
+  }
+
   // Allow explicit frontend URL from env (normalize and compare without www)
   const frontendUrl = process.env.FRONTEND_URL;
   if (frontendUrl) {
