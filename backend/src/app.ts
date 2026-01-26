@@ -1,5 +1,6 @@
 // Now import Express and other modules
 import express, { Application } from 'express';
+import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import config from './config';
@@ -33,8 +34,44 @@ app.use(helmet({
   },
 }));
 
-// CORS handled by Vercel headers in vercel.json
-// Removed Express CORS middleware to avoid conflicts with Vercel edge CORS
+// CORS configuration
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+
+      const allowedOrigins = [
+        'https://tcetesummit.in',
+        'https://www.tcetesummit.in',
+        'https://api.tcetesummit.in',
+        'http://localhost:5173',
+        'http://localhost:5174',
+        'http://localhost:3000',
+        'http://localhost:5000',
+        'http://127.0.0.1:5173',
+        'http://127.0.0.1:5174',
+        'http://127.0.0.1:3000',
+        'http://127.0.0.1:5000',
+      ];
+
+      if (allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+
+      return callback(new Error('Not allowed by CORS'));
+    },
+    credentials: true,
+    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with', 'accept', 'cache-control', 'origin'],
+    exposedHeaders: ['x-admin-secret', 'authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
+    optionsSuccessStatus: 200,
+    preflightContinue: false,
+  })
+);
+
+// Handle preflight requests explicitly
+app.options('*', cors());
 
 // Body parsers - MUST be before any middleware that reads req.body
 app.use(express.json({ limit: '10mb' }));
