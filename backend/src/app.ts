@@ -1,6 +1,5 @@
 // Now import Express and other modules
 import express, { Application } from 'express';
-import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
 import config from './config';
@@ -34,21 +33,8 @@ app.use(helmet({
   },
 }));
 
-// CORS - more permissive configuration
-app.use(
-  cors({
-    origin: config.cors.origin,
-    credentials: true,
-    allowedHeaders: ['x-admin-secret', 'content-type', 'authorization', 'x-requested-with', 'accept', 'cache-control', 'origin', 'x-requested-with'],
-    exposedHeaders: ['x-admin-secret', 'authorization'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-    optionsSuccessStatus: 200,
-    preflightContinue: false,
-  })
-);
-
-// Handle preflight requests explicitly
-app.options('*', cors());
+// CORS handled by Vercel headers in vercel.json
+// Removed Express CORS middleware to avoid conflicts with Vercel edge CORS
 
 // Body parsers - MUST be before any middleware that reads req.body
 app.use(express.json({ limit: '10mb' }));
