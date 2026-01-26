@@ -31,6 +31,17 @@ const getAdminSecretFromReq = (req: Request): string | undefined => {
 const isAdminAuthorized = async (req: Request): Promise<boolean> => {
   const expectedSecret = process.env.ADMIN_IMPORT_SECRET || 'esummit2026-admin-import';
 
+  // Allow localhost access for development
+  const origin = req.headers.origin || req.headers.referer || '';
+  const host = req.headers.host || '';
+  const isLocalhost = origin.includes('localhost') || origin.includes('127.0.0.1') ||
+                     host.includes('localhost') || host.includes('127.0.0.1');
+
+  if (isLocalhost && process.env.NODE_ENV === 'development') {
+    logger.debug('Admin authorized via localhost development access');
+    return true;
+  }
+
   // Check header / authorization / body / query for admin secret first
   const helperSecret = getAdminSecretFromReq(req);
   if (helperSecret && helperSecret === expectedSecret) {

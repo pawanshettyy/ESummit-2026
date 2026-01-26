@@ -421,9 +421,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
 
       if (data.success) {
         toast.success(`Claim ${action}d successfully`);
-        fetchClaims(); // Refresh claims list
-        fetchStats(); // Refresh stats
-        fetchPasses(); // Refresh passes if approved
+        fetchDashboardData(); // Refresh dashboard data
       } else {
         toast.error(data.error || `Failed to ${action} claim`);
       }
@@ -446,90 +444,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
     });
   };
 
-  // Filter users
-  const filteredUsers = users.filter((user) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (user.fullName && user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.lastName && user.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.college && user.college.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    return matchesSearch;
-  });
-
-  // Filter passes
-  const filteredPasses = passes.filter((pass) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      pass.passId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pass.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pass.user?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      pass.bookingId?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesPassType =
-      passTypeFilter === "all" || pass.passType === passTypeFilter;
-
-    const matchesVerification =
-      verificationFilter === "all" ||
-      (verificationFilter === "verified" && pass.user?.bookingVerified) ||
-      (verificationFilter === "unverified" && !pass.user?.bookingVerified);
-
-    return matchesSearch && matchesPassType && matchesVerification;
-  });
-
-  // Filter event registrations
-  const filteredRegistrations = eventRegistrations.filter((reg) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      reg.user?.email?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reg.user?.fullName?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      reg.event?.title?.toLowerCase().includes(searchQuery.toLowerCase());
-
-    const matchesEvent =
-      eventFilter === "all" || reg.event?.id === eventFilter;
-
-    return matchesSearch && matchesEvent;
-  });
-
-  // Filter claims
-  const filteredClaims = claims.filter((claim) => {
-    const matchesSearch =
-      searchQuery === "" ||
-      (claim.fullName && claim.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      claim.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (claim.user?.fullName && claim.user.fullName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (claim.bookingId && claim.bookingId.toLowerCase().includes(searchQuery.toLowerCase()));
-
-    const matchesStatus =
-      claimStatusFilter === "all" || claim.status === claimStatusFilter;
-
-    return matchesSearch && matchesStatus;
-  });
-
-  // Pagination
-  const paginatedUsers = filteredUsers.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const paginatedPasses = filteredPasses.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const paginatedRegistrations = filteredRegistrations.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const totalPages = Math.ceil(
-    (activeTab === "users" ? filteredUsers.length :
-     activeTab === "passes" ? filteredPasses.length : filteredRegistrations.length) /
-      itemsPerPage
-  );
-
   // Format date
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-IN", {
@@ -540,14 +454,6 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       minute: "2-digit",
     });
   };
-
-  // Get unique events for filter
-  const uniqueEvents = Array.from(
-    new Set(eventRegistrations.map((r) => r.event?.id))
-  ).map((id) => {
-    const reg = eventRegistrations.find((r) => r.event?.id === id);
-    return { id, title: reg?.event?.title || "Unknown" };
-  });
 
   // Loading state
   if (!isLoaded || isLoading || isLoadingData) {
@@ -560,6 +466,14 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
       </div>
     );
   }
+
+  // Get unique events for filter (from dashboard data)
+  const uniqueEvents = Array.from(
+    new Set(dashboardData?.eventRegistrations.data.map((r) => r.event?.id) || [])
+  ).map((id) => {
+    const reg = dashboardData?.eventRegistrations.data.find((r) => r.event?.id === id);
+    return { id, title: reg?.event?.title || "Unknown" };
+  });
 
   // Not signed in - show login
   if (!isSignedIn) {
@@ -850,7 +764,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                         size="sm"
                         onClick={() => {
                           setSearchQuery("");
-                          fetchUsers();
+                          fetchDashboardData();
                         }}
                         className="shrink-0"
                       >
@@ -1460,7 +1374,7 @@ export function AdminPanel({ onNavigate }: AdminPanelProps) {
                       <Button
                         variant="outline"
                         size="sm"
-                        onClick={() => fetchClaims()}
+                        onClick={() => fetchDashboardData()}
                         className="shrink-0"
                       >
                         <RefreshCw className="h-4 w-4" />

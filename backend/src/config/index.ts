@@ -15,103 +15,35 @@ interface Config {
     refreshExpiresIn: string;
   };
   cors: {
-    origin: string | ((origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => void);
+    origin: string | string[] | RegExp[];
   };
 }
 
 // Dynamic CORS origin validator
-const getCorsOrigin = () => {
+const getCorsOrigin = (): string | string[] => {
   const nodeEnv = process.env.NODE_ENV;
 
-  // In production, use dynamic validation
+  // In production, allow specific origins
   if (nodeEnv === 'production') {
-    return (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      // Allow requests with no origin (mobile apps, curl, postman)
-      if (!origin) {
-        // CORS: No origin header - allowing
-        return callback(null, true);
-      }
-
-      // Allow all Vercel deployments (*.vercel.app)
-      if (origin.endsWith('.vercel.app')) {
-        // CORS: Allowed Vercel deployment
-        return callback(null, true);
-      }
-
-      // Allow custom domain (tcetesummit.in and www.tcetesummit.in)
-      const customDomains = ['https://tcetesummit.in', 'https://www.tcetesummit.in'];
-      if (customDomains.includes(origin)) {
-        // CORS: Allowed custom domain
-        return callback(null, true);
-      }
-
-      // Allow explicit frontend URL from env
-      const frontendUrl = process.env.FRONTEND_URL;
-      if (frontendUrl && origin === frontendUrl) {
-        // CORS: Allowed explicit frontend
-        return callback(null, true);
-      }
-
-      // Allow ALLOWED_ORIGINS from env (comma-separated)
-      const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(o => o.trim());
-      if (allowedOrigins && allowedOrigins.includes(origin)) {
-        // CORS: Allowed from ALLOWED_ORIGINS
-        return callback(null, true);
-      }
-
-      // Allow localhost in production (for testing)
-      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        // CORS: Allowed localhost
-        return callback(null, true);
-      }
-
-      // Reject other origins
-      logger.warn(`⚠️ CORS (prod): Blocked origin - ${origin}`);
-      return callback(new Error('Not allowed by CORS'), false);
-    };
+    return [
+      'https://tcetesummit.in',
+      'https://www.tcetesummit.in',
+      'https://api.tcetesummit.in',
+    ];
   }
 
   // In development, allow localhost and Vercel
   if (nodeEnv === 'development') {
-    return (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
-      const devOrigins = [
-        'http://localhost:5173',
-        'http://localhost:5174',
-        'http://localhost:3000',
-        'http://localhost:5000',
-        'http://127.0.0.1:5173',
-        'http://127.0.0.1:5174',
-        'http://127.0.0.1:3000',
-        'http://127.0.0.1:5000',
-      ];
-
-      // Allow requests with no origin (Postman, curl, mobile apps)
-      if (!origin) {
-        return callback(null, true);
-      }
-
-      // Allow any localhost/127.0.0.1 port
-      if (origin.includes('localhost') || origin.includes('127.0.0.1')) {
-        // CORS: Allowed localhost (dev)
-        return callback(null, true);
-      }
-
-      // Allow Vercel deployments
-      if (origin.endsWith('.vercel.app')) {
-        // CORS: Allowed Vercel (dev)
-        return callback(null, true);
-      }
-
-      // Allow if matches explicit origin
-      if (devOrigins.includes(origin)) {
-        // CORS: Allowed explicit (dev)
-        return callback(null, true);
-      }
-
-      // In development, log but still allow
-      logger.warn(`⚠️ CORS (dev): Unknown origin, but allowing - ${origin}`);
-      return callback(null, true);
-    };
+    return [
+      'http://localhost:5173',
+      'http://localhost:5174',
+      'http://localhost:3000',
+      'http://localhost:5000',
+      'http://127.0.0.1:5173',
+      'http://127.0.0.1:5174',
+      'http://127.0.0.1:3000',
+      'http://127.0.0.1:5000',
+    ];
   }
 
   // Fallback to wildcard (not recommended for production)
