@@ -148,7 +148,7 @@ export const PassBooking = memo(function PassBooking({
 
   // Add Thakur Student Pass for eligible students
   const thakurStudentPass = {
-    id: "thakur_student",
+    id: "tcet_student",
     name: "Thakur Student Pass",
     price: 0,
     earlyBirdPrice: 0,
@@ -191,7 +191,7 @@ export const PassBooking = memo(function PassBooking({
     }
 
     // Handle Thakur student free pass
-    if (passId === "thakur_student" && isThakurStudent) {
+    if (passId === "tcet_student" && isThakurStudent) {
       handleThakurStudentPass();
       return;
     }
