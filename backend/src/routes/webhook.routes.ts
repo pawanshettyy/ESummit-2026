@@ -147,11 +147,11 @@ router.post('/konfhub', async (req: Request, res: Response) => {
 
     logger.info(`KonfHub webhook received: ${event} - acknowledged (processing disabled due to transaction removal)`);
 
-    // Since transactions are removed and KonfHub handles everything,
-    // we just acknowledge the webhook without processing
+    // Since transactions were removed and KonfHub handles payments,
+    // we acknowledge the webhook without additional processing here.
     return res.json({
       success: true,
-      message: 'Webhook acknowledged - pass creation handled by payment routes'
+      message: 'Webhook acknowledged - no action required on server'
     });
   } catch (error: any) {
     logger.error('KonfHub webhook error:', error);

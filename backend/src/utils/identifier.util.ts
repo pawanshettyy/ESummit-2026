@@ -16,11 +16,7 @@ export function generateInvoiceNumber(): string {
  * Format: TXN-2026-XXXXXXXX
  * Example: TXN-2026-D5E8F1A4
  */
-export function generateTransactionNumber(): string {
-  const year = '2026';
-  const randomPart = crypto.randomBytes(4).toString('hex').toUpperCase();
-  return `TXN-${year}-${randomPart}`;
-}
+// Transaction numbers removed — KonfHub manages transaction identifiers.
 
 /**
  * Generate unique Pass ID
@@ -40,7 +36,6 @@ export function generateUniqueIdentifiers() {
   return {
     passId: generatePassId(),
     invoiceNumber: generateInvoiceNumber(),
-    transactionNumber: generateTransactionNumber(),
   };
 }
 
@@ -55,10 +50,7 @@ export function isValidInvoiceNumber(invoiceNumber: string): boolean {
 /**
  * Validate transaction number format
  */
-export function isValidTransactionNumber(transactionNumber: string): boolean {
-  const pattern = /^TXN-2026-[A-F0-9]{8}$/;
-  return pattern.test(transactionNumber);
-}
+// Transaction validation removed.
 
 /**
  * Validate pass ID format
