@@ -21,7 +21,6 @@ import {
   InternshipFairPage,
   StartupYouthConclavePage,
 } from "./components/events";
-import { RoadmapToEntrepreneurshipPage } from "./components/events/roadmap-to-entrepreneurship";
 import { Speakers } from "./components/speakers";
 import { Venue } from "./components/venue";
 import { Sponsors } from "./components/sponsors";
@@ -166,8 +165,6 @@ export default function App() {
         return <InternshipFairPage />;
       case "event-14":
         return <StartupYouthConclavePage />;
-      case "event-16":
-        return <RoadmapToEntrepreneurshipPage />;
       // Handle d1- and d2- prefixed event IDs
       case "event-d1-ten-minute-million":
         return <TenMinuteMillionPage />;

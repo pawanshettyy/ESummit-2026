@@ -35,7 +35,7 @@ export function PitchArenaPage() {
     <EventPageTemplate
       event={event}
       eventId="d1-pitch-arena"
-      registrationUrl="https://forms.google.com/pitch-arena-registration"
+      registrationUrl="https://docs.google.com/forms/d/e/1FAIpQLSdRZFkaw6QqN6ug4jNdVQDaGK1jQeNcyzOdsrlLFTXmSKMrJA/viewform?usp=dialog"
       perks={perks}
       panelTitle="Mentors"
       primaryContacts={primaryContacts}

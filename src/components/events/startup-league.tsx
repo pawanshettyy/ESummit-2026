@@ -20,5 +20,5 @@ export function StartupLeaguePage() {
     { name: "Shiva Saraswati", role: "OC Member", phone: "9561914349" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-biz-arena" registrationUrl="https://forms.google.com/startup-league-registration" panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-biz-arena" registrationUrl="https://forms.gle/dgGMs7rXbT5UpAH56" panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
 }

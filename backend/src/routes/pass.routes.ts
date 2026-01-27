@@ -153,12 +153,26 @@ router.post('/create', async (req: Request, res: Response) => {
       fullName,
       passType,
       bookingId,
-      status = 'Active'
+      status = 'Active',
+      isThakurStudent = false,
+      konfhubData = null,
     } = req.body;
 
-    // Validate required fields
-    if (!clerkUserId || !email || !passType || !bookingId) {
-      sendError(res, 'clerkUserId, email, passType, and bookingId are required', 400);
+    // Validate required fields - bookingId not required for Thakur students
+    if (!clerkUserId || !passType) {
+      sendError(res, 'clerkUserId and passType are required', 400);
+      return;
+    }
+
+    // For Thakur students, we need email to identify them
+    if (isThakurStudent && !email) {
+      sendError(res, 'Email is required for Thakur student passes', 400);
+      return;
+    }
+
+    // For paid passes, bookingId is required
+    if (!isThakurStudent && !bookingId) {
+      sendError(res, 'bookingId is required for paid passes', 400);
       return;
     }
 
@@ -168,23 +182,31 @@ router.post('/create', async (req: Request, res: Response) => {
     });
 
     if (!user) {
-      // Try to find by email first
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
-      });
-
-      if (existingUser) {
-        // Update with Clerk ID
-        user = await prisma.user.update({
-          where: { id: existingUser.id },
-          data: { clerkUserId },
+      // For Thakur students, try to find by email first
+      if (isThakurStudent && email) {
+        const existingUser = await prisma.user.findUnique({
+          where: { email },
         });
-      } else {
-        // Create new user
+
+        if (existingUser) {
+          // Update with Clerk ID if not already set
+          if (!existingUser.clerkUserId) {
+            user = await prisma.user.update({
+              where: { id: existingUser.id },
+              data: { clerkUserId },
+            });
+          } else {
+            user = existingUser;
+          }
+        }
+      }
+
+      // Create new user if not found
+      if (!user) {
         user = await prisma.user.create({
           data: {
             clerkUserId,
-            email,
+            email: email || null,
             fullName: fullName || null,
           },
         });
@@ -201,14 +223,16 @@ router.post('/create', async (req: Request, res: Response) => {
       return;
     }
 
-    // Check if booking ID is already used
-    const existingBooking = await prisma.pass.findFirst({
-      where: { bookingId },
-    });
+    // Check if booking ID is already used (only for paid passes)
+    if (!isThakurStudent && bookingId) {
+      const existingBooking = await prisma.pass.findFirst({
+        where: { bookingId },
+      });
 
-    if (existingBooking) {
-      sendError(res, 'This booking ID is already associated with another pass', 400);
-      return;
+      if (existingBooking) {
+        sendError(res, 'This booking ID is already associated with another pass', 400);
+        return;
+      }
     }
 
     // Generate unique pass ID
@@ -220,9 +244,11 @@ router.post('/create', async (req: Request, res: Response) => {
         userId: user.id,
         passType,
         passId,
-        bookingId,
+        bookingId: isThakurStudent ? null : bookingId, // No booking ID for Thakur students
         status,
         purchaseDate: new Date(),
+        konfhubData: konfhubData ? JSON.stringify(konfhubData) : null,
+        isThakurStudent,
       },
     });
 

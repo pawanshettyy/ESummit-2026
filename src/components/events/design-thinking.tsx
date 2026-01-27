@@ -19,5 +19,5 @@ export function DesignThinkingPage() {
     // Removed Sneha Chauhan
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-design-thinking" registrationUrl="https://forms.google.com/design-thinking-registration" panelTitle="Speakers" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-design-thinking" registrationUrl="https://forms.gle/twLnTyeb4UKBaSBh7" panelTitle="Speakers" primaryContacts={primaryContacts} />;
 }

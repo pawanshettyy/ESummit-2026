@@ -19,5 +19,5 @@ export function InternshipFairPage() {
     { name: "Shubham Mane", role: "OC Member", phone: "9324065445" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-internship-fair" registrationUrl="https://forms.google.com/internship-fair-registration" panelTitle="Participating Startups" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-internship-fair" registrationUrl="https://forms.gle/jEBsMLqLSwirBvbj9" panelTitle="Participating Startups" primaryContacts={primaryContacts} />;
 }

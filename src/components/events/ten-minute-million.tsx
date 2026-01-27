@@ -73,7 +73,7 @@ export function TenMinuteMillionPage() {
     <EventPageTemplate
       event={eventData}
       eventId="d1-ten-minute-million"
-      registrationUrl="https://forms.google.com/ten-minute-million-registration"
+      registrationUrl="https://forms.gle/pLzKEuzk53XPkyREA"
       perks={perks}
       panelTitle="Meet the VCs"
       panelSubtitle="Pitch to leading Venture Capitalists"

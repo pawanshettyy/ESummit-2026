@@ -17,5 +17,5 @@ export function DataAnalyticsBdmPage() {
     { name: "Arpit Gawande", role: "OC Member", phone: "7447743779" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-data-analytics" registrationUrl="https://forms.google.com/data-analytics-registration" panelTitle="Speakers" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-data-analytics" registrationUrl="https://forms.gle/twLnTyeb4UKBaSBh7" panelTitle="Speakers" primaryContacts={primaryContacts} />;
 }

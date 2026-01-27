@@ -190,10 +190,90 @@ export const PassBooking = memo(function PassBooking({
       return;
     }
 
+    // Handle Thakur student free pass
+    if (passId === "thakur_student" && isThakurStudent) {
+      handleThakurStudentPass();
+      return;
+    }
+
     // Set selected pass and open KonfHub widget directly
     setSelectedPass(passId);
     setShowKonfHubWidget(true);
-  }, [isAuthenticated, hasExistingPass]);
+  }, [isAuthenticated, hasExistingPass, isThakurStudent]);
+
+  const handleThakurStudentPass = useCallback(async () => {
+    setIsProcessingPayment(true);
+
+    try {
+      const clerkUserId = user?.id;
+      const selectedPassData = thakurStudentPass;
+
+      const requestBody = {
+        clerkUserId: clerkUserId,
+        passType: selectedPassData.name,
+        price: 0, // Free pass
+        hasMeals: false,
+        hasMerchandise: false,
+        hasWorkshopAccess: false,
+        konfhubData: null, // No KonfHub data for free passes
+        isThakurStudent: true,
+      };
+
+      const response = await fetch(`${API_BASE_URL}/passes/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        toast.error(`Failed to create pass: ${errorText}`);
+        setIsProcessingPayment(false);
+        return;
+      }
+
+      const result = await response.json();
+
+      if (result.success && result.data.pass) {
+        const createdPass = result.data.pass;
+        const passData = {
+          id: selectedPassData.id,
+          type: selectedPassData.name,
+          passId: createdPass.passId,
+          price: 0,
+          purchaseDate: new Date().toLocaleDateString("en-US", {
+            month: "short",
+            day: "numeric",
+            year: "numeric",
+          }),
+          status: "Active",
+        };
+        savePurchasedPass(passData);
+
+        toast.success("Thakur Student Pass created successfully!", {
+          description: "Your free pass has been added to your account.",
+        });
+        setIsProcessingPayment(false);
+
+        setTimeout(() => {
+          onNavigate("home");
+        }, 1500);
+      } else {
+        toast.error("⚠️ Couldn't create your pass. Please try again or contact support if the issue continues.");
+        setIsProcessingPayment(false);
+      }
+    } catch (error) {
+      console.error("Pass creation error:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "⚠️ Pass creation failed. Please refresh and try again, or contact support for assistance."
+      );
+      setIsProcessingPayment(false);
+    }
+  }, [user?.id, thakurStudentPass, onNavigate]);
 
   const handleKonfHubSuccess = useCallback(async (data: any) => {
     // KonfHub purchase completed successfully

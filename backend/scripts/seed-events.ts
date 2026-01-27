@@ -3,20 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const events = [
-  // Pre-Event Workshop
-  {
-    eventId: 'pre-udaan',
-    title: 'Udaan - Roadmap to Entrepreneurship',
-    description: 'Turn Ideas into Impact. A focused, hands-on workshop designed to help you transform your ideas into actionable business models. Learn practical startup frameworks, gain real-world insights, and take your first confident step into entrepreneurship.',
-    category: 'workshops',
-    date: new Date('2026-01-30'),
-    startTime: new Date('2026-01-30T14:00:00'),
-    endTime: new Date('2026-01-30T15:00:00'),
-    venue: 'TBA',
-    eligibility: 'Open to students, aspiring founders, and innovators',
-    status: 'upcoming',
-    speakerName: 'Prof. Chaitali & Dr. Pankaj Nandurkar',
-  },
   // Day 1 Events - 16 total
   {
     eventId: 'd1-registration',

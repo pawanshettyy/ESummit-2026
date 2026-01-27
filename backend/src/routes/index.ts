@@ -1,8 +1,6 @@
 import { Router } from 'express';
 import passRoutes from './pass.routes';
-import passClaimRoutes from './pass-claim.routes';
 import webhookRoutes from './webhook.routes';
-import tcetRoutes from './tcet.routes';
 import userRoutes from './user.routes';
 
 const router = Router();
@@ -18,9 +16,7 @@ router.get('/health', (_req, res) => {
 
 // Mount routes
 router.use('/passes', passRoutes);
-router.use('/pass-claims', passClaimRoutes);
 router.use('/webhooks', webhookRoutes);
-router.use('/tcet', tcetRoutes);
 router.use('/users', userRoutes);
 
 export default router;

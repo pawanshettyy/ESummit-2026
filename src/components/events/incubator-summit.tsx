@@ -21,5 +21,5 @@ export function IncubatorSummitPage() {
     { name: "Hitarth Bhatt", role: "OC Member", phone: "9819418228" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-incubator-summit" registrationUrl="https://forms.google.com/incubator-summit-registration" panelTitle="Incubation Centre Evaluators" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-incubator-summit" registrationUrl="https://docs.google.com/forms/d/e/1FAIpQLSeQhu5wIrAJi6ldgcOinOW8QQFWnaxWqEKWyMTjWFFbVFstow/viewform?usp=publish-editor" panelTitle="Incubation Centre Evaluators" primaryContacts={primaryContacts} />;
 }

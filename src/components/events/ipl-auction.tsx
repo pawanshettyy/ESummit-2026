@@ -20,5 +20,5 @@ export function IplAuctionPage() {
     { name: "Sitanshu Shetty", role: "OC Member", phone: "7208390629" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-ipl-auction" registrationUrl="https://forms.google.com/ipl-auction-registration" panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
+  return <EventPageTemplate event={event} eventId="d1-ipl-auction" registrationUrl="https://docs.google.com/forms/d/e/1FAIpQLSdDK0Rke1JlV9n74PJ_IJrPMm1Vb-FePtoZ-V5I1TFIJ4gnrg/viewform?usp=publish-editor" panelTitle="Mentors & Judges" primaryContacts={primaryContacts} />;
 }
