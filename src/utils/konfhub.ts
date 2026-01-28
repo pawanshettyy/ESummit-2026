@@ -1,7 +1,7 @@
 // KonfHub Integration Utility for Frontend
 // Complete end-to-end pass and ticketing solution
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api/v1';
 
 export interface KonfHubOrderData {
   clerkUserId: string;
@@ -169,7 +169,7 @@ export const initiateKonfHubPayment = async (
         try {
           // Poll for pass creation by checking if user has a pass
           const passResponse = await fetch(
-            `${API_BASE_URL}/pass/user`,
+            `${API_BASE_URL}/passes/user/${orderData.clerkUserId}`,
             {
               credentials: 'include',
             }
@@ -177,13 +177,13 @@ export const initiateKonfHubPayment = async (
 
           const passData = await passResponse.json();
 
-          if (passData.success && passData.data?.pass) {
+          if (passData.success && passData.data?.passes && passData.data.passes.length > 0) {
             clearInterval(pollInterval);
             onSuccess({
               success: true,
               orderId: order.orderId,
               ticketId: order.ticketId,
-              pass: passData.data.pass,
+              pass: passData.data.passes[0], // Get the first/latest pass
             } as KonfHubPaymentResult);
           }
         } catch (error) {
