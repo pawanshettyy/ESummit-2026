@@ -502,11 +502,11 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
                 icon: Building2,
               },
               {
-                title: "AI Innovation Workshop Added",
-                date: "Jan 14, 2026",
+                title: "Thakur Student Pass Registration Closing",
+                date: "Jan 28, 2026",
                 content:
-                  "New hands-on workshop on AI applications in business added to the schedule. Learn practical skills in machine learning and data analytics from expert instructors at this TCET AXIOS EDIC event.",
-                icon: Trophy,
+                  "THAKUR STUDENT PASS will be closed at 29 Jan 2026 at 12 AM",
+                icon: Calendar,
               },
             ].map((news, index) => (
               <motion.div
