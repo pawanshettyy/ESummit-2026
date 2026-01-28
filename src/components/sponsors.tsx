@@ -30,7 +30,7 @@ export function Sponsors() {
         },
         {
           name: "Red Bull",
-          logo: "/assets/sponsors/redbull.png",
+          logo: "/assets/sponsors/redbull-logo-svgrepo-com.svg",
           tier: "CO-POWERED BY",
           website: "https://www.redbull.com/in-en"
         }
