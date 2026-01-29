@@ -592,7 +592,7 @@ export const PassBooking = memo(function PassBooking({
                 <thead className="border-b bg-muted/50">
                   <tr>
                     <th className="p-4 text-left">Feature</th>
-                    {[...passes.filter(p => p.id !== "exhibitors"), ...(isThakurStudent ? [thakurStudentPass] : [])].map((pass) => (
+                    {[...passes, ...(isThakurStudent ? [thakurStudentPass] : [])].map((pass) => (
                       <th
                         key={pass.id}
                         className="p-4 text-center"
@@ -604,23 +604,24 @@ export const PassBooking = memo(function PassBooking({
                 </thead>
                 <tbody>
                   {[
-                    { name: "Startup Expo", included: ["pixel", "silicon", "quantum", "tcet_student"] },
-                    { name: "Panel Discussion", included: ["pixel", "silicon", "quantum", "tcet_student"] },
-                    { name: "IPL Auction", included: ["pixel", "silicon", "quantum", "tcet_student"] },
-                    { name: "AI Build-A-Thon", included: ["pixel", "silicon", "quantum", "tcet_student"] },
-                    { name: "Biz-Arena League", included: ["pixel", "silicon", "quantum", "tcet_student"] },
-                    { name: "Pitch Arena", included: ["silicon", "quantum", "tcet_student"] },
-                    { name: "Startup Youth Conclave", included: ["silicon", "quantum", "tcet_student"] },
-                    { name: "All 3 Workshops", included: ["pixel", "silicon", "quantum", "tcet_student"] },
-                    { name: "Networking Arena", included: ["quantum"] },
-                    { name: "Informals", included: ["quantum", "tcet_student"] },
-                    { name: "The Ten Minute Deal", included: ["quantum", "tcet_student"] },
-                    { name: "Incubator Summit", included: ["quantum", "tcet_student"] },
-                    { name: "Internship Fair", included: ["quantum", "tcet_student"] },
+                    { name: "Startup Expo", included: ["pixel", "silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "Panel Discussion", included: ["pixel", "silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "IPL Auction", included: ["pixel", "silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "AI Build-A-Thon", included: ["pixel", "silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "Biz-Arena League", included: ["pixel", "silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "Pitch Arena", included: ["silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "Startup Youth Conclave", included: ["silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "All 3 Workshops", included: ["pixel", "silicon", "quantum", "tcet_student", "exhibitors"] },
+                    { name: "Informals", included: ["quantum", "exhibitors"] },
+                    { name: "The Ten Minute Deal", included: ["quantum", "tcet_student", "exhibitors"] },
+                    { name: "Incubator Summit", included: ["quantum", "tcet_student", "exhibitors"] },
+                    { name: "Internship Fair", included: ["quantum", "tcet_student", "exhibitors"] },
+                    { name: "Opportunity to showcase your startup/business/company", included: ["exhibitors"] },
+                    { name: "Dedicated booth in Startup Expo", included: ["exhibitors"] },
                   ].map((feature) => (
                     <tr key={feature.name} className="border-b">
                       <td className="p-4">{feature.name}</td>
-                      {[...passes.filter(p => p.id !== "exhibitors"), ...(isThakurStudent ? [thakurStudentPass] : [])].map((pass) => (
+                      {[...passes, ...(isThakurStudent ? [thakurStudentPass] : [])].map((pass) => (
                         <td
                           key={pass.id}
                           className="p-4 text-center"
