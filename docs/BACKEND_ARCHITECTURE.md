@@ -2,55 +2,80 @@
 
 ## 🏗️ System Architecture
 
-E-Summit 2026 backend is built with Node.js/Express, PostgreSQL, and Prisma ORM. It handles user authentication, pass booking, QR code generation, and real-time check-ins.
+E-Summit 2026 backend is built with Node.js/Express, PostgreSQL, and Prisma ORM. It handles user authentication via Clerk, pass management with KonfHub integration, and provides RESTful APIs for the frontend application.
 
 ## 🛠 Tech Stack
 
 - **Runtime**: Node.js 18+
 - **Framework**: Express.js
 - **Database**: PostgreSQL + Prisma ORM
-- **Authentication**: JWT tokens + Clerk
+- **Authentication**: Clerk
 - **Payments**: KonfHub integration
-- **QR Codes**: AES-256 encrypted
-- **Validation**: Zod schemas
+- **Validation**: Built-in request validation
+- **Logging**: Winston logger
 
 ## 📊 Database Schema
 
-### Core Tables
-- `users` - User accounts and profiles
-- `passes` - Pass purchases with QR codes
-- `transactions` - Payment records
-- `events` - Event listings
-- `event_registrations` - User registrations
-- `check_ins` - QR scan records
+### User Model
+- **id**: UUID primary key
+- **email**: Unique email address
+- **phone**: Optional phone number
+- **fullName, firstName, lastName**: User name fields
+- **is_active**: Account status (default: true)
+- **imageUrl**: Profile image URL
+- **college, yearOfStudy, rollNumber, branch**: Academic information
+- **startup_name, startup_stage, industry**: Startup information
+- **company_name, designation, company_size**: Professional information
+- **createdAt, updatedAt, lastLogin**: Timestamps
+- **bookingId**: Unique booking identifier
+- **bookingVerified**: Booking verification status
+- **clerkUserId**: Clerk authentication ID
+- **passes**: One-to-many relationship with Pass model
+
+### Pass Model
+- **id**: UUID primary key
+- **userId**: Foreign key to User
+- **passType**: Type of pass (e.g., "Student", "Professional")
+- **passId**: Unique pass identifier
+- **bookingId**: Booking reference
+- **konfhubTicketId, konfhubOrderId**: KonfHub integration IDs
+- **konfhubData**: JSON data from KonfHub
+- **isThakurStudent**: Special flag for Thakur students
+- **price**: Pass price
+- **purchaseDate**: Purchase timestamp
+- **ticketDetails**: JSON ticket information
+- **status**: Pass status (default: "Active")
+- **hasWorkshopAccess**: Workshop access flag
+- **createdAt, updatedAt**: Timestamps
 
 ## 🔐 Security Features
 
-- JWT authentication with refresh tokens
-- Password hashing (bcrypt)
+- Clerk authentication with secure token management
 - Rate limiting (100 req/15min)
 - Input validation and sanitization
-- SQL injection prevention
-- Encrypted QR codes
+- SQL injection prevention via Prisma ORM
+- CORS protection
+- Helmet.js security headers
 
 ## 🚀 Key Features
 
-- **Pass Booking**: Multiple types with payment verification
-- **QR System**: Encrypted codes for secure check-ins
-- **Event Management**: CRUD operations for events
-- **Check-in System**: Camera/manual scanning with audit trails
+- **User Management**: Integration with Clerk for authentication
+- **Pass Management**: Creation and management of event passes
+- **Webhook Handling**: KonfHub webhook processing for payments
+- **Health Monitoring**: API health check endpoints
 
 ## 📁 Project Structure
 
 ```
 backend/
 ├── src/
-│   ├── controllers/     # Route handlers
-│   ├── services/        # Business logic
+│   ├── config/          # Database and app configuration
 │   ├── middleware/      # Express middleware
 │   ├── routes/          # API routes
-│   ├── validators/      # Zod schemas
-│   └── utils/           # Helper functions
+│   ├── types/           # TypeScript type definitions
+│   ├── utils/           # Helper functions
+│   ├── app.ts           # Express app setup
+│   └── index.ts         # Server entry point
 ├── prisma/
 │   ├── schema.prisma    # Database schema
 │   └── migrations/      # DB migrations
@@ -59,19 +84,20 @@ backend/
 
 ## 🔌 API Endpoints
 
-### Authentication
-- `POST /api/v1/auth/register` - User registration
-- `POST /api/v1/auth/login` - User login
-- `POST /api/v1/auth/refresh` - Refresh tokens
+### Health Check
+- `GET /health` - API health status
+
+### Users
+- `GET /users/profile` - Get current user profile
+- `PUT /users/profile` - Update user profile
 
 ### Passes
-- `POST /api/v1/passes/create-order` - Create payment order
-- `POST /api/v1/passes/verify-payment` - Verify and create pass
-- `GET /api/v1/passes/:id` - Get pass details
+- `GET /passes` - Get user's passes
+- `POST /passes` - Create a new pass
+- `GET /passes/:id` - Get specific pass details
 
-### Events
-- `GET /api/v1/events` - List events
-- `POST /api/v1/events/:id/register` - Register for event
+### Webhooks
+- `POST /webhooks/konfhub` - Handle KonfHub payment webhooks
 
 ## 📋 Environment Variables
 
