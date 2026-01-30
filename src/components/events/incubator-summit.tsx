@@ -5,7 +5,7 @@ export function IncubatorSummitPage() {
     title: "The Incubator Summit",
     description:
       "Where ideas earn their launchpad. Founders pitch to evaluators from five top incubation centers, competing for a spot and seed support to accelerate their venture.",
-    date: "February 2-3, 2026",
+    date: "January 30-31, 2026",
     time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM – 1:00 PM",
     venue: "SSC TIMSR",
     prize: "Incubation Support",
@@ -21,5 +21,20 @@ export function IncubatorSummitPage() {
     { name: "Hitarth Bhatt", role: "OC Member", phone: "9819418228" },
   ];
 
-  return <EventPageTemplate event={event} eventId="d1-incubator-summit" registrationUrl="https://docs.google.com/forms/d/e/1FAIpQLSeQhu5wIrAJi6ldgcOinOW8QQFWnaxWqEKWyMTjWFFbVFstow/viewform?usp=publish-editor" panelTitle="Incubation Centre Evaluators" primaryContacts={primaryContacts} />;
+  const judges = [
+    {
+      name: "Dr. Sachin Laddha",
+      role: "Incubation Expert, MU Incubation",
+      image: "/assets/panel/default.png",
+      linkedin: "https://www.linkedin.com/in/sachinladdha"
+    },
+    {
+      name: "Himani Jaiswal",
+      role: "Incubation Expert, WISE SNDTWU",
+      image: "/assets/panel/default.png",
+      linkedin: "https://www.linkedin.com/in/himani-jaiswal-189b25232"
+    }
+  ];
+
+  return <EventPageTemplate event={event} eventId="d1-incubator-summit" registrationUrl="https://docs.google.com/forms/d/e/1FAIpQLSeQhu5wIrAJi6ldgcOinOW8QQFWnaxWqEKWyMTjWFFbVFstow/viewform?usp=publish-editor" panelTitle="Incubation Centre Evaluators" judges={judges} primaryContacts={primaryContacts} />;
 }

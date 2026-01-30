@@ -26,7 +26,7 @@ export function Speakers() {
       session: [
         {
           title: "The Ten Minute Deal",
-          date: "February 2, 2026",
+          date: "February 2-3, 2026",
           time: "10:00 AM – 5:00 PM",
           venue: "SH-1",
         },
@@ -56,7 +56,7 @@ export function Speakers() {
       session: [
         {
           title: "The Ten Minute Deal",
-          date: "February 2, 2026",
+          date: "February 2-3, 2026",
           time: "10:00 AM – 5:00 PM",
           venue: "SH-1",
         },
@@ -65,6 +65,153 @@ export function Speakers() {
         linkedin: "https://www.linkedin.com/in/nikhil-jadhav-a42758b2/?originalSubdomain=in",
       },
       image: "/assets/panel/nikhil_jadhav.jpg",
+    },
+    {
+      name: "Karn Rajani",
+      title: "Finance Expert, Gitsol Finance",
+      bio: "Karn Rajani is a finance expert at Gitsol Finance, bringing deep insights into financial strategies and investment opportunities. As a judge at The Ten Minute Deal, he evaluates startup pitches with a focus on financial viability and growth potential.",
+      expertise: ["Finance", "Investment", "Startup Evaluation"],
+      achievements: [
+        "Finance Expert at Gitsol Finance",
+        "Judge at The Ten Minute Deal",
+      ],
+      session: [
+        {
+          title: "The Ten Minute Deal",
+          date: "February 2-3, 2026",
+          time: "10:00 AM – 5:00 PM",
+          venue: "SH-1",
+        },
+      ],
+      social: {},
+      image: "/assets/panel/default.png",
+    },
+    {
+      name: "Devang Bhuta",
+      title: "Parent Entrepreneur & Investor",
+      bio: "Devang Bhuta is a seasoned entrepreneur and investor with a passion for products. As a parent entrepreneur, he mentors the next generation of innovators and invests in promising ventures. His experience in product development and investment makes him a valuable judge at E-Summit 2026.",
+      expertise: ["Entrepreneurship", "Investment", "Product Development"],
+      achievements: [
+        "Parent Entrepreneur & Investor",
+        "Judge at The Ten Minute Deal",
+      ],
+      session: [
+        {
+          title: "The Ten Minute Deal",
+          date: "February 2-3, 2026",
+          time: "10:00 AM – 5:00 PM",
+          venue: "SH-1",
+        },
+      ],
+      social: {
+        linkedin: "https://www.linkedin.com/in/db-passsionforproducts",
+      },
+      image: "/assets/panel/default.png",
+    },
+    {
+      name: "Dr. Anita Divakar",
+      title: "Former CEO, VJTI Technology Business Incubator",
+      bio: "Dr. Anita Divakar is the former CEO of VJTI Technology Business Incubator, where she led initiatives to support technology startups. With extensive experience in incubation and mentorship, she serves as an industry mentor at Pitch Arena, guiding entrepreneurs from idea to reality.",
+      expertise: ["Technology Incubation", "Startup Mentorship", "Business Development"],
+      achievements: [
+        "Former CEO at VJTI Technology Business Incubator",
+        "Industry Mentor at Pitch Arena",
+      ],
+      session: [
+        {
+          title: "Pitch Arena - Idea to Reality",
+          date: "January 30, 2026",
+          time: "10:00 AM – 5:00 PM",
+          venue: "314, 315, 316",
+        },
+      ],
+      social: {},
+      image: "/assets/panel/default.png",
+    },
+    {
+      name: "Capt. Amit Rai",
+      title: "Industry Mentor",
+      bio: "Capt. Amit Rai brings a wealth of experience in leadership and industry practices. As an industry mentor at Pitch Arena, he provides valuable insights to entrepreneurs developing their ideas into successful businesses.",
+      expertise: ["Leadership", "Industry Practices", "Mentorship"],
+      achievements: [
+        "Industry Mentor at Pitch Arena",
+      ],
+      session: [
+        {
+          title: "Pitch Arena - Idea to Reality",
+          date: "January 30, 2026",
+          time: "10:00 AM – 5:00 PM",
+          venue: "314, 315, 316",
+        },
+      ],
+      social: {},
+      image: "/assets/panel/default.png",
+    },
+    {
+      name: "Abhishek Patil",
+      title: "Founder, 3D Design Studio",
+      bio: "Abhishek Patil is the founder of 3D Design Studio, specializing in innovative design solutions. His expertise in design thinking and creative processes makes him an ideal mentor for entrepreneurs at Pitch Arena.",
+      expertise: ["3D Design", "Design Thinking", "Creative Solutions"],
+      achievements: [
+        "Founder of 3D Design Studio",
+        "Mentor at Pitch Arena",
+      ],
+      session: [
+        {
+          title: "Pitch Arena - Idea to Reality",
+          date: "January 30, 2026",
+          time: "10:00 AM – 5:00 PM",
+          venue: "314, 315, 316",
+        },
+      ],
+      social: {
+        linkedin: "https://www.linkedin.com/in/abhishpatil",
+      },
+      image: "/assets/panel/default.png",
+    },
+    {
+      name: "Dr. Sachin Laddha",
+      title: "Incubation Expert, MU Incubation",
+      bio: "Dr. Sachin Laddha is an expert in startup incubation at MU Incubation. He provides guidance on incubation processes and helps startups navigate the early stages of development at The Incubator Summit.",
+      expertise: ["Startup Incubation", "Business Development", "Mentorship"],
+      achievements: [
+        "Incubation Expert at MU Incubation",
+        "Speaker at The Incubator Summit",
+      ],
+      session: [
+        {
+          title: "The Incubator Summit",
+          date: "January 30-31, 2026",
+          time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM – 1:00 PM",
+          venue: "SSC TIMSR",
+        },
+      ],
+      social: {
+        linkedin: "https://www.linkedin.com/in/sachinladdha",
+      },
+      image: "/assets/panel/default.png",
+    },
+    {
+      name: "Himani Jaiswal",
+      title: "Incubation Expert, WISE SNDTWU",
+      bio: "Himani Jaiswal is an incubation expert at WISE SNDTWU, dedicated to supporting women entrepreneurs and startups. She shares insights on incubation strategies and gender-inclusive entrepreneurship at The Incubator Summit.",
+      expertise: ["Startup Incubation", "Women Entrepreneurship", "Business Strategy"],
+      achievements: [
+        "Incubation Expert at WISE SNDTWU",
+        "Speaker at The Incubator Summit",
+      ],
+      session: [
+        {
+          title: "The Incubator Summit",
+          date: "January 30-31, 2026",
+          time: "Day 1: 10:00 AM – 5:00 PM | Day 2: 10:00 AM – 1:00 PM",
+          venue: "SSC TIMSR",
+        },
+      ],
+      social: {
+        linkedin: "https://www.linkedin.com/in/himani-jaiswal-189b25232",
+      },
+      image: "/assets/panel/default.png",
     },
   ];
 

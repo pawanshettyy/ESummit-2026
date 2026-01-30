@@ -6,7 +6,7 @@ export function PitchArenaPage() {
     tagline: "Transform Your Idea Into Reality",
     description:
       "A premier platform for first-time founders to pitch their innovative ideas to industry experts, investors, and mentors. Get shortlisted for the next round and turn your startup dreams into reality.",
-    date: "February 2-3, 2026",
+    date: "January 30, 2026",
     time: "10:00 AM – 5:00 PM",
     venue: "314, 315, 316",
     prize: { first: "₹10,000", second: "₹5,000", third: "₹3,000", total: "₹18,000" },
@@ -31,6 +31,27 @@ export function PitchArenaPage() {
     { name: "Ms. Apeksha Waghmare", role: "Faculty Coordinator", email: "apeksha.waghmare@thakureducation.org" },
   ];
 
+  const judges = [
+    {
+      name: "Dr. Anita Divakar",
+      role: "Former CEO, VJTI Technology Business Incubator",
+      image: "/assets/panel/default.png",
+      linkedin: ""
+    },
+    {
+      name: "Capt. Amit Rai",
+      role: "Industry Mentor",
+      image: "/assets/panel/default.png",
+      linkedin: ""
+    },
+    {
+      name: "Abhishek Patil",
+      role: "Founder, 3D Design Studio",
+      image: "/assets/panel/default.png",
+      linkedin: "https://www.linkedin.com/in/abhishpatil"
+    }
+  ];
+
   return (
     <EventPageTemplate
       event={event}
@@ -38,6 +59,7 @@ export function PitchArenaPage() {
       registrationUrl="https://docs.google.com/forms/d/e/1FAIpQLSdRZFkaw6QqN6ug4jNdVQDaGK1jQeNcyzOdsrlLFTXmSKMrJA/viewform?usp=dialog"
       perks={perks}
       panelTitle="Mentors"
+      judges={judges}
       primaryContacts={primaryContacts}
       seniorContacts={seniorContacts}
     />

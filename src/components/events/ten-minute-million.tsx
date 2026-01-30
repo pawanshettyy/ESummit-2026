@@ -58,6 +58,18 @@ export function TenMinuteMillionPage() {
       role: "VC, Ten Minute Deal",
       image: "/assets/panel/nikhil_jadhav.jpg",
       linkedin: "https://www.linkedin.com/in/nikhil-jadhav-a42758b2/?originalSubdomain=in"
+    },
+    {
+      name: "Karn Rajani",
+      role: "Finance Expert, Gitsol Finance",
+      image: "/assets/panel/default.png",
+      linkedin: ""
+    },
+    {
+      name: "Devang Bhuta",
+      role: "Parent Entrepreneur & Investor",
+      image: "/assets/panel/default.png",
+      linkedin: "https://www.linkedin.com/in/db-passsionforproducts"
     }
   ];
 
