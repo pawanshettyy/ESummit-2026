@@ -20,6 +20,17 @@ export function Sponsors() {
   // Sponsor Categories
   const sponsorCategories = [
     {
+      title: "Powered By",
+      sponsors: [
+        {
+          name: "Red Bull",
+          logo: "/assets/sponsors/redbull-logo-svgrepo-com.svg",
+          tier: "POWERED BY",
+          website: "https://www.redbull.com/in-en"
+        }
+      ]
+    },
+    {
       title: "Co-powered by",
       sponsors: [
         {
@@ -78,12 +89,16 @@ export function Sponsors() {
     },
     {
       title: "Drinks Partner",
+      sponsors: []
+    },
+    {
+      title: "Vehicle Partner",
       sponsors: [
         {
-          name: "Red Bull",
-          logo: "/assets/sponsors/redbull-logo-svgrepo-com.svg",
-          tier: "DRINKS PARTNER",
-          website: "https://www.redbull.com/in-en"
+          name: "Mahindra",
+          logo: "/assets/sponsors/mahindra.png",
+          tier: "VEHICLE PARTNER",
+          website: "https://www.mahindra.com/"
         }
       ]
     }
