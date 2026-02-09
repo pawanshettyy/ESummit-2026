@@ -61,6 +61,12 @@ export function Sponsors() {
           logo: "/assets/sponsors/nissin.png",
           tier: "FOOD PARTNER",
           website: "https://www.indonissin.in/pages/cup-noodles"
+        },
+        {
+          name: "Dripface Coffee",
+          logo: "/assets/sponsors/dripface.png",
+          tier: "FOOD PARTNER",
+          website: "https://dripface.coffee/"
         }
       ]
     }
