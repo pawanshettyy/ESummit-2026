@@ -88,10 +88,6 @@ export function Sponsors() {
       ]
     },
     {
-      title: "Drinks Partner",
-      sponsors: []
-    },
-    {
       title: "Vehicle Partner",
       sponsors: [
         {
