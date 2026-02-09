@@ -61,6 +61,18 @@ export function Sponsors() {
           logo: "/assets/sponsors/dripface.png",
           tier: "FOOD PARTNER",
           website: "https://dripface.coffee/"
+        },
+        {
+          name: "Pizza Hut",
+          logo: "/assets/sponsors/pizzahut.png",
+          tier: "FOOD PARTNER",
+          website: "https://www.pizzahut.com/"
+        },
+        {
+          name: "Chuski",
+          logo: "/assets/sponsors/chuski.png",
+          tier: "FOOD PARTNER",
+          website: "https://chuski.com/"
         }
       ]
     },
