@@ -72,7 +72,7 @@ export function Sponsors() {
           name: "Chuski",
           logo: "/assets/sponsors/chuski.png",
           tier: "FOOD PARTNER",
-          website: "https://chuski.com/"
+          website: "https://www.chuskiicepops.in/"
         }
       ]
     },
