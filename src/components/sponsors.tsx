@@ -49,6 +49,24 @@ export function Sponsors() {
           logo: "/assets/sponsors/HireHelmet.png",
           tier: "SUPPORT SPONSOR",
           website: "#"
+        },
+        {
+          name: "Edukonnect",
+          logo: "/assets/sponsors/edukonnect.png",
+          tier: "SUPPORT SPONSOR",
+          website: "https://edukonnectgroup.com/"
+        },
+        {
+          name: "Edwise",
+          logo: "/assets/sponsors/edwise.png",
+          tier: "SUPPORT SPONSOR",
+          website: "https://www.edwiseinternational.com/"
+        },
+        {
+          name: "4 More Hour",
+          logo: "/assets/sponsors/4_more_hour.png",
+          tier: "SUPPORT SPONSOR",
+          website: "#"
         }
       ]
     },
@@ -93,13 +111,13 @@ export function Sponsors() {
         },
         {
           name: "Gupta Chat Corner",
-          logo: "/assets/sponsors/gupta_chat.png",
+          logo: "/assets/sponsors/gupta_chaat_corner.png",
           tier: "FOOD & DRINKS PARTNER",
           website: "#"
         },
         {
           name: "Shaad Custurd and Kitchen",
-          logo: "/assets/sponsors/shaad_custurd.png",
+          logo: "/assets/sponsors/shaad.png",
           tier: "FOOD & DRINKS PARTNER",
           website: "#"
         }
