@@ -1,6 +1,5 @@
 import { motion } from "motion/react";
 import { Linkedin, Twitter, Globe, Calendar, MapPin, Mail } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
 import { Button } from "./ui/button";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
@@ -365,21 +364,18 @@ export function Speakers() {
               name: "Nidhi Dilipkumar Shukla",
               role: "Event Manager",
               image: "/assets/team/nidhi.png",
-              whatsapp: "+918169231870",
               linkedin: "https://www.linkedin.com/in/nidhi-shukla-36151a329/"
             },
             {
               name: "Tanvi Prakash Jabare",
               role: "Publication Head",
               image: "/assets/team/tanvi.png",
-              whatsapp: "+919619368299",
               linkedin: "https://www.linkedin.com/in/tanvi-jabare-b310a0347/"
             },
             {
               name: "Vedant Singh",
               role: "OC - Executive",
               image: "/assets/team/vedant.png",
-              whatsapp: "+911234567890",
               linkedin: "https://www.linkedin.com/in/vedant-singh-93056b2bb/"
             },
           ].map((contact, index) => (
@@ -407,21 +403,11 @@ export function Speakers() {
                     <p className="text-sm text-muted-foreground mb-1">Contact</p>
                   </div>
 
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className={contact.linkedin && !contact.linkedin.includes('/in/example') ? "flex-1" : "w-full"}
-                      onClick={() => window.open(`https://wa.me/${contact.whatsapp.replace(/[^0-9]/g, '')}`, '_blank')}
-                    >
-                      <FaWhatsapp className="mr-2 h-4 w-4" />
-                      WhatsApp
-                    </Button>
+                  <div className="flex justify-center">
                     {contact.linkedin && !contact.linkedin.includes('/in/example') && (
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1"
                         onClick={() => window.open(contact.linkedin, '_blank')}
                       >
                         <Linkedin className="mr-2 h-4 w-4" />

@@ -225,14 +225,6 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </AnimatedBorder>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => onNavigate("gallery")}
-                className="w-full sm:w-auto"
-              >
-                Event Gallery
-              </Button>
             </motion.div>
           </div>
 

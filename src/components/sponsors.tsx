@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Linkedin } from "lucide-react";
-import { FaWhatsapp } from "react-icons/fa";
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -12,7 +11,6 @@ interface TeamMember {
   name: string;
   position: string;
   image: string;
-  whatsapp: string;
   linkedin: string;
 }
 
@@ -141,21 +139,18 @@ export function Sponsors() {
       name: "Yash Yadav",
       position: "Sponsorship Head",
       image: "/assets/team/yash.png?v=2",
-      whatsapp: "+918591134029",
       linkedin: "https://www.linkedin.com/in/yash-yadav-0b3975264/"
     },
     {
       name: "Dia Tailor",
       position: "JC - Marketing",
       image: "/assets/team/diya.png?v=2",
-      whatsapp: "+911234567890",
       linkedin: "https://www.linkedin.com/in/diya-tailor/"
     },
     {
       name: "Niyatee Thakur",
       position: "OC - Marketing",
       image: "/assets/team/niyatee.png?v=2",
-      whatsapp: "+919892682981",
       linkedin: "https://www.linkedin.com/in/niyatee-thakur-b01445398/"
     }
   ];
@@ -344,28 +339,17 @@ export function Sponsors() {
                       <p className="text-sm text-muted-foreground mb-1">Contact</p>
                     </div>
 
-                    <div className="flex gap-2">
+                    <div className="flex justify-center">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          window.open(`https://wa.me/${contact.whatsapp}`, '_blank');
-                        }}
-                      >
-                        <FaWhatsapp className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1"
                         onClick={(e) => {
                           e.preventDefault();
                           window.open(contact.linkedin, '_blank');
                         }}
                       >
-                        <Linkedin className="h-4 w-4" />
+                        <Linkedin className="h-4 w-4 mr-2" />
+                        LinkedIn
                       </Button>
                     </div>
                   </CardContent>
