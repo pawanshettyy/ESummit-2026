@@ -53,37 +53,55 @@ export function Sponsors() {
       ]
     },
     {
-      title: "Food Partner",
+      title: "Food & Drinks Partner",
       sponsors: [
         {
           name: "Mad Over Donuts",
           logo: "/assets/sponsors/mod.png",
-          tier: "FOOD PARTNER",
+          tier: "FOOD & DRINKS PARTNER",
           website: "https://madoverdonuts.com/"
         },
         {
           name: "Nissin Cup Noodles",
           logo: "/assets/sponsors/nissin.png",
-          tier: "FOOD PARTNER",
+          tier: "FOOD & DRINKS PARTNER",
           website: "https://www.indonissin.in/pages/cup-noodles"
         },
         {
           name: "Dripface Coffee",
           logo: "/assets/sponsors/dripface.png",
-          tier: "FOOD PARTNER",
+          tier: "FOOD & DRINKS PARTNER",
           website: "https://dripface.coffee/"
         },
         {
           name: "Pizza Hut",
           logo: "/assets/sponsors/pizzahut.png",
-          tier: "FOOD PARTNER",
+          tier: "FOOD & DRINKS PARTNER",
           website: "https://www.pizzahut.com/"
         },
         {
           name: "Chuski",
           logo: "/assets/sponsors/chuski.png",
-          tier: "FOOD PARTNER",
+          tier: "FOOD & DRINKS PARTNER",
           website: "https://www.chuskiicepops.in/"
+        },
+        {
+          name: "Cheese Chaska Corner",
+          logo: "/assets/sponsors/cheese_chaska.png",
+          tier: "FOOD & DRINKS PARTNER",
+          website: "#"
+        },
+        {
+          name: "Gupta Chat Corner",
+          logo: "/assets/sponsors/gupta_chat.png",
+          tier: "FOOD & DRINKS PARTNER",
+          website: "#"
+        },
+        {
+          name: "Shaad Custurd and Kitchen",
+          logo: "/assets/sponsors/shaad_custurd.png",
+          tier: "FOOD & DRINKS PARTNER",
+          website: "#"
         }
       ]
     },
