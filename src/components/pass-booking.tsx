@@ -92,8 +92,8 @@ export const PassBooking = memo(function PassBooking({
         "All 3 Workshops",
         "Certificate of participation",
       ],
-      badge: "Early Bird",
-      description: "Use coupon EARLYBIRD100 for ₹199 (first 50 passes only)",
+      badge: undefined,
+      description: undefined,
     },
     {
       id: "silicon",
@@ -177,25 +177,11 @@ export const PassBooking = memo(function PassBooking({
   );
 
   const handlePassSelect = useCallback((passId: string) => {
-    // Check if user is authenticated
-    if (!isAuthenticated) {
-      setSelectedPass(passId);
-      setShowAuthDialog(true);
-      return;
-    }
-
-    // Check if user already has a pass
-    if (hasExistingPass) {
-      toast.error("You already have a pass", {
-        description: "Only one pass per user is allowed.",
-      });
-      return;
-    }
-
-    // Open KonfHub widget for all passes (including Thakur student pass)
-    setSelectedPass(passId);
-    setShowKonfHubWidget(true);
-  }, [isAuthenticated, hasExistingPass]);
+    // Event is over, show thank you message
+    toast.success("Thank you for your interest!", {
+      description: "E-Summit 2026 was a huge success with 1800+ attendees. Stay tuned for E-Summit 2027!",
+    });
+  }, []);
 
   // NOTE: Thakur student pass is handled via KonfHub widget like other passes.
 
@@ -215,7 +201,7 @@ export const PassBooking = memo(function PassBooking({
       const requestBody = {
         clerkUserId: clerkUserId,
         passType: selectedPassData?.name || "Standard Pass",
-        price: selectedPassData?.earlyBirdPrice || selectedPassData?.price || 0,
+        price: selectedPassData?.price || 0,
         hasMeals: false,
         hasMerchandise: false,
         hasWorkshopAccess: false,
@@ -246,7 +232,7 @@ export const PassBooking = memo(function PassBooking({
           id: selectedPassDataForSave?.id || "",
           type: selectedPassDataForSave?.name || "",
           passId: createdPass.passId,
-          price: selectedPassDataForSave?.earlyBirdPrice || selectedPassDataForSave?.price || 0,
+          price: selectedPassDataForSave?.price || 0,
           purchaseDate: new Date().toLocaleDateString("en-US", {
             month: "short",
             day: "numeric",
@@ -292,9 +278,9 @@ export const PassBooking = memo(function PassBooking({
           <Alert className="border-amber-200 bg-amber-50 dark:border-amber-800 dark:bg-amber-950">
             <AlertCircle className="h-5 w-5 text-amber-600 dark:text-amber-400" />
             <AlertDescription className="text-black dark:text-amber-100">
-              <strong>You already have a pass!</strong>
+              <strong>Thank you for attending E-Summit 2026!</strong>
               <p className="mt-1 text-sm">
-                Only one pass per user is allowed. You can view your pass details on the home page.
+                Your pass was valid for our historic inaugural edition with 1800+ attendees. Stay tuned for E-Summit 2027!
               </p>
             </AlertDescription>
           </Alert>
@@ -331,51 +317,11 @@ export const PassBooking = memo(function PassBooking({
                 backgroundSize: "200% 200%",
               }}
             >
-              Choose Your Pass
+              Thank You for Attending E-Summit 2026!
             </motion.h1>
             <p className="mx-auto mb-6 max-w-2xl text-base sm:text-lg text-muted-foreground px-4">
-              Select the perfect pass for your E-Summit experience and unlock exclusive access to premium events
+              E-Summit 2026 was a resounding success with 1800+ attendees! Thank you for being part of this historic inaugural edition. Pass booking is now closed.
             </p>
-            <div className="mx-auto mb-6 max-w-6xl">
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                <div className="flex-1">
-                  <Alert className="border-primary/20 bg-primary/5 text-center h-full">
-                    <Info className="mx-auto h-4 w-4 text-primary" />
-                    <AlertDescription className="text-center text-sm text-primary/80">
-                      <strong>Pass upgrades available!</strong> You can upgrade your pass at the venue during check-in for additional benefits.
-                    </AlertDescription>
-                  </Alert>
-                </div>
-                <div className="flex-1">
-                  <Alert className="border-green-200 bg-green-50 dark:border-green-800 dark:bg-green-950 text-center h-full">
-                    <Ticket className="mx-auto h-4 w-4 text-green-600 dark:text-green-400" />
-                    <AlertDescription className="text-center text-green-600 dark:text-green-400">
-                      <p className="text-sm font-bold">Early Bird Coupon</p>
-                      <p className="text-xs mt-1">Use EARLYBIRD100 for ₹199 (first 50 passes only) - Pixel Pass only</p>
-                    </AlertDescription>
-                  </Alert>
-                </div>
-                <div className="flex-1">
-                  <a 
-                    href="https://drive.google.com/file/d/1dJhPaGnXFfaxJR5gjx_nkX23fLvVqUVu/view?usp=sharing" 
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block"
-                  >
-                    <Alert className="border-blue-200 bg-blue-50 dark:border-blue-800 dark:bg-blue-950 text-center h-full cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900 transition-colors">
-                      <div className="flex items-center gap-2 justify-center mb-1">
-                        <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                        <Download className="h-4 w-4 text-blue-600 dark:text-blue-400" />
-                      </div>
-                      <AlertDescription className="text-center text-blue-600 dark:text-blue-400">
-                        <p className="text-sm font-bold">Click to open Brochure</p>
-                        <p className="text-xs mt-1">Learn more about E-Summit 2026</p>
-                      </AlertDescription>
-                    </Alert>
-                  </a>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
 
@@ -420,19 +366,16 @@ export const PassBooking = memo(function PassBooking({
                               ) : (
                                 <>
                                   <div className="flex flex-col items-start">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-2xl font-bold text-green-600">
-                                        ₹{pass.earlyBirdPrice || pass.price}
-                                      </span>
-                                      <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1">
-                                        Early Bird
-                                      </Badge>
-                                    </div>
-                                    <div className="flex items-center gap-2 mt-1">
-                                      <span className="text-sm text-muted-foreground line-through">
-                                        ₹{pass.originalPrice}
-                                      </span>
-                                    </div>
+                                    <span className="text-2xl font-bold text-green-600">
+                                      ₹{pass.price}
+                                    </span>
+                                    {pass.price < pass.originalPrice && (
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <span className="text-sm text-muted-foreground line-through">
+                                          ₹{pass.originalPrice}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
                                 </>
                               )}
@@ -478,14 +421,14 @@ export const PassBooking = memo(function PassBooking({
                             className="w-full"
                             disabled
                           >
-                            Pass Already Purchased
+                            Thank you for attending!
                           </Button>
                         ) : (
                           <Button
                             className="w-full"
-                            onClick={() => handlePassSelect(pass.id)}
+                            disabled
                           >
-                            {pass.isThakurPass ? "Get Passes" : "Select This Pass"}
+                            Event Completed - Thank you!
                           </Button>
                         )}
                       </CardContent>
@@ -516,19 +459,16 @@ export const PassBooking = memo(function PassBooking({
                               ) : (
                                 <>
                                   <div className="flex flex-col items-start">
-                                    <div className="flex items-center gap-2">
-                                      <span className="text-2xl font-bold text-green-600">
-                                        ₹{pass.earlyBirdPrice || pass.price}
-                                      </span>
-                                      <Badge className="bg-green-100 text-green-800 text-xs px-2 py-1">
-                                        Early Bird
-                                      </Badge>
-                                    </div>
-                                    <div className="flex items-center gap-2 mt-1">
-                                      <span className="text-sm text-muted-foreground line-through">
-                                        ₹{pass.originalPrice}
-                                      </span>
-                                    </div>
+                                    <span className="text-2xl font-bold text-green-600">
+                                      ₹{pass.price}
+                                    </span>
+                                    {pass.price < pass.originalPrice && (
+                                      <div className="flex items-center gap-2 mt-1">
+                                        <span className="text-sm text-muted-foreground line-through">
+                                          ₹{pass.originalPrice}
+                                        </span>
+                                      </div>
+                                    )}
                                   </div>
                                 </>
                               )}
@@ -563,15 +503,15 @@ export const PassBooking = memo(function PassBooking({
                             variant="outline"
                             disabled
                           >
-                            Pass Already Purchased
+                            Thank you for attending!
                           </Button>
                         ) : (
                           <Button
                             className="w-full"
                             variant="outline"
-                            onClick={() => handlePassSelect(pass.id)}
+                            disabled
                           >
-                            {pass.isThakurPass ? "Get Passes" : "Select This Pass"}
+                            Event Completed - Thank you!
                           </Button>
                         )}
                       </CardContent>

@@ -164,13 +164,10 @@ export function EventPageTemplate({
               >
                 <Button
                   size="lg"
-                  asChild
-                  className="group relative px-10 py-6 text-lg font-bold bg-primary hover:bg-primary/90 text-white rounded-2xl shadow-[0_0_30px_rgba(168,85,247,0.4)] hover:shadow-[0_0_50px_rgba(168,85,247,0.6)] border-2 border-primary/30 hover:border-primary/50 transition-all duration-500 inline-flex items-center gap-3 hover:scale-105"
+                  disabled
+                  className="group relative px-10 py-6 text-lg font-bold bg-muted text-muted-foreground rounded-2xl cursor-not-allowed inline-flex items-center gap-3"
                 >
-                  <a href={registrationUrl} target="_blank" rel="noopener noreferrer">
-                    Register Now
-                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-300" />
-                  </a>
+                  Event Completed - Thank You!
                 </Button>
               </motion.div>
             </motion.div>

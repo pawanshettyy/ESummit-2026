@@ -81,8 +81,8 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
 
   const stats = [
     { label: "Events", value: "16+", icon: Trophy },
-    { label: "Judges & Speakers", value: "30+", icon: Users },
-    { label: "Expected Attendees", value: "1000+", icon: Users },
+    { label: "Speakers & Judges", value: "30+", icon: Users },
+    { label: "Attendees", value: "1800+", icon: Users },
     { label: "Startup Pitches", value: "50+", icon: Building2 },
   ];
 
@@ -126,8 +126,8 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
               transition={{ duration: 0.6 }}
               className="mb-6 flex justify-center"
             >
-              <Badge className="bg-primary text-primary-foreground border border-primary/50 px-4 py-2 text-sm font-semibold shadow-lg animate-pulse">
-                Inaugural Edition - Making History
+              <Badge className="bg-primary text-primary-foreground border border-primary/50 px-4 py-2 text-sm font-semibold shadow-lg">
+                Historic Inaugural Edition - Completed
               </Badge>
             </motion.div>
 
@@ -168,55 +168,77 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
               <AnimatedBorder>
                 <Button
                   size="lg"
-                  onClick={() => onNavigate("booking")}
+                  onClick={() => onNavigate("events")}
                   className="w-full sm:w-auto"
                 >
-                  Register Now
+                  View Event Highlights
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
               </AnimatedBorder>
               <Button
                 size="lg"
                 variant="outline"
-                onClick={() => onNavigate("events")}
+                onClick={() => onNavigate("gallery")}
                 className="w-full sm:w-auto"
               >
-                View Events
+                Event Gallery
               </Button>
             </motion.div>
           </div>
 
-          {/* Countdown Timer */}
+          {/* Event Completed Message */}
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mx-auto mt-8 sm:mt-12 grid max-w-2xl grid-cols-4 gap-2 sm:gap-3 md:gap-4 px-4"
+            className="mx-auto mt-8 sm:mt-12 max-w-2xl px-4"
           >
-            {Object.entries(countdown).map(
-              ([unit, value], index) => (
+            <Card className="backdrop-blur-sm bg-card/80 border-primary/50 relative overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-transparent to-primary/10" />
+              <CardContent className="flex flex-col items-center justify-center p-6 sm:p-8 relative z-10">
                 <motion.div
-                  key={unit}
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 1, type: "spring", stiffness: 200 }}
+                  className="mb-4"
+                >
+                  <div className="text-4xl sm:text-5xl mb-2">🎉</div>
+                </motion.div>
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.9 + index * 0.1,
-                  }}
+                  transition={{ delay: 1.2, duration: 0.6 }}
+                  className="mb-4 text-center"
                 >
-                  <Card className="backdrop-blur-sm bg-card/80">
-                    <CardContent className="flex flex-col items-center justify-center p-3 sm:p-6">
-                      <div className="mb-1 sm:mb-2 text-2xl sm:text-3xl text-primary">
-                        {value}
-                      </div>
-                      <div className="text-xs sm:text-sm text-foreground capitalize">
-                        {unit}
-                      </div>
-                    </CardContent>
-                  </Card>
+                  <GradientText className="text-2xl sm:text-3xl font-bold mb-2">
+                    Mission Accomplished! 🚀
+                  </GradientText>
+                  <div className="text-primary font-semibold text-lg">
+                    E-Summit 2026: Legacy Initiated
+                  </div>
                 </motion.div>
-              ),
-            )}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.4, duration: 0.6 }}
+                  className="text-sm sm:text-base text-foreground text-center leading-relaxed"
+                >
+                  <p className="mb-2">
+                    🌟 <strong>1,800+ Visionaries</strong> united in celebration
+                  </p>
+                  <p className="mb-2">
+                    🎯 <strong>16+ Epic Events</strong> that redefined entrepreneurship
+                  </p>
+                  <p className="mb-2">
+                    💫 <strong>Countless Connections</strong> forged for tomorrow
+                  </p>
+                  <p className="mt-4 font-medium text-primary">
+                    Thank you for pioneering this historic inaugural edition! 
+                    The foundation of TCET's entrepreneurial legacy is now set. ✨
+                  </p>
+                </motion.div>
+              </CardContent>
+            </Card>
           </motion.div>
         </div>
 
@@ -477,36 +499,36 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
         <div className="container mx-auto px-4">
           <div className="mb-12 text-center px-4">
             <Badge className="mb-4 bg-primary/10 text-primary border border-primary/20">
-              Latest Updates
+              Event Highlights
             </Badge>
-            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">News & Updates</h2>
+            <h2 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold text-foreground">E-Summit 2026 Highlights</h2>
             <p className="text-sm sm:text-base text-foreground max-w-2xl mx-auto">
-              Stay informed with the latest announcements, updates, and exciting developments for E-Summit 2026.
+              Relive the magic of our inaugural edition with record-breaking attendance and unforgettable moments.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
               {
-                title: "Keynote Speakers Confirmed",
-                date: "Jan 15, 2026",
+                title: "Record-Breaking Attendance",
+                date: "Feb 2-3, 2026",
                 content:
-                  "Exciting news! We've confirmed our keynote speakers including Devang Raja from Venture Wolf and Nikhil Jadhav from The Ten Minute Deal. Don't miss their insights on startup growth and investment strategies.",
+                  "E-Summit 2026 shattered expectations with over 1800 attendees from across India. The inaugural edition brought together students, entrepreneurs, investors, and industry leaders in an unprecedented celebration of innovation.",
                 icon: Users,
               },
               {
-                title: "Major Sponsors Onboarded",
-                date: "Jan 16, 2026",
+                title: "Successful Funding Rounds",
+                date: "Feb 2-3, 2026",
                 content:
-                  "We're thrilled to announce partnerships with leading sponsors including Venture Loop (Co-powered by), Hire Helmet (Support Sponsor), Mad Over Donuts, 99Pancakes, Nissin, and Red Bull. Their support will enhance the event experience.",
+                  "The Ten Minute Deal witnessed incredible pitches with multiple startups securing funding. Our panel discussions and workshops provided invaluable insights to aspiring entrepreneurs.",
                 icon: Building2,
               },
               {
-                title: "Thakur Student Pass Registration Closing",
-                date: "Jan 28, 2026",
+                title: "Community Impact",
+                date: "Feb 2-3, 2026",
                 content:
-                  "THAKUR STUDENT PASS will be closed at 29 Jan 2026 at 12 AM",
-                icon: Calendar,
+                  "From AI Buildathon to IPL Auction, every event fostered collaboration and learning. The Startup Expo and Internship Fair created lasting connections that will shape the future of entrepreneurship.",
+                icon: Trophy,
               },
             ].map((news, index) => (
               <motion.div
@@ -544,33 +566,31 @@ export function HomePage({ onNavigate, user }: HomePageProps) {
       </section>
 
       {/* CTA Section */}
-      {(!user?.passes || user.passes.length === 0) && (
-        <section className="border-t bg-gradient-to-br from-primary/5 via-background to-background py-16">
-          <div className="container mx-auto px-4 text-center">
-            <h2 className="mb-4 text-foreground">Ready to Join E-Summit 2026?</h2>
-            <p className="mb-8 text-foreground">
-              Secure your spot at India's premier entrepreneurship
-              event
-            </p>
-            <div className="flex flex-wrap justify-center gap-4">
-              <Button
-                size="lg"
-                onClick={() => onNavigate("booking")}
-              >
-                Book Your Pass Now
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => onNavigate("schedule")}
-              >
-                View Schedule
-              </Button>
-            </div>
+      <section className="border-t bg-gradient-to-br from-primary/5 via-background to-background py-16">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="mb-4 text-foreground">Thank You for Making E-Summit 2026 a Success!</h2>
+          <p className="mb-8 text-foreground">
+            With 1800+ attendees and unforgettable moments, this inaugural edition has set the foundation 
+            for future entrepreneurship summits. Stay tuned for E-Summit 2027!
+          </p>
+          <div className="flex flex-wrap justify-center gap-4">
+            <Button
+              size="lg"
+              onClick={() => onNavigate("events")}
+            >
+              View Event Highlights
+              <ArrowRight className="ml-2 h-5 w-5" />
+            </Button>
+            <Button
+              size="lg"
+              variant="outline"
+              onClick={() => onNavigate("gallery")}
+            >
+              Event Gallery
+            </Button>
           </div>
-        </section>
-      )}
+        </div>
+      </section>
     </div>
   );
 }

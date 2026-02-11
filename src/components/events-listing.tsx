@@ -325,7 +325,7 @@ export function EventsListing({ onNavigate }: EventsListingProps) {
                   <CardHeader className="pb-3">
                     <div className="mb-3 flex items-start justify-between">
                       <event.icon className="h-6 w-6 sm:h-8 sm:w-8 text-primary flex-shrink-0" />
-                      {event.prize && (
+                      {event.prize && event.prize !== "TBD" && (
                         <Badge variant="default" className="bg-primary text-xs shrink-0">
                           {event.prize}
                         </Badge>
